@@ -1,0 +1,99 @@
+<table border = 0>
+		<tr>
+			<td nowrap="nowrap">Loại văn bản</td>
+			<td nowrap="nowrap">
+				<select name="ID_LVB" id="ID_LVB" class="inputbox" size="1">
+            	<?php 
+            		echo vbdenModel::WriteLVB((int)$this->ID_LVB,"-- Chọn tất cả  --");
+            	?> 
+        		</select>
+			</td>
+			<td nowrap></td>
+			<td width="100%"></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap" colspan="3"><input type=button value="Tìm kiếm" onclick="document.location.href='/hscv/hscv/multiketthuc/ID_LVB/'+document.getElementById('ID_LVB').value;"></td>
+			<td nowrap></td>
+			<td width="100%"></td>
+		</tr>
+	</table>
+<form name=frm action="/hscv/hosoluutheodoi/luutheodoi" method=post>
+<table class=adminlist width=100%>
+	<thead>
+		<tr>
+			<th colspan=3>
+				Chọn hồ sơ công việc điện tử
+				<select name=idtaphoso>
+					<option value=0>--Chọn hồ sơ công việc điện tử--</option>
+<?php
+foreach($this->dataTapHSCV as $itemtaphscv){
+?>
+					<option value=<?=$itemtaphscv["ID_TAPHOSO"]?>><?=htmlspecialchars($itemtaphscv["TEN"])?></option>
+<?php
+}
+?>
+				</select>
+			</th>
+		</tr>
+		<tr>
+			<th nowrap>#</th>
+			<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'id_hscv')"></th>
+			<th width=100%>Tên hồ sơ</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan=3>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+$stt=1;
+foreach($this->data as $row){
+	$lastlog = WFEngine::GetCurrentTransitionInfoByIdHscv($row['ID_HSCV']);
+?>
+		<tr>
+			<td nowrap><?=$stt?></td>
+			<td nowrap><input type=checkbox name=id_hscv[] value='<?php echo $row["ID_HSCV"] ?>'></td>
+			<td width=100%><?php
+					if($row["ALIAS"]=="VBD"){
+						echo "<img src='/images/icon_vbden.jpg'>";
+						$vbden = $this->vbden->findByHscv($row['ID_HSCV']);
+						//var_dump($vbden);
+					}else if($row["ALIAS"]=="VBSOANTHAO"){
+						echo "<img src='/images/icon_soanthaovb.jpg'>";
+					}else if($row["ALIAS"]=="MOTCUA"){
+						echo "<img src='/images/icon_motcua.jpg'>";
+					}
+				?>
+				<?php if($row["ALIAS"]=="VBD"){
+					$vbdeninfo = $this->vbden->find($vbden['ID_VBD'])->current();
+					if($vbdeninfo->IS_FINISH==0){
+						$datatre .= $row['ID_HSCV'].",".urlencode($vbdeninfo->NGAYTAO).",".$vbdeninfo->HANXULYTOANBO.",-1,";
+					}
+					echo "<b>".$vbdeninfo->SOKYHIEU." - ".QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYBANHANH)." - ".$vbdeninfo->COQUANBANHANH_TEXT."</b> <span id='TREHANTONG".$row['ID_HSCV']."'></span><br>";
+				}?>
+                               
+				<?=$row['NAME']?><?=$row['EXTRA']!=""?" - ".$row['EXTRA']:""?>
+					<?php
+						if($lastlog['NOIDUNG']!=""){
+					?>
+					<br><I><?=$lastlog['NOIDUNG']?></I>
+					<?php
+						}
+					?></td>
+		</tr>
+<?php
+	$stt++;
+}
+?>
+	</tbody>
+</table>
+</form>
+<script>
+function CreateButtonClick(){
+	document.frm.submit();
+}
+</script>

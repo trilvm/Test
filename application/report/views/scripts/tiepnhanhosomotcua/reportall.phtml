@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+
+
+			<table class=adminlist>
+			 <thead>
+				
+				<tr height=40px>
+					<th nowrap >STT</th>
+					<th nowrap >Số phiếu hẹn</th>
+					<th nowrap >Loại hồ sơ</th>
+					<th nowrap >Đơn vị cá nhân</th>
+					
+					
+					<th nowrap >Ngày TN</th>
+					<th nowrap >Ngày hẹn trả</th>
+					<th nowrap >Ngày trả</th>
+				</tr>
+				
+			 </thead>
+			 <tbody>
+			<?php require_once 'qtht/models/LoaiVanBanModel.php';
+			require_once 'qtht/models/CoquanModel.php'; 
+			require_once 'qtht/models/DepartmentsModel.php';
+			require_once 'qtht/models/UsersModel.php';
+			$stt=1;
+			foreach($this->data as $row){ 
+				
+			?>
+				<tr>
+				<td><?=$stt?></td>
+				<td><?=$row["SOKYHIEU"]?></td>
+				<td  width=30% valign=top rowspan=<?php echo $d ?>><?php  echo $row["TENLOAI"]; ?></td>
+				<td  width=30% valign=top rowspan=<?php echo $d ?>><?php  echo $row["TENTOCHUCCANHAN"]; ?></td>
+				
+				<td nowrap valign=top rowspan=<?php echo $d ?>><?php  echo implode("/",array_reverse(explode("-",$row["NHAN_NGAY"])))?></td> 	
+				<td nowrap valign=top rowspan=<?php echo $d ?>><?php  echo implode("/",array_reverse(explode("-",$row["NHANLAI_NGAY"]))) ?></td>
+				<td nowrap valign=top rowspan=<?php echo $d ?>><?php  echo QLVBDHCommon::MysqlDateToVnDate($row["TRA_NGAY"])?></td>
+				</tr>
+			<?php  	
+				$stt++;
+				}
+				
+			  ?>
+			 </tbody>
+			 <tfoot>
+			 </tfoot>
+			</table>
+
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%"; 
+
+</script>

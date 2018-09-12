@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name=frm action="/taphscv/dinhkem/save" method="post" enctype="multipart/form-data">
+<table>
+        <tr>
+		<td><font color="Blue">Số ký hiệu</font></td>
+		<td><input type=text name=sokyhieu size="30" value="<?=$this->r["SOKYHIEU"]?>" /></td>
+		<td class="box_erro_area" id=ERRsokyhieu></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">Ngày ban hành</font></td>
+		<td><? echo QLVBDHCommon::calendarfull(QLVBDHCommon::MysqlDateToVnDate($this->r['NGAYBANHANH']),"ngaybanhanh","ngaybanhanh")?></td>
+		<td class="box_erro_area" id=ERRngaybanhanh></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">Cơ quan ban hành</font></td>
+		<td><input type=text name=coquanbanhanh size="30" value="<?=$this->r['COQUANBANHANH']?>" /></td>
+		<td class="box_erro_area" id=ERRcoquanbanhanh></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">Trích yếu<font color="Red" size="3">*</font></font></td>
+		<td><textarea name=trichyeu rows=1 cols=47 ><?=$this->r['TRICHYEU']?></textarea></td>
+		<td class="box_erro_area" id=ERRtrichyeu></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">File văn bản</font></td>
+		<td><input type=file name="uploadedfile" size="37" /></td>
+	</tr>
+	<tr>
+		<td><input type=button value="Lưu" onClick="SaveButtonClick();" /></td>
+		<td>
+                    <?php if ($this->r['ID_VB'] > 0){?>
+                    <a href="#trframe<?=$this->r['ID_VB']?>" onClick="javascript:{                        
+                        window.parent.document.getElementById('iframevb<?=$this->r['ID_VB']?>').style.display='none';
+                    }" >[Hủy]                        
+                    </a>
+                    <?php }?>
+                </td>
+		<td class="box_erro_area" id=ERRGHICHU></td>
+	</tr>
+</table>
+<input type="hidden" name=iddk value="<?=$this->r['ID_OBJECT']?>" />
+<input type="hidden" name="idtaphoso" value="<?=$this->idtaphoso ?>" />
+<input type="hidden" name="id_vb" value="<?=$this->r['ID_VB']?>" />
+</form><p id=lasttext></p>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+		err = err & validateInput("req",document.frm.trichyeu,"Trích yếu không được rỗng.");
+		err = err & err==true?validateInput("maxlen=128",document.frm.trichyeu,"Trích yếu không được quá 128 ký tự"):false;
+		if(err==true){
+			document.frm.submit();
+		}
+//document.frmInputVanban.submit();
+	}
+	function BackButtonClick(){
+		document.frm.action = "/taphscv/dinhkem/list";
+		document.frm.submit();
+	}
+
+	function resize(){
+		var iframeElement = parent.document.getElementById('<?=$this->IdFrame ?>');
+		iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+		iframeElement.width = "100%";
+	}
+	resize();
+</script>
+</body>
+</html>

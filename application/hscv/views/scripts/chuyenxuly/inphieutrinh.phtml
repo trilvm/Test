@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<FONT  style="font-size: 11pt;">
+<table>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><?=mb_strtoupper( $this->config->sys_info->company,"utf-8")?></b></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b>CỘNG HÒA XÃ HỘI CHỦ  NGHĨA VIỆT NAM</b></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b>Độc lập – Tự do – Hạnh phúc</b></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><?=mb_strtoupper($this->data_u["NAME_DEP"],'utf-8')?></b></td>
+		
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center""><b>---------------------</b></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px">---------------------</td>
+		
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px">Đà Nẵng, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+	</tr>
+	
+	<tr>
+        <td nowrap="nowrap" align="center" style="line-height: 16px"></td>
+	</tr>
+</table>
+<p align="center"><font style="font-size: 18pt; "><b>PHIẾU TRÌNH</b></font></p>
+</font>
+<table class="adminlist">
+<tr>
+	<td align="left" valign=top><u>Kính trình</u>:</td>
+	<td>
+	    <?php if($this->data_u_ldcq["ID_U"]){?>
+		Đ/c&nbsp;<?=$this->data_u_ldcq["NAME_U"]?>  - <?=$this->data_u_ldcq["NAME_CD"]?>
+		<br>
+		<?php }?>
+		<?php if($this->data_u_ldvp["ID_U"]){?>
+		Đ/c&nbsp;<?=$this->data_u_ldvp["NAME_U"]?>  - <?=$this->data_u_ldvp["NAME_CD"]?>
+		<br>
+		<?php }?>
+		<?php if($this->data_u_ldp["ID_U"]){?>
+		Đ/c&nbsp;<?=$this->data_u_ldp["NAME_U"]?>  - <?=$this->data_u_ldp["NAME_CD"]?>
+		<?php }?>
+	</td>
+</tr>
+<tr>
+	<td align="left" valign=top>Chuyên viên trình :</td>
+	<td>
+	      <?=$this->data_u["NAME_U"]?>
+	</td>
+</tr>
+<tr>
+	<td align="left" valign=top>Trích yếu :</td>
+	<td>
+	      <?=$this->data_hscv["NAME"]?>
+	</td>
+</tr>
+
+</table>
+
+
+<table width="100%"  cellpadding="0" cellspacing="0" border="1px solid">
+  
+  <tr>
+    <td colspan="2" valign="center" style="height:40px"><div align="center"><font style="font-size: 14pt; "><b>Nội dung trình và đề xuất của chuyên viên</b></font></div></td>
+  </tr>
+  <tr>
+    <td colspan="2" valign="top" style="height:320px">
+	
+	<?php 
+		($arr_line = explode("\n",$this->NOIDUNG));
+		foreach($arr_line as $line){
+			
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;".wordwrap(htmlspecialchars($line),200,"<br />\n");
+			echo "<br>";
+		}
+	?>
+	</td>
+  </tr>
+  
+  
+  <tr>
+	<td width="50%" valign="center" style="height:30px"><div align="center"><font style="font-size: 14pt; "><b>Ý kiến của Lãnh đạo Văn Phòng</b></font></div></td>
+    <td width="50%" valign="center" style="height:30px"><div align="center"><font style="font-size: 14pt; "><b>Ý kiến của lãnh đạo UBND thành phố</b></font></div></td>
+  </tr>
+  <tr>
+    <td valign="top" style="height:250px"></td>
+    <td valign="top" style="height:250px"></td>
+  </tr>
+</table>
+
+</body>
+
+</html>
+<script>
+window.print();
+
+</script>

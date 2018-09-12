@@ -1,0 +1,39 @@
+<?php $data_cuochop = $this->data_cuochop;var_dump($data_cuochop);exit; ?>
+<table>
+    <tr>
+        <td style="color: blue" nowrap="nowrap" >Tên cuộc họp</td>
+        <td><?=$data_cuochop->TEN?></td>
+        <td nowrap="nowrap" style="color: blue">Phạm vi</td>
+        <td><?php echo $data_cuochop->PHAMVI==1? 'Trong cơ quan':'Ngoài cơ quan';?></td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap" style="color: blue">Địa điểm</td>
+        <td><?=$data_cuochop->DIADIEM?></td>
+        <td nowrap="nowrap" style="color: blue">Thời gian</td>
+        <td><?= QLVBDHCommon::MysqlDateToVnDate($data_cuochop->NGAY)?> : <?=$data_cuochop->GIO?></td>
+    </tr>
+    <tr>        
+        <td nowrap="nowrap" style="color: blue" >Người chủ trì</td>
+        <td id="xxx"><?= UsersModel::getEmloyeeNameByIdUser($data_cuochop->NGUOICHUTRI)?></td>
+        <td style="display:none">
+                        <?php echo QLVBDHCommon::writeSingleSelectDepartment('DEP_NGUOICHUTRI','NGUOICHUTRI')?>
+        </td>
+        <td nowrap="nowrap" style="color: blue">Người tham gia</td>
+        <td><?=$data_cuochop->NGUOITHAMGIA?></td>
+    </tr>
+    <tr>        
+        <td nowrap="nowrap" style="color: blue" >Nội dung</td>
+        <td><?=$data_cuochop->NOIDUNG?></td>
+    </tr>
+   
+</table>
+
+<script>
+    function showText(idLabel, idText) {
+        var label = document.getElementById(idLabel);
+        var text = document.getElementById(idText);
+
+        label.style.display = "none";
+        text.style.display = "inline";
+    }
+</script>

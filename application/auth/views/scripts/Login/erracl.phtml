@@ -1,0 +1,27 @@
+<?php
+	$config = Zend_Registry::get('config');
+	
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<title><?php echo $config->sys_info->name_system?></title>
+</head>
+<body style="background-color:transparent">
+<div align="center">
+<font color="Blue" size="5"><p><?php echo $config->sys_info->name_system?></p></font>
+<img src='/images/error_image.png' align="middle" height="70" width="70">
+<?php
+echo "Bạn không có quyền truy cập vào trang này, liên hệ với quản trị hệ thống để có quyền truy cập";
+?>
+</div>
+<br/>
+
+<a href="/">
+Trở về trang chủ
+</a>
+<img src='/images/j_button1_site.png'>
+</body>
+</html>

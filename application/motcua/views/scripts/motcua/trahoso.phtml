@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel="stylesheet" href="/styles/system.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/styles/rounded.css" />
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel="stylesheet" type="text/css" href="/styles/template.css" />
+</head>
+<body style="background-color:transparent">
+<form name=frm action="/motcua/motcua/savetrahoso">
+<fieldset>
+<!--
+<legend style="color:#0066CC;">Đã nhận hồ sơ của</legend>
+<div class="curlycontainer" width=500>
+!-->
+<div class="curlycontainer" style="width:100%">
+<div class="innerdiv">
+<div>
+<b><u>Giấy biên nhận:</u></b>
+<font color="Blue"><b><i><?php echo $this->hsmcInfo->MAHOSO ?></i></b></font>
+</div>
+<div >
+<b><u>Loại hồ sơ:</u></b> 
+<font><i><?php echo $this->TenLoaiHoSo ?></i></font> 
+</div>
+<div>
+<b><u>Tổ chức/cá nhân:</u></b>
+<font><i><?php echo $this->hsmcInfo->TENTOCHUCCANHAN ?></i></font> 
+</div>
+<div>
+<b><u>Email:</u></b>
+<font><i><?php echo $this->hsmcInfo->EMAIL ?></i></font>
+</div>
+<div>
+<b><u>Địa chỉ:</u></b>
+<font><i><?php echo $this->hsmcInfo->DIACHI ?></i></font>
+</div> 
+</div>
+</div>
+</fieldset>
+<fieldset>
+<legend style="color:#0066CC;">Trả Hồ Sơ</legend>
+
+<div>
+<label><b>Ngày Trả Hồ Sơ</b></label>
+<?php echo QLVBDHCommon::calendarfull(date('d/m/Y'),"ngay_tra","ngay_tra") ?>
+<span class="box_erro_area" id="ERRngay_tra"></span>
+</div>
+<div class=clr></div>
+<div id='div_traluc' class="required clearfix">
+<label>Trả lúc</label>
+<input type="text" name=luc_tra id='luc_tra' value="<?php echo date('h:m');?>" onchange="autoCompleteHour();">
+<span class="box_erro_area" id="ERRluc_tra"></span>
+</div>
+<div class=clr></div>
+<div class="required clearfix">
+<label>Không được xử lý</label>
+<input type="checkbox" name=is_khongxuly value=1 <?=$this->hsmcInfo->KHONGXULY==1?"checked":""?> onchange="check_kxl();" >
+</div>
+<div class=clr></div>
+<div class="required clearfix" id=div_lydo>
+<label>Lý do không xử lý</label>
+<textarea name="LYDOKHONGXULY"><?=$this->LYDOKHONGXULY?></textarea>
+</div>
+<div class=clr></div>
+<div class="required clearfix">
+<label>Lưu thư mục</label>
+<select name=THUMUC>
+<?php
+	foreach($this->thumuc as $row){
+?>
+	<option value="<?=$row['ID_THUMUC']?>"><?=str_repeat("--",$row['LEVEL']).htmlspecialchars($row['NAME'])?></option>
+<?php
+	}
+?>
+</select>
+</div>
+
+<div class=clr></div>
+</fieldset>
+<?php /*
+<fieldset style="display:none">
+<legend style="color:#0066CC;">Chuyển Lưu Trữ</legend>
+<?php
+	echo WFEngine::FormSend($this->wf_id_t);		
+?>
+</fieldset>
+*/
+?>
+<input type="button" name="SEND" value="Chuyển lưu trữ" onclick="return Submit();"></input>
+<input type=hidden name=id value="<?=$this->ID_HSCV?>">
+<input type=hidden name=wf_id_t value="<?=$this->wf_id_t?>">
+<input type=hidden name=year value="<?=$this->year?>">
+</form>
+<p id=lasttext></p>
+<script >
+var iframeElement = parent.document.getElementById("iframebutphe<?php echo $this->ID_HSCV?>");
+iframeElement.style.height = ""+ (document.getElementById("lasttext").offsetTop) +"px";
+iframeElement.width = "100%"; 
+</script>
+</body>
+</html>
+<script>
+
+function checkInputData(){
+	var str = "Bạn phải nhập ngày trả";
+	var strerr = validateInput("required",document.frm.ngay_tra,str);
+	if(!strerr){
+		document.frm.ngay_tra.focus();
+		return false;
+	}
+	var str = "Nhập ngày tháng sai định dạng";
+	strerr = validateInput("date",document.frm.ngay_tra,str);
+	if(!strerr){
+		document.frm.ngay_tra.focus();
+		return false;
+	}
+	str = "Phải nhập giờ trả hồ sơ";
+	strerr = validateInput("required",document.frm.luc_tra,str);
+	if(!strerr){
+		document.frm.luc_tra.focus();
+		return false;
+	}
+	
+	str = "Nhập giờ sai định dạng";
+	strerr = validateInput("hour:minus",document.frm.luc_tra,str);
+	if(!strerr){
+		document.frm.luc_tra.value = "<?php echo date('h:m');?>";
+		document.frm.luc_tra.focus();
+		return false;
+	}
+	return true;
+}
+
+function autoCompleteHour(){
+	document.frm.luc_tra.value = trim(document.frm.luc_tra.value);
+	var arr = document.frm.luc_tra.value.split(":"); 
+	var hour = arr[0];
+	var minus = arr[1];
+	if(isInteger(hour) == false || (hour > 24 || hour <0 )){
+	}else{
+		if(minus==""){
+			minus = "00";
+			if(hour<10 && hour.substring(0,1)!="0") hour="0"+ hour;
+			document.frm.luc_tra.value = ""+hour+":"+minus;
+		}
+	}
+}
+
+
+function Submit(){
+	if(checkInputData() == true)
+		document.frm.submit();
+}
+
+check_kxl();
+function check_kxl(){
+	var div_lydo = document.getElementById("div_lydo");
+	if(document.frm.is_khongxuly.checked){
+		div_lydo.style.display = "";
+		document.frm.LYDOKHONGXULY.enabled = true;
+	}else{
+		div_lydo.style.display = "none";
+		document.frm.LYDOKHONGXULY.enabled = false;
+	}
+}
+
+</script>

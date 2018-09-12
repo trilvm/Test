@@ -1,0 +1,137 @@
+﻿<script type="text/javascript" src="/js/validate.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/json/json_parse.js"></script>
+<script language=javascript>
+function numberPage(v){
+	var number = document.getElementById('numPage');
+	number.value = parseInt(number.value) + v;
+}
+function numberDocument(v){
+	var number = document.getElementById('numDocument');
+	number.value = parseInt(number.value) + v;
+}
+</script>
+<form id="containerID" action="/taphscv/taphscv/save" method="post" enctype="multipart/form-data" name="frm" >
+<table width="100%">
+    <tr>
+	   <td width="15%"><font color="Blue">Tên hồ sơ công việc</font></td>
+	   <td width="85%">
+	       <div class="required clearfix">		
+             <input type="text" name="name" maxlength="128" value="<?=$this->data['TEN']?>" class="inputText" size="10" >
+    	     <span class="box_erro_area" id="ERRname"></span>
+	       </div>
+	  </td>
+  </tr>  
+   <tr>
+   <td> <font color="Blue">Thuộc thư mục </font></td>
+   <td>
+	 <select name="choiceLVCha" >
+	<option value="0">--Chọn thư mục--</option>
+	<?php 
+		//in ra cac gia tri cua combobox
+		$count = count($this->datathumuc);
+		for($i = 0 ; $i<$count  ;$i++){
+			if($this->datathumuc[$i]["ID_THUMUC"] != $this->id && $this->datathumuc[$i]["ID_THUMUC_PARENT"] != $this->id)
+			echo '<option value='.$this->datathumuc[$i]["ID_THUMUC"].'>'.htmlspecialchars(str_repeat("--",$this->datathumuc[$i]["LEVEL"]-1).$this->datathumuc[$i]["NAME"]). '</option>';
+		}
+	?>   		
+	</select>
+	<script>
+		document.frm.choiceLVCha.value ="<?=$this->ID_THUMUC_PARENT?>";		
+	</script>
+	</td>			
+  </tr>  
+  <tr>
+      <td><font color="Blue">Ngày</font></td>
+      <td>
+          <div style="float: left; margin-right: 130px;">
+          <?php if($this->data['NGAYTAO'] != "" || $this->data['NGAYTAO'] != NULL) {
+                echo QLVBDHCommon::calendarFullWithNoEvent(date('d/m/Y', strtotime($this->data['NGAYTAO'])) , "NGAYTAO", "NGAYTAO");
+      } else { echo QLVBDHCommon::calendarFullWithNoEvent("" , "NGAYTAO", "NGAYTAO"); }?>
+          </div>
+          <div id="error" name="error" style="color: red"></div>
+      </td>
+  </tr>
+  <tr>
+      <td><font color="Blue">Số Trang<font></td>
+      <td><input type="textbox" name="numPage" id="numPage" value="<?php if($this->data['SOTRANG'] != ""){ echo $this->data['SOTRANG'];}else {echo 0;}?>" />
+          <input type=button style="background: url(/images/hscv-input-bg.png) repeat-x;" value='+' onclick='javascript:numberPage(1)'>
+          <input type=button style="background: url(/images/hscv-input-bg.png) repeat-x;" value='-' onclick='javascript:numberPage(-1)'>
+      </td>
+  </tr>
+  <tr>
+      <td><font color="Blue">Số tập tài liệu</font></td>
+      <td><input type="textbox" name="numDocument" value="<?php if($this->data['SOTAILIEU'] != ""){echo $this->data['SOTAILIEU'];}else{echo 0;}?>" id="numDocument" />
+          <input type=button style="background: url(/images/hscv-input-bg.png) repeat-x;" value='+' onclick='javascript:numberDocument(1)'>
+          <input type=button style="background: url(/images/hscv-input-bg.png) repeat-x;" value='-' onclick='javascript:numberDocument(-1)'>
+      </td>
+  </tr>
+  <tr>
+      <td><font color="Blue">Ngăn</font></td>
+      <td><input type="textbox" name="numNgan" value="<?php if($this->data['NGAN'] != ""){echo $this->data['NGAN'];}?>" id="numNgan" />
+      </td>
+  </tr>
+  <tr>
+      <td><font color="Blue">Kệ</font></td>
+      <td><input type="textbox" name="numKe" value="<?php if($this->data['KE'] != ""){echo $this->data['KE'];}?>" id="numKe" />
+      </td>
+  </tr>
+  <tr>
+      <td><font color="Blue">Tầng</font></td>
+      <td><input type="textbox" name="numTang" value="<?php if($this->data['TANG'] != ""){echo $this->data['TANG'];}?>" id="numTang" />
+      </td>
+  </tr>
+  <tr style="display:none">
+      <td><font color="Blue">Trạng thái</font></td>
+      <td><input type="checkbox" name="chkStatus" id="chkStatus" value="" <?php if($this->data['TRANGTHAI'] == 1){echo "checked=\"true\"";}?>/>
+      </td>
+  </tr>
+</table>
+<input type=hidden name="ID_TAPHOSO" value=<?php echo $this->id?> >
+</form>
+<script>
+
+function checkFormData(){
+	var str = "Bạn phải nhập tên thư mục văn bản";
+	var strerr = validateInput("required",document.frm.name,str);
+	if(!strerr){
+		document.frm.name.focus();
+		return false;
+	}
+	str="Tên thư mục không được quá 128 ký tự";
+	strerr = validateInput("maxlen=128",document.frm.name,str);
+	if(!strerr){
+		
+		document.frm.name.focus();
+		return false;
+	}
+  
+	return true;
+}
+
+function checkDate()
+{
+    var strDate = document.frm.NGAYTAO.value;
+    if(strDate == "")
+    {
+        document.getElementById('error').innerHTML = "Bạn phải chọn ngày";
+        return false;
+    }else {
+        document.getElementById('error').innerHTML = "";
+        return true;
+    }
+}
+
+function SaveButtonClick(){
+	
+	if(checkFormData() && checkDate())
+		document.frm.submit();
+}
+
+function BackButtonClick(){
+	document.frm.action = '/taphscv/taphscv/list';
+	document.frm.submit();
+}
+
+</script>

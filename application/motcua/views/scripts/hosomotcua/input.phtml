@@ -1,0 +1,140 @@
+<?php  require_once 'Common/FileDinhKem.php';?>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<form enctype="multipart/form-data" name="frmAddMotCua"  method="<?php echo $this->form->getAttrib('method');?>" action="/motcua/motcua/input">
+<fieldset>
+	<div style="text-align:right;width:100%">
+		Trường có dấu <font color="red">*</font> là bắt buộc nhập
+	</div>
+	<div align="center"><span class="box_erro_area"><?php echo $this->error; ?></span></div>
+	<div class="required">
+		<label id="lblTextIput">Trích yếu <font color="red">*</font></label>
+		<?php echo $this->form->getElement('TRICHYEU');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('TRICHYEU'));			
+            ?>
+        </span>
+	</div>
+	<div class="required">
+		<label id="lblTextIput">Loại Hồ sơ<font color="red">*</font></label>
+		<?php echo $this->form->getElement('ID_LOAIHOSO');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_LOAIHOSO'));			
+            ?>
+        </span>
+	</div>
+	<div class="required">
+		<label id="lblTextIput">Mã hồ sơ<font color="red">*</font></label>
+		<?php echo $this->form->getElement('MAHOSO');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('MAHOSO'));			
+            ?>
+        </span>
+	</div>
+    <div class="required">
+		<label id="lblTextIput">Tên tổ chức <font color="red">*</font></label>
+		<?php echo $this->form->getElement('TENTOCHUCCANHAN');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('TENTOCHUCCANHAN'));			
+            ?>
+        </span>
+	</div>
+    <div class="required">
+		<label id="lblTextIput">Email <font color="red">*</font></label>
+		<?php echo $this->form->getElement('EMAIL');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('EMAIL'));			
+            ?>
+        </span>
+	</div>
+	<div class="required">
+		<label id="lblTextIput">Điện thoại <font color="red">*</font></label>
+		<?php echo $this->form->getElement('DIENTHOAI');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('DIENTHOAI'));			
+            ?>
+        </span>
+	</div>
+	<div class="required">
+		<label id="lblTextIput">Địa chỉ <font color="red">*</font></label>
+		<?php echo $this->form->getElement('DIACHI');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('DIACHI'));			
+            ?>
+        </span>
+	</div>
+	<div class="required">
+		<label id="lblTextIput">Nhân vào lúc <font color="red">*</font></label>
+		<?php echo $this->form->getElement('NHAN_LUC');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('NHAN_LUC'));			
+            ?>
+        </span>
+	</div>
+	<div class="required">
+		<label id="lblTextIput">Nhân vào ngày <font color="red">*</font></label>
+		<?php echo $this->form->getElement('NHAN_NGAY');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('NHAN_NGAY'));			
+            ?>
+        </span>
+	</div>
+	<div class="required">
+		<label id="lblTextIput">Lệ phí <font color="red">*</font></label>
+		<?php echo $this->form->getElement('LEPHI');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('LEPHI'));			
+            ?>
+        </span>
+	</div>		
+	<div class="optional">
+		<label for="ID_DEP_PARENT" id="lblTextIput">Chú thích</label>
+		<?php echo $this->form->getElement('CHUTHICH');?>
+        <span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('CHUTHICH'));			
+            ?>
+        </span>
+	</div>
+	<div class="required">
+		<label id="lblTextIput"><u>Chọn người nhận</u></label>
+	</div>	
+	<div class="optional">
+		<?php
+			echo WFEngine::FormSend($this->wf_id_t);		
+		?>
+	</div>
+	<fieldset>
+	<div style="margin-left:26px;"><u>
+	<?php Common_FileDinhKem::InsertFileDinhKem("idFileDinhKem",(($this->id)==null?"0":$this->id),1,$this->year,30); ?>
+	</u>
+	</div>
+	<div id="idFileDinhKem" style="width:400px;margin-left:130px"></div>
+	</fieldset>
+<input type=hidden name="id" value=<?php echo $this->id?>>
+<input type=hidden name="type" value=<?php echo $this->type?>>
+<input type=hidden name="year" value=<?php echo $this->year?>>
+<input type=hidden name="inputSubmit" value=inputSubmit>
+<?php echo $this->form->getElement('ID_HSCV');?>
+</form>
+
+<script>
+	function SaveButtonClick()
+	{
+		document.frmAddMotCua.submit();
+	}
+	function BackButtonClick()
+	{
+		document.frmAddMotCua.action = "/hscv/hscv/list";
+		document.frmAddMotCua.submit();
+	}
+</script>

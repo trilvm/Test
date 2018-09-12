@@ -1,0 +1,28 @@
+<?php
+$array = array();
+QLVBDHCommon::getDirThuMucTapHSCV(&$array, $this->data['ID_THUMUC']);
+?>
+<link rel="stylesheet" href="/styles/system.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/../../../styles/rounded.css" />
+<link rel="stylesheet" type="text/css" href="/../../../styles/general1.css" />
+<link rel="stylesheet" type="text/css" href="/../../../styles/template.css" />
+<table class=adminlist>
+    <tr class=row1>
+        <td nowrap style="color:blue">Tên tập hồ sơ</td>
+        <td width="30%"><?php echo $this->data['TEN'] ?></td>
+        <td nowrap style="color:blue">Tên phòng ban</td>
+        <td nowrap><?=$this->data['TENPHONG'] ?></td>
+    </tr>
+    <tr class=row0>
+        <td nowrap style="color:blue">Người tạo</td>
+        <td nowrap><?=$this->data['FULLNAME'] ?></td>
+        <td nowrap style="color:blue">Thư mục</td>
+        <td nowrap><?=implode(">>", array_reverse($array)) ?></td>
+    </tr>
+    <tr class=row1>
+        <td nowrap style="color:blue">Ngày tạo</td>
+        <td nowrap><?=date("d/m/Y", strtotime($this->data["NGAYTAO"])) ?></td>
+        <td nowrap style="color:blue">Mã số</td>
+        <td nowrap><?= $this->data["KYHIEU_PB"] ?><?= $this->data["CODE"] ?></td>
+    </tr>
+</table>

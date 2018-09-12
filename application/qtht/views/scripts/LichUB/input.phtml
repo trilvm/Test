@@ -1,0 +1,33 @@
+<form name=frm action="/qtht/LichUB/save" method="post" enctype="multipart/form-data">
+<table>
+	<tr>
+		<td><font color="Blue">Tên lịch</font><font color="Red" size="3">*</font></td>
+		<td><input type=text name=NAME size="64" value="<?=htmlspecialchars($this->data->TENLICH)==""?"Lịch công tác UBND tuần ".substr($this->week,4,2)." từ ngày ".$this->begindate. " đến ngày ".$this->enddate:($this->data->TENLICH)?>">
+		</td>
+		<td class="box_erro_area" id=ERRNAME></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">File tài liệu</font></td>
+		<td><input type=file name="uploadedfile" size="64"></td>
+	</tr>
+	
+</table>
+<input type=hidden name=ID_LICHUB value="<?=$this->data->ID_LICHUB?>">
+<input type=hidden name=NGAYLAPLICH value="<?=date("d/m/Y");?>">
+<input type=hidden name=NGUOITAO value="<?=$this->NGUOITAO?>">
+</form>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+		err = err & validateInput("req",document.frm.NAME,"Tên lịch ủy ban không được rỗng.");
+		err = err & err==true?validateInput("maxlen=512",document.frm.NAME,"Tên lịch ủy ban không được quá 512 ký tự"):false;
+		
+		if(err==true){
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+		document.frm.action = "/qtht/LichUB/index";
+		document.frm.submit();
+	}
+</script>

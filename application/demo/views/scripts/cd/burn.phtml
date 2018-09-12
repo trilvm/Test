@@ -1,0 +1,11 @@
+<?php
+
+?>
+<form name=frm action="/demo/cd/burnok" method="POST">
+	Đánh đĩa nhé
+	<?php
+		echo WFEngine::FormSend($this->wf_id_t);		
+	?>
+	<input type=hidden value="<?php echo $this->data->ID_DEMO ?>" name=id>
+	<input type=submit value="Chấp nhận" name=submit>
+</form>

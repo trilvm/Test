@@ -1,0 +1,43 @@
+
+<p>
+ Góp ý của : <font color=red><u><?php echo $this->users->USERNAME ?><?php $this->idhscv;?></u></font></p>
+<p>
+<?php  $message=$this->gopy->NOIDUNG;
+	   
+?>
+<textarea cols="50" <?php echo ($message!=null?"disabled":"") ?> rows="5" name="noidung" id="id_noidung_gopy_<?php echo $this->idhscv ?>"><?php echo $message; ?></textarea>
+</p>
+<?php
+ if($message==null && $this->users->ID_U == $this->currentUser) 
+{?>
+   <input name="add" type="button" value="Th&ecirc;m m&#7899;i" onClick='
+	var aj = new AjaxEngine();
+	aj.loadDivFromUrlAndForm("divAddMessage<?php echo $this->idhscv ?>","/hscv/gopy/index/idhscv/<?php echo $this->idhscv ?>/id_u/<?php echo $this->id_u ?>/id_phoihop/<?php echo $this->id_phoihop ?>",document.frm);
+	'/>
+ <?php
+}
+else 
+{ ?>
+	
+<?php 
+}
+?>
+<input type=hidden name="idhscv" value="<?php echo $this->idhscv;?>">
+<?php
+if($this->data !=null)
+{ ?>
+<p><u>Danh sách các góp ý</u></p>
+<?php
+} ?>
+<?php 
+	$i=0;
+	foreach ($this->data as $item)
+	{
+		$i++;
+?>
+	  
+		<ul>
+<?php echo($i); ?>.
+	    <a href="#" onclick='loadDivFromUrl("divAddMessage<?php echo $this->idhscv ?>","/hscv/gopy/index/id_gopy/<?php echo $item['ID_GOPY']?>/idhscv/<?php echo $this->idhscv ?>/id_u/<?php echo $this->id_u ?>/id_phoihop/<?php echo $this->id_phoihop ?>",1)'><font color="red">Góp ý thứ <?php echo($i); ?></font></a> ( <?php echo (strlen($item['NOIDUNG'])>30?substr($item['NOIDUNG'],0,30):$item['NOIDUNG'])?> )
+	    </ul>
+<?php }?>

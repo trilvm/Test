@@ -1,0 +1,26 @@
+.ui-dialog-buttonpane{
+    background-color:#EEE;
+}
+.ui-dialog{
+    height: 300px;
+    width: 500px;
+    margin:auto;
+    top:200px;
+    display: block;
+    z-index: 101;
+    text-align: center;
+    font-size: 12px;
+}
+.ui-widget-header{
+    background:none;
+    border: none!important;
+    border-bottom: 1px solid #AAA !important;}
+#dialog-confirm{
+    overflow: hidden!important;;
+}
+.ui-dialog-titlebar-close{display:none}
+.ui-dialog-titlebar{
+    background-color:#fff!important;
+    border: none!important;
+    border-bottom: 1px solid #AAA !important;
+}

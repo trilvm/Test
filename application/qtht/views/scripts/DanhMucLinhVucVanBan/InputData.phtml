@@ -1,0 +1,92 @@
+﻿<script type="text/javascript" src="/js/validate.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/json/json_parse.js"></script>
+<form id="containerID" action="/qtht/DanhMucLinhVucVanBan/save" method="post" enctype="multipart/form-data" name="frm" >
+<fieldset>
+	<div style="text-align:right;width:100%">
+		 Trường có dấu <font color="red">*</font> là bắt buộc nhập
+	</div>
+	<div align="center"><span class="box_erro_area"><?php echo $this->error; ?></span></div>
+	<div class="clr"></div>
+	<div class="required">
+	<label id="lblTextIput">Tên lĩnh vực văn bản<font color="red">*</font></label>
+	<input type="text" name="name" maxlength="128" value="<?php echo htmlspecialchars($this->namebefore);?>" class="inputText" size="10" >
+    	     <span class="box_erro_area" id="ERRname"></span>
+	</div>
+	<div class="clr"></div>
+	<div class="required">
+	<label id="lblTextIput">Chọn người tương ứng</label>
+	<?=QLVBDHCommon::writeSelectDepartmentUserWithSel("ID_DEP","ID_U",$this->uq['ID_U'],1)?>	
+	</div>
+	<div class="clr"></div>
+	<div class="required">
+	<label id="lblTextIput">Thuộc lĩnh vực cha</label>
+	 <select name="choiceLVCha" >
+	<option value="1">Không có lĩnh vực cha</option>
+	<?php 
+		//in ra cac gia tri cua combobox
+		$count = count($this->data);		
+		for($i = 0 ; $i<$count  ;$i++){
+			if($this->data[$i]["ID_LVVB"] != $this->id && $this->data[$i]["ID_LVVB_PARENT"] != $this->id)
+			echo '<option value='.$this->data[$i]["ID_LVVB"].'>'.htmlspecialchars(str_repeat("--",$this->data[$i]["LEVEL"]-1).$this->data[$i]["NAME"]). '</option>';
+		}
+	?>   		
+	</select>
+	<script>
+		document.frm.choiceLVCha.value ="<?=$this->ID_LVVB_PARENT?>";
+		
+	</script>
+	</div>
+	<div class="clr"></div>
+	<div class="required">
+	<label id="lblTextIput">Đã được sử dụng</label>
+	 <?php
+            if($this->activeselect == 1){
+                echo '<input type="checkbox" value=1  class="inputCheckbox" name="active" checked=checked>';
+            }
+            else {
+                echo '<input type="checkbox" value=1  class="inputCheckbox" name="active">';
+            }
+        ?>	
+	</div>
+<input type=hidden name="InputidLVVB" value=<?php echo $this->id?> >
+<input type=hidden name="limit" value=<?php echo $this->limit?> >
+<input type=hidden name="filter_object" value=<?php echo $this->filter_object?> >
+<input type=hidden name="search" value=<?php echo $this->search?> >
+<input type=hidden name="page" value=<?php echo $this->page?> >
+</fieldset>
+</form>
+<script>
+
+function checkFormData(){
+	var str = "Bạn phải nhập tên lĩnh vực văn bản";
+	var strerr = validateInput("required",document.frm.name,str);
+	if(!strerr){
+		document.frm.name.focus();
+		return false;
+	}
+	str="Tên lĩnh vực không được quá 128 ký tự";
+	strerr = validateInput("maxlen=128",document.frm.name,str);
+	if(!strerr){
+		
+		document.frm.name.focus();
+		return false;
+	}
+  
+	return true;
+}
+
+function SaveButtonClick(){
+	
+	//window.showModalDialog( '/DialogTemplate/QueryDialog.html',document);
+	if(checkFormData())
+		document.frm.submit();
+}
+
+function BackButtonClick(){
+	document.frm.action = '/qtht/danhmuclinhvucvanban/index';
+	document.frm.submit();
+}
+
+</script>

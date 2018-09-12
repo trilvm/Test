@@ -1,0 +1,625 @@
+<?php 
+
+if($this->saoy==1)
+{ 
+?>
+<div class="toolbar_list" style="margin-top: 40px;">
+    <ul>
+        <li style="margin-right: 420px" >
+            <div style="margin-top: -4px;">
+          <img src="/images/icon/icon-PrintButton.png" border="0" hspace="5" /></div>
+            <div style="margin: -20px 0 0 35px">  
+                <a href="#" onclick="document.frm.action = '/vbden/Inphieuxuly/invbsaoy';document.frm.submit();">
+                <?php  echo "In danh sach văn bản sao y "; ?>						
+                </a>
+              <div>
+        </li>
+        
+        
+    </ul>  
+</div>
+<?php
+}
+?>
+<?php
+	require_once 'Common/FileDinhKem.php';
+	require_once('auth/models/ResourceUserModel.php');
+	$disable="/isreadonly/1";
+?>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse_state.js"?>></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<script type="text/javascript" src="/js/realitysearch.js"></script>
+<form name=frm method=post action='/vbden/vbden/list' onclick="
+if(at_container){ at_Hide(false);}" onsubmit="document.frm.page.value = 1;document.frm.action = '/vbden/vbden/list';return true;">
+<div>
+    <table>
+        <tr>
+            <td nowrap="nowrap">Sổ văn bản</td>
+            <td nowrap="nowrap">
+				<select name="ID_SVB" id="ID_SVB" class="inputbox" size="1" onchange="document.frm.submit();">
+            	<?php 
+            		echo vbdenModel::WriteSVBBox((int)$this->ID_SVB,"-- Chọn tất cả  --", true,2);
+            	?> 
+        		</select>
+			</td>
+            <td nowrap="nowrap">Loại văn bản</td>
+            <td nowrap="nowrap">
+                <select name="ID_LVB" id="ID_LVB" class="inputbox" size="1" onchange="document.frm.submit();">
+                    <?php
+                    echo vbdenModel::WriteLVB((int) $this->ID_LVB, "-- Chọn tất cả  --");
+                    ?> 
+                </select>
+            </td>
+        
+       <!--     <td nowrap="nowrap">
+              <img src="/images/icon/icon-PrintButton.png" border="0" hspace="5" >
+                <a href="#" onclick="document.frm.action = '/vbden/Inphieuxuly/invbsaoy';document.frm.submit();">
+                <? echo "In danh sach văn bản sao y"; ?>						
+                </a>
+            </td> -->
+       
+        </tr>
+        
+        <tr>
+            <td nowrap="nowrap" valign=top>Nội dung trích yếu</td>
+            <td nowrap="nowrap" colspan="3">
+                <input type=text onchange="setRealityKeyword(this.value);" class=inputbox name=TRICHYEU value='<?= htmlspecialchars($this->TRICHYEU) ?>' style="width: 474px;">
+                <input name=TRICHYEU_ISLIKE value=1 type=checkbox <?=$this->TRICHYEU_ISLIKE==1?"checked":""?> > Tìm gần đúng<br>
+                <input type="hidden" value="" name="REALITYKEYWORD">
+                <input type="checkbox" name=INNAME value=1 checked style="display:none"><!--Trong trích yếu-->
+                <input type="checkbox" name=INFILE value=1 style="display:none"><!--Trong nội dung văn bản-->
+            </td>
+            <td width="100%"></td>
+        </tr>    
+                    
+        <tr>
+            <td nowrap="nowrap">Số đến</td>
+            <td nowrap="nowrap">
+                <input type=text class=inputbox name=SODEN value="<?= $this->SODEN ?>" style="width: 198px;"/>				
+            </td>             
+            <td nowrap="nowrap" colspan="2">
+                <input name=SODEN_ISLIKE value=1 type=checkbox <?= $this->SODEN_ISLIKE == 1 ? "checked" : "" ?> > Tìm gần đúng
+            </td>                            
+        </tr>
+        <tr>
+            <td nowrap="nowrap">Số, ký hiệu VB</td>
+            <td nowrap="nowrap">
+                <input type=text class=inputbox name=SOKYHIEU value="<?= $this->SOKYHIEU ?>" style="width: 198px;"/>
+            </td>             
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap" ></td>
+                            
+        </tr>
+		</tr>
+                <tr>
+                    <td nowrap="nowrap">Người tham gia xử lý</td>
+                    <td nowrap="nowrap" colspan="3">
+					<?php
+						echo QLVBDHCommon::AutoComplete(
+							UsersModel::getAllNameAndId(1),
+							"ID_U",
+							"NAME",
+							"NGUOIXULY",
+							"NGUOIXULY_TEXT",
+							true,
+							"width:200px",
+							"",
+							$this->NGUOIXULY,
+							'');
+					?>
+					</td>
+					<td></td>
+		</tr>
+
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td>                
+                <input type=checkbox onclick="doAdvance();">Tìm kiếm nâng cao
+            </td>
+            <td></td>
+        </tr>
+        <tr id=FindAdvanced2>
+            <td nowrap="nowrap">Ngày đến</td>
+            <td nowrap="nowrap" colspan="3">
+                <?= QLVBDHCommon::calendar($this->NGAYDEN_BD, "NGAYDEN_BD", "NGAYDEN_BD") ?>
+                <span style="font-weight:bold;padding-left:10px;"> >> </span>
+                <?= QLVBDHCommon::calendar($this->NGAYDEN_KT, "NGAYDEN_KT", "NGAYDEN_KT") ?>
+            </td>
+            <td width="100%"></td>
+        </tr>
+        <tr id=FindAdvanced3>
+            <td nowrap="nowrap">Ngày ban hành</td>
+            <td nowrap="nowrap" colspan="3">
+                <?= QLVBDHCommon::calendar($this->NGAYBANHANH_BD, "NGAYBANHANH_BD", "NGAYBANHANH_BD") ?>
+                <span style="font-weight:bold;padding-left:10px;"> >> </span>
+                <?= QLVBDHCommon::calendar($this->NGAYBANHANH_KT, "NGAYBANHANH_KT", "NGAYBANHANH_KT") ?>
+            </td>
+            <td width="100%"></td>
+        </tr>
+        <tr id=FindAdvanced4>
+            <td nowrap="nowrap">Cơ quan</td>
+            <td nowrap="nowrap">
+                <?php
+                echo QLVBDHCommon::AutoComplete(
+                        vbdenModel::GetDataCQ((int) $this->ID_CQ), "ID_CQ", "NAME", "ID_CQ", "COQUANBANHANH_TEXT", false, "width:200px", "", (int) $this->ID_CQ, '');
+                ?>
+            </td>
+            <td width="10" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td width="100%"></td>
+        </tr>
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap">
+                <input type=hidden name=advanced>
+                <input type=submit value="Tìm kiếm">
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="5"><input type="checkbox" name="IS_PHOBIEN" value="1" 
+                <?= $this->IS_PHOBIEN > 0 ? "checked" : "" ?>
+                                   onclick="document.frm.submit();"> 
+                <b><i>Xem danh sách văn bản phổ biến</i></b>
+            </td>
+            
+        </tr>  
+        
+                <input type=hidden name=ADVANCEDVALUE value="<?= $this->ADVANCED ?>">
+            </td>
+            <td width="10" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td width="100%"></td>
+        </tr>
+    </table>
+</div>
+
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th colspan="4">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/vbden/vbden/list';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+		<tr>
+			<th nowrap="nowrap">
+				#
+			</th>
+			<th width="100%">
+				Sắp xếp theo 
+				<select name=SORTBY onchange="document.frm.submit();">
+					
+					<option value="NGAYDEN" <?=($this->SORTBY?"":"selected")?> >Ngày đến</option>
+				</select>
+				<script>
+					document.frm.SORTBY.value="<?=$this->SORTBY?>";
+					
+				</script>
+				<?php
+					if( $this->SORTBY != "DA_XEM" ){
+				?>
+				
+				<select name=SORTTYPE onchange="document.frm.submit();">
+					<option value="ASC">Tăng dần</option>
+					<option value="DESC" >Giảm dần</option>
+				</select>
+				<input type=checkbox name=CHUA_DOC value=1 <?=$this->CHUA_DOC==1?"checked":""?> onclick="document.frm.submit();" > Chưa đọc
+				<script>
+					document.frm.SORTTYPE.value="<?=$this->SORTTYPE?>";
+				</script>
+				<?php } ?>
+				
+				
+			</th>
+			<th nowrap="nowrap">
+				&nbsp;
+			</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="3">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/vbden/vbden/list';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+	if(count($this->data)<=0){
+		echo "<tr><td colspan='4'>Không tìm thấy hồ sơ công việc nào</td></tr>";
+	}else{
+	$stt=($this->page-1)*$this->limit;
+	$i=0;
+        //echo '<pre>';
+        //print_r($this->data);exit;
+	foreach($this->data as $row){
+		//var_dump($row);
+                //$info =WFEngine::GetCurrentTransitionInfoByIdHscv($row['ID_HSCV']);
+		$stt++;
+		if((int)$this->TRICHYEU_ISLIKE ==1){
+			$row['TRICHYEU'] = $this->INNAME==1?QLVBDHCommon::highlightWords($row['TRICHYEU'],$this->TRICHYEU):$row['TRICHYEU'];
+		}else{
+			$row['TRICHYEU'] = $this->INNAME==1?QLVBDHCommon::highlightText($row['TRICHYEU'],$this->TRICHYEU):$row['TRICHYEU'];
+		}
+?>
+		<tr class="row<?=$this->ID_VBD==$row['ID_VBD']?"2":$i?>">
+			<td valign="top"><a name="vbden<?=$row['ID_VBD']?>"></a><?=$stt?></td>
+			<td valign="top"><?php
+				$vbdeninfo = $this->vbden->find($row["ID_VBD"])->current();
+				$COQUANBANHANH_TEXT = explode("/",$vbdeninfo->COQUANBANHANH_TEXT,2);
+				if(count($COQUANBANHANH_TEXT)==2){
+					$COQUANBANHANH_TEXT = $COQUANBANHANH_TEXT[1];
+				}else{
+					$COQUANBANHANH_TEXT = $COQUANBANHANH_TEXT[0];
+				}
+                               
+                                $is_cv = $row['IS_CONGVIEC'] == 1 ? 'Văn bản giao nhiệm vụ' : '';
+				echo "<b>".$vbdeninfo->SOKYHIEU." - ".QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYBANHANH)." - ".$COQUANBANHANH_TEXT."</b>&nbsp;&nbsp;<b><i><font style='color:red;'>".$is_cv."</font></i></b>";
+				if($vbdeninfo->NGAYHETHAN!="" && $vbdeninfo->HANXULYTOANBO>0 && $vbdeninfo->IS_FINISH==0){
+					echo QLVBDHCommon::trehantostr(QLVBDHCommon::countdateswitch(strtotime($row["NGAYHETHAN"]),null));
+				}else if($row["IS_FINISH"]==1){
+					if($vbdeninfo->TRE>0){
+						echo "<font color=red> <i>(Đã xử lý xong - Trễ hạn)</i></font>";
+					}else if($vbdeninfo->TRE==0){
+						echo "<font color=blue> <i>(Đã xử lý xong - Đúng hạn)</i></font>";
+					}else{
+						echo "<font color=blue> <i>(Đã xử lý xong - Sớm hạn)</i></font>";
+					}
+                                }else{
+                                    echo "<font color=red> <i>(Chưa xử lý)</i></font>";
+                                }
+				?>
+				
+				<?php
+				echo "<br>";
+				?>
+				<?=$row['TRICHYEU']?>
+				<?php
+					if($this->INFILE==1){
+						$dt = PhienBanDuThaoModel::getFileContentFromVBD($row['ID_VBD']);
+						foreach($dt as $itemdt){
+							$rfind = QLVBDHCommon::highlightString($itemdt['CONTENT'],$this->TRICHYEU);
+							if($rfind!=""){
+				?>
+				<br><a href="/hscv/File/download?year=&maso=<?=$itemdt['MASO']?>"><B><?=$itemdt['FILENAME']?>:</B> <?=$rfind?></a>
+				<?php 
+							}
+						}
+					}
+				?>
+				<?php //if(isset()){
+					//$key = array_search($row["ID_VBD"],$this->arr_idnews);
+					
+					if(!$row['DA_XEM']){
+						echo "
+						<img id='image_new_".$row['ID_VBD']. "' src='/images/moi.gif'>
+						";
+					}
+					$id_url = "/id/".$row["ID_HSCV"];
+					$isidvbden = "/isidvbden=0";
+					//if($row["IS_KHONGXULY"] || QLVBDHCommon::getYear()==2008){
+						$id_url = "/id/".$row["ID_VBD"];
+						$isidvbden = "/isidvbden/1";
+					//}
+				?>
+				<div>
+					<ul class="chitiethscv">					
+						<li id=groupicon1_<?=$row["ID_VBD"]?>>
+							<img src="/images/icon_chitiet.jpg" border="0" hspace="5" >
+							<a href='javascript:
+					{	SwapDiv(<?=$row["ID_VBD"]?>,"/vbden/vbden/detail/type/1<?=$id_url?><?=$isidvbden?>/year/<?=$this->realyear?><?=$disable?>",1);  
+						updateImageNew(<?php echo '"image_new_'.$row["ID_VBD"].'"'?>,<?=$row["ID_VBD"]?>);
+					}
+					'>Chi tiết</a>
+						</li>						
+					<?php if(!$row["IS_KHONGXULY"]){?>
+					<li id=groupicon2_<?=$row["ID_VBD"]?>>
+						<img src="/images/icon_butphe.jpg" border="0" hspace="5" >
+						<a href='javascript:{SwapDiv(<?=$row["ID_VBD"]?>,"/hscv/hscv/viewbutphe/id/<?=$row["ID_HSCV"]?>/id_vbd/<?=$row["ID_VBD"]?>/year/<?=$this->realyear?><?=$disable?>",2); updateImageNew(<?php echo '"image_new_'.$row["ID_VBD"].'"'?>,<?=$row["ID_VBD"]?>);}'>Bút phê</a>
+					</li>
+					
+					<?php /*
+					<li id=groupicon4_<?=$row["ID_VBD"]?>>
+						<img src="/images/icon_files.jpg" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/file/index/iddiv/groupcontent<?=$row["ID_HSCV"]?>/idObject/<?=$row["ID_VBD"]?>/is_new/0/year/<?=$this->realyear?>/type/3<?=$disable?>",4)'>File đính kèm</a>
+					</li>
+					*/?>
+					<?php }?>
+					<li id=groupicon6_<?=$row["ID_VBD"]?>>
+						<img src="/images/icon_luanchuyen.jpg" border="0" hspace="5" >
+						<a href='javascript:{ SwapDiv(<?=$row["ID_VBD"]?>,"/vbden/vbden/way/id_vbd/<?=$row["ID_VBD"]?>/id/<?=$row["ARR_HSCV"]?>/year/<?=$this->realyear?>/type/1/code/vbd",6);updateImageNew(<?php echo '"image_new_'.$row["ID_VBD"].'"'?>,<?=$row["ID_VBD"]?>);}'>Luân chuyển</a>
+					</li>
+					<?php
+					if(vbdenModel::CheckExistsVBDi($row["ID_VBD"])>0){		
+					?>
+					<li id=groupicon7_<?=$row["ID_VBD"]?>>
+						<img src="/images/icon_vbden.jpg" border="0" hspace="5" >
+						<a href='javascript:{SwapDiv(<?=$row["ID_VBD"]?>,"/vbden/vbden/vbdilienquan/id_vbd/<?=$row["ID_VBD"]?>/id/<?=$row["ARR_HSCV"]?>/year/<?=$this->realyear?>/type/1/code/vbd",6);updateImageNew(<?php echo '"image_new_'.$row["ID_VBD"].'"'?>,<?=$row["ID_VBD"]?>);}'>Văn bản đi</a>
+					</li>
+                                         <li id=groupicon3_<?=$row["ID_HSCV"]?>>
+						
+                                              
+					</li>
+					<?php
+					}	
+					?>
+					<li>
+						<?php echo $row["IS_KHONGXULY"]==0?"":"<font color='blue' ><b>(Văn bản không chuyển xử lý) </b></font>" ?>
+					</li>
+					</ul>
+					
+					<div class="clr"></div>
+					<div class="groupcontent" id="groupcontent<?=$row["ID_VBD"]?>" style="display:none; border: 1px solid #ccc"></div>
+				</div>
+				
+			</td>
+			<td nowrap="nowrap" valign="top">
+                        <a href="#" onclick="{SwapIframe(<?=$row["ID_VBD"]?>,'/taphscv/taphscv/listforadd/idobject/<?=$row["ID_VBD"]?>/loai/1');return false;
+                    }">
+                            Thêm vào HSCV điện tử<br>
+                        </a>	
+			<?php 
+			
+			$actionid = ResourceUserModel::getActionByUrl('vbden','vbden','inputvbden');
+			$auth = Zend_Registry::get('auth');
+			if($ln = ResourceUserModel::isAcionAlowed($auth->getIdentity()->USERNAME,$actionid[0]) && vbdenModel::CanEdit($row['ID_VBD'])){
+			?>
+
+			<a href="/vbden/vbden/inputvbden?id_vbd=<?php echo $row['ID_VBD']?>">Cập nhật</a>
+			<?php 
+				if($row['IS_KHONGXULY'] == 1){ 
+			?>
+					<br>
+					<a href="/vbden/vbden/delete?id=<?php echo $row['ID_VBD']?>">Xóa</a>
+			<?php 
+				}else{
+					if($this->config->hscv->vtbp==1){
+			?>
+			<br>
+					<a href="#" onclick="SwapIframe(<?=$row["ID_VBD"]?>,'/vbden/vbden/chuyenxllaivtbp/id/<?=$row["ID_VBD"]?>');return false;">Chuyển xử lý</a>
+			<?php
+						$arr_id = array();
+						$candisplaychuyengium=true;
+						$arrhscv = vbdenModel::GetAllHSCV($row["ID_VBD"]);
+						foreach($arrhscv as $itemhscv){
+							$arr_id[] = $itemhscv['ID_HSCV'];
+						}
+					//nếu số lượng > 1 thì thông báo
+					if(count($arr_id)!=1){
+						$candisplaychuyengium=false;
+					}
+					$currenttrans = WFEngine::GetCurrentTransitionInfoByIdHscv($arr_id[0]);
+					$next_trs = WFEngine::GetAllNextTransitionsByTransition($currenttrans["ID_T"]);
+					$canexecute = false;
+					foreach($next_trs as $xltransitem){
+						if($xltransitem["ALIAS"]=="BUTPHE" && $xltransitem["ID_A_BEGIN"] == $xltransitem["ID_A_END"]){
+							$canexecute=true;
+						}
+					}
+					if($candisplaychuyengium && $canexecute){
+			?>
+					<br>
+					<a href="#" onclick="SwapIframe(<?=$row["ID_VBD"]?>,'/vbden/vbden/inputchuyenxulylanhdao/id/<?=$row["ID_VBD"]?>');return false;">Chuyển giúp lãnh đạo</a>
+			<?php 
+					}
+					}
+				}
+			?>
+			<br>
+			<a href="/vbdi/banhanh/input/saoy/1/idvbd/<?=$row["ID_VBD"]?>">Sao y</a>
+			</td>
+
+			<?php 
+			}else{
+			?>
+			
+			<?php }?>
+		</tr>
+<?php
+		$i = (-1+$i)*-1;	
+	}
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<script>
+    function setRealityKeyword(keyword){
+        var newKeyword = realitysearch.getKeyword(keyword)
+        document.frm.REALITYKEYWORD.value = newKeyword;
+    }
+        function VbdCoquanButtonClick(){
+            document.frm.action = '/vbden/vbden/listall';
+            document.frm.submit();
+        }
+        function inbiennhan(){
+            document.frm.action = '/vbden/inbiennhanvb/inbiennhan';
+            document.frm.submit();
+        }
+        function inphieuchuyen(){
+            document.frm.action = '/vbden/inbiennhanvb/inphieuchuyen';
+            document.frm.submit();
+        }
+	function CreateButtonClick(url){
+		document.frm.action = url;
+		document.frm.submit();
+	}
+	function SwapDiv(id,url,tab){
+            
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		if(document.getElementById("groupcontent"+id).style.display==""){
+			document.getElementById("groupcontent"+id).style.display="none";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+
+		}
+	}
+	function SwapIframe(id,url){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+					document.getElementById("groupcontent"+id).style.display="none";
+					document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+					break;
+				}
+			}
+		}
+		if(document.getElementById('groupcontent'+id).style.display == ''){
+			document.getElementById('groupcontent'+id).style.display = 'none';
+		}else{
+			document.getElementById('groupcontent'+id).innerHTML = '<iframe style="overflow-x:visible;" height="300px" width="100%" id=iframebutphe'+id+' allowTransparency=true BORDER=0 scrolling=yes FRAMEBORDER=no src="'+url+'"></iframe>';
+			document.getElementById('groupcontent'+id).style.display = '';
+		}
+	}
+	function Swap(id,url){
+		if(document.getElementById(id).style.display==""){
+			document.getElementById(id).style.display="none";
+			document.getElementById("groupicon"+id).className = "groupicon";
+		}else{
+			document.getElementById(id).style.display="";
+			document.getElementById("groupicon"+id).className = "groupiconopen";
+			loadDivFromUrl(id,url,1);
+		}
+	}	
+	// Sự kiện khi thay đổi text box cơ quan
+    function CQClick(){
+       if(document.frm.ID_CQ.value==0){
+    	   document.getElementById('COQUANBANHANH_TEXT').style.display="block";
+    	   document.frm.COQUANBANHANH_TEXT.value="<?php echo (!isset($this->data->COQUANBANHANH_TEXT) || $this->data->COQUANBANHANH_TEXT=='')?MSG11001017:$this->data->COQUANBANHANH_TEXT ?>"; 
+       }
+       else{
+    	   document.getElementById('COQUANBANHANH_TEXT').style.display="none";    	   
+       }
+    }
+    //
+    //CQClick();
+    function updateImageNew(iddiv,id){
+    	var oimg = document.getElementById(iddiv);
+    	if(oimg != null){
+    		if(oimg.style.display != 'none'){
+	    	oimg.style.display = 'none';
+	    	
+	    	var AE = new AjaxEngine();
+			var oXmlHttp = AE.createXMLHttp(); 	
+		    <?php 
+		    $authen = Zend_Registry::get('auth');
+		    $user = $authen->getIdentity();
+		    ?>
+			var url = '/vbden/vbden/updatedadoc?year=<?=QLVBDHCommon::getYear()?>&id_vbd='+id+'&id_u=<?=$user->ID_U?>';
+			oXmlHttp.open('post', url , true);
+		    oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		    oXmlHttp.onreadystatechange = function () { 
+		        if (oXmlHttp.readyState == 4) { 
+		        	if (oXmlHttp.status == 200) {             	
+		            	//alert(oXmlHttp.responseText);
+		        	} else { 
+		            	
+		            }            
+		        } 
+		    };  
+		    oXmlHttp.send(null);   
+    		}
+    	}
+	    
+    }
+
+	function chonsapxep(){
+		if(document.frm.SORTBY.value == "DAXEM")
+			document.frm.SORTTYPE.style.display = 'none';
+		else 
+			document.frm.SORTTYPE.style.display = '';
+	}
+	function doAdvance(){
+		for(var i=1;i<10;i++){
+			if(document.getElementById("FindAdvanced"+i)){
+				if(document.getElementById("FindAdvanced"+i).style.display==""){
+					document.getElementById("FindAdvanced"+i).style.display="none";
+					document.frm.advanced.value="Nâng cao";
+					document.frm.ADVANCEDVALUE.value=0;
+
+				}else{
+					document.getElementById("FindAdvanced"+i).style.display="";
+					document.frm.advanced.value="Cơ bản";
+					document.frm.ADVANCEDVALUE.value=1;
+				}
+			}
+		}
+	}
+        function invbsaoy(){
+		document.frm.action = '/vbden/Inphieuxuly/inphieu';
+                document.frm.submit();
+	}
+	<?php
+		if($this->ADVANCED==0){
+			echo "doAdvance();";
+		}
+	?>
+</script>
+<?php
+$end = (float) array_sum(explode(' ',microtime())); 
+ 
+//echo "Processing time: ". sprintf("%.4f", ($end-$this->start))." seconds"
+?>

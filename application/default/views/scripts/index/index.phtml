@@ -1,0 +1,1131 @@
+<?php
+	require_once 'qlcuochop/models/quanlycuochopModel.php';
+        require_once 'default/models/kiemTraNhanVienModel.php';
+		require_once("auth/models/ResourceUserModel.php");
+?>
+<div class="home-table">
+<table width=100% cellpadding="0" cellspacing="0" style="padding:5px;">
+<tr>
+	<td width=70% valign=top>
+		<div class="home-module">
+			<?php
+				$hscv = $this->hscv->SelectAll(array("ID_THUMUC"=>1,"OBJECT"=>"VBD","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP),0,3,"");
+				$counthscv = $this->hscv->count(array("ID_THUMUC"=>1,"OBJECT"=>"VBD","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP));
+				$counttre = $this->hscv->CountTre(array("ID_THUMUC"=>1,"OBJECT"=>"VBD","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP));
+				$stt=0;
+				$this->vbden = new vbdenModel();
+			?>
+			<div class="home-module-title" style="cursor:hand;cursor:pointer;"><a onclick="
+				document.getElementById('xulyvanbanden').style.display='';
+				document.getElementById('vanbanden').style.display='none';
+                                document.getElementById('nhiemvugiao').style.display='';
+				document.getElementById('trexulyvanbanden').style.fontWeight='bold';
+				document.getElementById('trevanbanden').style.fontWeight='normal';
+                                document.getElementById('trenhiemvugiao').style.fontWeight='normal';
+			" style="color:black;"><span id=trexulyvanbanden style="float:left;width:200px"></span></a><a onclick="
+				document.getElementById('vanbanden').style.display='';
+				document.getElementById('xulyvanbanden').style.display='none';
+                                document.getElementById('nhiemvugiao').style.display='';
+				document.getElementById('trevanbanden').style.fontWeight='bold';
+				document.getElementById('trexulyvanbanden').style.fontWeight='normal';
+                                document.getElementById('trenhiemvugiao').style.fontWeight='normal';
+			" style="color:black;"><span id=trevanbanden style="float:left;width:120px;font-weight:normal;">Văn bản đến <?php echo $this->count_cdb_vbden>0?"(<font color=red>".$this->count_cdb_vbden."</font>)":" (0)"; ?></font></span></a>
+                        <a onclick="
+				document.getElementById('vanbanden').style.display='none';
+				document.getElementById('xulyvanbanden').style.display='none';
+                                document.getElementById('nhiemvugiao').style.display='';
+				document.getElementById('trevanbanden').style.fontWeight='normal';
+				document.getElementById('trexulyvanbanden').style.fontWeight='normal';
+                                document.getElementById('trenhiemvugiao').style.fontWeight='bold';
+			" style="color:black;"><span id=trenhiemvugiao style="float:left;width:120px;font-weight:normal;">Nhiệm vụ <?php echo $this->count_nhiemvu>0?"(<font color=red>".$this->count_nhiemvu."</font>)":" (0)"; ?></font></span></a>
+                        <a class=chitiet onclick="
+			if(document.getElementById('xulyvanbanden').style.display==''){
+				document.location.href='/hscv/hscv/list/OBJECT/VBD';
+			}else{
+				document.location.href='/vbden/vbden/list';
+			}
+			">Chi tiết</a></div>
+			<div id=xulyvanbanden>
+			<?php
+			if(count($hscv)>0){
+			?>			
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<th width="45%">Nội dung</th>
+					<th width="14%">Ngày gửi</th>
+					<th width="27%">Người gửi</th>
+					<th width="25%">Hạn xử lý</th>
+				</tr>
+			<?php
+				foreach ($hscv as $row){
+					$stt++;
+					$info =WFEngine::GetCurrentTransitionInfoByIdHscv($row['ID_HSCV']);
+					$vbden = $this->vbden->findByHscv($row['ID_HSCV']);
+					$vbdeninfo = $this->vbden->find($vbden["ID_VBD"])->current();
+					//detect du thao and phieutrinh
+					$hasDuThaoOrPhieuTrinh = $this->hscv->detectHasDuThaoOrPhieuTrinh($row['ID_HSCV']);
+			?>
+				<tr>
+					<td align="left"><a href="/hscv/hscv/list/<?=($hasDuThaoOrPhieuTrinh>0?"duthao/1/":"")?>idhscv/<?=$row['ID_HSCV']?>#hscv<?=$row['ID_HSCV']?>"><?=$row['NAME']?> (<font color=red><i><?=$info['AC_NAME']?></i></font>)&nbsp;&nbsp;<b><i><font style='color:red;'><?php echo ($vbdeninfo->IS_CONGVIEC == 1 ? 'Văn bản giao nhiệm vụ' : '')?></font></i></b></a></td>
+					<td align="center" nowrap><?=QLVBDHCommon::MysqlDateToVnDate($info['DATESEND'])?></td>
+					<td align="left" nowrap><?=$info['EMPNCNAME']?></td>
+					<td align="center" nowrap>
+					<?php 
+					echo $info["TRE"]>0?QLVBDHCommon::trehantostr($info["TRE"],$info["DATESEND"],$info["HANXULY"]):"";
+						if($info["HANXULY"]> 0) { 
+							if($info["TRE"]=="" && $info["HANXULY"]>0){
+								$tre=QLVBDHCommon::getTreHan($info["DATESEND"],$info["HANXULY"]);
+								echo QLVBDHCommon::trehantostr($tre,$info["DATESEND"],$info["HANXULY"]);
+						}
+					}
+					/*
+							if($vbdeninfo->NGAYHETHAN!="" && $vbdeninfo->HANXULYTOANBO>0 && $vbdeninfo->IS_FINISH==0){
+								echo QLVBDHCommon::trehantostr(QLVBDHCommon::countdateswitch(strtotime($vbdeninfo->NGAYHETHAN),null));
+							}else if($vbdeninfo->IS_FINISH==1){
+								if($vbdeninfo->TRE>0){
+									echo "<font color=red> <i>Đã xử lý xong - Trễ hạn</i></font>";
+								}else if($vbdeninfo->TRE==0){
+									echo "<font color=blue> <i>Đã xử lý xong - Đúng hạn</i></font>";
+								}else{
+									echo "<font color=blue> <i>Đã xử lý xong - Sớm hạn</i></font>";
+								}
+							}else{
+								echo QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYHETHAN);
+							}
+							*/
+						?>
+					 </td>
+				</tr>
+				<?php
+				}			 
+				?>
+			</table>
+			<script>
+				document.getElementById("trexulyvanbanden").innerHTML="Xử lý văn bản đến <?php echo $counthscv > 0?" (<font color=red>".$counthscv."</font>)":" (0)"; ?><?php if((int)$counttre>0){?> - <font class='red'>Trễ (<?=(int)$counttre?>)</font><?php } ?>";
+			</script>		
+			<?php 
+			}else{
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+			<tr><td style="text-align:left;">Không có văn bản đến để xử lý</td></tr>
+			</table>
+			<script>
+				document.getElementById("trexulyvanbanden").innerHTML="Xử lý văn bản đến (0)</font>";
+			</script>	
+			<?php
+			}
+			?>
+			</div>
+			<div id=vanbanden style="display:none;">
+			<?php
+				if(count($this->cdb_vbden)>0){
+			?>			
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<th nowrap>Số ký hiệu</th>
+					<th width="100%">Trích yếu</th>
+					<th nowrap>Ngày ban hành</th>
+					<th nowrap></th>
+				</tr>
+				<?php
+				foreach ($this->cdb_vbden as $vbden_item){
+				?>
+				<tr>
+					<td align="left" nowrap><a href=
+							"/vbden/vbden/list/CHUA_DOC/1/ID_VBD/<?=$vbden_item['ID_VBD']?>#vbden<?=$vbden_item['ID_VBD']?>"><?=$vbden_item["SOKYHIEU"]?></a></td>
+					<td align="left" width="100%"><a href=
+							"/vbden/vbden/list/CHUA_DOC/1/ID_VBD/<?=$vbden_item['ID_VBD']?>#vbden<?=$vbden_item['ID_VBD']?>"><?=htmlspecialchars($vbden_item["TRICHYEU"])?></a></td>
+					<td align="left" nowrap><?=QLVBDHCOMMON::MysqlDateToVnDate($vbden_item["NGAYBANHANH"])?></td>
+					<td align="left" nowrap><a href="#" onclick="loadDivFromUrl('vanbanden','/vbden/vbden/updatedadoc?year=<?=QLVBDHCommon::getYear()?>&id_vbd=<?=$vbden_item['ID_VBD']?>&id_u=<?=$this->user->ID_U?>&reload=1',1); return false;">Đã xem</a></td>
+				</tr>
+				<?php
+				}	
+				?>
+			</table>
+			<?php 
+			}else{
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+			<tr><td style="text-align:left">Không có văn bản đến mới</td></tr>
+			</table>
+			<?php
+			}
+			?>
+			</div>
+                        <div id=nhiemvugiao style="display:none;">
+                            <?php
+                                    if(count($this->nhiemvu)>0){
+                            ?>			
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+                                    <tr>
+                                            <th nowrap>Tên nhiệm vụ</th>
+                                            <th nowrap>Đơn vị giao</th>
+                                            <th nowrap>Ngày giao</th>
+                                    </tr>
+                                    <?php
+                                    foreach ($this->nhiemvu as $nhiemvu){
+                                    ?>
+                                    <tr>
+                                            <td align="left" nowrap><a href="/giaoviec/index/index"><?=$nhiemvu->TENCONGVIEC?></a></td>
+                                            <td align="left" nowrap><?=$nhiemvu->DONVIGIAO?></a></td>
+                                            <td align="left" width='15%'><?=$nhiemvu->NGAYGIAO?></td>
+                                    </tr>
+                                    <?php
+                                    }	
+                                    ?>
+                            </table>
+                            <?php 
+                            }else{
+                            ?>
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+                            <tr><td style="text-align:left">Không có nhiệm vụ mới</td></tr>
+                            </table>
+                            <?php
+                            }
+                            ?>
+                            </div>
+		</div>
+		<div class="home-module">
+			<?php
+				$hscv = $this->hscv->SelectAll(array("ID_THUMUC"=>1,"OBJECT"=>"VBSOANTHAO","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP),0,3,"");
+				$counthscv = $this->hscv->count(array("ID_THUMUC"=>1,"OBJECT"=>"VBSOANTHAO","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP));
+				$counttre = $this->hscv->CountTre(array("ID_THUMUC"=>1,"OBJECT"=>"VBSOANTHAO","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP)); 
+
+				$stt=0;
+                                
+			?>
+			<div class="home-module-title"><span id=trehanxulycongviec>Xử lý công việc <?php echo count($hscv) > 0?" (<font color=red>".count($hscv)."</font>)":" (0)"; ?> - <font class="red">Trễ (0)</font></span><a class=chitiet href="/hscv/hscv/list/OBJECT/VBSOANTHAO">Chi tiết</a></div>
+			<?php
+                        
+				if(count($hscv)>0){  
+				//$counttre=0;
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<th width="45%">Nội dung</th>
+					<th width="14%">Ngày gửi</th>
+					<th width="27%">Người gửi</th>
+					<th width="25%">Hạn xử lý</th>
+				</tr>
+				<?php
+				foreach ($hscv as $row){
+					$stt++;
+					$info =WFEngine::GetCurrentTransitionInfoByIdHscv($row['ID_HSCV']);
+					$vbden = $this->vbden->findByHscv($row['ID_HSCV']);
+					$vbdeninfo = $this->vbden->find($vbden["ID_VBD"])->current();
+				?>
+				<tr>
+					<td align="left"><a href="/hscv/hscv/list/idhscv/<?=$row['ID_HSCV']?>#hscv<?=$row['ID_HSCV']?>"><?=$row['NAME']?> (<font color=red><i><?=$info['AC_NAME']?></i></font>)&nbsp;&nbsp;<b><i><font style='color:red;'><?php echo ($vbdeninfo->IS_CONGVIEC == 1 ? 'Văn bản giao nhiệm vụ' : '')?></font></i></b></a></td>
+					<td align="center" nowrap><?=QLVBDHCommon::MysqlDateToVnDate($info['DATESEND'])?></td>
+					<td align="left" nowrap><?=$info['EMPNCNAME']?></td>
+					<td align="left" nowrap>
+						<?=$info["TRE"]>0?QLVBDHCommon::trehantostr($info["TRE"],$info["DATESEND"],$info["HANXULY"]):""?>
+						<?php if($info["HANXULY"]> 0) { ?>
+						<?php 
+							 if($info["TRE"]=="" && $info["HANXULY"]>0){
+								$tre=QLVBDHCommon::getTreHan($info["DATESEND"],$info["HANXULY"]);
+								//if($tre>0)$counttre++;
+						?>
+						<?=QLVBDHCommon::trehantostr($tre,$info["DATESEND"],$info["HANXULY"])?>
+						<?php 
+						   }}
+						 ?>
+					 </td>
+                                         
+				</tr>
+				<?php
+					}
+				?>
+			</table>
+			<script>
+				document.getElementById("trehanxulycongviec").innerHTML="Xử lý công việc <?php echo $counthscv > 0?" (<font color=red>".$counthscv."</font>)":" (0)"; ?><?php if((int)$counttre>0){?> - <font class='red'>Trễ (<?=(int)$counttre?>)</font><?php } ?>";
+			</script>
+			<?php 
+			 }else{ 
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+			<tr><td style="text-align:left">Không có công việc để xử lý</td></tr>
+			</table>
+			<script>
+				document.getElementById("trehanxulycongviec").innerHTML="Xử lý công việc (0)</font>";
+			</script>
+			<?php
+			}
+			?>
+		</div>
+            <?php 
+//                $actid = ResourceUserModel::getActionByUrl('motcua','motcua','index');
+//                if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+            ?>
+		<!--<div class="home-module">-->
+			<?php
+//				global $db;
+//				$qr = $db->query(" select count(*) as DEM from wf_classes wf_c where ALIAS = 'MOTCUA' ");
+//				$re = $qr->fetch();
+//				if( (int)$re["DEM"] ){
+//					$hscv = $this->hscv->SelectAll(array("ID_THUMUC"=>1,"OBJECT"=>"MOTCUA","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP),0,3,"");
+//				$counthscv = $this->hscv->count(array("ID_THUMUC"=>1,"OBJECT"=>"MOTCUA","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP));
+//				$counttre = $this->hscv->CountTre(array("ID_THUMUC"=>1,"OBJECT"=>"MOTCUA","ID_U"=>$this->user->ID_U,"ID_G"=>$this->user->ID_G,"ID_DEP"=>$this->user->ID_DEP));
+//					$stt=0;
+			?>
+			<!--<div class="home-module-title"><span id=trehanxulymotcua>Xử lý hồ sơ một cửa <?php// echo count($hscv) > 0?" (<font color=red>".count($hscv)."</font>)":" (0)"; ?> - <font class="red">Trễ (0)</font></span><a class=chitiet href="/hscv/hscv/list/OBJECT/MOTCUA">Chi tiết</a></div>-->
+			<?php
+//				if(count($hscv)>0){
+			?>
+<!--			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<th width="45%">Nội dung</th>
+					<th width="14%">Ngày gửi</th>
+					<th width="27%">Người gửi</th>
+					<th width="25%">Hạn xử lý</th>
+				</tr>-->
+			<?php
+//				foreach ($hscv as $row){
+//					$stt++;
+//					$info =WFEngine::GetCurrentTransitionInfoByIdHscv($row['ID_HSCV']);
+			?>
+<!--				<tr>
+					<td align="left"><a href="/hscv/hscv/list/idhscv/<?//=$row['ID_HSCV']?>#hscv<?//=$row['ID_HSCV']?>"><?//=$row['NAME']?> (<font color=red><i><?//=$info['AC_NAME']?></i></font>)</a></td>
+					<td align="center" nowrap><?//=QLVBDHCommon::MysqlDateToVnDate($info['DATESEND'])?></td>
+					<td align="center" nowrap><?//=$info['EMPNCNAME']?></td>
+					<td align="left" nowrap>-->
+						<?//=$info["TRE"]>0?QLVBDHCommon::trehantostr($info["TRE"],$info["DATESEND"],$info["HANXULY"]):""?>
+						<?php //if($info["HANXULY"]> 0) { ?>
+						<?php 
+//							 if($info["TRE"]=="" && $info["HANXULY"]>0){
+//								$tre=QLVBDHCommon::getTreHan($info["DATESEND"],$info["HANXULY"]);
+//								//if($tre>0)$counttre++;
+//						?>
+						<?//=QLVBDHCommon::trehantostr($tre,$info["DATESEND"],$info["HANXULY"])?>
+						<?php 
+//						   }}
+						 ?>
+					 <!--</td>-->
+				<!--</tr>-->
+				<?php
+//					} 
+				?>
+<!--			</table>
+			<script>
+				document.getElementById("trehanxulymotcua").innerHTML="Xử lý hồ sơ một cửa <?php// echo $counthscv > 0?" (".$counthscv.")":" (0)"; ?> - <font class='red'>Trễ (<?//=(int)$counttre?>)</font>";
+			</script>-->
+			<?php 
+//			}else{
+			?>
+<!--			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+			<tr><td style="text-align:left">Không có hồ sơ đang xử lý</td></tr>
+			</table>
+			<script>
+				document.getElementById("trehanxulymotcua").innerHTML="Xử lý hồ sơ một cửa (0)</font>";
+			</script>-->
+			<?php
+//				}
+			?>
+		<!--</div>-->
+		<?php
+//			}}
+		?>
+		<div class="home-module">
+			<?php
+				$actid = ResourceUserModel::getActionByUrl('hscv','hscv','listbosung');
+				if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+					$hscv = $this->bosung->SelectAll(0,0,3,"");
+			?>
+			<div class="home-module-title"><span>Yêu cầu bổ sung hồ sơ <?php echo count($hscv) > 0?" (<font color=red>".count($hscv)."</font>)":" (0)"; ?></span><a class=chitiet href="/hscv/hscv/listbosung">Chi tiết</a></div>
+			<?php
+				if(count($hscv)>0){
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<th width="45%">Nội dung</th>
+					<th width="27%">Người gửi</th>
+					<th width="14%">Ngày gửi</th>
+				</tr>
+			<?php
+				foreach ($hscv as $row){
+					$stt++;
+					$info =WFEngine::GetCurrentTransitionInfoByIdHscv($row['ID_HSCV']);
+			?>
+				<tr>
+					<td align="left"><a href="/hscv/hscv/listbosung/idhscv/<?=$row['ID_HSCV']?>#hscv<?=$row['ID_HSCV']?>"><?=$row['NAME']?></a></td>
+					<td align="center" nowrap><?=$info['EMPNKNAME']?></td>
+					<td align="left" nowrap><?=QLVBDHCommon::MysqlDateToVnDate($info['DATESEND'])?></td>
+				</tr>
+			<?php 
+				} 
+			?>
+			</table>
+			<?php 
+				}else{
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr><td style="text-align:left">Không có hồ sơ yêu cầu bổ sung</td></tr>
+			</table>
+			<?php
+				}
+			?>
+		</div>
+		<?php
+			}
+		?>
+		<div class="home-module">
+			<div class="home-module-title"><span>Phối hợp xử lý <?php echo count($this->phoihop_data) > 0?" (<font color=red>".count($this->phoihop_data)."</font>)":" (0)"; ?></font></span><a class=chitiet href="/hscv/hscv/list/code/phoihop">Chi tiết</a></div>
+			<?php
+				if(count($this->phoihop_data)>0){
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<th width="45%">Nội dung</th>
+					<th width="27%">Người gửi</th>
+					<th width="14%">Ngày gửi</th>
+				</tr>
+			<?php
+				$i = 0;
+				foreach ($this->phoihop_data as $phoihop_item){
+			?>
+				<tr>
+					<td align="left"><a href="/hscv/hscv/list/code/phoihop/idhscv/<?=$phoihop_item["ID_HSCV"]?>#hscv<?=$phoihop_item["ID_HSCV"]?>"><?=$phoihop_item["TEN_HS"]?></td>
+					<td align="left" nowrap><?=$phoihop_item['TEN_NGUOIGUI']?></td>
+					<td align="left" nowrap><?=QLVBDHCommon::MysqlDateToVnDate($phoihop_item['NGAYGUI'])?></td>
+				</tr>
+			<?php
+					$i++;
+			if($i>=3) break;
+				}
+			?>
+			</table>
+			<?php 
+			}else{
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr><td style="text-align:left">Không có phối hợp xử lý</td></tr>
+			</table>
+			<?php
+			}
+			?>
+		</div>
+		<div class="home-module" style="display:none">
+			<div class="home-module-title"><span>Lịch công cơ quan - <font class="red">Hôm nay</font></span><a class=chitiet href="/lichcttext/index/indexc">Chi tiết</a></div>
+			<?php
+			if(count($this->lctcoquan)>0){
+			?>
+			 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-calendar">
+				<tr class="sang">
+					<td align="left" width="10%">Sáng</td>
+					<td align="left">
+						<?php
+							foreach($this->lctcoquan as $itemlct){	
+								if($itemlct["BUOI"]==1){
+									echo "- ".htmlspecialchars(($itemlct["THOIGIAN"]==""?"":$itemlct["THOIGIAN"].": ").$itemlct["NOIDUNG"])."<br>";
+								}
+							}
+						?>
+					</td>
+				</tr>
+				<tr class="chieu">
+					<td align="left">Chiều</td>
+					<td align="left">
+						<?php
+							foreach($this->lctcoquan as $itemlct){	
+								if($itemlct["BUOI"]==2){
+									echo "- ".htmlspecialchars(($itemlct["THOIGIAN"]==""?"":$itemlct["THOIGIAN"].": ").$itemlct["NOIDUNG"])."<br>";
+								}
+							}
+						?>
+					</td>
+				</tr>
+			</table>
+			<?php
+				}
+				else
+				{
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-calendar">
+			<tr><td style="text-align:left"><a href="/lichcttext/index/indexc">Hôm nay không có lịch công tác</a></td></tr>
+			</table>
+			<?php
+				}
+			?>
+		</div>
+	<!--	<div class="home-module">
+			<?php
+				$soCV = 0;
+					foreach($this->dataCH as $re)
+					{
+						$dsCV = quanlycuochopModel::GetCVIDCUOCHOP($re['ID_CUOCHOP']);
+						//var_dump($dsCV); exit;
+						foreach($dsCV as $r)
+							{
+							  if($this->id_u == $r['NGUOIXULY']){
+							  $soCV++;
+							  }
+							}
+					}
+			?>
+			<div class="home-module-title"><span>Cuộc họp (<font style="color: red"><?=count($this->dataCH)?></font>) - Công việc (<font style="color: red"><?=$soCV?></font>) </span>			
+			<a class=chitiet href="/qlcuochop/qlthongtin/index">Chi tiết</a></div>
+			<div class="jpane-slider content">
+					<?php
+					if(count($this->dataCH)>0){	 					
+					?>
+					<table class="adminlist">
+							<thead>                                                               
+								<tr>									                                                      
+									<td nowrap="nowrap" class="title"><strong>Cuộc họp</strong></td>
+									<td nowrap="nowrap" class="title"><strong>Hạn xử lý</strong></td>
+								</tr>
+							</thead>
+                                                <?php
+                                                $cx = "";
+                                                $cntcv = 0;
+                                                foreach($this->dataCH as $item)
+                                                {                      
+                                                ?>                                                 
+                                                <tbody>
+                                                    <?php
+                                                    if($cx != $item['TEN'])
+                                                    {
+                                                        $cx = $item['TEN'];
+                                                    ?>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <a  
+                                                                href="/qlcuochop/qlthongtin/index/A/1/ID_CUOCHOP/<?=$item['ID_CUOCHOP']?>#idtd<?=$item['ID_CUOCHOP']?>" ><?=$item['TEN']?></a>
+                                                        </td>
+                                                    </tr>
+                                                    <?php }
+                                                    
+                                                       $list_cv = quanlycuochopModel::GetCVIDCUOCHOP($item['ID_CUOCHOP']);
+                                                     
+                                                       foreach($list_cv as $row)
+                                                        {
+                                                          if($this->id_u == $row['NGUOIXULY']){
+                                                          $cntcv++;
+                                                    ?>
+                                                   	<tr>
+                                                        <td style = "color:black">
+                                                            <b>Công việc:</b> &nbsp;<?=$row['CONGVIEC']?>
+                                                        </td>
+                                                        <td style = "color:black">
+                                                            <?= QLVBDHCommon::MysqlDateToVnDate($row['NGAYXULY'])?>
+                                                        </td>
+                                                    </tr>	
+                                                    <?  
+                                                        }
+                                                        }
+                                                    ?>
+						</tbody>
+                                                <? } ?>                                                   
+                                                
+					</table>
+					<?php
+					}
+					else
+					{
+				?>
+				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-calendar">
+				<tr><td style="text-align:left"><a href="/qlcuochop/qlthongtin/index">Hôm nay không có công việc nào</a></td></tr>
+				</table>
+				<?php
+					}
+				?>
+				</div>
+		</div> -->
+		<?php
+		// Check la van thu
+		$linkcho = "/vbdi/danhsachvanbanbanhanh/index";
+		//$actid = ResourceUserModel::getActionByUrl('vbden','vbden','input');
+		//if(!ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+			//$linkcho ="/hscv/hscv/listchobanhanh";
+		//}
+		?>
+		<?php $actid = ResourceUserModel::getActionByUrl('vbdi','banhanh','input');
+		if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){			
+		?>
+		<div class="home-module">
+		<div class="home-module-title"><span>Danh sách chờ ban hành (<?=($this->chobanhanh>0?"<font color=red>".$this->chobanhanh."</font>":"0")?>)</span>	
+			<a class=chitiet href="<?=$linkcho?>">Chi tiết</a></div>
+
+			<div class="jpane-slider content">
+					<?php
+					if($this->chobanhanh>0){	 					
+					?>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+						<tr>
+							<td align="left"><a href="<?=$linkcho?>">Có <font color=red><?=$this->chobanhanh?></font> dự thảo chờ ban hành</a></td>
+						</tr>
+					</table>
+					<?php
+					}
+					else
+					{
+				?>
+				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-calendar">
+				<tr><td style="text-align:left"><a href="<?=$linkcho?>">Không có danh sách chờ ban hành nào</a></td></tr>
+				</table>
+				<?php
+					}
+				?>
+				</div>
+		</div>	
+		<? } ?>
+		<div class="home-module">
+			<div class="home-module-title"><span>Trao đổi nội bộ <?php echo $this->unread > 0?" (".$this->unread.")":" (0)"; ?></font></span><a class=chitiet href="/traodoi/traodoi/index">Chi tiết</a></div>
+			<?php
+				if($this->unread>0){
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<th width="100%">Tiêu đề</th>
+					<th nowrap>Ngày gửi</th>
+					<th nowrap>Người gửi</th>
+				</tr>
+				<?php
+					foreach ($this->dataTraoDoi as $traodoi_item){
+				?>
+				<tr>
+					<td align="left"><a href="/traodoi/traodoi/viewinbox/id/<?php echo $traodoi_item["id_thongtin"]; ?>"><?php echo $traodoi_item["tieude"]; ?></a></td>
+					<td align="right" nowrap ><?=$traodoi_item['ngaytao']?></td>
+					<td align="left" nowrap><?=$traodoi_item['nguoitao']?></td>
+				</tr>
+				<?php
+					}	
+				?>
+			</table>
+				<?php 
+				}else{
+				?>
+				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr><td style="text-align:left">Không có trao đổi mới</td></tr>
+				</table>
+				<?php
+				}
+				?>
+		</div>
+		
+		<div class="home-module" id=vanbandi>
+			<div class="home-module-title"><span>Văn bản đi <?php echo $this->count_cdb_vbdi>0?"(<font color=red>".$this->count_cdb_vbdi."</font>)":" (0)"; ?></font></span><a class=chitiet href="/vbdi/banhanh/list">Chi tiết</a></div>
+			<?php
+				if(count($this->cdb_vbdi)>0){
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<th nowrap>Số ký hiệu</th>
+					<th width="100%">Trích yếu</th>
+					<th nowrap>Ngày ban hành</th>
+					<th nowrap></th>
+				</tr>
+				<?php
+						foreach ($this->cdb_vbdi as $vbdi_item){?>
+				
+				<tr>
+					<td align="left" nowrap><a href=
+							"/vbdi/banhanh/list/CHUA_DOC/1/ID_VBDI/<?=$vbdi_item['ID_VBDI']?>#vbdi<?=$vbdi_item['ID_VBDI']?>"><?=$vbdi_item["SOKYHIEU"]?></a></td>
+					<td align="left" width="100%"><a href=
+							"/vbdi/banhanh/list/CHUA_DOC/1/ID_VBDI/<?=$vbdi_item['ID_VBDI']?>#vbdi<?=$vbdi_item['ID_VBDI']?>"><?=htmlspecialchars($vbdi_item["TRICHYEU"])?></a></td>
+					<td align="left" nowrap><?=QLVBDHCOMMON::MysqlDateToVnDate($vbdi_item["NGAYBANHANH"])?></td>
+					<td align="left" nowrap><a href="#" onclick="loadDivFromUrl('vanbandi','/vbdi/banhanh/updatedadoc?year=<?=QLVBDHCommon::getYear()?>&id_vbdi=<?=$vbdi_item['ID_VBDI']?>&id_u=<?=$this->user->ID_U?>&reload=1',1); return false;">Đã xem</a></td>
+				</tr>
+				<?php
+				}
+				?>
+			</table>
+			<?php 
+			}else{
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+			<tr><td style="text-align:left">Không có văn bản đi mới</td></tr>
+			</table>
+			<?php
+			}
+			?>
+		</div>
+                
+       <? // Tuanpp Yêu cầu đóng mở hồ sơ
+			require_once 'taphscv/models/Taphscv_TaphosocongviecModel.php'; 
+			$mdlTapHSCV = new Taphscv_TaphosocongviecModel();
+			$countyeucaudong = $mdlTapHSCV->countHSYeuCau();
+			$datas = $mdlTapHSCV->getListHsYeuCau();
+			if(hosocongviecModel::isVanthuLuutru($this->user->ID_U)==TRUE) {
+       ?>
+        <div class="home-module" id=dongmohscvdt>
+			<div class="home-module-title"><span>Yêu cầu HSCV điện tử (<font color=red><?=$countyeucaudong;?></font>)</span>
+			<a class=chitiet href="/taphscv/taphscv/list">Chi tiết</a></div>
+			<?php
+				if($countyeucaudong > 0){
+			?>
+                        <!--TEST số yêu cầu-->
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">                    
+							<tr>
+								<td style="text-align:left">
+									<a href="/taphscv/taphscv/danhsachhsyeucaudong">Có <font color=red><?=$countyeucaudong;?></font> hồ sơ công việc điện tử được yêu cầu đóng</a>
+								</td>
+							</tr>
+                        </table>
+                        <!--TEST số yêu cầu-->
+                        
+                        <!--TEST chi tiết yêu cầu-->
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid" style="display: none">
+				<tr>
+					<th nowrap>STT</th>
+					<th width="100%">Nội dung</th>
+				</tr>
+				<!--CHI TIẾT ĐÓNG hồ sơ-->
+				<?php
+					$stt = 1;
+					if ($countyeucaudong>0){
+						foreach ($datas as $data){?>
+				<tr>
+					<td nowrap><?=$stt;?></td>
+					<td width="100%"><?=$data['TEN'];?></td>
+				</tr>
+				<?php
+					$stt++;
+					} }
+				?>
+			</table>
+                        <!--TEST chi tiết yêu cầu-->
+			<?php 
+			} else {
+			?>
+                        <!--TEST ko có yêu cầu-->
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+			<tr><td style="text-align:left">Không có yêu cầu nào</td></tr>
+			</table>
+                        <!--TEST ko có yêu cầu-->
+			<?php
+			}
+			?>
+		</div>
+        <? 
+        }
+//  END Tuanpp Yêu cầu đóng mở hồ sơ
+        ?>
+        
+        
+        
+		<?php	
+			$actid = ResourceUserModel::getActionByUrl('lichcttext','index','tonghopc');
+			if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+				$d=getdate();
+				if($d['wday']==0)$d['wday']=7;
+				$begindate = time() - ($d['wday']-1)*86400;
+				$enddate = $begindate + 86400*6-1;
+				$begindate = date("Y-m-d",$begindate)." 00:00:00";
+				$enddate = date("Y-m-d",$enddate)." 23:59:59";
+				global $db;
+				$r = $db->query(
+				"SELECT count(*) as CNT FROM ".QLVBDHCommon::Table("lct2_corporation")." WHERE NGAY >= ? AND NGAY <= ? AND IS_TONGHOP=0",
+				array($begindate,$enddate)
+				);
+				$cnt = $r->fetch();
+		?>
+		<div class="home-module" style="display:none">
+			<div class="home-module-title"><span>Lịch công tác chưa tổng hợp</span><a class=chitiet href="/lichcttext/index/indexc">Chi tiết</a></div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<?php
+						if($cnt["CNT"]>0){
+					?>
+					<td align="left" nowrap><a href="/lichcttext/index/indexc">Có <?=$cnt["CNT"]?> lịch cần tổng hợp.</a></td>
+					<?php
+						}else{
+					?>
+					<td style="text-align:left" nowrap><a href="/lichcttext/index/indexc">Không có lịch công tác cần tổng hợp.</a></td>
+					<?php
+						}
+					?>
+				</tr>
+			</table>
+		</div>
+		<?php
+			}
+		?>
+		<div class="home-module" style="display:none">
+			<div class="home-module-title"><span>Lịch công tác cá nhân - <font class="red">Hôm nay</font></span><a class=chitiet href="/lichcttext/index/index">Chi tiết</a></div>
+			<?php
+				if(count($this->lctcanhan)>0){
+			?>
+			 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-calendar">
+				<tr class="sang">
+					<td align="left" width="10%">Sáng</td>
+					<td align="left">
+						<?php
+							foreach($this->lctcanhan as $itemlct){	
+								if($itemlct["BUOI"]==1){
+									echo "- ".htmlspecialchars($itemlct["NOIDUNG"])."<br>";
+								}
+							}
+						?>
+					</td>
+				</tr>
+				<tr class="chieu">
+					<td align="left">Chiều</td>
+					<td align="left">
+						<?php
+							foreach($this->lctcanhan as $itemlct){	
+								if($itemlct["BUOI"]==2){
+									echo "- ".htmlspecialchars($itemlct["NOIDUNG"])."<br>";
+								}
+							}
+						?>
+					</td>
+				</tr>
+			</table>
+			<?php
+				}else{
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-calendar">
+			<tr><td style="text-align:left"><a href="/lichcttext/index/index">Hôm nay không có lịch công tác</a></td></tr>
+			</table>
+			<?php
+				}
+			?>
+		</div>
+		<div class="home-module" style="display:none">
+			<div class="home-module-title"><span>Lịch công tác phòng - <font class="red">Hôm nay</font></span><a class=chitiet href="/lichcttext/index/indexd">Chi tiết</a></div>
+			<?php
+				if(count($this->lctphong)>0){
+			?>
+			 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-calendar">
+				<tr class="sang">
+					<td align="left" width="10%">Sáng</td>
+					<td align="left">
+						<?php
+							foreach($this->lctphong as $itemlct){	
+								if($itemlct["BUOI"]==1){
+									echo "- ".htmlspecialchars($itemlct["NOIDUNG"])."<br>";
+								}
+							}
+						?>
+					</td>
+				</tr>
+				<tr class="chieu">
+					<td align="left">Chiều</td>
+					<td align="left">
+						<?php
+							foreach($this->lctphong as $itemlct){	
+								if($itemlct["BUOI"]==2){
+									echo "- ".htmlspecialchars($itemlct["NOIDUNG"])."<br>";
+								}
+							}
+						?>
+					</td>
+				</tr>
+			</table>
+			<?php
+			}else{
+			?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-calendar">
+			<tr><td style="text-align:left"><a href="/lichcttext/index/indexd">Hôm nay không có lịch công tác</a></td></tr>
+			</table>
+			<?php
+			}
+			?>
+		</div>
+		<?php 
+			$actid = ResourceUserModel::getActionByUrl('vbden','vbden','input');
+			$is_cnb = ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0]);
+			if($is_cnb){
+		?>
+		<div class="home-module">
+			<div class="home-module-title"><span>Tiếp nhận văn bản đến</span></div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+				<tr>
+					<td align="left"><a href="/vbden/vbdennhan/list">Có <?=($this->dem_cdb_cnb>0?"<font color=red>".$this->dem_cdb_cnb."</font>":"0")?> văn bản chuyển từ đơn vị nội bộ</td>
+				</tr>
+			<?php
+				$actid = ResourceUserModel::getActionByUrl('vbden','chotiepnhan','index');
+				$is_clt = ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0]);
+				if($is_clt){
+			?>
+				<tr>
+					<td align="left"><a href="/vbden/chotiepnhan/index">Có <?=($this->vbtn>0?"<font color=red>".$this->vbtn."</font>":"0")?> văn bản chuyển từ đơn vị bên ngoài</td>
+				</tr>
+			<?php
+				}
+			?>
+			</table>
+		</div>
+		<?php
+			}		
+		?>
+		
+		<div class="home-module">
+			<?php 
+				require_once 'congviec/models/Qlgv_workModel.php'; 
+				$auth = Zend_Registry::get('auth');
+				$data_session = $auth->getIdentity();
+				$ISLEADER =$data_session->ISLEADER;
+				$year = QLVBDHCommon::getYear();
+				$mdl = new Qlgv_workModel($year);
+				$count = $mdl->count2('2','0');
+				$countAll = $mdl->countAllCongViec();
+				$datas = $mdl->getCongViecChuaXuLy(0, $ISLEADER);
+			?>
+			<div class="home-module-title">
+				<span>Giao việc (<?=($countAll>0?'<font color="red">'.$countAll.'</font>':"0")?>)<?=($count[0]['C']>0?" - Trễ (<font color=red>".$count[0]['C']."</font>)":"")?></span>
+			</div>
+			<div id="xulyvanbanden">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+					<tr>
+						<th width="100%">Tên công việc</th>
+						<th nowrap>Ngày bắt đầu</th>
+					</tr>
+					<?php foreach($datas as $data) { ?>
+						<tr>
+							<td width="100%"><a href="/congviec/main/list/combo_object/0"><?= $data['NAME'];?></a></td>
+							<td nowrap><?= $data['BEGINDATE'];?></td>
+						</tr>
+					<?php } ?>
+				</table>
+			</div>
+		</div>
+	</td>
+	<td width=10 nowrap>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td width=30% valign=top>
+		<table border=1 style="margin:5px;float:left" class="home-grid" width=100%>
+			<tr>
+			<tr>
+				<th colspan=2 align=center>
+				<? $isleader = $this->user->ISLEADER;?>
+                                    
+                                    <b>Tình hình xử lý văn bản đến</b>
+				</th>
+			</tr>				<!--td align=center>
+					<img src="/image.php?data=<?=$this->vbddangxuly?>*<?=$this->vbddangtre?>*<?=$this->vbddung?>*<?=$this->vbdxongtre?>" border="0" alt="">
+				</td-->
+				<td style="padding:5px" colspan=2>
+					<b>
+                                        <?php 
+                                            if($this->vbddangxuly > 0) {
+                                        ?>
+                                            <font color="#66ff00"><?=$this->vbddangxuly?> (<?=(int)($this->vbddangxuly/($this->vbddangxuly+$this->vbddangtre+$this->vbddung+$this->vbdxongtre)*100)?>%)</font>: 
+                                            <a href="/hscv/Tinhhinhxuly/hscvxuly/OBJECT_XL/VBD/hscv_trehan/1">Đang xử lý - Bình thường</a>
+                                        <?php } else { ?>
+                                            <font color="#66ff00"><?=$this->vbddangxuly?> (<?=(int)($this->vbddangxuly/($this->vbddangxuly+$this->vbddangtre+$this->vbddung+$this->vbdxongtre)*100)?>%)</font>: Đang xử lý - Bình thường
+                                        <?php } ?>
+                                            
+                                        <?php 
+                                            if($this->vbddangtre>0)
+                                            {
+                                        ?>
+                                            <br><font color="#3399ff"><?=$this->vbddangtre?> (<?=(int)($this->vbddangtre/($this->vbddangxuly+$this->vbddangtre+$this->vbddung+$this->vbdxongtre)*100)?>%):</font>
+                                            <a href="/hscv/Tinhhinhxuly/hscvxuly/OBJECT_XL/VBD/hscv_trehan/2">Đang xử lý - Trễ hạn</a>
+                                        <?php } else { ?>
+                                            <br><font color="#3399ff"><?=$this->vbddangtre?> (<?=(int)($this->vbddangtre/($this->vbddangxuly+$this->vbddangtre+$this->vbddung+$this->vbdxongtre)*100)?>%):</font> Đang xử lý - Trễ hạn
+                                        <?php } ?>
+                                        
+                                        <?php if($this->vbddung > 0) { ?>
+                                            <br><font color="#9933ff"><?=$this->vbddung?> (<?=(int)($this->vbddung/($this->vbddangxuly+$this->vbddangtre+$this->vbddung+$this->vbdxongtre)*100)?>%):</font> 
+                                            <a href="/hscv/Tinhhinhxuly/hscvxuly/OBJECT_XL/VBD/code/old/hscv_trehan/3">Đã xử lý - Đúng hạn</a>
+                                        <?php } else { ?>
+                                            <br><font color="#9933ff"><?=$this->vbddung?> (<?=(int)($this->vbddung/($this->vbddangxuly+$this->vbddangtre+$this->vbddung+$this->vbdxongtre)*100)?>%):</font> Đã xử lý - Đúng hạn
+                                        <?php } ?>
+                                        <?php
+                                            $info = WFEngine::GetCurrentTransitionInfoByIdHscv($this->vbdxongtre_hscv);
+                                            
+                                            if($info["HANXULY"] > 0 && $this->vbdxongtre > 0) { 
+//                                                        QLVBDHCommon::getTreHan($info["DATESEND"],$info["HANXULY"]);
+								//if($tre>0)$counttre++;
+                                        ?>
+                                        
+                                            <br><font color="#3399ff"><?=$this->vbdxongtre?> (<?=(int)($this->vbdxongtre/($this->vbddangxuly+$this->vbddangtre+$this->vbddung+$this->vbdxongtre+$this->vbddangtretuan)*100)?>%):</font>
+                                            <a href="/hscv/Tinhhinhxuly/hscvxuly/OBJECT_XL/VBD/code/old/hscv_trehan/4">Đã xử lý - Trễ hạn</a>
+                                        <?php } else { ?>
+                                            <br><font color="#ff66ff"><?=$this->vbdxongtre?> (<?=(int)($this->vbdxongtre/($this->vbddangxuly+$this->vbddangtre+$this->vbddung+$this->vbdxongtre+$this->vbddangtretuan)*100)?>%):</font> Đã xử lý - Trễ hạn
+                                        <?php } ?>
+					</b>
+				</td>
+			</tr>
+
+		</table>
+		<table border=1 style="margin:5px;float:left" class="home-grid" width=100%>
+			<tr>
+			<tr>
+				<th colspan=2 align=center>
+				<b>Tình hình xử lý công việc</b>
+				</th>
+			</tr>				<!--td align=center>
+					<img src="/image.php?data=<?=$this->cvdangxuly?>*<?=$this->cvdangtre?>*<?=$this->cvdung?>*<?=$this->cvxongtre?>" border="0" alt="">
+				</td-->
+				<td style="padding:5px" colspan=2>
+					<b>
+					<?php if($this->cvdangxuly) { ?>
+                                            <font color="#66ff00"><?=$this->cvdangxuly?> (<?=(int)($this->cvdangxuly/($this->cvdangxuly+$this->cvdangtre+$this->cvdung+$this->cvxongtre)*100)?>%)</font>:
+                                            <a href="/hscv/Tinhhinhxuly/hscvxuly/OBJECT_XL/VBSOANTHAO/hscv_trehan/1">Đang xử lý - Bình thường</a>                                               
+                                        <?php }else { ?>
+                                            <font color="#66ff00"><?=$this->cvdangxuly?> (<?=(int)($this->cvdangxuly/($this->cvdangxuly+$this->cvdangtre+$this->cvdung+$this->cvxongtre)*100)?>%)</font>: Đang xử lý - Bình thường
+                                        <?php } ?>
+                                            
+                                        <?php
+//                                            $hscv_trehan = $this->hscv->hscvdangTreHan();
+                                            if($this->cvdangtre>0) {
+                                        ?>
+                                            <br><font color="#3399ff"><?=$this->cvdangtre?> (<?=(int)($this->cvdangtre/($this->cvdangxuly+$this->cvdangtre+$this->cvdung+$this->cvxongtre)*100)?>%):</font>
+                                            <a href="/hscv/Tinhhinhxuly/hscvxuly/OBJECT_XL/VBSOANTHAO/hscv_trehan/2/code">Đang xử lý - Trễ hạn</a>                                               
+                                        <?php } else { ?>
+                                            <br><font color="#3399ff"><?=$this->cvdangtre?> (<?=(int)($this->cvdangtre/($this->cvdangxuly+$this->cvdangtre+$this->cvdung+$this->cvxongtre)*100)?>%):</font> Đang xử lý - Trễ hạn
+                                        <?php } ?>
+                                        
+                                        <?php if($this->cvdung > 0) { ?>
+                                            <br><font color="#9933ff"><?=$this->cvdung?> (<?=(int)($this->cvdung/($this->cvdangxuly+$this->cvdangtre+$this->cvdung+$this->cvxongtre)*100)?>%):</font> 
+                                            <a href="/hscv/Tinhhinhxuly/hscvxuly/OBJECT_XL/VBSOANTHAO/code/old/hscv_trehan/3">Đã xử lý - Đúng hạn</a>
+                                        <?php } else { ?>
+                                            <br><font color="#9933ff"><?=$this->cvdung?> (<?=(int)($this->cvdung/($this->cvdangxuly+$this->cvdangtre+$this->cvdung+$this->cvxongtre)*100)?>%):</font> Đã xử lý - Đúng hạn
+                                        <?php } ?>
+                                            
+                                        <?php 
+                                            if($this->cvxongtre>0)
+                                            {
+                                        ?>
+                                            <br><font color="#ff66ff"><?=$this->cvxongtre?> (<?=(int)($this->cvxongtre/($this->cvdangxuly+$this->cvdangtre+$this->cvdung+$this->cvxongtre)*100)?>%):</font>
+                                            <a href="/hscv/Tinhhinhxuly/hscvxuly/OBJECT_XL/VBSOANTHAO/code/old/hscv_trehan/4">Đã xử lý - Trễ hạn</a>
+                                        <?php } else { ?>
+                                            <br><font color="#ff66ff"><?=$this->cvxongtre?> (<?=(int)($this->cvxongtre/($this->cvdangxuly+$this->cvdangtre+$this->cvdung+$this->cvxongtre)*100)?>%):</font>  Đã xử lý - Trễ hạn
+                                        <?php } ?>
+					</b>
+				</td>
+			</tr>
+                        <?php 
+             if($this->ldp==1)
+             {
+            ?>
+
+		</table>
+            <table border=0 cellspacing="0" cellpadding="0" style="margin:5px;float:left; display: none" class="home-grid" width=100%>
+                <tr>
+                    <td>
+                <div class="home-module">
+                    <div class="home-module-title"><span id="trehanxulycongviec">Tình hình xử lý của nhân viên </span><a href="/hscv/hscv/list/OBJECT/VBSOANTHAO" class="chitiet">Chi tiết</a></div>
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0" class="home-grid">
+                        <tbody>
+                            <tr>
+                                <th width="45%">Nhân viên</th>
+                                <th width="14%">Số công việc trễ hạn</th>
+<!--                                <th width="27%">Người gửi</th>
+                                <th width="25%">Hạn xử lý</th>-->
+                            </tr>
+                           <?php 
+                                 foreach ($this->arr_nv as $value) {
+                                     
+                                     ?>
+                            <tr>
+                                <td><?= $value[0] ?></td>
+                                 <td>
+                                     <?php if($value[1]>0) echo '<font color=red>('.$value[1].') Hồ sơ</font>'; 
+                                             else echo '(0) Hồ sơ'; ?> 
+                                 
+                                 </td>
+                            </tr>
+                            <?php
+                            }//end foreach
+                            ?>
+                            </tbody>
+                    </table>
+                    
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0" class="home-grid">
+                        <tbody>
+                            <tr>
+                                <th width="45%">Số lượng hồ sơ</th>
+                                <th width="14%">Số công việc trễ hạn</th>
+<!--                                <th width="27%">Người gửi</th>
+                                <th width="25%">Hạn xử lý</th>-->
+                            </tr>
+                            <tr>
+                                <td>Nhận trong tuần</td>
+                                <td>
+                                    <font color="red">
+                                        <?php if($this->vbtrongtuan > 0) { 
+                                            echo "(".$this->vbtrongtuan.") Hồ sơ";
+                                        } else {
+                                            echo "(0) Hồ sơ";
+                                        }
+?>
+                                    </font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tồn từ tuần trước</td>
+                                <td><font color="red">
+                                    <?php if($this->vbddangtretuan > 0) { 
+                                        echo "(".$this->vbddangtretuan.") Hồ sơ";
+                                    } else {
+                                        echo "(0) Hồ sơ";
+                                    }
+                                    ?>
+                                    </font></td>
+                            </tr>
+                            <tr>
+                                <td>Trễ hạn</td>
+                                <td><font color="red">
+                                    <?php
+                                        if($this->vbddangtre > 0)
+                                        {
+                                            echo "(".$this->vbddangtre.") Hồ sơ";
+                                        } else {
+                                            echo "(0) Hồ sơ";
+                                        }
+                                    ?>
+                                    </font></td>
+                            </tr>
+                            <tr>
+                                <td>Đúng hạn</td>
+                                <td>
+                                    <font color="red">
+                                        <?php if($this->vbddung > 0) { 
+                                            echo "(".$this->vbddung.") Hồ sơ";
+                                        } else {
+                                            echo "(0) Hồ sơ";
+                                        }
+                                        ?>
+                                    </font>
+                                </td>
+                            </tr>
+                            </tbody>
+                    </table>
+                        <?php
+                        }//end if
+                    ?>
+                    </td>
+                </tr>
+            </table>
+            <table style="display: none">
+				<tr>
+					<td>
+						<div class="home-module">
+						<?php 
+							require_once 'taphscv/models/Taphscv_TaphosocongviecModel.php'; 
+							$mdlTapHSCV = new Taphscv_TaphosocongviecModel();
+							$count = $mdlTapHSCV->countHSYeuCau();
+							$datas = $mdlTapHSCV->getListHsYeuCau();
+						?>
+						<div class="home-module-title">
+							<span>Hồ sơ yêu cầu đóng (<?=($count>0?'<font color="red">'.$count.'</font>':"0")?>)</span>
+						</div>
+						<div id="xulyvanbanden">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0" class="home-grid">
+								<tr>
+									<th nowrap>STT</th>
+									<th width="100%">Nội dung</th>
+								</tr>
+								<tr>
+									<?php 
+										$stt = 1;
+										foreach($datas as $data) { 
+									?>
+										<td nowrap><?=$stt;?></td>
+										<td width="100%"><?=$data['TEN'];?></td>
+									<?php } ?>
+								</tr>
+							</table>
+						</div>
+					</div>
+					</td>
+				</tr>
+			</table>
+	</td>
+</tr>
+</table>
+
+</div>

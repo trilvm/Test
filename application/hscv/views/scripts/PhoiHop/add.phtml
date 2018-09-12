@@ -1,0 +1,31 @@
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<select  id="id_dep" name="ID_DEP" style="width:150px;">
+<?php 
+foreach ($this->listdeps as $itemD)
+{
+?>
+	<option value='<?php echo $itemD['ID_DEP'] ?>>'><?php echo str_repeat("--",$itemD["LEVEL"]).($itemD["LEVEL"]>1?"-> ":"").$itemD["NAME"];?></option>
+<?
+} ?>
+</select>
+
+<select id="id_u_phoihop" name="ID_U" style="width:150px;">
+<?php 
+
+foreach ($this->listExistUsers as $itemU)
+{
+?>
+	<option value='<?php echo $itemU['ID_U'] ?>'><?php echo $itemU["FIRSTNAME"];?> <?php echo $itemU["LASTNAME"];?>(<?php echo $itemU["USERNAME"];?>)</option>
+<?
+} ?>
+</select>
+<a  href="#"  
+	onClick='
+	var aj = new AjaxEngine();
+	var id_u=document.getElementById("id_u_phoihop").value;
+	aj.loadDivFromUrl("groupcontent<?php echo $this->idhscv ?>","/hscv/phoihop/index/idhscv/<?php echo $this->idhscv ?>/year/<?php echo $this->year ?>/id_u/"+id_u);
+	
+	'>Thêm</a>
+
+<input type=hidden name="idhscv" value="<?php echo $this->idhscv;?>">
+<input type=hidden name="idhscv" value="<?php echo $this->year;?>">

@@ -1,0 +1,301 @@
+<?php
+$weekday = array("Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy");
+?>
+<form name=frm method=post action="/lichcttext/index/saved">
+<div>
+<span style="float:left;margin-bottom:5px;width:100%">
+	Chọn ngày <?=QLVBDHCommon::calendar($this->BEGINDATE,"BEGINDATE","BEGINDATE")?><span style="">
+<select name=ID_DEP onchange="document.frm.action='/lichcttext/index/indexd';document.frm.submit();">
+<?php foreach($this->dep as $dep){?>
+<option value=<?=$dep['ID_DEP']?>><?=str_repeat("--",$dep['LEVEL']-1)?><?=$dep['NAME']?></option>
+<?php } ?>
+</select>
+</span>
+    <img src="/images/icon/tuantiep.png" style="float:right;padding: 5px 5px 5px 5px; cursor: pointer;" href="#" onclick="document.frm.action='/lichcttext/index/indexd';document.frm.target='';document.frm.BEGINDATE.value='<?=$this->nextweek?>';document.frm.submit();" />
+	<select name=week style="float:right;padding: 5px 5px 5px 5px;width:90px" onchange="document.frm.BEGINDATE.value=this.value;document.frm.action='/lichcttext/index/indexd';document.frm.target='';document.frm.submit();">
+		<?php
+			$firstyeardateint = strtotime("01/01"."/".QLVBDHCommon::getYear());
+			$firstyeardate =getdate($firstyeardateint);
+
+			$yearbegindate = $firstyeardateint - ($firstyeardate['wday']-1)*86400;
+			for($i=1;$i<54;$i++){
+				
+		?>
+		<option value="<?=date("d/m", $yearbegindate);?>">Tuần <?=$i?></option>
+		<?php 
+		$yearbegindate = $yearbegindate+86400*7;	
+		} ?>
+	</select>
+	<script>document.frm.week.value="<?=$this->week?>";</script>
+    <img src="/images/icon/tuantruoc.png" style="float:right;margin-right:3px;padding: 5px 0px 5px 5px; cursor: pointer;" onclick="document.frm.action='/lichcttext/index/indexd';document.frm.target='';document.frm.BEGINDATE.value='<?=$this->preweek?>';document.frm.submit();" />
+</span>
+</div>
+<div class=clr></div>
+<script>document.frm.ID_DEP.value = '<?=$this->ID_DEP?>';</script>
+<?php if($this->BEFOREWEEK!=""){?>
+<style>
+    #tpp-dapchai{
+        height: auto !important;
+    }
+</style>
+<div style="width:100%;"><textarea id="tpp-dapchai" name=BEFOREWEEK style="height: 70px;width: 99%;" rows="5" readonly="readonly">
+<?=htmlspecialchars($this->BEFOREWEEK)?>
+</textarea></div>
+<?php } ?>
+<div id=car_container></div>
+</form>
+<script>
+	var data = new Array();
+	<?php 
+		for($i=0;$i<7;$i++){
+	?>
+	data[<?=$i?>] = new Array();
+	data[<?=$i?>][0] = new Array("<?=$weekday[$this->data[$i][0][0]]?>","<?=$this->data[$i][0][1]?>","<?=$this->data[$i][0][2]?>");
+	<?php
+			for($k=1;$k<=3;$k++){
+	?>
+	data[<?=$i?>][<?=$k?>]  = new Array();
+	<?php
+				if(count($this->data[$i][$k])==0){
+	?>
+	data[<?=$i?>][<?=$k?>][0] = new Array(
+		"","","","","","","","","","","",""
+	);
+	<?php
+				}else{
+					for($j=0;$j<count($this->data[$i][$k]);$j++){
+	?>
+	data[<?=$i?>][<?=$k?>][<?=$j?>] = new Array(
+		<?=$this->data[$i][$k][$j]["ID_LCT_D"]?>,						//id
+		"<?=str_replace(chr(13).chr(10),'\n',htmlspecialchars($this->data[$i][$k][$j]['NOIDUNG']))?>",	//noi dung
+		"<?=str_replace(chr(13).chr(10),'\n',htmlspecialchars($this->data[$i][$k][$j]['THANHPHAN']))?>",														//thanh phan
+		"<?=str_replace(chr(13).chr(10),'\n',htmlspecialchars($this->data[$i][$k][$j]['DIADIEM']))?>",															//dia diem
+		"<?=$this->data[$i][$k][$j]['IS_TONGHOP']?>",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"<?=$this->data[$i][$k][$j]['IS_UPTOCQ']?>",
+		"<?=str_replace(chr(13).chr(10),'\n',htmlspecialchars($this->data[$i][$k][$j]['GHICHU']))?>"
+	);
+	<?php
+					}
+				}
+			}
+		}
+	?>
+	function DrawGrid(){
+		//var oldheight = document.
+		var html="";
+		html += '<table width="100%" border=1 class=car2_table>';
+			html += '<tr class=car2_header>';
+				html += '<td colspan="2" nowrap>Ngày</td>';
+				<?php if($this->lock==0 && $this->phongaddtocq==1){ ?>
+				html += '<td nowrap><img src="/images/chuyenlencq.gif"></td>';
+				<?php } ?>
+				html += '<td width=50%>Nội dung</td>';
+				html += '<td width=15%>Thành phần</td>';
+				html += '<td width=15%>Địa điểm</td>';
+				html += '<td width=20%>Ghi chú</td>';
+				<?php if($this->lock==0){ ?>
+				html += '<td nowrap>&nbsp;</td>';
+				<?php } ?>
+				<?php if($this->lock==0){ ?>
+				html += '<td align=center nowrap><input type=checkbox name=DELALL title="Chọn xóa tất cả" onclick="SelectAll(this,\'DELETE\')"></td>';
+				<?php } ?>
+			html += '</tr>';
+		for(var i=0;i<data.length;i++){
+			var rowspan_sang = data[i][1].length==0?1:data[i][1].length;
+			var rowspan_chieu = data[i][2].length==0?1:data[i][2].length;
+			var rowspan_toi = 0;
+			<?php if($this->config->lct->bandem==1){?>
+			var rowspan_toi =  data[i][3].length==0?1:data[i][3].length;
+			<?php } ?>
+			var rowspan_thu = rowspan_sang+rowspan_chieu+rowspan_toi;
+			var j=0;
+
+			//in buoi sang
+			html += '<tr>';
+				html += '<td rowspan="'+rowspan_thu+'" nowrap class=car2_day>'+data[i][0][0]+'<br>'+data[i][0][1]+'</td>';
+				html += '<td rowspan="'+rowspan_sang+'" class=car2_content_1>S</td>';
+			if(data[i][1].length==0){
+				html += DrawOneCarlendar(i,1,j,true);
+			}else{
+				html += DrawOneCarlendar(i,1,j,false);
+			}
+			html += '</tr>';
+			for(j=1;j<data[i][1].length;j++){
+				html += '<tr>';
+				html += DrawOneCarlendar(i,1,j,false);
+				html += '</tr>';
+			}
+
+			//buoi chieu
+			j = 0;
+			html += '<tr>';
+				html += '<td rowspan="'+rowspan_chieu+'" class=car2_content_2>C</td>';
+			if(data[i][2].length==0){
+				html += DrawOneCarlendar(i,2,j,true);
+			}else{
+				html += DrawOneCarlendar(i,2,j,false);
+			}
+			html += '</tr>';
+			for(j=1;j<data[i][2].length;j++){
+				html += '<tr>';
+				html += DrawOneCarlendar(i,2,j,false);
+				html += '</tr>';
+			}
+
+			<?php if($this->config->lct->bandem==1){?>
+			//buoi toi
+			j = 0;
+			html += '<tr>';
+				html += '<td rowspan="'+rowspan_toi+'" class=car2_content_3>T</td>';
+			if(data[i][3].length==0){
+				html += DrawOneCarlendar(i,3,j,true);
+			}else{
+				html += DrawOneCarlendar(i,3,j,false);
+			}
+			html += '</tr>';
+			for(j=1;j<data[i][3].length;j++){
+				html += '<tr>';
+				html += DrawOneCarlendar(i,3,j,false);				
+				html += '</tr>';
+			}
+			<?php } ?>
+
+		}
+		html += '</table>';
+		document.getElementById("car_container").innerHTML = html;
+		var objtextarea = document.getElementsByTagName("textarea");
+		for(var i=0;i<objtextarea.length;i++){
+			fitToText(objtextarea[i]);
+		}
+	}
+	DrawGrid();
+
+	function fitToText(obj)
+	{
+		var maxHeight=500;
+		var text = obj;  
+		if ( !text )      return;     
+		text.style.height = "15px";
+		text.style.height = text.scrollHeight + "px";
+	}
+	function SaveButtonClick(){
+		document.frm.submit();
+	}
+	function DrawOneCarlendar(i,buoi,j,isnew){
+		var html="";
+		if(isnew){
+			<?php 
+			if($this->lock==0 && $this->phongaddtocq==1){ ?>
+			html += '<td valign=top><input title="Chuyển thành lịch cơ quan" type=checkbox '+(data[i][buoi][j][10]=="1"?"checked":"")+' onclick="checkuptocq(this,'+i+','+buoi+','+j+')"><input type=hidden name=CHECK[] id=CHECK_'+i+'_'+buoi+'_'+j+' value="'+data[i][buoi][j][10]+'"></td>';
+			<?php } ?>
+			html += '<td valign=top width=50% class=car2_content_'+buoi+' onclick="if(window.DIV_'+"NOIDUNG_"+i+"_"+buoi+"_"+j+')window.DIV_'+"NOIDUNG_"+i+"_"+buoi+"_"+j+'.focus();">'+createTextArea("NOIDUNG_"+i+"_"+buoi+"_"+j,"NOIDUNG[]","Update("+i+","+buoi+","+j+",1)","",data[i][buoi][j][4]==1?"lcttextarea_tonghop":"lcttextarea")+'</td>';
+			html += '<td valign=top width=15% class=car2_content_'+buoi+' onclick="if(window.DIV_'+"THANHPHAN_"+i+"_"+buoi+"_"+j+')window.DIV_'+"THANHPHAN_"+i+"_"+buoi+"_"+j+'.focus();">'+createTextArea("THANHPHAN_"+i+"_"+buoi+"_"+j,"THANHPHAN[]","Update("+i+","+buoi+","+j+",2)","",data[i][buoi][j][4]==1?"lcttextarea_tonghop":"lcttextarea")+'</td>';
+			html += '<td valign=top width=15% class=car2_content_'+buoi+' onclick="if(window.DIV_'+"DIADIEM_"+i+"_"+buoi+"_"+j+')window.DIV_'+"DIADIEM_"+i+"_"+buoi+"_"+j+'.focus();">'+createTextArea("DIADIEM_"+i+"_"+buoi+"_"+j,"DIADIEM[]","Update("+i+","+buoi+","+j+",3)","",data[i][buoi][j][4]==1?"lcttextarea_tonghop":"lcttextarea")+'</td>';
+			html += '<td valign=top width=20% class=car2_content_'+buoi+' onclick="if(window.DIV_'+"GHICHU_"+i+"_"+buoi+"_"+j+')window.DIV_'+"GHICHU_"+i+"_"+buoi+"_"+j+'.focus();">'+createTextArea("GHICHU_"+i+"_"+buoi+"_"+j,"GHICHU[]","Update("+i+","+buoi+","+j+",11)","",data[i][buoi][j][4]==1?"lcttextarea_tonghop":"lcttextarea")+'</td>';
+			<?php if($this->lock==0){ ?>
+			html += '<td valign=top nowrap class=car2_content_'+buoi+'><div style="width:80px;"><input type=hidden name=NGAY[] value="'+data[i][0][2]+'"><input type=hidden name=BUOI[] value='+buoi+'><input type=hidden name=ID_LCT_D[] value=""><img src="/images/alarm_add_above.gif" onclick="AddAbove('+i+','+buoi+','+j+')" style="cursor:pointer" title="Thêm dưới"><img src="/images/alarm_add_top.gif" onclick="AddAbove('+i+','+buoi+','+(j-1)+')" style="cursor:pointer" title="Thêm trên"></div></td>';
+			<?php } ?>
+			<?php if($this->lock==0){ ?>
+			html += '<td valign=top align=center class=car2_content_'+buoi+'><input type=checkbox name=DELETE[] title="Chọn xóa dòng này" value=""></td>';
+			<?php } ?>
+		}else{
+			<?php 
+			if($this->lock==0 && $this->phongaddtocq==1){ ?>
+			html += '<td valign=top><input title="Chuyển thành lịch cơ quan" type=checkbox '+(data[i][buoi][j][10]=="1"?"checked":"")+' onclick="checkuptocq(this,'+i+','+buoi+','+j+')"></td>';
+			<?php } ?>
+			html += '<td valign=top width=50% class=car2_content_'+buoi+' onclick="if(window.DIV_'+"NOIDUNG_"+i+"_"+buoi+"_"+j+')window.DIV_'+"NOIDUNG_"+i+"_"+buoi+"_"+j+'.focus();">'+createTextArea("NOIDUNG_"+i+"_"+buoi+"_"+j,"NOIDUNG[]",data[i][buoi][j][1],"Update("+i+","+buoi+","+j+",1)",data[i][buoi][j][4]==1?"lcttextarea_tonghop":"lcttextarea")+'</td>';
+			html += '<td valign=top width=15% class=car2_content_'+buoi+' onclick="if(window.DIV_'+"THANHPHAN_"+i+"_"+buoi+"_"+j+')window.DIV_'+"THANHPHAN_"+i+"_"+buoi+"_"+j+'.focus();">'+createTextArea("THANHPHAN_"+i+"_"+buoi+"_"+j,"THANHPHAN[]",data[i][buoi][j][2],"Update("+i+","+buoi+","+j+",2)",data[i][buoi][j][4]==1?"lcttextarea_tonghop":"lcttextarea")+'</td>';
+			html += '<td valign=top width=15% class=car2_content_'+buoi+' onclick="if(window.DIV_'+"DIADIEM_"+i+"_"+buoi+"_"+j+')window.DIV_'+"DIADIEM_"+i+"_"+buoi+"_"+j+'.focus();">'+createTextArea("DIADIEM_"+i+"_"+buoi+"_"+j,"DIADIEM[]",data[i][buoi][j][3],"Update("+i+","+buoi+","+j+",3)",data[i][buoi][j][4]==1?"lcttextarea_tonghop":"lcttextarea")+'</td>';
+			html += '<td valign=top width=20% class=car2_content_'+buoi+' onclick="if(window.DIV_'+"GHICHU_"+i+"_"+buoi+"_"+j+')window.DIV_'+"GHICHU_"+i+"_"+buoi+"_"+j+'.focus();">'+createTextArea("GHICHU_"+i+"_"+buoi+"_"+j,"GHICHU[]",data[i][buoi][j][11],"Update("+i+","+buoi+","+j+",11)",data[i][buoi][j][4]==1?"lcttextarea_tonghop":"lcttextarea")+'</td>';
+			<?php if($this->lock==0){ ?>
+			html += '<td valign=top nowrap class=car2_content_'+buoi+'><div style="width:80px;"><input type=hidden name=NGAY[] value="'+data[i][0][2]+'"><input type=hidden name=BUOI[] value='+buoi+'><input type=hidden name=ID_LCT_D[] value="'+data[i][buoi][j][0]+'"><img src="/images/alarm_add_above.gif" onclick="AddAbove('+i+','+buoi+','+j+')" style="cursor:pointer" title="Thêm dưới"><img src="/images/alarm_add_top.gif" onclick="AddAbove('+i+','+buoi+','+(j-1)+')" style="cursor:pointer" title="Thêm trên"></div></td>';			
+			<?php } ?>
+			<?php if($this->lock==0){ ?>
+			html += '<td valign=top align=center class=car2_content_'+buoi+'><input type=hidden name=CHECK[] id=CHECK_'+i+'_'+buoi+'_'+j+' value="'+data[i][buoi][j][10]+'"><input type=checkbox name=DELETE[] title="Chọn xóa dòng này" value="'+data[i][buoi][j][0]+'"></td>';
+			<?php } ?>
+		}
+		return html;
+	}
+	function Update(i,buoi,j,tt){
+		//alert(tt);
+		if(tt==1){
+			data[i][buoi][j][tt] = document.getElementById("NOIDUNG_"+i+"_"+buoi+"_"+j).value;
+		}
+		if(tt==2){
+			data[i][buoi][j][tt] = document.getElementById("THANHPHAN_"+i+"_"+buoi+"_"+j).value;
+		}
+		if(tt==3){
+			data[i][buoi][j][tt] = document.getElementById("DIADIEM_"+i+"_"+buoi+"_"+j).value;
+		}
+		if(tt==11){
+			data[i][buoi][j][tt] = document.getElementById("GHICHU_"+i+"_"+buoi+"_"+j).value;
+		}
+	}
+	function AddAbove(i,buoi,j){
+		var arr_bak = data[i][buoi];
+		data[i][buoi] = new Array();
+		for(var k=0;k<=j;k++){
+			data[i][buoi][k] = arr_bak[k];
+		}
+		data[i][buoi][j+1] = new Array("","","","","","","","","","","","");
+		for(var k=j+1;k<arr_bak.length;k++){
+			data[i][buoi][k+1] = arr_bak[k];
+		}
+		//alert(data[i][buoi].length);
+		DrawGrid();
+	}
+	function Delete(i,buoi,j){
+		var obj = document.getElementsByName("DELETE[]");
+		var objnd = document.getElementsByName("NOIDUNG[]");
+		var objid = document.getElementsByName("ID_LCT_D[]");
+		for(var i=0;i<objnd.length;i++){
+			if(objnd[i].value != "" && objid[i].value==""){
+				alert("Vui lòng lưu lịch công tác mới trước khi xóa.");
+				return;
+			}
+		}
+		if(isdelete){
+			data[i][buoi].splice(j,1);
+			if(data[i][buoi].length==0)data[i][buoi][0] = new Array("","","","","","","","","","","","");
+			DrawGrid();
+		}
+	}
+	function DeleteAll(){
+		var obj = document.getElementsByName("DELETE[]");
+		for(var i=0;i<obj.length;i++){
+			if(obj[i].checked && obj[i].value==""){
+				alert("Vui lòng lưu lịch công tác mới trước khi xóa.");
+				return;
+			}
+		}
+		if(confirm("Bạn có muốn xóa lịch được chọn không?")){
+			for(var i=0;i<obj.length;i++){
+				if(obj[i].checked && obj[i].value!=""){
+					execfunction("lichcttext","index","deleted","ID_LCT_D/"+obj[i].value);
+				}
+			}
+			setTimeout("alert('Đã xóa thành công');document.location.href = '/lichcttext/index/indexd?BEGINDATE='+document.frm.BEGINDATE.value",2000);
+			//document.location.href = "/lichcttext/index/indexd";
+		}
+	}
+	function Tonghop(){
+		document.frm.action = "/lichcttext/index/tonghopd";
+		document.frm.submit();
+	}
+	function ChangeDate(){
+		document.frm.action="/lichcttext/index/indexd";document.frm.submit();
+	}
+	function checkuptocq(obj,i,buoi,j){
+		document.getElementById("CHECK_"+i+"_"+buoi+"_"+j).value=(obj.checked?"1":"0");
+	}
+	function XemLichCoQuan(isexcel){
+		document.frm.action="/lichcttext/index/indexd/isexcel/"+isexcel;
+		document.frm.target="_blank";
+		document.frm.submit();
+	}
+</script>

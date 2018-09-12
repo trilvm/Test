@@ -1,0 +1,11 @@
+<form name=frm action="/motcua/motcua/savecontrolshowslide">
+    <span>
+        <?php if($this->is_enable){?>
+            Bạn đã cho phép bật chương trình
+        <?php }else{ ?>
+            Bạn chưa cho phép bật chương trình
+        <?php }?>
+    </span>
+    <br>
+    <input type=button onclick="document.frm.submit();" class="input_button" value="<?=$this->is_enable?"Tắt":"Bật" ?> chương trình">
+</form>

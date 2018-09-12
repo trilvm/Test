@@ -1,0 +1,680 @@
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js">
+
+</script>
+<div id="mail_main_body" style="display: '';" onmousedown="document.getElementById('id_tooltip').style.display='none';document.getElementById('id_tooltip_group').style.display='none'"
+>
+
+<div id="quota_alert">
+<?php if(Mail_Quota::checkQuotaUser() == 0){?>
+<font color="red"><b><i>Dung lượng chứa thư của bạn đã hết. Để nhận hay gửi thư, hãy xóa một số thư cũ để giảm dung lượng</i></b></font>
+<?php }?>
+</div>
+
+
+
+
+	<div id="id_input_contact" style="border:1px solid #84abfb;background:url(/images/email/tooltip_bg.jpg) repeat-x;position:absolute; width:500px;margin:2px;padding:2px 6px;white-space:nowrap;display:none;">
+	</div>
+
+
+	<div id="id_input_group" style="border:1px solid #84abfb;position:absolute;background:url(/images/email/tooltip_bg.jpg) repeat-x;					width:500px;margin:2px;padding:2px 6px;white-space:nowrap;display:none;">
+		<div align="right" style="float:right;cursor:pointer;width:20px;"  onclick="closeEditGroup();return false;">
+			<img src="/images/email/close_tooltip.jpg" ></img>
+		</div>
+			<b>Cập nhật nhóm: <span id='groupname_input' ></span></b>
+		<form name='frm_inputgroup'>
+			<input type="hidden" name="id_eg" >
+			<input type="hidden" name="id_eg_h" >
+
+		<div class="required clearfix">
+			<label>Tên:</label>
+			<input type="input" name='name_g'>
+			<input type="hidden" name='name_g_h'> 
+			<span class="box_erro_area" id="ERRNAME_FRIEND"> </span>
+		</div>
+		<div class="clr"></div>
+		<div align="center" style="cursor:pointer;width:73px;"  onclick="doSaveGroup();return false;"><img src="/images/email/button_dongy.jpg" ></img></div>
+		<div class="clr"></div>
+		</form>
+	</div>
+
+
+
+
+	<div id="id_tooltip_group" style="border:3px solid blue;position:absolute;background-color: white ;display:none; width:250px;
+	margin:2px;padding:2px 6px;white-space:nowrap;">
+		<span id='group_info'></span>
+		<table>
+			<tr>
+				<td>
+				<div style="cursor:pointer;" title="Cập nhật nhóm" onmousedown="doEditGroup();">
+					<img src="/images/email/icon_edit.jpg" ></img>
+					Cập nhật
+				</div>
+				</td>
+				<td>
+				<div style="cursor:pointer;" title="Xóa nhóm" onmousedown="doDeleteGroup();">
+				<img src="/images/email/icon_del.jpg" ></img>
+				Xóa
+				</div>
+				</td>
+				<td>
+				<div style="cursor:pointer;" title="Gửi mail đến nhóm này" onmousedown="doComposeWithGroup();return false;">
+				<img src="/images/email/contact_compose_16.jpg" ></img>
+				Gửi mail
+				</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+
+		<form name=frm method=post onmousedown="document.getElementById('id_tooltip').style.display='none'"> <!-- Form -->
+		<div>
+					
+					<!-- Div the hien chi tiet contact-->
+					<div id=id_tooltip style="border:3px solid blue;position:absolute;background-color: white ;display:none; width:250px;
+					margin:2px;padding:2px 6px;white-space:nowrap;">
+								<b>Chi tiết liên lạc: </b>
+								<table>
+									<tr>
+										<td>
+										<div style="cursor:pointer;" title="Cập nhật liên hệ" onmousedown="doEditContact(event);">
+											<img src="/images/email/icon_edit.jpg" ></img>
+											Cập nhật
+										</div>
+										</td>
+										<td>
+										<div style="cursor:pointer;" title="Xóa liên hệ" onmousedown="doDeleteContact();">
+										<img src="/images/email/icon_del.jpg" ></img>
+										Xóa
+										</div>
+										</td>
+										<td>
+										<div style="cursor:pointer;" title="Gửi mail đến địa chỉ này" onmousedown="doComposeWithContact();return false;">
+										<img src="/images/email/contact_compose_16.jpg" ></img>
+										Gửi mail
+										</div>
+										</td>
+									</tr>
+								</table>
+
+
+
+								<table style="width:100%">
+
+									<tr>
+										<td nowrap><b>Tên liên lạc:</b></td>
+										<td width="100%" id='attr_name_fr'></td>
+									</tr>
+									<tr>
+										<td nowrap><b>Email:</b></td>
+										<td width="100%" id='attr_email'></td>
+									</tr>
+									<tr>
+										<td width="100%"><b>Ghi chú:</b></td>
+										<td width="100%" id='attr_comment'></td>
+									</tr>
+									
+								</table>
+
+					</div>
+
+					<!-- Ket thuc Div the hien chi tiet contact-->
+
+
+					
+					<div  id="mail_foldercolumn" > <!-- Div ben trai the hien thu muc va danh sach lien lac-->
+						<div id="mail_foldercolumn_top"><a href="javascript:();" onclick="Compose(); return false;" title="Soạn mail" ><b>Soạn mail</b></a></div>
+						<!-- Iframe chu cac thu muc mail -->
+						<iframe width="100%"  BORDER=0 scrolling=no FRAMEBORDER=no src="/mailclient/main/folderlist" id='folder_frame' name='folder_frame'> 
+						</iframe>
+						<script> document.getElementById('folder_frame').src="/mailclient/main/folderlist" ;</script>
+						<!-- Ket thuc Iframe chu cac thu muc mail -->
+						
+						<div id="danhsachcolumn_top">Danh sách liên lạc</div>
+						<div class="mail_addresscolumn" >
+							<div  class="danhsachlienlac_ct" >
+								
+									
+										<table>
+											<tr>
+												<td></td>
+												<td>
+													<div title="Thêm mới địa chỉ" style="color:#2a5db0;cursor:pointer;margin:2px;padding:2px 2px;position:relative;white-space:nowrap;" 
+													onclick="doAddNewContact(event);return false;">
+														<img src="/images/icon_add.gif" height=16 width=16></img>
+														Thêm mới danh sách
+													</div>
+												</td>
+											</tr>
+										</table>
+										<div id="input_group" style="margin-bottom:5px;margin-top:7px;">
+											Tên nhóm:
+											<input type="input" id='input_group_name'> 
+											<a href="#" title = "Thêm nhóm" onclick="doAddGroup(); return false;">Thêm</a>
+										</div>
+								
+							</div>	
+						<!-- Div chua danh sach cac lien lac-->
+							<div id="listcontacts" class="pane-sliders" style="border:2px solid #e0ecff;" ><!-- Goi ajax--></div>		
+					</div> <!-- end mail_addresscolumn-->
+				</div><!-- Ket thuc Div ben trai the hien thu muc va danh sach lien lac-->
+
+			<div  id="mail_maincolumn" style="width:70%" > <!-- Div the hien danh sach mail-->
+				<iframe width="100%"  allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src="/mailclient/main/maillist" id='right_frame' name='right_frame'> 
+				</iframe>
+				<script> document.getElementById('right_frame').src="/mailclient/main/maillist"; </script>	
+			</div><!-- Ket thuc div the hien danh sach mail-->
+
+		<!-- Cac hidden-->
+		<input type='hidden' name='id_ead_se' > </input>
+		<input type='hidden' name='email_ead_se' > </input>
+
+		<input type="hidden" name="idfolder" value="<?php echo $this->idfolder; ?>">
+		<input type="hidden" name="mailaction" value="">
+		<!-- Ket thuc hidden-->
+		</form> <!-- Ket thuc form --> 
+</div>
+
+<script>
+	
+	
+	
+	function doViewMail(id){
+		//window.open("/mailclient/main/view/id/"+id,
+				//"windowviewmail"+id,"status=0,toolbar=1,autoscroll,width=600,height=500");
+		//window.location='/mailclient/main/index';
+
+	}
+
+	
+	function folder_click(id_folder){
+		document.getElementById('right_frame').src="/mailclient/main/maillist/idfolder/"+id_folder;
+		///alert(1);
+	}
+
+	function Compose(){
+		//window.open("/mailclient/main/compose/","windowcomposemail","");
+		window.parent.document.getElementById('right_frame').src = "/mailclient/main/compose/";
+	}
+	
+	function Receive(){
+		window.location = "/mailclient/emailengine/checkmail/";
+	}
+	
+	function Config(){
+		window.location = "/mailclient/emailengine/configinfo/";
+	}
+
+	function addContact(){
+		window.open("/mailclient/emailengine/inputcontact/",
+				"windowaddcontact","status=0,toolbar=0,width=700,height=300");
+	}
+	
+
+	function doSaveGroup(){
+	
+		var otext = document.frm_inputgroup.name_g.value;
+		if(otext == ""){
+			alert("Bạn phải nhập tên nhóm");
+		}
+		else{
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("post", "/mailclient/emailengine/savegroup" , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			var post = submitAjax.getDataFromFrm(document.frm_inputgroup);
+			oXmlHttp.onreadystatechange = function () { 
+				if (oXmlHttp.readyState == 4) { 
+					//alert(oXmlHttp.responseText);
+					if (oXmlHttp.status == 200) { 
+						if(oXmlHttp.responseText == 1){
+							
+							closeEditGroup();
+							loadContacts();
+						}
+						else{
+							alert("Bạn không thể thêm mới nhóm");
+						}
+						
+					} else { 
+					
+					} 
+				} 
+			       }; 
+				
+			oXmlHttp.send(post);
+		}
+	}
+
+	function doAddGroup(){
+		var otext = document.getElementById('input_group_name');
+		if(otext.value == ""){
+			alert("Bạn phải nhập tên nhóm");
+		}
+		else{
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("get", "/mailclient/emailengine/savegroup?name_g="+encodeURIComponent(otext.value) , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			oXmlHttp.onreadystatechange = function () { 
+				if (oXmlHttp.readyState == 4) { 
+					//alert(oXmlHttp.responseText);
+					if (oXmlHttp.status == 200) { 
+						if(oXmlHttp.responseText == 1){
+							//window.location = '/mailclient/main/';
+							otext.value ="";
+							alert("Đã thêm mới nhóm");
+							loadContacts();
+						}
+						else{
+							alert("Bạn không thể thêm mới nhóm");
+						}
+						
+					} else { 
+					
+					} 
+				} 
+			       }; 
+				
+			oXmlHttp.send(null);
+		}
+	}
+
+	function doDeleteContact(){
+		
+		if(document.frm.id_ead_se.value == ""){
+			alert("Bạn phải chọn liên hệ để xóa");
+		}
+		else{
+			if(confirm("Bạn có muốn xóa liên lạc này không ?")){
+			
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("get", "/mailclient/emailengine/deletecontact?id_ead="+document.frm.id_ead_se.value , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			oXmlHttp.onreadystatechange = function () { 
+				if (oXmlHttp.readyState == 4) { 
+					//alert(oXmlHttp.responseText);
+					if (oXmlHttp.status == 200) { 
+						if(oXmlHttp.responseText == 1){
+							//window.location.reload();
+							loadContacts();
+						}
+						else{
+							alert("Bạn không thể xóa liên hệ này");
+						}
+						
+					} else { 
+					
+					} 
+				} 
+			       }; 
+				
+			oXmlHttp.send(null);
+			}
+		}
+	}
+	
+	function doDeleteGroup(){
+		
+		if(document.frm_inputgroup.id_eg_h.value == ""){
+			alert("Bạn phải chọn nhóm để xóa");
+		}
+		else{
+			if(confirm("Bạn có muốn xóa nhóm " + '" ' + document.frm_inputgroup.name_g_h.value +' "'+" không?")){
+			
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("get", "/mailclient/emailengine/deletegroup?id_eg="+document.frm_inputgroup.id_eg_h.value , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			oXmlHttp.onreadystatechange = function () { 
+				if (oXmlHttp.readyState == 4) { 
+					
+					if (oXmlHttp.status == 200) { 
+						if(oXmlHttp.responseText == 1){
+							
+							loadContacts();
+						}
+						else{
+							alert("Bạn không thể xóa nhóm này");
+						}
+						
+					} else { 
+					
+					} 
+				} 
+			       }; 
+				
+			oXmlHttp.send(null);
+			}
+		}
+	}
+
+
+	function getScrollY() {
+		  var scrOfY = 0;
+		  if( typeof( window.pageYOffset ) == 'number' ) {
+		    scrOfY = 0;
+		  } else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
+		    scrOfY = 0;
+		  } else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
+		    scrOfY = document.documentElement.scrollTop;
+		  }
+		  //alert(scrOfY);
+		  return scrOfY;
+	}
+	
+	function mouseCoords(ev){
+		if(ev.pageX || ev.pageY){
+			return {x:ev.pageX, y:ev.pageY};
+		}
+		return {
+			x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+			y:ev.clientY + document.body.scrollTop  - document.body.clientTop
+		};
+	}
+	
+	function showAttrContact(ev,name_fr,email,name_hi,id){
+		
+		
+		var odleftdiv = document.getElementById("mail_foldercolumn");
+		var odleftdiv_width = odleftdiv.offsetWidth;
+		var odleftdiv_left = 0;
+		while( odleftdiv != null ) {
+			odleftdiv_left += odleftdiv.offsetLeft;
+			odleftdiv = odleftdiv.offsetParent;
+		}
+		
+		
+		var scrolly = getScrollY();
+		ev = ev || window.event;
+		
+		var temp = mouseCoords(ev);
+		var tooltip = document.getElementById("id_tooltip");
+		
+		var attr_name_fr = document.getElementById("attr_name_fr");
+		var attr_email = document.getElementById("attr_email");
+		var attr_comment = document.getElementById("attr_comment");
+		
+		
+		var o_com = document.getElementById(name_hi);
+		
+		attr_name_fr.innerHTML = name_fr;
+		attr_email.innerHTML = email;
+		attr_comment.innerHTML = o_com.value;
+		document.frm.id_ead_se.value = id;
+		document.frm.email_ead_se.value = email;
+		
+		var tooltip_group = document.getElementById("id_tooltip_group");
+		
+		tooltip_group.style.display='none';
+		
+		
+		
+		tooltip.style.top = ((temp.y - 10) + scrolly)+ "px";
+		tooltip.style.left = (odleftdiv_width+odleftdiv_left) + "px";
+		tooltip.style.display = "";
+		
+		tooltip.style.paddingTop = "5px";
+		
+	}
+	
+	function showAttrGroup(ev,id_eg,name_g){
+		
+		var odleftdiv = document.getElementById("mail_foldercolumn");
+		var odleftdiv_width = odleftdiv.offsetWidth;
+		var odleftdiv_left = 0;
+		while( odleftdiv != null ) {
+			odleftdiv_left += odleftdiv.offsetLeft;
+			odleftdiv = odleftdiv.offsetParent;
+		}
+		
+		var scrolly = getScrollY();
+		ev = ev || window.event;
+		
+		var temp = mouseCoords(ev);
+		var tooltip = document.getElementById("id_tooltip_group");
+		var tooltip_contact = document.getElementById("id_tooltip");
+		
+		document.frm_inputgroup.id_eg_h.value = id_eg;
+		document.frm_inputgroup.name_g_h.value = name_g;
+		document.getElementById('group_info').innerHTML = "Nhóm <b> : " + name_g+ "</b>";
+		document.getElementById('groupname_input').innerHTML = '" '+document.frm_inputgroup.name_g.value +' "';
+		tooltip_contact.style.display='none';
+		tooltip.style.top = ((temp.y - 10) + scrolly)+ "px";
+		tooltip.style.left = (odleftdiv_width+odleftdiv_left) + "px";;
+		tooltip.style.display = "";
+		tooltip.style.paddingTop = "5px";
+
+		
+	}
+
+	function closeEditContact(){
+		var odiv_inputcontact = document.getElementById("id_input_contact");
+		odiv_inputcontact.style.display = "none";
+		var odiv_right_div = document.getElementById("mail_maincolumn");
+		odiv_right_div.style.visibility='visible';
+	}
+	
+	function closeEditGroup(){
+		var odiv_input = document.getElementById("id_input_group");
+		odiv_input.style.display = "none";
+	}
+
+	function doEditGroup(){
+		
+		
+		var odiv_inputcontact = document.getElementById("id_input_group");
+		odiv_inputcontact.style.top = 400+ "px";
+		odiv_inputcontact.style.left = 400 + "px";
+		odiv_inputcontact.style.display = "";
+		odiv_inputcontact.style.paddingTop = "5px";
+		document.getElementById('groupname_input').innerHTML = '" '+document.frm_inputgroup.name_g.value +' "';
+		document.frm_inputgroup.id_eg.value = document.frm_inputgroup.id_eg_h.value;
+		document.frm_inputgroup.name_g.value = document.frm_inputgroup.name_g_h.value;
+		
+		closeEditContact();
+	}
+	
+	
+	function doEditContact(ev){
+		
+		//window.open("/mailclient/emailengine/inputcontact?id_ead="+document.frm.id_ead_se.value,
+				//"windowaddcontact","status=0,toolbar=0,width=700,height=300");
+		
+		
+		
+		/*document.frm_inputcontact.NAME_FRIEND.value= name_friend;
+		document.frm_inputcontact.EMAIL_ADDR_FR.value=email_addr_fr;
+		document.frm_inputcontact.ID_EG.value = id_eg;
+		document.frm_inputcontact.COMMENT.value = commnent;*/
+		
+
+		var scrolly = getScrollY();
+		ev = ev || window.event;
+		
+		var temp = mouseCoords(ev);
+
+		var odiv_inputcontact = document.getElementById("id_input_contact");
+		var odiv_right_div = document.getElementById("mail_maincolumn");
+		odiv_right_div.style.visibility='hidden';
+		odiv_inputcontact.style.top = "400 px";//((temp.y - 10) + scrolly)+ "px"; // + "px"; ;//400+ "px";
+		odiv_inputcontact.style.left = "400 px";//temp.x+ "px";;//400 + "px";
+		odiv_inputcontact.style.display = "";
+		odiv_inputcontact.style.paddingTop = "5px";
+		closeEditGroup();
+		//window.location += "#inputcontact_pos";
+		var submitAjax = new AjaxEngine(); 
+		var oXmlHttp = submitAjax.createXMLHttp();
+		oXmlHttp.open("get", "/mailclient/emailengine/inputcontact?id_ead="+document.frm.id_ead_se.value , true); 
+		//var post = submitAjax.getDataFromFrm(document.frm);
+		//alert(document.frm.NOIDUNG.value);
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+		oXmlHttp.onreadystatechange = function () { 
+			if (oXmlHttp.readyState == 4) { 
+				//alert(oXmlHttp.responseText);
+				if (oXmlHttp.status == 200) { 
+					odiv_inputcontact.innerHTML = oXmlHttp.responseText;
+					
+					document.frm_inputcontact.ID_EG.value = document.frm_inputcontact.ID_EG_H.value;
+				} else { 
+				
+				} 
+			} 
+		}; 
+			
+		oXmlHttp.send(null);
+		
+		
+
+	}
+
+	function doComposeWithContact(){
+		//window.open("/mailclient/main/compose?emailselect="+document.frm.email_ead_se.value,
+		//		"windowcomposemail","status=0,toolbar=0");
+		window.parent.document.getElementById('right_frame').src = "/mailclient/main/compose?emailselect="+document.frm.email_ead_se.value;
+	}
+
+	function doComposeWithGroup(){
+		window.parent.document.getElementById('right_frame').src = "/mailclient/main/compose?groupselect="+document.frm_inputgroup.id_eg_h.value;
+	}
+	
+	function checkSelectEmail(){
+		ln = 0;
+		var arr = document.getElementsByName('ID_EM[]');
+		for(var i = 0 ; i < arr.length ;i++ ){
+		if(arr[i].checked == true){
+			ln = 1;
+		}
+		}
+		return ln;
+	}
+
+	function doAddNewContact(ev){
+		
+		
+		var scrolly = getScrollY();
+		ev = ev || window.event;
+		
+		var temp = mouseCoords(ev);
+		
+		var odiv_inputcontact = document.getElementById("id_input_contact");
+		//odiv_inputcontact.style.top = 400+ "px";
+		//odiv_inputcontact.style.left = 400 + "px";
+		odiv_inputcontact.style.top = "400 px";//((temp.y - 10) + scrolly)+ "px"; // + "px"; ;//400+ "px";
+		odiv_inputcontact.style.left = "400 px";//temp.x+ "px";;//400 + "px";s
+		var odiv_right_div = document.getElementById("mail_maincolumn");
+		odiv_right_div.style.visibility='hidden';
+		odiv_inputcontact.style.display = "";
+		odiv_inputcontact.style.paddingTop = "5px";
+		
+		
+		//var scrolly = getScrollY();
+		//ev = ev || window.event;
+		
+		//var temp = mouseCoords(ev);
+		
+		 
+	
+		var submitAjax = new AjaxEngine(); 
+		var oXmlHttp = submitAjax.createXMLHttp();
+		oXmlHttp.open("get", "/mailclient/emailengine/inputcontact", true); 
+		//var post = submitAjax.getDataFromFrm(document.frm);
+		//alert(document.frm.NOIDUNG.value);
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+		oXmlHttp.onreadystatechange = function () { 
+			if (oXmlHttp.readyState == 4) { 
+				//alert(oXmlHttp.responseText);
+				if (oXmlHttp.status == 200) { 
+					odiv_inputcontact.innerHTML = oXmlHttp.responseText;
+					
+					//document.frm_inputcontact.ID_EG.value = document.frm_inputcontact.ID_EG_H.value;
+				} else { 
+				
+				} 
+			} 
+		}; 
+			
+		oXmlHttp.send(null);
+		
+	}
+	
+	function addContact(){
+		
+		var err = true;
+		err = err & validateInput("req",document.frm_inputcontact.NAME_FRIEND,"Phải nhập tên");
+		err = err & err==true?validateInput("maxlen=100",document.frm_inputcontact.NAME_FRIEND,"Tên không dài quá 100 ký tự"):false;
+		err = err & validateInput("req",document.frm_inputcontact.EMAIL_ADDR_FR,"Phải nhập email");
+		err = err & err==true?validateInput("maxlen=100",document.frm_inputcontact.EMAIL_ADDR_FR,"email không dài quá 100 ký tự"):false;
+		err = err & err==true?validateInput("email",document.frm_inputcontact.EMAIL_ADDR_FR,"email sai đinh dạng"):false;
+		
+		if(err){
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("post", "/mailclient/emailengine/savecontact/" , true); 
+			var post = submitAjax.getDataFromFrm(document.frm_inputcontact);
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			oXmlHttp.onreadystatechange = function () { 
+				if (oXmlHttp.readyState == 4) { 
+					//alert(oXmlHttp.responseText);
+					if (oXmlHttp.status == 200) { 
+						if(oXmlHttp.responseText ==1 ){
+							
+							//alert("Đã lưu thành công");
+							//window.opener.location.reload();
+							//self.close();
+							closeEditContact();
+							loadContacts();
+						}
+						else{
+							alert("Bạn không thể thêm liên hệ mới");
+						}
+						
+					} else { 
+					
+					} 
+				} 
+			       }; 
+				
+			oXmlHttp.send(post);
+		}
+	}
+
+	function loadContacts(){
+		
+			var odiv_listcontact = document.getElementById("listcontacts");
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("get", "/mailclient/main/contactlist/" , true); 
+			//var post = submitAjax.getDataFromFrm(document.frm_inputcontact);
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			oXmlHttp.onreadystatechange = function () { 
+				if (oXmlHttp.readyState == 4) { 
+					//alert(oXmlHttp.responseText);
+					if (oXmlHttp.status == 200) { 
+						
+							odiv_listcontact.innerHTML = "";
+							odiv_listcontact.innerHTML = oXmlHttp.responseText;
+							//alert("Đã lưu thành công");
+							//window.opener.location.reload();
+							//self.close();
+//							jQuery(window).load(function(){ new Accordion($$('.panel h3.jpane-toggler'), $$('.panel div.jpane-slider'), {onActive: function(toggler, i) { toggler.addClass('jpane-toggler-down'); toggler.removeClass('jpane-toggler'); },onBackground: function(toggler, i) { toggler.addClass('jpane-toggler'); toggler.removeClass('jpane-toggler-down'); },duration: 300,opacity: false,alwaysHide: true}); });
+			
+							
+						
+						
+					} else { 
+					
+					} 
+				} 
+			       }; 
+			oXmlHttp.send(null);
+	}
+	loadContacts();
+	
+	
+
+
+</script>

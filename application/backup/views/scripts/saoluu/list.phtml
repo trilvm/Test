@@ -1,0 +1,41 @@
+<form name="frm">
+<table class="adminlist">
+<thead>
+	<th style="width:20px; text-align: center">#</th>
+	<th style="width:20px; text-align: center"><input type=checkbox name=RESALL onclick="SelectAll(this,'RES')"></th>
+	<th style="text-align: center">Ngày sao lưu</th>
+	<th  style="text-align: center">Dung lượng</th>
+        <th  style="text-align: center">Yêu cầu phục hồi</th>
+        <th  style="text-align: center">Phản hồi phục hồi</th>
+</thead>
+<tbody>
+	<?php $stt = 1 ;foreach ($this->data as $data){?>
+	<tr>
+	<td style="text-align: center"><?php echo $stt?></td>
+	<td  align="center">
+			<input id="checklist" type=checkbox name=RES[] value='<?php echo $data["BACKUP_ID"] ?>'>
+	</td>
+	<td style="text-align: center"><b><?php echo date('H:i:s d/m/Y',strtotime($data["BACKUP_DATE"]))?></b></td>
+        <td style="text-align: right"><?php echo QLVBDHCommon::convertByte($data["FILE_SIZE"])?></td>
+        <td style="text-align: center"><b><?php echo $data["RESTORE_REQUEST"]==1?date('H:i:s d/m/Y',strtotime($data["RESTORE_REQUEST_DATE"])):"-";?></b></td>
+        <td style="text-align: center"><b><?php echo $data["RESTORED"]==1?date('H:i:s d/m/Y',strtotime($data["RESTORED_DATE"])):"-";?></b></td>
+	</tr>
+	<?php $stt++;}?>
+</tbody>
+</table>
+    <input hidden="hidden" name="post" value="ok"/>
+</form>
+<?php echo $this->limit;?>
+<script>
+    function RestoreButtonClick(){
+        if(validateInput("selone_check","RES[]")){
+            document.frm.action="/backup/saoluu/list";
+            document.frm.method="post";
+            document.frm.post;
+            document.frm.submit();  
+        }else{
+            alert('Phải chọn ít nhất 1 file để yêu cầu phục hồi!');
+        }
+        
+    }
+</script>

@@ -1,0 +1,76 @@
+<?php
+$this->dojo()->enable();
+?>
+<form name=frm method="post" action="/wf/Process/Save" enctype="multipart/form-data" >
+<fieldset>
+	<div class="required clearfix">
+		<label>Tên quy trình(*)</label>
+		<input type=text class=inputbox name=NAME value="<?=htmlspecialchars($this->data->NAME)?>" class="inputText" size="50" maxlength="80">
+    	<span class="box_erro_area" id="ERRNAME"></span>
+	</div>
+    <div class="required clearfix">
+		<label>Mã số quy trình(*)</label>
+		<input type=text class=inputbox name=ALIAS value="<?=$this->data->ALIAS?>" class="inputText" size="50" maxlength="50">
+    	<span class="box_erro_area" id="ERRALIAS"></span>
+	</div>
+	<div class="required clearfix">
+		<label>ID quy trình(*)</label>
+		<input type=text class=inputbox name=ID_LOAIHSCV value="<?=$this->loaihscv->ID_LOAIHSCV?>" class="inputText" size="4" maxlength="4">
+    	<span class="box_erro_area" id="ERRID_LOAIHSCV"></span>
+	</div>
+	<div class="required clearfix">
+		<label>Thuộc đối tượng(*)</label>
+        <select name="ID_C" id="ID_C">
+			<?php
+				foreach($this->class as $row){
+					echo "<option value='".$row->ID_C."'>".htmlspecialchars($row->NAME)."</option>";
+				}
+			?>
+		</select>
+		<script>
+			document.getElementById("ID_C").value='<?php echo $this->data->ID_C; ?>';
+		</script>
+        <span class="box_erro_area" id="ERRID_C"></span>
+	</div>
+	<div class="required clearfix">
+		<label>Thuộc phòng(*)</label>
+        <select name="ID_DEP" id="ID_DEP">
+			<option value="0">--Toàn cơ quan--</option>
+			<?=DepartmentsModel::toComboName()?>
+		</select>
+		<script>
+			document.getElementById("ID_DEP").value='<?php echo $this->data->ID_DEP; ?>';
+		</script>
+        <span class="box_erro_area" id="ERRID_C"></span>
+	</div>
+    <div class="required clearfix">
+		<label>Được sử dụng(*)</label>
+		<input type=checkbox class=inputbox name=ACTIVE value="1" <?php echo $this->data->ACTIVE==1?"checked":"" ?> class="inputText" size="50" maxlength="100">
+		<span class="box_erro_area" id="ERRALIAS"></span>
+	</div>
+	<div class="optional clearfix">
+		<label>(*) Bắt buộc nhập liệu.</label>
+	</div>
+</fieldset>
+<input type=hidden name=ID_P value="<?php echo $this->data->ID_P; ?>">
+</form>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+		err = err & validateInput("req",document.frm.NAME,"Tên quy trình không được rỗng.");
+		err = err & err==true?validateInput("maxlen=128",document.frm.NAME,"Tên quy trình phải ít hơn 50 ký tự."):false;
+		err = err & validateInput("req",document.frm.ALIAS,"Mã số trạng thái không được rỗng.");
+		err = err & err==true?validateInput("maxlen=20",document.frm.ALIAS,"Mã số trạng thái phải ít hơn 20 ký tự."):false;
+		err = err & err==true?validateInput("alnum",document.frm.ALIAS,"Mã số trạng thái chỉ gồm các ký tự A-Z a-z 0-9."):false;
+		err = err & validateInput("req",document.frm.ID_C,"trạng thái phải thuộc một đối tượng.");
+		err = err & validateInput("req",document.frm.ID_LOAIHSCV,"ID quy trình không được rỗng."); 
+		err = err & err==true?validateInput("num",document.frm.ID_LOAIHSCV,"ID quy trình phải là số"):false;
+		if(err==true){
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+		document.frm.action = "/wf/workflow";
+		document.frm.submit();
+	}
+</script>

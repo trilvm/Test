@@ -1,0 +1,63 @@
+<?php
+	require_once 'hscv/models/butpheModel.php';
+?>
+<table class=adminlist1>
+	<thead>
+		<tr>
+			<th nowrap="nowrap">#</th>
+			<th nowrap="nowrap">Người bút phê</th>
+			<th width="100%">Nội dung bút phê</th>
+			<th nowrap="nowrap">Ngày bút phê</th>
+			<th nowrap="nowrap">Người nhập bút phê</th>
+			<th width="nowrap" style="display: none">Xóa</th>
+		</tr>
+	</thead>
+	<tfoot>
+        <?php 
+            
+            $infoHSCV = WFEngine::GetCurrentTransitionInfoByIdHscv($this->idhscv);
+            if($infoHSCV['ID_U_NK'] == $this->idu){
+        ?>
+		<tr>
+			<th colspan="6"><a href="javascript:SwapIframe(<?=$this->idhscv;?>, '/hscv/hscv/nhapbutphe/idhscv/<?=$this->idhscv;?>')">Nhập bút phê</a></th>
+		</tr>
+        <?php } ?>
+	</tfoot>
+	<tbody>
+<?php
+	$stt=0;
+	$i=0;
+	foreach($this->data as $row){
+		$stt++;
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td nowrap>
+				<?php echo $stt ?>
+			</td>
+			<td nowrap><?=$row["EMPNAME"]?></td>
+			<td width=100%><?=$row["NOIDUNG"] ?></td>
+			<td nowrap>
+				<?=$row["NGAYBP"]==""?"":date("d/m/Y",strtotime($row["NGAYBP"]))?>
+			</td>
+			<td nowrap>
+				<?php 
+					$year = QLVBDHCommon::getYear();
+					$mdlbutphe = new butpheModel($year);
+					echo $mdlbutphe->getNguoiButPhe($row['NGUOICHUYEN']);
+				?>
+			</td>
+			<td nowrap style="display: none">
+			<?php if($row['NGUOICHUYEN'] == $this->idu) { ?>
+				<!--<a href="/hscv/hscv/deletebutphe/idhscv/<?=$this->idhscv;?>">Xóa</a>-->
+				<a href="javascript:;" onclick="if(confirm('Bạn có muốn xóa không?')){
+				var oData = new Object();
+				sendDataObjectNameToServer('','/hscv/hscv/deletebutphe/idhscv/<?=$this->idhscv;?>/idbp/<?=$row['ID_BP']?>');
+			}">Xóa</a>
+			<?php } ?>
+			</td>
+		</tr>
+<?php
+	}
+?>
+	</tbody>
+</table>

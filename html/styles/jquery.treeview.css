@@ -1,0 +1,138 @@
+.treeview, .treeview ul { 
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	background:#fff;
+}
+
+.treeview ul {
+	background-color: white;
+	margin-top: 4px;
+}
+
+.treeview .hitarea {
+	background:url(../images/treeview/treeview-default.gif) -64px -25px no-repeat;
+	height: 16px;
+	width: 16px;
+	margin-left: 0px;
+	float: left;
+	cursor: pointer;
+}
+/* fix for IE6 */
+* html .hitarea {
+	display: inline;
+	float:none;
+}
+
+.treeview li { 
+	margin: 0;
+	padding: 3px 0pt 3px 16px;
+	background:#3F0;
+}
+
+.treeview a.selected {
+	background-color: #eee;
+        font-weight: bold;
+        color:#ff0000 !important;
+}
+
+#treecontrol { margin: 1em 0; display: none; }
+
+.treeview .hover { color: red; cursor: pointer; }
+
+.treeview li { background: url(../images/treeview/treeview-default-line.gif) 0 0 no-repeat;}
+.treeview li.collapsable, .treeview li.expandable {background:#0fafe3; }
+.treeview li ul .collapsable, .treeview ul li.expandable {margin:0;padding:0; }
+.treeview li ul li.collapsable, .treeview li ul li.expandable {background:#d7f4ff;border-bottom:1px solid #fff;padding-left:16px;  }
+
+.treeview li ul li ul li.collapsable, .treeview li ul li ul li.expandable {background:#fff;padding:5px 0 5px 32px;border-bottom:1px solid #fff;margin-left:-16px;}
+
+.treeview .expandable-hitarea { background-position: -80px -3px; }
+.treeview li ul li .expandable-hitarea { background-position: -49px -48px; }
+.treeview li ul li .collapsable-hitarea { background-position: -17px -91px; }
+.treeview li ul li ul li .collapsable-hitarea { background-position: -3px -112px; }
+
+
+.treeview li ul li ul li .expandable-hitarea { background-position: -35px -68px; }
+.treeview li ul li ul li.collapsable-hitarea { background-position: -3px -117px; }
+.treeview li:first-child {background:#0fafe3;}
+.treeview li ul li:first-child {background:#D7F4FF;}
+.treeview li ul li ul li:first-child {background:#fff;}
+.treeview li ul li ul li:first-child {margin-left:-16px;}
+.treeview li ul li ul li {margin-left:-16px;}
+.treeview li ul li ul li:last-child {margin-left:-16px;}
+.treeview li.last { background-position: 0 -1766px } 
+.treeview li.lastExpandable { background-position: -83px -7px }
+
+.treeview li.last a.file { margin-left:16px;background:#D7F4FF;}
+.treeview li ul li ul li.last a.file { padding-left:32px;margin-left:-16px;background:#fff;} 
+.treeview li ul li ul li ul li a.file {background:url("../images/treeview/j_arrow.png") no-repeat 0px 5px ; padding-left:10px;}
+.treeview li ul li ul li a.file { padding-left:26px !important;margin-left:-0px !important;background:#fff url("../images/treeview/j_arrow.png") no-repeat 16px 5px !important ;}
+.treeview li ul li:first-child a.file { padding-left:26px !important;margin-left:0px;background:#fff url("../images/treeview/j_arrow.png") no-repeat 16px 5px ;}
+.treeview li ul li.lastCollapsable a.file { padding-left:42px !important;margin-left:-0px;background:#fff url("../images/treeview/j_arrow.png") no-repeat 32px 5px !important ;}
+
+.treeview li ul li ul li:first-child a.file { padding-left:42px !important;margin-left:0px;background:#fff url("../images/treeview/j_arrow.png") no-repeat 32px 5px !important;}
+
+.treeview li ul li.last a.file { padding-left:26px !important;margin-left:0px;background:#D7F4FF url("../images/treeview/j_arrow.png") no-repeat 16px 5px ;}
+/* .treeview li ul li:first-child a.file { padding-left:42px !important;margin-left:0px;background:#fff url("../images/treeview/j_arrow.png") no-repeat 32px 5px !important;} */
+.treeview li:first-child a.file { padding-left:26px !important;margin-left:0px;background:#D7F4FF url("../images/treeview/j_arrow.png") no-repeat 16px 5px !important;}
+
+.treeview li ul li ul li ul li:first-child a.file { padding-left:42px !important;margin-left:0px;background:#fff url("../images/treeview/j_arrow.png") no-repeat 32px 5px !important;}
+.treeview li ul li ul li ul li a.file { padding-left:42px !important;margin-left:0px !important;background:#fff url("../images/treeview/j_arrow.png") no-repeat 32px 5px  !important;}
+.treeview li ul li a.file { padding-left:26px !important;margin-left:0px;background:#D7F4FF url("../images/treeview/j_arrow.png") no-repeat 16px 5px ;}
+.treeview li ul li ul li ul li.last a.file { padding-left:42px !important;margin-left:-16px;background:url("../images/treeview/j_arrow.png") no-repeat 46px 5px ;} 
+.treeview li ul li ul li.last a.file { padding-left:42px !important;margin-left:0px;background:#fff url("../images/treeview/j_arrow.png") no-repeat 32px 5px !important ;} 
+
+
+
+
+
+.treeview-red li { background-image: url(../images/treeview/treeview-red-line.gif); }
+.treeview-red .hitarea, .treeview-red li.lastCollapsable, .treeview-red li.lastExpandable { background-image: url(../images/treeview/treeview-red.gif); } 
+
+.treeview-black li { background-image: url(../images/treeview/treeview-black-line.gif); }
+.treeview-black .hitarea, .treeview-black li.lastCollapsable, .treeview-black li.lastExpandable { background-image: url(../images/treeview/treeview-black.gif); }  
+
+.treeview-gray li { background-image: url(../images/treeview/treeview-gray-line.gif); }
+.treeview-gray .hitarea, .treeview-gray li.lastCollapsable, .treeview-gray li.lastExpandable { background-image: url(../images/treeview/treeview-gray.gif); } 
+
+.treeview-famfamfam li { background-image: url(../images/treeview/treeview-famfamfam-line.gif); }
+.treeview-famfamfam .hitarea{ background-image: url(../images/treeview/treeview-famfamfam.png); } 
+.treeview-famfamfam li ul li .hitarea, .treeview-famfamfam li ul li.lastCollapsable, .treeview-famfamfam li ul li.lastExpandable {  } 
+
+ .treeview-famfamfam li ul li ul li.lastCollapsable, .treeview-famfamfam li ul li ul li.lastExpandable { background-position: -3px -117px; } 
+
+
+.filetree li { padding: 4px 0 0px 0;border-bottom:1px solid #fff;background:#D7F4FF  }
+.filetree li ul li { padding:0;background:#D7F4FF }
+.filetree li ul li ul li {padding:0;background:none; }
+.filetree li ul li ul li ul li { padding-left: -32px; border-bottom:1px dotted #fff;padding:0;background:none; }
+.filetree li ul li span { text-indent:32px; }
+.filetree li ul li ul li.expandable { border-bottom:1px dotted #9de0f8; }
+.filetree li ul li ul li.collapsable { border-bottom:1px dotted #9de0f8; }
+
+
+.filetree a.folder{ padding: 1px 0 1px 34px; display: block; }
+.filetree li ul li a.folder{ padding: 1px 0 1px 0px; display: inline-block;background:none;color:#137ad2 }
+.filetree  li ul li a.file { padding: 1px 0 1px 0px; display: block;}
+.filetree  li ul li a.file a  {color:#666;cursor:pointer;}
+.filetree  li ul li a.file a:hover  {color:red;cursor:pointer;}
+.filetree a.folder { background: url(../images/treeview/folder.png) 16px 0 no-repeat;color:#fff; }
+.filetree li.expandable a.folder { background: url(../images/treeview/folder-closed.png) 16px 0 no-repeat; }
+.filetree li ul li.expandable a.folder { background: none; }
+
+.filetree li ul li.expandable span.folder { background: none;text-indent:0; }
+.filetree li ul li.collapsable span.folder { background: none;text-indent:0; }
+.filetree span.file { background:#fff;}
+
+
+.filetree a {text-decoration:none;}
+
+.filetree span.selected {
+	background-color: #eee;
+	color:red !important;
+}
+.filetree span.selected a{
+	background-color: #eee;
+	color:red !important;
+}

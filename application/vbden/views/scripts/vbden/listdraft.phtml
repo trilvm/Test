@@ -1,0 +1,65 @@
+<form method="post" action="/vbden/vbden/listdraft" name="frm">
+<select name="ID_SVB" id="ID_SVB" class="inputbox" size="1" onchange="GetSoVanBan(this.value)">
+		<option value="0">-- Chọn sổ văn bản --</option>
+		<?php 
+			SoVanBanModel::getSVBByUserCqDepSmartToCombo(0);
+		?> 
+</select>
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th nowrap>#</th>
+			<th nowrap>Số/Ký hiệu</th>
+			<th width=100%>Trích yếu</th>
+			<th nowrap>Cơ quan ban hành</th>
+			<th nowrap>Ngày ban hành</th>
+			<th nowrap>Hành động</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+		$stt=1;
+		foreach($this->data as $item){
+		?>
+		<tr>
+			<td nowrap><?=$stt?></td>
+			<td nowrap><?=htmlspecialchars($item["SOKYHIEU"])?></td>
+			<td width=100%><?=htmlspecialchars($item["TRICHYEU"])?></td>
+			<td nowrap><?=htmlspecialchars($item["COQUANBANHANH_TEXT"])?></td>
+			<td nowrap><?=QLVBDHCommon::MysqlDateToVnDate($item["NGAYBANHANH"])?></td>
+			<td nowrap>
+			<a href="/vbden/vbden/input/type/1/draft/1/idvbdraft/<?=$item["ID_VBD"]?>">
+			Cập nhật
+			</a>
+			<br>
+			<a href="/vbden/vbden/input/idvbdraft/<?=$item["ID_VBD"]?>">
+			Chuyển xử lý
+			</a>
+			<br>
+			<a href="javascript:void(0);" onclick="deleteVB('/vbden/vbden/deletedraft/idvbdraft/<?=$item["ID_VBD"]?>')">
+			Xoá
+			</a>
+			</td>
+		</tr>
+		<?php
+			$stt++;
+		}	
+		?>
+	</tbody>
+</table>
+</form>
+<script>
+	document.frm.ID_SVB.value = '<?=$this->id_svb?>';
+	function GetSoVanBan(id)
+	{
+		//document.getElementById(id).value = true;
+		document.frm.submit();
+	}
+        function deleteVB(url)
+        {
+            if(confirm('Bạn có muốn xóa văn bản này không?'))
+            {
+                window.location.href=url;
+            }
+        }
+</script>

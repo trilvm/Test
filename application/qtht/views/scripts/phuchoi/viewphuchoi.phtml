@@ -1,0 +1,19 @@
+<table width="100%" style=" border-top:none;">
+    <tr>
+        <td style="border-left: none; background: #fff; border-bottom: none; border-right: none;" colspan="3"><strong>Nội dung :</strong> <?php echo $this->CONTENT;?></td>
+    </tr>
+    <tr>
+        <td style="border-left: none; background: #fff; border-bottom: none; border-right: none;" colspan="3"><strong>Giải pháp :</strong> <?php echo $this->SOLUTION;?></td>
+    </tr>
+    <tr>
+        <td style="border-left: none; background: #fff; border-bottom: none; border-right: none;" colspan="3"><strong>File đính kèm:</strong>
+            <ol style="margin:0 0 0 10px;">
+                <?php foreach ($this->restore_files as $restore_file):?>
+                <li style="list-style:decimal; margin:0 0 0 10px;"><a href="<?php echo $this->urlservice?>fileAtRe=1&session=<?=$this->session?>&MASO=<?=$restore_file['MASO']?>"><?php echo $restore_file['FILENAME']?></a></li>
+                 <?php endforeach;?>
+            </ol>
+            
+        </td>
+    </tr>
+   
+</table>

@@ -1,0 +1,40 @@
+<?php
+require_once '../../lib/nusoap.php';
+require_once '../../config.php';
+require_once '../../db/connection.php';
+require_once '../../models/DKWEB.php';
+require_once '../../db/common.php';
+$soap = new soap_server;
+$soap->configureWSDL('DKWEB', 'http://php.hoshmand.org/');
+$soap->wsdl->schemaTargetNamespace = 'http://soapinterop.org/xsd/';
+
+$soap->register('SetHoso',array('data'=>'xsd:string')
+
+						,array('c' => 'xsd:string'),'http://soapinterop.org/');
+
+$soap->register('getGopy',array()
+
+						,array('c' => 'xsd:string'),'http://soapinterop.org/');
+
+
+$soap->service(isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : '');
+
+function SetHoso($data) {
+	try{
+		return DKWEB::insertFromWebsite($data);
+	}catch(Exception $ex){
+		
+	}
+}
+
+
+function getGopy() {
+	try{
+		return DKWEB::getGopy();
+	}catch(Exception $ex){
+		
+	}
+}
+
+
+}

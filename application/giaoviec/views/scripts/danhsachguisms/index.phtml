@@ -1,0 +1,167 @@
+<?= QLVBDHCommon::useDlgConfirm() ?>
+<script type="text/javascript">
+    var jq1102 = jQuery.noConflict(true);
+</script>
+<form name=frm method="post" action="/giaoviec/danhsachguisms/index">    
+    <tr>
+        <td nowrap="nowrap">Đơn Vị</td>
+        <td nowrap="nowrap">
+            <select name="ID_DONVI" id="ID_DONVI" class="inputbox" size="1" onchange="document.frm.submit();">
+
+                <?php
+                    echo DanhSachGuiSmsModel::WriteDonVi((int)$this->ID_DONVI, "-- Chọn tất cả  --");
+                ?>
+            </select>
+        </td>
+
+        <td width="100%"></td>
+     </tr>
+    <table class="adminlist">
+        
+                    
+        <thead>
+            <tr>
+                <th nowrap style="text-align: center;">#</th>
+                <th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this, 'DEL')"></th>
+                <th width="20%">Đơn vị</th>
+                <th width="20%">Người nhận</th>
+                <th width="10%">Điện thoại</th>
+                <th width="40%">Nội dung</th>
+                 <th width="">Trạng thái</th>
+                <th width="">Ngày gửi</th>
+                <th width="">Gửi tin nhắn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $stt = 0;
+            foreach ($this->data as $row) {
+                $stt++;
+                ?>
+                <tr>
+                    <font color="red" id="errorSend"></font>
+                    <td nowrap align="center"><?php echo $stt ?></td>
+                    <td nowrap>
+                        <input type=checkbox name=DEL[] value='<?php echo $row['ID'] ?>'>
+                    </td>  
+                    <td nowrap align="left"> <a href="#" onclick = "ItemClick(<?php echo $row['ID'] ?>);"><?=$row['TENDONVI']?></a></td>
+                    <td nowrap align="left"> <a href="#" onclick = "ItemClick(<?php echo $row['ID'] ?>);"><?=$row['TENNGUOINHAN']?></a></td>
+                    <td nowrap align="center"><?=$row['SODIENTHOAI']?></td>  
+                    <td  align="left"><?=$row['NOIDUNG']?></td>  
+                     <td  align="left"><?php
+                        if($row['TRANGTHAI']==2){
+                            echo 'Đã gửi';
+                        }else
+                            echo 'Chưa gửi';
+                     ?></td>
+                     <td  align="left"><?php if($row['THOIGIAN'] != NULL) echo  QLVBDHCommon::MysqlDateToVnDateWithTime($row['THOIGIAN']) ?></td>
+
+                    <td  align="left">
+                        <?php if($row['TRANGTHAI'] != 2){
+                        ?>
+                        <a href="#" onclick = "SendSMSButtonClick('<?php echo $row['SODIENTHOAI'] ?>','<?php echo $row['NOIDUNG'] ?>','<?php echo $row['ID'] ?>');">Gửi tin nhắn </a>
+                        <?php } ?>    
+                    </td>
+                </tr>
+            <?php
+                $i = (-1 + $i) * -1;
+            }
+            ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="9">
+                    <div class="pagination">
+                        <div class="limit">Hiển thị #
+                            <select name="limit" id="limit" class="inputbox" size="1" onchange="document.frm.page.value = 1;
+                                    document.frm.submit();" style="width:60px;">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>                                
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <script>
+                                    document.frm.limit.value = '<?php echo $this->limit ?>';
+                                </script>
+                            </select>
+                        </div>
+                        <div style="float:right;"><?php echo $this->showPage; ?></div>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<script>
+   
+    function BackButtonClick(){
+        window.location.href="/";
+    }
+    function DeleteButtonClick(){
+        var ln = 0;
+        var arr = document.getElementsByName('DEL[]');
+        for (var i = 0; i < arr.length; i++){
+            if (arr[i].checked == true){
+                ln = 1;
+            }
+        }
+        if (ln == 1){
+            var func_ok = "document.frm.action='/giaoviec/danhsachguisms/delete';document.frm.method='post';document.frm.submit();";
+            var func_cancel = "";
+            displayConfirm("Bạn có muốn xóa không?", "", "", func_ok, func_cancel);
+        }else{
+            alert("Bạn phải chọn một loại công việc giao việc để xóa!");
+        }
+    }
+
+    function AddNewButtonClick() {
+        document.frm.action = "/giaoviec/danhsachguisms/input";
+        document.frm.method = "post";
+        document.frm.submit();
+    }
+//    function SendSMSButtonClick() {
+//        document.frm.action = "/giaoviec/danhsachguisms/send";
+//        document.frm.method = "post";
+//        document.frm.submit();
+//    }
+    
+    function SendSMSButtonClick(phone,content,id) {
+        jq1102('#errorGH').html("");
+        jq1102.ajax({
+            url: '/giaoviec/danhsachguisms/send',
+            data: {
+                'Phone': phone,
+                'Content': content,
+                'id': id
+            },
+            async: false,
+            type: 'post',
+            cache: false,
+            success: function (data) {
+                //var jsonObj = jq1102.parseJSON(data);
+//                if (jsonObj.status == 'true') {
+//                    return false;
+//                } else {
+//                    jq1102('#errorSend').html("Không thể gửi tin nhắn :(");
+//                }
+            }
+        });
+
+    }
+    
+    function ItemClick(id) {
+        document.frm.action = "/giaoviec/danhsachguisms/input/id/" + id;
+        document.frm.method = "post";
+        document.frm.submit();
+    }
+    function TimLai() {
+        document.frm.search.value = "";
+        document.frm.action = "/giaoviec/danhsachguisms/index";
+        document.frm.submit();
+    }
+</script>

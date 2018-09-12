@@ -1,0 +1,40 @@
+<?php
+	$edit = false;
+	$note = true;
+	$notview=false;
+	if($this->type=="personal"){
+		$fieldid = "ID_CPD";
+		if($this->ID_U_CURRENT==$this->idowner){$edit=true;};
+		$fieldiscaptren = "IS_DEP";
+	}else if($this->type=="department"){
+		$fieldid = "ID_CDD";
+		$actid = ResourceUserModel::getActionByUrl("lichct","lichct","editlichphong");
+		$edit=false;
+		if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+			$edit=true;
+		}
+		$fieldiscaptren = "IS_COQUAN";
+		$note = false;
+	}else if($this->type=="corporation"){
+		$fieldid = "ID_CCD";
+		$actid = ResourceUserModel::getActionByUrl("lichct","lichct","editlichcoquan");
+		if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+			$edit=true;
+		}else{
+			$config = Zend_Registry::get('config');
+			if(file_exists($config->file->root_dir."/lichct/".$this->week.".html")){
+				$f = fopen($config->file->root_dir."/lichct/".$this->week.".html","r");
+				$content = fread($f,filesize($config->file->root_dir."/lichct/".$this->week.".html"));
+			}
+			$note = false;
+			$notview=true;
+		}
+		$fieldiscaptren = "abc";
+	}
+	$beginwork = "16"; //7h30
+	$endwork = "36"; //5h30
+	$endwork_time_object = "1730";
+	$beginwork_time = "0730"; //7h30
+	$endwork_time = "1800"; //5h30
+	require_once "common/plugin/dategrid.php";
+?>

@@ -1,0 +1,32 @@
+<form name=frm method="post" action="/qtht/goiy/Save" enctype="multipart/form-data" >
+<fieldset>
+	<div align="center"><span class="box_erro_area"><?php echo $this->error; ?></span></div>
+	<div class="required">
+		<label>Nội dung(*)</label>
+		<input type=text class=inputbox name=NOIDUNG value="<?=$this->data['NOIDUNG']?>" class="inputText" size="80" maxlength="215">
+    	<span class="box_erro_area" id="ERRNOIDUNG"></span>
+	</div>
+	<div class=clr></div>
+    <div class="optional">
+		<label>(*) Bắt buộc nhập liệu.</label>
+	</div>
+</fieldset>
+
+<input type=hidden name=id value="<?php echo $this->id; ?>">
+</form>
+<script>
+	function SaveButtonClick(){
+		var spERRSELGROUP = document.getElementById("ERRNOIDUNG");
+		spERRSELGROUP.innerHTML = "";
+		var err = true;
+		err = err & validateInput("req",document.frm.NOIDUNG,"Nội dung không được rỗng.");
+        if(err==true)
+    	{
+	      document.frm.submit();
+    	}			
+	}
+	function BackButtonClick(){
+		document.frm.action = "/qtht/goiy";
+		document.frm.submit();
+	}
+</script>

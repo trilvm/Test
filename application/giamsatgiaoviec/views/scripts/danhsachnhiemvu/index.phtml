@@ -1,0 +1,312 @@
+<?php
+	require_once 'Common/FileDinhKem.php';
+	require_once('auth/models/ResourceUserModel.php');
+	$disable="/isreadonly/1";
+?>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse_state.js"?>></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<script type="text/javascript" src="/js/realitysearch.js"></script>
+<form name=frm method=post action='/giamsatgiaoviec/danhsachnhiemvu' onclick="
+if(at_container){ at_Hide(false);}" onsubmit="document.frm.page.value = 1;document.frm.action = '/giamsatgiaoviec/danhsachnhiemvu';return true;">
+<div>
+    <table>
+	    <!--
+        <tr>
+            <td></td>
+            <td colspan="5"><input type="checkbox" name="IS_NOIBO" value="1" 
+                <?= $this->IS_NOIBO > 0 ? "checked" : "" ?>
+                                   onclick="document.frm.submit();"> 
+                <b><i>Xem danh sách nhiệm vụ nội bộ</i></b>
+            </td>
+            
+        </tr>  
+        <tr>
+            <td></td>
+            <td colspan="5"><input type="checkbox" name="IS_LIENTHONG" value="1" 
+                <?= $this->IS_LIENTHONG > 0 ? "checked" : "" ?>
+                                   onclick="document.frm.submit();"> 
+                <b><i>Xem danh sách nhiệm vụ được chuyển liên thông</i></b>
+            </td>
+            
+        </tr> 
+        -->
+        <tr>
+            <td nowrap="nowrap">Sổ văn bản</td>
+            <td nowrap="nowrap">
+				<select name="ID_SVB" id="ID_SVB" class="inputbox" size="1" onchange="document.frm.submit();">
+            	<?php 
+            		echo vbdenModel::WriteSVBBox((int)$this->ID_SVB,"-- Chọn tất cả  --", true,2);
+            	?> 
+        		</select>
+			</td>
+            <td nowrap="nowrap">Loại văn bản</td>
+            <td nowrap="nowrap">
+                <select name="ID_LVB" id="ID_LVB" class="inputbox" size="1" onchange="document.frm.submit();">
+                    <?php
+                    echo vbdenModel::WriteLVB((int) $this->ID_LVB, "-- Chọn tất cả  --");
+                    ?> 
+                </select>
+            </td>
+
+        </tr>
+        
+        <tr>
+            <td nowrap="nowrap">Loại công việc giao:</td>
+            <td nowrap="nowrap">
+               <select name="LOAICV_GIAOVIEC" id="LOAICV_GIAOVIEC" class="inputbox" size="1" onchange="document.frm.submit();">
+                   <?php
+                       echo DanhSachNhiemVuModel::WriteLOAICV($this->LOAICV_GIAOVIEC, "-- Chọn tất cả  --");
+                   ?>
+               </select>
+            </td>
+          <tr>    
+    
+        
+        <tr>
+            <td nowrap="nowrap" valign=top>Tên công việc</td>
+            <td nowrap="nowrap" colspan="3">
+                <input type=text onchange="setRealityKeyword(this.value);" class=inputbox name=TRICHYEU value='<?= htmlspecialchars($this->TRICHYEU) ?>' style="width: 474px;">
+                <input name=TRICHYEU_ISLIKE value=1 type=checkbox <?=$this->TRICHYEU_ISLIKE==1?"checked":""?> > Tìm gần đúng<br>
+                <input type="hidden" value="" name="REALITYKEYWORD">
+                <input type="checkbox" name=INNAME value=1 checked style="display:none"><!--Trong trích yếu-->
+                <input type="checkbox" name=INFILE value=1 style="display:none"><!--Trong nội dung văn bản-->
+            </td>
+            <td width="100%"></td>
+        </tr>    
+        <!--            
+        <tr>
+            <td nowrap="nowrap">Số đến</td>
+            <td nowrap="nowrap">
+                <input type=text class=inputbox name=SODEN value="<?= $this->SODEN ?>" style="width: 198px;"/>				
+            </td>             
+            <td nowrap="nowrap" colspan="2">
+                <input name=SODEN_ISLIKE value=1 type=checkbox <?= $this->SODEN_ISLIKE == 1 ? "checked" : "" ?> > Tìm gần đúng
+            </td>                            
+        </tr>
+        -->
+        <tr>
+            <td nowrap="nowrap">Số, ký hiệu VB</td>
+            <td nowrap="nowrap">
+                <input type=text class=inputbox name=SOKYHIEU value="<?= $this->SOKYHIEU ?>" style="width: 198px;"/>
+            </td>             
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap" ></td>
+                            
+        </tr>
+		</tr>
+                <tr>
+                    <td nowrap="nowrap">Người tham gia xử lý</td>
+                    <td nowrap="nowrap" colspan="3">
+					<?php
+						echo QLVBDHCommon::AutoComplete(
+							UsersModel::getAllNameAndId(1),
+							"ID_U",
+							"NAME",
+							"NGUOIXULY",
+							"NGUOIXULY_TEXT",
+							true,
+							"width:200px",
+							"",
+							$this->NGUOIXULY,
+							'');
+					?>
+					</td>
+					<td></td>
+		</tr>
+
+                
+    
+       <!--
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td>                
+                <input type=checkbox onclick="doAdvance();">Tìm kiếm nâng cao
+            </td>
+            <td></td>
+        </tr>
+        <tr id=FindAdvanced2>
+            <td nowrap="nowrap">Ngày đến</td>
+            <td nowrap="nowrap" colspan="3">
+                <?= QLVBDHCommon::calendar($this->NGAYDEN_BD, "NGAYDEN_BD", "NGAYDEN_BD") ?>
+                <span style="font-weight:bold;padding-left:10px;"> >> </span>
+                <?= QLVBDHCommon::calendar($this->NGAYDEN_KT, "NGAYDEN_KT", "NGAYDEN_KT") ?>
+            </td>
+            <td width="100%"></td>
+        </tr>
+       
+        <tr id=FindAdvanced4>
+            <td nowrap="nowrap">Cơ quan</td>
+            <td nowrap="nowrap">
+                <?php
+                echo QLVBDHCommon::AutoComplete(
+                        vbdenModel::GetDataCQ((int) $this->ID_CQ), "ID_CQ", "NAME", "ID_CQ", "COQUANBANHANH_TEXT", false, "width:200px", "", (int) $this->ID_CQ, '');
+                ?>
+            </td>
+            <td width="10" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td width="100%"></td>
+        </tr>
+       -->
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap">
+                <input type=hidden name=advanced>
+                <input type=submit value="Tìm kiếm">
+        </tr>
+        
+        
+           <input type=hidden name=ADVANCEDVALUE value="<?= $this->ADVANCED ?>">
+            </td>
+            <td width="10" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td width="100%"></td>
+        </tr>
+    </table>
+</div>
+<div>
+    <br>
+    <span style="font-weight:bold;text-transform: uppercase;">
+<?php
+if($this->LOAICV_GIAOVIEC!=""){
+    echo DanhSachNhiemVuModel::getTenLoaibyCode($this->LOAICV_GIAOVIEC);
+}
+?>
+ </span>
+        <br>
+
+</div>
+<table class=adminlist>
+	
+	<tfoot>
+		<tr>
+			<th colspan="13">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit1" style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.action = '/giamsatgiaoviec/danhsachnhiemvu';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+        <thead>
+        <tr>
+           <th style="height:45.0pt; width:32pt">STT</th>
+			<th style="width:155pt">T&ecirc;n c&ocirc;ng việc</th>
+			<th style="width:80pt">Vb đến/Căn cứ</th>
+			<th style="width:76pt">Ng&agrave;y đến/giao</th>
+			<th style="width:74pt">Người/Phòng thực hiện&nbsp;</th>
+			<th style="width:65pt">Người/Phòng phối hợp&nbsp;</th>
+			<th style="width:44pt">Tiến độ (%)</th>
+			<!--
+                        <th style="width:56pt">Ng&agrave;y cập nhật/ho&agrave;n th&agrave;nh</th>
+                        
+			<th style="width:137pt">Mô tả tiến độ</th>
+                        -->
+			<th style="width:62pt">Thời hạn</th>
+			<th style="width:55pt">T&igrave;nh h&igrave;nh xử l&yacute;</th>
+			<!--<th style="width:62pt">Trạng th&aacute;i&nbsp;</th> -->
+            
+        </tr>
+        </thead>
+	<tbody>
+                
+            <?php
+                    if(count($this->data)<=0){
+                            echo "<tr><td colspan='9'>Không tìm thấy hồ sơ công việc nào</td></tr>";
+                    }else{
+                    $stt=($this->page-1)*$this->limit;
+                    $i=0;
+                    foreach($this->data as $row){
+                          // var_dump($row);
+                            $stt++;
+
+            ?>
+		
+            <?php
+		$vbdeninfo = $this->vbden->find($row["ID_VBD"])->current();
+                //var_dump($vbdeninfo);
+                $COQUANBANHANH_TEXT = explode("/",$vbdeninfo->COQUANBANHANH_TEXT,2);
+                if(count($COQUANBANHANH_TEXT)==2){
+                        $COQUANBANHANH_TEXT = $COQUANBANHANH_TEXT[1];
+                }else{
+                        $COQUANBANHANH_TEXT = $COQUANBANHANH_TEXT[0];
+                }
+            ?>  
+            <tr>
+                            <td style="height:60.0pt"><?=$stt?></td>
+                            <td style="width:155pt"><?php echo  $vbdeninfo->TRICHYEU  ;
+                                                         // echo "<br><b> Nhiệm vụ: </b>".$row["NHIEMVU"];  ?></td>
+                            <td style="width:80pt"><?php echo  $vbdeninfo->SOKYHIEU." - ".QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYBANHANH)." - ".$COQUANBANHANH_TEXT;   ?></td>
+                            <td><?=QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYDEN) ?></td>
+                            <td><?php 
+                                require_once("qtht/models/UsersModel.php");
+//$idnguoixuly=json_decode($row['ID_U_XULYGIAOVIEC']);
+                                  //  foreach($idnguoixuly as $item){
+                                              //   $userinfo = DanhSachNhiemVuModel::FindUserById($item);
+                                                // echo $userinfo["FIRSTNAME"].' '.$userinfo["LASTNAME"].' ('.$userinfo["DEPNAME"].')<br>';
+                                       // }
+									if($row['ID_U_XULYGIAOVIEC']){
+                                                 $userinfo = DanhSachNhiemVuModel::FindUserById($row['ID_U_XULYGIAOVIEC']);
+                                                 echo $userinfo["FIRSTNAME"].' '.$userinfo["LASTNAME"].' ('.$userinfo["DEPNAME"].')<br>';
+										}
+                                ?></td>
+                            <td>
+                                <?php 
+                                    $idnguoixuly=json_decode($row['ID_U_PHOIHOPGIAOVIEC']);
+                                    foreach($idnguoixuly as $item){
+                                                 $userinfo = DanhSachNhiemVuModel::FindUserById($item);
+                                                 echo $userinfo["FIRSTNAME"].' '.$userinfo["LASTNAME"].' ('.$userinfo["DEPNAME"].')<br>';
+                                        }
+										
+                                ?>
+                            </td>
+                            <td><?=$row["TIENDO_GIAOVIEC"]?> %</td>
+                            <td><?=QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYHETHAN)?></td>
+                            <td><?php 
+                            $isfinish = DanhSachNhiemVuModel::GetIsFinish($row["ID_PI"]);
+                            if($isfinish["IS_FINISH"]==1)
+                                { echo "Đã hoàn thành"  ; }
+                                else if($row["IS_THEODOI"]==1)
+								{ echo "Đang Lưu theo dõi"  ;} 
+							else
+								{ echo "Đang xử lý"  ;} 
+                                ?>
+                            </td>
+                           
+                            
+                            
+             </tr>
+
+<?php
+		$i = (-1+$i)*-1;	
+	}
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+      

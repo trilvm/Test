@@ -1,0 +1,89 @@
+<?=QLVBDHCommon::useDlgConfirm()?>
+<form name=frm method=post action="/wf/ActivityAccess/save">
+<table border="0" cellspacing="0" cellpadding="0" class=adminlist>
+<thead>
+	<tr>
+		<th width="33%" class=tableheader>Nhóm</th>
+		<th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_G") ?></th>
+		<th width="33%" class=tableheader>Phòng ban</th>
+		<th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_DEP") ?></th>
+		<th width="33%" class=tableheader>Người dùng</th>
+		<th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_U") ?></th>
+	</tr>
+</thead>
+<tbody>
+<?php
+	$endpos = count($this->group)>count($this->user)?count($this->group):count($this->user);
+	$endpos = count($this->dep)>$endpos?count($this->dep):$endpos;
+	for($i=0;$i<$endpos;$i++){
+		$j = 1 - $j;
+		$classname = "datarow$j";
+?>
+	<tr>
+<?php
+	if($i<count($this->group)){
+?>
+		<td width="33%" class="<?php echo $classname; ?>"><?php echo htmlspecialchars($this->group[$i]["NAME"]); ?></td>
+		<td nowrap class=tableheader>
+			<input type=checkbox name=ID_G[] value="<?php echo $this->group[$i]["ID_G"] ?>" <?php echo $this->group[$i]["SEL"]==null?"":"checked" ?>>
+		</td>
+<?php
+	}else{
+?>
+		<td width="33%" class="<?php echo $classname; ?>">&nbsp;</td>
+		<td nowrap class=tableheader>&nbsp;</td>
+<?php
+	}
+?>
+<?php
+	if($i<count($this->dep)){
+?>
+		<td width="33%" class="<?php echo $classname; ?>"><?php echo htmlspecialchars($this->dep[$i]["NAME"]); ?></td>
+		<td nowrap class=tableheader>
+			<input type=checkbox name=ID_DEP[] value="<?php echo $this->dep[$i]["ID_DEP"] ?>" <?php echo $this->dep[$i]["SEL"]==null?"":"checked" ?>>
+		</td>
+<?php
+	}else{
+?>
+		<td width="33%" class="<?php echo $classname; ?>">&nbsp;</td>
+		<td nowrap class=tableheader>&nbsp;</td>
+<?php
+	}
+?>
+<?php
+	if($i<count($this->user)){
+?>
+		<td width="33%" class="<?php echo $classname; ?>"><?php echo htmlspecialchars($this->user[$i]["KYHIEU_PB"]." - ".$this->user[$i]["NAME"]); ?></td>
+		<td nowrap class=tableheader>
+			<input type=checkbox name=ID_U[] value="<?php echo $this->user[$i]["ID_U"] ?>" <?php echo $this->user[$i]["SEL"]==null?"":"checked" ?>>
+		</td>
+<?php
+	}else{
+?>
+		<td width="33%" class="<?php echo $classname; ?>">&nbsp;</td>
+		<td nowrap class=tableheader>&nbsp;</td>
+<?php
+	}
+?>
+	</tr>
+<?php
+	}
+?>
+</tbody>
+</table>
+<input type=hidden name=idp value = "<?php echo $this->idp; ?>">
+<input type=hidden name=ida value = "<?php echo $this->ida; ?>">
+</form>
+<script>
+	function SaveButtonClick(){
+		
+		var func_ok = "document.frm.submit();";
+		var func_cancel = "";
+		displayConfirm("<?php echo MSG11001001 ?>","","",func_ok,func_cancel);
+		
+	}
+	function BackButtonClick(){
+		document.frm.action = "/wf/Workflow";
+		document.frm.submit();
+	}
+</script>

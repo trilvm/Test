@@ -1,0 +1,52 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<?php 
+$type = array(
+    $this->type => "selected"
+);
+ ?>
+ <div id="" style="width:100%;margin:0px 0px 0px 0px;padding:0px 0px 0px 0px;" >
+    <div id="tab" style="float:left;width:100%;font-size:18px;background-color:white;border-bottom:2px solid grey;margin-bottom:20px" >
+        <div id="queryTab" style="float:left; padding-left:20px;padding-right:20px;background-color:grey;cursor: pointer;" onclick="changeTab('query','queryTab')" >
+            TRUY VẤN DATABASE
+        </div>
+        <div id="fileTab" style="float:left;padding-left:20px;padding-right:20px;cursor: pointer;" onclick="changeTab('file','fileTab')" >
+            TẬP TIN
+        </div>
+    </div>
+    <div id="file" style="width:100%; display:none;" >
+       <? include_once 'file.phtml'; ?>
+    </div>
+    <div id="query" style="">
+        <? include_once 'query.phtml'; ?>
+    </div>
+</div>
+<script>
+    <?php 
+        if($this->tab != ""){
+    ?>
+    changeTab('<?=$this->id ?>','<?=$this->tab ?>');
+    <?php } ?>
+    function changeTab(id,tab){
+        var activeElement = document.getElementById(id);
+        activeElement.style.display = "";
+        var disableId = "file";
+        if(id == "file"){
+            disableId = "query";
+        }
+        var disableElement = document.getElementById(disableId);
+        disableElement.style.display = "none";
+        
+        var activeTab = document.getElementById(tab);
+        activeTab.style.background = "grey";
+        var disableTab = "fileTab";
+        if(tab == "fileTab"){
+            disableTab = "queryTab";
+        }
+        var disableElementTab = document.getElementById(disableTab);
+        disableElementTab.style.background = "white";
+        
+        
+    }
+</script>
+</html>

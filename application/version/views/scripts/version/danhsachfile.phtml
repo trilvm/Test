@@ -1,0 +1,170 @@
+
+<form name="frm" action="#" method="post">
+    CHỌN NGÀY GIỜ CẬP NHẬT : 
+<? echo calendarFull($this->ngaycapnhat,"ngaycapnhat","ngaycapnhat") ?>
+     <font color="red"> <span id="ERRngaycapnhat"></span></font>
+    <input type="text" name="giocapnhat" value="<?= $this->giocapnhat ?>"  size="5">hh:mm
+    <font color="red"> <span id="ERRgiocapnhat"></span></font>
+    <input type="hidden" name="ID" value="<?=$this->id?>">  
+    <input type="hidden" name="sl" value="<?=$this->sl?>">  
+    <input type="hidden" name="PB" value="<?=$this->pb?>">  
+        <?php
+        if (count($this->data) == 0) {
+            echo '<tr><td colspan=3>Không có file nào</td><tr>';
+        }
+        ?>
+        <table class=adminlist>
+            <thead>
+                <tr>
+                        <th nowrap="nowrap">STT</th>
+			<?php if($this->lock==0){ ?>
+			<th nowrap="nowrap"><input type=checkbox name=CHECKALL onclick="SelectAll(this,'CHECK')"></th>
+			<?php } ?>
+			<th width="50%">TÊN/LOẠI TÀI LIỆU</th>
+			<th nowrap="nowrap">FILE/FOLDER</th>
+                        <th nowrap="nowrap">KỊCH BẢN</th>
+                </tr> 
+            </thead>
+            <tfoot>
+                <tr>
+                  <!--  <th colspan="<?= $this->lock == 0 ? 5 : 4 ?>"></th> -->
+                </tr>
+            </tfoot>
+            <tbody>
+                <?php              
+                $array_file=$this->array_file;
+              
+                
+                $data = $this->data;    
+                $a = 0;
+                $stt=1;
+                //  trim($data, '"');
+                foreach ($data as $array) {
+                    $arr = explode(',', $array);                    
+                    $link = explode("\\", $arr[1]);
+                    
+                    $co = 1;
+                    $b='';
+                    $path='';       
+                        for ($i = 0; $i < count($link); $i++) { 
+                             if($i!=0) 
+                             {
+                                 $j=$i-1;
+                                 $path.= "$link[$j]\\";
+                             }       
+                       
+                            if (($link[$i] != $tam[$i] && $co == 1) || ($co == 0) ) {                       
+                                ?>
+                                <tr style="height:15px"> 
+                                    <td nowrap="nowrap" style="height:15px"><?= $stt ?></td>
+                                    <td nowrap="nowrap" style="height:15px"><?php  if($link[$i+1]==null) { 
+                                        $abc= trim ($link[$i],'"');
+                                          // echo "   <input type=hidden name=NAME[]   value=  $link[$i]/>";
+                                    
+                                        ?>
+                                        <input type=hidden name=PH[]   value= "<?= $arr[6];?>"> 
+                                        <input type=hidden name=KB[]   value= "<?= $arr[5];?>">      
+                                        <input type=hidden name=PATH[]  value= "<?= trim($path,'"'); ?>"> 
+                                        <input type=hidden name=NAME[]  value= "<?= $link[$i];?>"> 
+                                        <input type=hidden 
+                                        <?php if(in_array($arr[3], $array_file))  ?> 
+                                           name=DOWN[] value= <?= $arr[3];
+                                        
+                                        ?> > <input type=checkbox 
+                                        <?php if(in_array($arr[3], $array_file)) echo "checked"; ?> 
+                                           name=CHECK[] value="<?= $a ?>">
+                                        <?php }?>
+                                    </td>
+                                    <td nowrap="nowrap" style="height:15px">
+                                    <?php if($link[$i+1]==null) { echo $b.'<b><font color=green>'.trim($link[$i], '"'); } else {echo  $b.'<b><font color=#0B55C4>'.trim($link[$i], '"').'</b>'; }?>                  
+                                    </td>
+                                    <td nowrap="nowrap" style="height:15px"><?php if($link[$i+1]==null) echo "<b><font color='green'>FILE</b>"; else echo "<font color='#0B55C4'>FOLDER" ;?></td>
+                                    <td nowrap="nowrap" style="height:15px"><font color="red"><b>
+                                    <?php if($link[$i+1]!=null) {
+                                        if($arr[5]== '1') {echo 'Thực Thi';}
+                                        else if($arr[5]== '2') {echo 'Thay thế';}
+                                        else if($arr[5]=='3') echo 'Ghi Đè';
+    
+                                        } ?>                  
+                                        </b> </font>  </td>  
+                                </tr>
+                                <?php
+                                $co = 0;
+                                $stt++;
+                            }
+                             $b.='___';           
+                        }           
+                 $tam = $link;   
+                 $a++;
+}                   
+?>
+            </tbody>
+        </table>     
+        <script>
+            function DeleteButtonClick(){     
+                if(confirm("<?php echo DELETEQUESTION; ?>")){
+                    document.frm.action = "/qtht/Danhmucnhomnguoidung/Delete";
+                    document.frm.submit();
+                }
+            }
+            function BackButtonClick(){
+                document.frm.action = "/version/version/list";
+                document.frm.submit();
+            }
+            function SaveButtonClick(){
+                var mess = true;
+                var messgio = true;
+                var messngay = true;
+                mess = validateInput("selone_check","CHECK[]","abc");
+                messgio=validateInput("hour:minus",document.frm.giocapnhat,"Giờ cập nhật không đúng định dạng");
+                messngay=check_date(document.frm.ngaycapnhat); 
+                if(mess){
+                    if(messgio && messngay)
+                        {
+                             if(confirm("Bạn có chắn chắc muốn cập nhật những tài liệu này không?")){
+                                document.frm.action = "/version/version/capnhatfile";
+                                document.frm.submit();
+                            }
+                        }
+                    else
+                        {
+                            alert("Ngày giờ không hợp lệ.");
+                        }
+                   
+                }else{
+                    alert("Phải chọn ít nhất một tài liệu để cập nhật.");
+                }  
+            }
+       
+             function check_date(inp){
+                 try{
+                     var d=inp.value.split(/\D+/);
+                     d[0]*=1;
+                     d[1]-=1;
+                     d[2]*=1;
+
+                     var D=new Date(d[0],d[1],d[2]);
+
+                     if(D.getFullYear()== d[0] && D.getMonth()== d[1] && D.getDate()== d[2]) return true;
+                     else return false;
+                 }
+                 catch(er){
+                     inp.value='';
+                     alert(er.message +'\n\nThe date must be in this format: year-month-date');
+                     //inp.focus();
+                     return false;
+                 }
+             }
+            
+        </script>
+        
+        <?php
+       function calendarFull($value, $name, $id) {
+            return '
+                <input type="text" size=10 name="' . $name . '" id="' . $id . '" value="' . $value . '" onblur="getFullDate(this);if(typeof(ChangeDate)==\'function\')eval(\'ChangeDate()\');"><img id="I' . $id . '" src="/images/calendar.png" align="absmiddle" onclick="document.getElementById(\'' . $id . '\').focus();var dp_cal_' . $id . ' = null;
+                        dp_cal_' . $id . '  = new Epoch(\'epoch_popup\',\'popup\',document.getElementById(\'' . $id . '\'),false,' . QLVBDHCommon::getYear() . ',\'Y/m/d\');
+                        dp_cal_' . $id . '.show();HasEvent=true;"></img>
+        ';
+        }
+        ?>
+        

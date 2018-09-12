@@ -1,0 +1,121 @@
+<table width="100%">
+<tr>
+<td valign="top">
+	<table width="100%"  class="adminlist">
+	<thead>
+		<th colspan="4"> 
+		<a href="#"  
+		   onclick='
+			var mess = true;
+			var loaihoso=document.getElementById("id_ID_LOAIHOSO").value;
+			mess_thutuc = validateInput("selone_check","DEL_THUTUC[]","");
+			mess_nhangom = validateInput("selone_check","DEL_NHANGOM[]","");
+			if(!(mess_thutuc || mess_nhangom))
+			{
+				confirm("Phải chọn ít nhất một mục để xóa");
+			}
+			else
+			{
+				if(confirm("Bạn muốn xóa mục này"))
+				{
+					var aj = new AjaxEngine();
+					if(mess_thutuc)
+					{
+						aj.loadDivFromUrlAndForm("DivThuTuc","/motcua/motcuanhangom/index/idhoso/<?php echo $this->idhoso ?>/idloai/"+loaihoso+"/d_tt/thutuc",document.frmAddMotCua);	
+					}
+					else
+					{
+						aj.loadDivFromUrlAndForm("DivThuTuc","/motcua/motcuanhangom/index/idhoso/<?php echo $this->idhoso ?>/idloai/"+loaihoso,document.frmAddMotCua);	
+					}
+					
+					
+				}
+			}
+			return false;
+			'
+		>[Xóa]</a>
+		<a href="#"  onclick='loadDiv("divAddThuTuc","/motcua/motcuanhangom/add/idhoso/<?php echo $this->idhoso ?>/idloai/<?php echo $this->id_loaihoso ?>/year/<?php echo $this->year ?>"); return false;'>[Thêm mới]<font color="red"><i><?php echo $this->errorMessage ?></i></font></a> 
+		</th>
+		<tr>
+			<th nowrap>#</th>
+			<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL_THUTUC');SelectAll(this,'DEL_NHANGOM');"></th>
+			<th width="100%" >Tên thủ tục</th>			
+		</tr>
+	</thead>	
+	<?php 
+	$i=0;
+	if(null!=$this->data_thutuc)
+	{
+		foreach ($this->data_thutuc as $item)
+		{
+			$i++;
+		?>
+		  <tr>
+		  	<td><?php echo($i); ?></td>
+		  	<td nowrap align="center">
+					<input type=checkbox name=DEL_THUTUC[] value='<?php echo $item->ID_THUTUC ?>'>
+			</td>
+		    <td><font color="blue"><?php //echo $item->TENTHUTUC; ?></font>
+		    	<?php Motcua_MotCuaNhanGomController::createWrapText($item->TENTHUTUC,100,'blue') ?>
+		    	<input type=hidden name="tenthutuc1[]" value="<?php echo $item->TENTHUTUC?>">
+		    </td>    
+		  </tr>
+		<?php }
+	}?>
+	<?php 
+	if(null!=$this->data_nhangom)
+	{
+		foreach ($this->data_nhangom as $item)
+		{
+			$i++;
+		?>
+		  <tr>
+		  	<td><?php echo($i); ?></td>
+		  	<td nowrap align="center">
+					<input type=checkbox name=DEL_NHANGOM[] value='<?php echo $item->ID_TAILIEU_NHAN ?>'>
+			</td>
+		    <td><?php //echo $item->TEN_THUTUC; ?>
+		    <?php Motcua_MotCuaNhanGomController::createWrapText($item->TEN_THUTUC,100,'black') ?>
+		    <input type=hidden name="tenthutuc1[]" value="<?php echo $item->TEN_THUTUC?>">
+		    </td>    		    
+		  </tr>
+	<?php 
+		}
+	}?>
+	<?php 	
+	if(null!=$this->data_input)
+	{
+		foreach ($this->data_input as $item)
+		{			
+			$i++;
+		?>
+		  <tr>
+		  	<td><?php echo($i); ?></td>
+		  	<td nowrap align="center">
+				<input type=checkbox name=DEL_NHANGOM[] value='<?php echo $item->ID_TAILIEU_NHAN?>'>
+			</td>
+		    <td><font color="red"><?php //echo $item->TEN_THUTUC; ?></font><i></i>
+		    <?php Motcua_MotCuaNhanGomController::createWrapText($item->TEN_THUTUC,100,'red') ?>
+		    <input type=hidden name="tenthutuc1[]" value="<?php echo $item->TEN_THUTUC?>">
+		    
+		    </td>    		    
+		  </tr>
+	<?php 
+		}
+	}?>
+	<div id="embedTableTemp"></div>
+	<tfoot>
+	<tr>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+	 	<th><div id="divAddThuTuc"></div></th>
+	 </tr>
+	 </tfoot>
+	</table>
+</td>
+</tr>
+</table>
+<input type=hidden name="loai" value=<?php echo $this->id_loaihoso?>>
+<input type=hidden name="idhoso" value=<?php echo $this->idhoso?>>
+<input type=hidden name="hiddenThuTuc" value="<?php echo $this->hiddenThuTuc?>">
+<input type=hidden name="d_tt" value="<?php echo $this->d_tt?>">

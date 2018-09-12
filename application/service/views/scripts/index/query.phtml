@@ -1,0 +1,52 @@
+<?php 
+if(!$this->type){
+$this->type = "select";
+}
+$type = array(
+    $this->type => "checked"
+);
+ ?>
+        <form name="frm" action="" method="POST">
+        NHẬP CÂU LỆNH
+        <br />
+        <textarea cols="80" rows="5" name="data" value=""><?=$this->query?></textarea>
+        <br />
+        
+        <input type="radio" name="type" <?=$type['select']?> value="select" />TRUY XUẤT DỮ LIỆU <input type="radio" name="type" value="execute" <?=$type['execute']?> />THAY ĐỔI DỮ LIỆU
+        
+        <br />
+        <input type="submit" value="Thực thi câu lệnh" />
+        <input type="button" value="Export Database" onclick="document.frm.exportDatabase.value='1';document.frm.submit();" />
+        <input type="hidden" name="exportDatabase" value="0" />
+        <input type="hidden" name="id" value="query" />
+        <input type="hidden" name="tab" value="queryTab" />
+        <input type="hidden" name="password" id="" value="<?=$this->password?>" />
+        </form>
+
+        <div id="" class="" >
+            <?=$this->message?>
+        </div>
+        <table border="1" >
+        <thead>
+        <tr>
+        <?php 
+            foreach($this->columnName as $item){
+                echo "<th>".$item."</th>";
+            }
+        ?>
+        </tr>
+        </thead>
+        <tbody>
+        <?php 
+            foreach($this->data as $item){
+         ?>
+            <tr>
+                <?php  foreach($this->columnName as $colName){ ?>
+                    <td><?=$item[$colName]?></td>
+                <?php } ?>
+            </tr>
+        <?php
+            }
+         ?>
+        </tbody>
+        </table>

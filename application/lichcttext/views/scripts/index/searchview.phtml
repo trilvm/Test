@@ -1,0 +1,154 @@
+<? header("Cache-Control: max-age=600"); ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<div id="div_thongke" style="padding-bottom:20px;padding-top:20px;padding-left:0px" ></div>
+
+<form name="frm2">
+    <?php if (count($this->data)>0) {?>
+<table class="adminlist">
+<thead>
+<tr>
+			<th colspan=<?=$this->LCTTYPE=='corptype'?"9":"7"?>>
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm2.page.value = 1;
+							document.frm2.limit2.value = document.frm2.limit1.value;
+							document.frm2.action = '/lichcttext/index/searchview';
+							document.frm2.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	<tr>
+<tr>
+	<th>#</th>
+	<th>Ngày</th>        
+	<th>Buổi</th>
+        <?if ($this->LCTTYPE=='corptype') {?>
+        <th>Thời gian</th>
+        <? } ?>
+	<th>Nội dung</th>
+        <?if ($this->LCTTYPE=='corptype') {?>
+        <th>Chủ trì</th>
+        <? } ?>
+	<th>Thành phần</th>
+	<th>Địa điểm</th>
+	<?if ($this->LCTTYPE=='corptype') {?>
+        <th>Đơn vị chuẩn bị</th>
+        <? } else {?>
+        <th>Ghi chú</th>
+        <? } ?>
+</tr>            
+</thead>
+<tfoot>
+	<tr>
+			<th colspan=<?=$this->LCTTYPE=='corptype'?"9":"7"?>>
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm2.page.value = 1;
+							document.frm2.limit1.value = document.frm2.limit2.value;
+							document.frm2.action = '/lichcttext/index/searchview';
+							document.frm2.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+</tfoot>
+<tbody>
+<? $stt=1;foreach($this->data as $item){		
+?>
+<tr>
+	<td width="5%" style="text-align: center">
+		<?=$stt?>
+	</td>
+	<td width="10%" style="text-align: center">
+		<?=  QLVBDHCommon::MysqlDateToVnDateNoneZero($item["NGAY"])?>
+	</td>
+	<td width="5%" style="text-align: center">
+	<?=$item["BUOI"]==1?"Sáng":"Chiều"?>
+	</td>
+        <? if ($this->LCTTYPE=='corptype') {?> 
+        <td style="text-align: center">
+	<?=$item["THOIGIAN"]?>
+	</td>
+        <? }?>
+	<td width="30%" style="text-align: center">
+		<?=$item["NOIDUNG"]?> <?if ($this->LCTTYPE=='deptype') echo " - (".UsersModel::getEmloyeeNameByIdUser($item['ID_U']).")"?>
+	</td>
+        <? if ($this->LCTTYPE=='corptype') {?> 
+        <td style="text-align: center">
+	<?=$item["CHUTRI"]?>
+	</td>
+        <? }?>
+	<td width="20%" style="text-align: center">
+	<?=$item["THANHPHAN"]?>
+	</td>
+	<td width="20%" style="text-align: center">
+	<?=$item["DIADIEM"]?>
+	</td>
+	<td width="10%" style="text-align: center">
+	<?=$item["GHICHU"]?>
+	</td>
+</tr>
+<?php $stt++; } ?>    
+</tbody>
+
+</table>
+<input type="hidden" name="LCTTYPE" value="<?php echo $this->LCTTYPE; ?>">
+<input type="hidden" name="noidung" value="<?php echo $this->noidung; ?>">
+<input type="hidden" name="TYPE" value="<?php echo $this->type; ?>">
+<input type="hidden" name="buoi" value="<?php echo $this->buoi; ?>">
+<input type="hidden" name="ID_DEP" value="<?php echo $this->ID_DEP; ?>">
+<input type="hidden" name="ID_U" value="<?php echo $this->ID_U; ?>">
+<input type="hidden" name="ID_DEP2" value="<?php echo $this->ID_DEP2 ?>">
+<input type="hidden" name="SORTTYPE" value="<?php echo $this->SORTTYPE ; ?>">
+<input type="hidden" name="page" value="<?php echo $this->page ; ?>">
+<input type="hidden" name="fromdate" value="<?php echo $this->fromdate; ?>">
+<input type="hidden" name="todate" value="<?php echo $this->todate; ?>">
+    <? } else echo "<p style='color : red;'>Không tìm thấy kết quả nào</p>";?>
+</form>
+</body>
+<p id=lasttext></p>
+</html>
+
+
+<script>
+
+
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%"; 
+
+</script>

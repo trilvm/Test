@@ -1,0 +1,138 @@
+<form name=frmListLoais method="post" action="/motcua/loai">
+	<table>
+		<tr>
+			<td align="left" width="100%">
+				Lọc:
+				<input type="text" name="search" id="search" value="<?php echo $this->search ?>" class="text_area" onchange="document.frmListLoais.submit();" />
+				<button onclick="document.frmListLoais.submit();">Tìm</button>
+				<button onclick="document.getElementById('search').value='';document.frmListLoais.submit();">Làm lại</button>
+			</td>
+			<td nowrap="nowrap">
+				<select style="width:300px"  name="LINHVUC" id="LINHVUC" class="inputbox" size="1" onchange="document.frmListLoais.submit();">
+					<option value=0>--Chọn lĩnh vực--</option>
+					<?=linhvucmotcuaModel::ToCombo($this->datalinhvuc,$this->LINHVUC)?>
+                </select>
+			</td>
+		</tr>
+	</table>
+	<table class="adminlist">
+	<thead>
+		<tr>
+			<th nowrap>#</th>
+			<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></th>
+			<th nowrap>Mã loại</th>
+			<th width="80%">Tên loại</th>
+			<th width="10%">Lĩnh vực</th>
+			<th nowrap>Số ngày xử lý</th>			
+			<th nowrap>Lệ phí</th>
+			<th nowrap>Quy trình</th>
+			<th nowrap>Số thủ tục</th>
+			<th nowrap>Người tiếp nhận</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="10">
+					<div class="pagination">
+						<div class="limit">Hiển thị #
+							<select name="limit" id="limit" class="inputbox" size="1" onchange="document.frmListLoais.submit();" style="width:60px;">
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<script>
+									document.frmListLoais.limit.value='<?php echo $this->limit ?>';
+								</script>
+							</select>
+						</div>
+						<div style="float:right;"><?php echo $this->showPage; ?></div>
+					</div>
+			</td>
+		</tr>
+	</tfoot>
+
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+foreach ($this->data as $row )
+	{
+	//check ok
+	$nguoitiepnhan = $this->linhvuc->GetUserById($row['ID_LV_MC']);
+	$ok=true;
+	if($row['NAME']=="")$ok=false;
+	if($row['CNT']==0)$ok=false;
+	if($nguoitiepnhan==false)$ok=false;
+	
+	$stt++;
+?>
+		<tr class="row<?=$ok==false?"2":$i?>">
+			<td nowrap align="right"><?php echo $stt ?></td>			
+			<td nowrap align="center">
+				<input type=checkbox name=DEL[] value='<?php echo $row['ID_LOAIHOSO'] ?>'>
+			</td>
+			<td>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_LOAIHOSO'] ?>);">
+				<?php echo htmlspecialchars($row['CODE']) ?>
+				</a>
+			</td>
+			<td width=60%>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_LOAIHOSO'] ?>);">
+				<?php echo htmlspecialchars($row['TENLOAI']) ?></a>
+			</td>
+			<td><?=$row['TEN_LV'];?></td>
+			<td><?php echo $row['SONGAYXULY'];?></td>
+			<td><?php echo $row['LEPHI'];?></td>	
+			<td width=40%><?=$row['NAME']==""?"Chưa có quy trình":$row['NAME'];?></td>
+			<td nowrap><?=$row['CNT']==0?"Chưa có thủ tục":$row['CNT']?></td>
+			<td nowrap>
+				<?php
+					if($nguoitiepnhan){
+						$stt1 = 0;
+						foreach($nguoitiepnhan as $item){
+							$stt1 ++;
+							echo $stt1.". ".$item["NAME"]."<br>";
+						}
+					}else{
+						echo "Chưa có người tiếp nhận";
+					}
+				?>
+			</td>
+		</tr>
+<?php
+	$i = (-1+$i)*-1;
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+<input type="hidden" name="comeFrom" value="listForm">
+</form>
+<script>
+function DeleteButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","Chọn ít nhất một mục để xoá.");
+	if(mess){
+		if(confirm("<?php echo 'Bạn muốn xóa mục này!'; ?>")){
+			document.frmListLoais.action = "/motcua/loai/delete";
+			document.frmListLoais.submit();
+		}
+	}else{
+		alert("Chọn ít nhất một mục để xoá.");
+	}
+}
+function AddNewButtonClick()
+{
+	document.frmListLoais.action = "/motcua/loai/input";
+	document.frmListLoais.submit();
+}
+function ItemClick(id)
+{
+	document.frmListLoais.action = "/motcua/loai/input/id/"+id+"/LINHVUC/"+document.frmListLoais.LINHVUC.value;
+	document.frmListLoais.submit();
+}
+</script>

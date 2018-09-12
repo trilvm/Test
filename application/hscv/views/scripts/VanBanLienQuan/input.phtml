@@ -1,0 +1,207 @@
+<?/**
+   * @author trunglv 
+   * @version 1.0
+   * Lop View hiện thị trang trang tim kiem các văn bản lien quan
+   */ ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+
+<body style="background-color:transparent">
+<!-- Van ban ben ngoai he thong -->
+<div>
+<input type="radio" id="issystemO" name="issystem" value=0  <?php if($this->is_sys == 0) echo " checked "?>
+onclick="var is_sys = 0;
+if(this.checked)
+	window.location = '/hscv/vanbanlienquan/input?issystem='+is_sys+'isNoHSCV=<?php echo $this->isNoHSCV?>&idHSCV=<?php echo $this->idHSCV?>&isnew=1&iddivParent=<?php echo $this->iddivParent ?>&year=<?php echo $this->year ?>';
+return true;
+"> Thêm văn bản ngoài hệ thống  
+<input type="radio" id="issystemI" name="issystem" value=1 <?php if($this->is_sys > 0) echo " checked "?>
+onclick="
+var is_sys = 1;
+if(this.checked)
+	window.location = '/hscv/vanbanlienquan/input?issystem='+is_sys+'isNoHSCV=<?php echo $this->isNoHSCV?>&idHSCV=<?php echo $this->idHSCV?>&isnew=1&iddivParent=<?php echo $this->iddivParent ?>&year=<?php echo $this->year ?>';
+return true;
+"> Thêm văn bản trong hệ thống
+</div>
+<div class="clr"></div>
+<?php if($this->is_sys == 0){?>
+
+<fieldset>
+<legend></legend>
+<form name="frmbengoai">
+<div >
+<label>Tên văn bản</label>
+<input type='text' name='txtNameVB' size=30/>
+<input type="button" name="btnAdd" value="Thêm" onclick="
+var ajxEngine = new AjaxEngine();
+var param = ajxEngine.getDataFromFrm(document.frmbengoai);
+sendDataObjectNameToServer('DELidaddvanbanlienquan<?php echo $this->idHSCV ?>[]','/hscv/vanbanlienquan/save?nosystem=1&isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&type=<?php echo $this->type ?>&year=<?php echo $this->year ?>&iddivParent=<?php echo $this->iddivParent ?>&'+param);
+return false;
+">
+</div>
+<div class="clr"></div>
+<div>
+<label>File đính kèm</label>
+<?php 
+$url = "";
+$is_new = 0;
+$type = 0;
+if((int)$this->idVBLQ==0){
+	$is_new = 1;
+	$type = -1;
+}else{
+	$is_new = 0;
+	$type = 1;
+}
+$url ="'/hscv/file?iddiv=idFileDinhKem&idObject=".$this->idVBLQ."&is_new=".$is_new."&year=".$this->year."&type=".$type."'" ;
+	//Common_FileDinhKem::InsertFileDinhKem("idFileDinhKem",0,1,$this->year,-1); 	
+		//else 
+		//Common_FileDinhKem::InsertFileDinhKem("idFileDinhKem",(int)$this->data->ID_HSCV,0,$this->year,1);
+?>
+
+
+<div id="idFileDinhKem" style="width:400px;margin-left:130px"></div>
+<script>
+loadDivFromUrl('idFileDinhKem',<?echo $url ?>,0);
+//resize();
+</script>
+</div>
+<div class="clr"></div>
+
+</form>
+
+
+</fieldset>
+<?php }else{?>
+<!-- ket thuc van ban ben ngoai he thong -->
+
+<!-- Van ban ben trong he thong -->
+<fieldset>
+<legend></legend>
+<form name=frm enctype="multipart/form-data" action="/hscv/vanbanlienquan/input?issystem=1#vblq_ketqua" method="post" target="addVanBanLienQuanFrm<?php echo $this->idHSCV?>">
+<!-- Các thẻ hidden -->
+	<input type="hidden" name="idHSCV" value=<?php echo $this->idHSCV?> >
+	<input type="hidden" name="isNoHSCV" value=<?php echo $this->isNoHSCV?> >
+	<input type="hidden" name="year" value=<?php echo $this->year?>>
+	<input type="hidden" name="iddivParent" value=<?php echo $this->iddivParent ?> >
+	<input type="hidden" name="type" value=<?php echo $this->type ?>>
+<!-- end các thẻ hidden -->
+<table>
+<tr>
+<td>Loại Văn Bản </td> 
+<td> <select name=choiceLoaiVB > 
+<option value=0>Văn bản đến</option>
+<option value=1>Văn bản đi</option>
+</select> 
+<script>
+document.frm.choiceLoaiVB.value=<?=$this->type?>;
+</script>
+</td> 
+<tr>
+<td>Trích yếu</td> 
+<td><input type=text name=searchTrichYeu value="<?=$this->trichyeu?>"/> </td>
+</tr>
+<tr>
+<td>Số ký hiệu </td> 
+<td><input type=text name=searchSoKyHieu value="<?=$this->sokyhieu?>"/> </td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><input type=submit name=search value="Tìm kiếm" /> 
+
+</tr>
+</table>
+<!--
+Trích yếu <input type=radio name="s_tieuchi" value=1  <?php if($this->s_tieuchi==1) echo 'checked="checked"';?>  >
+Số ký hiệu <input type=radio name="s_tieuchi" value=2 <?php if($this->s_tieuchi==2) echo 'checked="checked"';?>>
+Tất cả <input type=radio name="s_tieuchi" value=0  <?php if($this->s_tieuchi==0) echo 'checked="checked"';?>>
+-->
+</form>
+</fieldset>
+
+<fieldset>
+<legend> Kết Quả</legend>
+<table class=adminlist>
+<thead>
+<tr>
+<th colspan=5> <a href="#" 
+onclick="
+var ln = 0;
+	var arr = document.getElementsByName('DELidaddvanbanlienquan<?php echo $this->idHSCV ?>[]');
+	for(var i = 0 ; i < arr.length ;i++ ){
+		if(arr[i].checked == true){
+			ln = 1;
+		}
+	}
+	if(ln == 1){
+		if(confirm('<?php echo "Bạn có muốn thêm không"; ?>')){
+			sendDataObjectNameToServer('DELidaddvanbanlienquan<?php echo $this->idHSCV ?>[]','/hscv/vanbanlienquan/save?idVB=<?=$item[IDVB]?>&isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&type=<?php echo $this->type ?>&year=<?php echo $this->year ?>&iddivParent=<?php echo $this->iddivParent ?>');
+		}
+	}else{
+		document.getElementById('VBLQ_ERRNochoiceAdd<?php echo $this->idHSCV ?>').innerHTML = 'Bạn phải chọn ít nhất một văn bản để thêm';
+	}
+return false;
+"
+> [ Thêm ]</a>  
+<span class="box_erro_area" id="VBLQ_ERRNochoiceAdd<?php echo $this->idHSCV ?>"></span>
+</th>
+
+
+
+</tr>
+<tr> 
+	<th><a name="vblq_ketqua"></a>#</th>
+	<th><input type=checkbox name='DELALLidaddvanbanlienquan<?php echo $this->idHSCV ?>' onclick="SelectAll(this,'DELidaddvanbanlienquan<?php echo $this->idHSCV ?>')"></th>
+	<th nowrap>Số ký hiệu</th>
+	<th>Trích yếu</th>
+	
+	
+	
+</tr>
+</thead>
+<tbody>
+<?php if(count($this->data)==0) {echo '<tr><td colspan=5>Không tìm được kết quả phù hợp</td></tr>';}else{ ?>
+<?php $stt= 1 ; foreach ($this->data as $item){ ?>	
+<tr>
+	<td><?php echo $stt ?></td>
+	<td nowrap valign="top">
+				<input type=checkbox name='DELidaddvanbanlienquan<?php echo $this->idHSCV ?>[]' 
+				value='<?=$this->type==0?$item['ID_VBD']:$item['ID_VBDI']?>'>
+	</td>
+	<td nowrap valign="top" ><?php echo $item[SOKYHIEU] ?></td>
+	<td width=100%><b><?php echo $item[TRICHYEU] ?></b></td>
+	
+	
+</tr>
+<?php $stt++;} }?>
+</tbody>
+</table>
+</fieldset>
+<!-- Van ban ben trong he thong -->
+<?php }?>
+
+<p id=lasttext></p>
+
+
+
+<script>
+resize();
+function resize(){
+var iframeElement = window.parent.document.getElementById("addVanBanLienQuanFrm<?php echo $this->idHSCV?>");
+iframeElement.style.height = "" +(document.getElementById("lasttext").offsetTop + 100)+ "px";
+iframeElement.width = "100%"; 
+}
+</script>
+</body>
+</html>

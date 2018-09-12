@@ -1,0 +1,121 @@
+<table class=adminlist1>
+    <thead>
+        <tr>
+            <th nowrap>STT</th>
+            <th width="90%">Nội dung</th>
+			<th nowrap>Loại</th>
+            <th width="10%"></th>
+        </tr>
+    </thead>
+	<tfoot>
+		<tr>
+					<?php if($this->yeucau == 0) {?>
+                    <th colspan=4>
+							<a href="#trframe<?=$this->idtaphoso?>" onClick="document.getElementById('iframesend<?=$this->idtaphoso?>').style.display='';
+							document.getElementById('iframesend<?=$this->idtaphoso?>').setAttribute('src','/taphscv/dinhkem/input/IdFrame/iframesend<?=$this->idtaphoso?>/idtaphoso/<?=$this->idtaphoso?>/iddinhkem/0');" >[Thêm mới Văn bản ngoài]
+							</a>
+							<a href="#trframe<?=$this->idtaphoso?>" onClick="document.getElementById('iframesend<?=$this->idtaphoso?>').style.display='none';" >[Hủy]
+							</a>
+							<iframe style="overflow-x:visible;display:none; width:100%" height=0 width=100% id=iframesend<?=$this->idtaphoso?> allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src=""></iframe>
+                    </th>
+					<?php } ?>
+                </tr>
+	</tfoot>
+    <tbody>
+        <?php
+        if(count($this->data)<=0){
+		echo "<tr><td colspan='3'>Không tìm thấy văn bản nào<td></tr>";
+	}else{
+        foreach($this->data as $row){
+		//var_dump($row);
+		$stt++;
+		$row['TRICHYEU'] = $this->INNAME==1?QLVBDHCommon::highlightWords($row['TRICHYEU'],$this->TRICHYEU):$row['TRICHYEU'];?>
+		<tr class="row<?=$this->ID_VBD==$row['ID_VB']?"2":$i?>">
+			<td valign="top"><a name="vbden<?=$row['ID_VB']?>"></a><?=$stt?></td>
+			<td><?php				
+				echo "<b>".$row['SOKYHIEU']." - ".QLVBDHCommon::MysqlDateToVnDate($row['NGAYBANHANH'])." -". $row['COQUANBANHANH']."</b><br>";
+				?>
+				<?=$row['TRICHYEU']?>
+                        <div>
+					<ul class="chitiethscv">
+                                            <li id=groupicon1_<?=$row["ID_VB"]?>>
+                                                <img src="/images/icon_chitiet.jpg" border="0" hspace="5" >
+                                                    <a href='javascript:
+                                                        {	SwapDivVB(<?=$row["ID_VB"]?>,"/taphscv/taphscv/detailvb/id_vb/<?=$row["ID_VB"]?>",1);
+                                                                updateImageNew(<?php echo '"image_new_'.$row["ID_VB"].'"'?>,<?=$row["ID_VB"]?>);
+                                                        }
+                                                    '>Chi tiết</a>
+                                            </li>
+                                            <?php if ($row["LOAI"] == 1 || $row["LOAI"] == 4) {?>
+                                            <li id="groupicon6_<?=$row["ID_OBJECT"]?>">
+						<img hspace="5" border="0" src="/images/icon_luanchuyen.jpg">
+                                                <?php // vbd
+                                                if ($row["LOAI"] == 1) {?>                                                
+						<a href="javascript:
+                                                   {
+                                                   SwapDivVB(<?=$row["ID_OBJECT"]?>,'/vbden/vbden/way/id_vbd/<?=$row["ID_OBJECT"]?>/id//year/<?=QLVBDHCommon::getYear()?>/type/1/code/vbd',6);
+                                                        updateImageNew('image_new_<?=$row["ID_OBJECT"]?>',<?=$row["ID_OBJECT"]?>);
+                                                   }"
+                                                   >Luân chuyển
+                                                </a>
+                                                <?php } ?>
+                                            </li>
+                                            <?php }
+                                                $idhscv = $this->model->CheckVbdIsExistInHscv($row["ID_OBJECT"]);
+												//var_dump($row);
+                                                if ($idhscv != 0 && $row["LOAI"] != 2 && $row["LOAI"] != 3){?>
+                                            <li id="groupicon5_<?=$idhscv?>">
+						<img hspace="5" border="0" src="/images/icon_duthao.jpg">
+						<a href="javascript:SwapDivVB(<?=$idhscv?>,'/hscv/VanBanDuThao/index/year/<?=QLVBDHCommon::getYear()?>/iddivParent/groupcontent<?=$idhscv?>/idHSCV/<?=$idhscv?>/isreadonly/1',5);">Dự thảo</a>
+                                            </li>
+                                            <?php }?>
+					</ul>
+
+					<div class="clr"></div>
+					<div class="groupcontent" id="groupcontentvb<?=$row["ID_VB"]?>" style="display:none;border:1px solid #ccc;"></div>
+                                        <div class="groupcontent" id="groupcontentvb<?=$row["ID_OBJECT"]?>" style="display:none;border:1px solid #ccc;"></div>
+                                        <div class="groupcontent" id="groupcontentvb<?=$idhscv?>" style="display:none;border:1px solid #ccc;"></div>
+                                        <iframe style="overflow-x:visible;display:none; width:100%" height="100%;" id=iframevb<?=$row["ID_VB"]?> allowTransparency=true BORDER=0 scrolling=yes FRAMEBORDER=no src=""></iframe>
+				</div>
+                        </td>
+				<td nowrap>
+					 <?php
+						switch($row["LOAI"]){
+							case 1:
+								echo "Văn bản đến";
+								break;
+							case 2:
+								echo "Văn bản đi";
+								break;
+							case 3:
+								echo "Văn bản ngoài";
+								break;
+						}
+					?>
+				</td>
+                        <td>
+                             <?php 
+								if($this->yeucau == 0) {
+									if ($this->ThumucModel->CheckUpdatePermissionByUser($this->object, $this->idtaphoso) > 0) {
+							?>
+                            <a href="#" onclick="deleteVB(<?=$row["ID_VB"]?>,<?=$row["ID_TAPHOSO"]?>);">Xóa</a><br>
+                            <?php if($row["LOAI"] == 3){?>
+                            <a href="#trframe<?=$row["ID_VB"]?>" onClick="document.getElementById('iframevb<?=$row["ID_VB"]?>').style.display='';
+                                document.getElementById('iframevb<?=$row["ID_VB"]?>').setAttribute('src','/taphscv/dinhkem/input/IdFrame/iframevb<?=$row["ID_VB"]?>/idtaphoso/<?=$this->idtaphoso?>/idvb/<?=$row["ID_VB"]?>');
+                           " >Cập nhật
+                            </a>
+                             <?php }}?>
+
+                            <a href="#trframe<?=$row["ID_VB"]?>" onClick="document.getElementById('iframevb<?=$row["ID_VB"]?>').style.display='';
+                                document.getElementById('iframevb<?=$row["ID_VB"]?>').setAttribute('src','/taphscv/taphscv/chuyen/IdFrame/iframevb<?=$row["ID_VB"]?>/idtaphoso/<?=$this->idtaphoso?>/idvb/<?=$row["ID_VB"]?>');
+                           " >Chuyển
+                            </a>
+							<?php } ?>
+                        </td>
+                </tr>
+    <?php
+		$i = (-1+$i)*-1;}
+	}
+?>
+    </tbody>    
+</table>

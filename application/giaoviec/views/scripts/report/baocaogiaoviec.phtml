@@ -1,0 +1,143 @@
+<?php 
+require_once('qtht/models/DepartmentsModel.php');
+require_once 'qtht/models/Vb_nguoikyModel.php';
+require_once 'qtht/models/UsersModel.php';
+$data_departs = DepartmentsModel::getAll();
+
+?>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script src="/jquery/jquery-1.10.2.js" type="text/javascript" ></script>
+<script type="text/javascript" src="/js/validate.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/json/json_parse.js"></script>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_actb.js"></script>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_common.js"></script>
+<link rel="stylesheet" type="text/css" href="/chosen/chosen.custom.css" />
+<script src="/chosen/chosen.jquery.custom.js"></script>
+<form name=frm action="/giaoviec/report/baocaogiaoviec" method="POST">
+    <div class=clr></div>
+    <div>
+        <label><b>Ngày giao nhiệm vụ:</b></label>
+        <?= QLVBDHCommon::calendarFull($this->fromdate, "fromdate", "fromdate") ?>
+        >>
+        <?= QLVBDHCommon::calendarFull($this->todate, "todate", "todate") ?>
+
+    </div>
+
+    <div class=clr></div>
+    <div>
+        <div>
+            <?php
+            $year = QLVBDHCommon::getYear();
+            $d = strtotime($year . "-3-1");
+            $d = $d - 86400;
+            $str_cuoi2 = date('d/m', $d);
+            ?>            
+			<label><b>Tháng:</b></label>
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1/<?php echo $year ?>', '31/1/<?php echo $year ?>')">1
+
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/2/<?php echo $year ?>', '<?php echo $str_cuoi2 ?>/<?php echo $year ?>')" >2
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/3/<?php echo $year ?>', '31/3/<?php echo $year ?>')">3
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/4/<?php echo $year ?>', '30/4/<?php echo $year ?>')" >4
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/5/<?php echo $year ?>', '31/5/<?php echo $year ?>')">5
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/6/<?php echo $year ?>', '30/6/<?php echo $year ?>')">6
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7/<?php echo $year ?>', '31/7/<?php echo $year ?>')" >7
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/8/<?php echo $year ?>', '31/8/<?php echo $year ?>')" >8
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/9/<?php echo $year ?>', '30/9/<?php echo $year ?>')">9
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10/<?php echo $year ?>', '31/10/<?php echo $year ?>')">10
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/11/<?php echo $year ?>', '30/11/<?php echo $year ?>')">11
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/12/<?php echo $year ?>', '31/12/<?php echo $year ?>')">12
+        </div>
+        <div class=clr></div>
+        <div>
+            <label><b>Quí:</b></label>
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1/<?php echo $year ?>', '31/3/<?php echo $year ?>')">I
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/4/<?php echo $year ?>', '30/6/<?php echo $year ?>')">II
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7/<?php echo $year ?>', '30/9/<?php echo $year ?>')">III
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10/<?php echo $year ?>', '31/12/<?php echo $year ?>')">IV
+        </div>
+        <div class=clr></div>
+        <div>
+            <label><b>Năm:</b></label>
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1/<?php echo $year ?>', '31/12/<?php echo $year ?>')">
+        </div>
+    </div>
+    <div class="clr"></div>
+    <div>
+        <label><b>Đơn vị:</b></label>
+		<select name='sel_donvi[]' id='sel_donvi' multiple style="width:400px" size=10>
+		<option value="0">--Tất cả--</option>
+		<?php
+			foreach($this->dataDonVi as $itemDonVi){
+		?>
+			<option value="<?php echo $itemDonVi->OrganId?>"><?php echo htmlspecialchars($itemDonVi->OrganName)?></option>
+		<?php
+			}
+		?>
+		</select>
+   </div> 
+    <div class=clr></div>
+    <div id="" >
+        <label><b>Người ký:</b></label>
+        <select name="sel_nguoiky" id="sel_nguoiky" onchange="">
+            <option value="0">--Chọn người ký--</option>
+            <?php
+            $data_nguoiky= Vb_nguoikyModel::getData(0);
+            foreach($data_nguoiky as $itemnguoiky){
+            ?>
+                <option value="<?=$itemnguoiky['ID_U']?>"><?=$itemnguoiky['NAME']?></option>
+            <?php
+            }
+            ?>
+        </select>              
+    </div>    
+    <div class="clr"></div>
+    <div id="" >
+        <label><b>Người theo dõi:</b></label>
+        <select name="sel_nguoisoan" id="sel_nguoisoan" onchange="">
+            <option value="0">--Chọn người theo dõi--</option>
+            <?php
+            $data_nguoisoan = UsersModel::getAllNameAndId(1);
+            foreach($data_nguoisoan as $itemnguoisoan){
+            ?>
+                <option value="<?=$itemnguoisoan['ID_U']?>"><?=$itemnguoisoan['NAME']?></option>
+            <?php
+            }
+            ?>
+                
+        </select>              
+    </div>    
+    <div class="clr"></div>
+    <input type=hidden id=h_isexel name=h_isexel value=0>
+    <div>
+        <br/>
+        <input type="button" title="Hiển thị báo cáo" value="Hiển thị" onclick="document.frm.target = 'reportview';
+                document.frm.h_isexel.value = 0;
+                document.frm.action = '/giaoviec/report/baocaogiaoviecview';
+                document.frm.submit();
+                return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
+        <input type="button" title="Xuất excel" value="Xuất Excel" onclick="document.frm.target = 'reportview';
+                document.frm.h_isexel.value = 1;
+                document.frm.action = '/giaoviec/report/baocaogiaoviecview/is_in/1';
+                document.frm.submit();
+                return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
+        <input type="button" title="In báo cáo" value="In báo cáo" onclick="document.frm.target = '_blank';
+                document.frm.h_isexel.value = 0;
+                document.frm.action = '/giaoviec/report/baocaogiaoviecview/is_in/1';
+                document.frm.submit();
+                return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
+    </div>
+    <div class=clr></div>
+</form>
+<iframe  style="overflow-x:visible" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no 
+         id="reportview" 
+         name="reportview" >
+</iframe>
+<script>
+function setvalueDateD(value_from, value_to) {
+	document.frm.fromdate.value = value_from;
+	document.frm.todate.value = value_to;
+}
+setvalueDateD('1/1/<?php echo $year ?>', '31/12/<?php echo $year ?>');
+</script>

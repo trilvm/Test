@@ -1,0 +1,48 @@
+<?php
+//echo count($this->data);
+$i=1;
+
+?>
+<center>
+<center><h2>DANH BẠ ĐIỆN THOẠI NỘI BỘ</h2></center>
+<table width="90%" border="1px" cellspacing="0px" cellpadding="0px" >
+    <thead>
+    <tr>
+        <th  width="5%">STT </th>
+        <th  width="30%">HỌ VÀ TÊN </th>
+        <th  width="20%">CHỨC DANH </th>
+        <th  width="20%">ĐIỆN THOẠI</th>
+        <th  width="25%">EMAIL </th>     
+    </tr>
+    </thead>
+    <?php
+     $tenpb='';
+    for($i=0;$i<count($this->data);$i++)
+    {
+         // var_dump($this->data[0]['FIRSTNAME']);exit;
+       if($this->data[$i]['DEPNAME']!=$tenpb)
+       {
+           echo"
+            <tr>
+                 <td colspan=5><font size=4><b>{$this->data[$i]['DEPNAME']}</b></font></td>
+            </tr>";
+       }
+    ?>
+  
+    <tr>
+        <td><?php echo $i+1; ?></td>
+        <td><?php echo $this->data[$i]['FIRSTNAME'].' '.$this->data[$i]['LASTNAME'] ?></td>
+        <td><?php if($this->data[$i]['NAME']== '') echo ' '; else echo $this->data[$i]['NAME'] ?></td>
+        <td><?php if($this->data[$i]['PHONE']== '') echo ' '; else echo $this->data[$i]['PHONE']  ?></td>
+        <td><?php if($this->data[$i]['EMAIL']== '') echo ' '; else echo $this->data[$i]['EMAIL'] ?></td>
+    </tr>
+ 
+    <?php
+        $tenpb=$this->data[$i]['DEPNAME']; 
+     
+}
+//<script>print()</script>
+?>
+ </table>
+</center>
+<script>print();/script>

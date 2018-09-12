@@ -1,0 +1,326 @@
+<link rel="stylesheet" type="text/css" href="/popupmini/popupmini.css" />
+<script src="/jquery/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+    var jq1102 = jQuery.noConflict(true);
+</script>
+<form name=frm method=post action='/giaoviec/index/nhiemvu' onsubmit="document.frm.page.value = 1;document.frm.action = '/giaoviec/index/index';return true;">
+<div>
+    <table>
+        <tr>
+            <td nowrap="nowrap">Đơn vị giao</td>
+            <td nowrap="nowrap">
+                <select name="CQLIENTHONG" id="CQLIENTHONG" class="inputbox" size="1" onchange="document.frm.submit();">
+
+                    <?php
+                        require_once "giaoviec/models/GiaoViecModel.php";
+                        echo GiaoViecModel::WriteDonVi((int)$this->CQLIENTHONG, "-- Chọn tất cả  --");
+                    ?>
+                </select>
+
+            </td>
+
+        </tr>
+        <tr>
+            <td nowrap="nowrap">Số ký hiệu</td>
+            <td nowrap="nowrap" >
+                <input type=text class=inputbox name=SOKYHIEU value="<?= $this->SOKYHIEU ?>" size=20>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td nowrap="nowrap" valign=top>Tên nhiệm vụ</td>
+            <td nowrap="nowrap" colspan="3">
+                <input type=text class=inputbox name=TENCONGVIEC value="<?= $this->TENCONGVIEC ?>" size=50>
+            </td>
+            <td width="100%"></td>
+        </tr>
+        
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap" colspan="3">
+                <input type=hidden><input type=submit value="Tìm kiếm">
+            </td>
+            <td width="100%"></td>
+        </tr>
+        <tr></tr>
+    </table>
+</div>
+<table class="adminlist">
+    <thead>
+         <tr>
+			<th colspan="11">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/giaoviec/index/nhiemvu';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="30" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="30" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+	</tr>
+        <tr>
+            <th colspan=5><a id=trangthai0 href="/giaoviec/index/nhiemvu/trangthai/0">Chưa tiếp nhận</a> | 
+                <a id=trangthai1 href="/giaoviec/index/nhiemvu/trangthai/1">Đã tiếp nhận</a> | 
+                <a id=trangthai3 href="/giaoviec/index/nhiemvu/trangthai/3">Đã hoàn thành</a> | 
+                <a id=trangthai2 href="/giaoviec/index/nhiemvu/trangthai/2">Từ chối</a> | 
+                <a id=trangthai4 href="/giaoviec/index/nhiemvu/trangthai/4">Chưa hoàn thành</a> | 
+                <a id="trangthai-1" href="/giaoviec/index/nhiemvu/trangthai/-1">Tất cả</a></th>
+        </tr>
+        <tr>
+            <th nowrap>STT</th>
+            <th nowrap>Văn bản</th>
+            <th nowrap>Nhiệm vụ</th>
+            <th nowrap>Ngày dự kiến hoàn thành</th>
+            <th nowrap>Chức năng</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <?php
+        $stt = 1;
+	$i=0;
+        foreach ($this->data as $item) {
+            ?>
+            <tr class="row<?=$i?><?php if ($item->XACNHANTRANGTHAI == 1) {echo ' dahoanthanh';} ?>"  row="<?=$i?>">
+                <td nowrap align=right><?= $stt++ ?></td>
+                <td width=30% valign=top><strong><?= $item->SOKYHIEU ?> - <?= date("d/m/Y", strtotime($item->NGAYBANHANH)) ?> - <?= $item->DONVIGIAO ?></strong><br><?= $item->TRICHYEU ?></td>
+                <td width=70% valign=top>
+                    <strong><?= $item->TENCONGVIEC ?></strong><br>
+                    Ngày giao <strong><?= date("d/m/Y H:i:s", strtotime($item->NGAYGIAO)) ?></strong>
+                    Xử lý <strong><?= $item->HOTENNGUOINHAN ?></strong>
+                    Vai trò <strong><?= $item->LADONVICHINH == 0 ? "Phối hợp" : "Xử lý chính" ?></strong><img src="/images/j_arrow_down.png"><a href="#" onclick="ShowXulyList('<?= $item->MACONGVIEC ?>');return false;">Xem thêm</a><br>
+                    <table class="adminlist" id="xuly_list_<?= $item->MACONGVIEC ?>" style="display:none">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Đơn vị</th>
+                                <th>Tham gia</th>
+                                <th>Chuyên viên theo dõi</th>
+                                <th>Người xử lý</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div style="display:none" id="xuly_action_<?= $item->MACONGVIEC ?>">
+
+                    </div>
+                </td>
+                <td nowrap align=right valign=top>
+                    <?= date("d/m/Y", strtotime($item->NGAYDUKIENHOANTHANH)) ?>
+                </td>
+                <td valign=top>
+                    <?php
+                    if ($item->TRANGTHAI == 0 || $item->TRANGTHAI == 2) {
+                        ?>
+                        <a href="#" onclick="tiepNhanGiaoViec('<?= $item->MACONGVIEC ?>');return false;">Tiếp nhận</a><br>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                    if ($item->TRANGTHAI == 0) {
+                        $lydo = preg_replace("/\r|\n/", " ", $item->LYDOTUCHOI);
+                        ?>
+                        <a href="javascript:void(0)" onclick="
+                                        if (jq1102(this).hasClass('selected')) {
+                                            popupMiniDeselect_tuchoi($(this));
+                                        } else {
+                                            loadDataPopupTuchoi('<?= $item->MACONGVIEC ?>', '<?= $lydo ?>');
+                                            jq1102(this).addClass('selected');
+                                            jq1102(this).closest('tr').addClass('row2');
+                                            jq1102('.pop_tuchoi').popupMiniSlideFadeToggle();
+                                        }
+                                        return false;" class="capnhattrangthai">Từ chối</a>
+
+                        <?php
+                    }
+                    ?>
+
+                </td>
+            </tr>
+            <?php
+             $i = (-1+$i)*-1;$i;
+        }
+        ?>
+
+    </tbody>
+    <tfoot>
+		<tr>
+			<th colspan="11">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/giaoviec/index/nhiemvu';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="30" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="30" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+
+</form>    
+<div class="tuchoipopup pop_tuchoi">
+    <form method="post" name="tuchoiform" id="tuchoiform" enctype="multipart/form-data">
+        <p>
+        <h3> Lý do từ chối:</h3>
+        <textarea name="lydo"  id="lydo"></textarea>
+        <input type="hidden" name="macongviec" id="macongviec" value="">
+        </p>        
+        <p>
+            </br>
+            <button name="capnhat_submit" onclick="sendTuChoiNhiemVu()" id="capnhat_submit">Xác nhận</button> 
+            <button  onclick="popupMiniDeselect_tuchoi(jq1102('a.tuchoi.selected'));return false;">Hủy bỏ</button>
+        </p>
+    </form>
+</div>
+<script>
+    jq1102(document).ready(function () {
+        jq1102("#trangthai<?= $this->trangthai ?>").css("color", "red");
+    });
+    var TrangThai = new Array("Chưa tiếp nhận", "Đã tiếp nhận", "Từ chối", "Đã hoàn thành");
+    function EnableNhiemvuXulyKhongVBToancoquan() {
+        document.location = '/giaoviec/index/nhiemvuall';
+    }
+    function tiepNhanGiaoViec(id) {
+        if (confirm("Bạn có muốn tiếp nhận công việc này không?")) {
+            jq1102.ajax({
+                type: "POST",
+                url: "/giaoviec/index/tiepnhan",
+                data: "id=" + id,
+                dataType: "json",
+                success: function (data1) {
+                    if (data1.error.code == 0) {
+                        alert("Tiếp nhận thành công");
+                        location.reload();
+                    } else {
+                        alert("Tiếp nhận lỗi: " + data1.error.message);
+                    }
+                },
+                error: function (request, status, errorThrown) {
+
+                }
+            });
+        }
+    }
+
+    function tuChoiGiaoViec(id) {
+        if (confirm("Bạn có muốn từ chối công việc này không?")) {
+            jq1102.ajax({
+                type: "POST",
+                url: "/giaoviec/index/tuchoi",
+                data: "id=" + id,
+                dataType: "json",
+                success: function (data1) {
+                    if (data1.error.code == 0) {
+                        alert("Từ chối thành công");
+                        location.reload();
+                    } else {
+                        alert("Từ chối lỗi: " + data1.error.message);
+                    }
+                },
+                error: function (request, status, errorThrown) {
+
+                }
+            });
+        }
+    }
+
+    function ShowXulyList(macongviec) {
+        jq1102('#xuly_list_' + macongviec).toggle();
+        jq1102("#xuly_list_" + macongviec + " tbody").remove();
+        jq1102.ajax({
+            type: "POST",
+            url: "/giaoviec/index/congcong",
+            data: "function=selectThamGiaXuLy&macongviec=" + macongviec,
+            dataType: "json",
+            success: function (data1) {
+                for (var i = 0; i < data1.length; i++) {
+                    var html = "";
+                    html = "<tr><td>" + (i + 1) + "</td>";
+                    html += "<td>" + data1[i].DONVINHAN + "</td>";
+                    html += "<td>" + (data1[i].LADONVICHINH == 1 ? "Xử lý" : "Phối hợp") + "</td>";
+                    html += "<td>" + data1[i].CHUYENVIENTHEODOI + "</td>";
+                    html += "<td>" + data1[i].HOTENNGUOINHAN + "</td>";
+                    html += "<td>" + TrangThai[data1[i].TRANGTHAI] + (data1[i].TRANGTHAI == 2 ? "<br><i>" + data1[i].LYDOTUCHOI + "</i>" : "") + "</td></tr>";
+
+                    jq1102("#xuly_list_" + macongviec).append(html);
+                }
+            },
+            error: function (request, status, errorThrown) {
+
+            }
+        });
+    }
+    jq1102.fn.popupMiniSlideFadeToggle = function (easing, callback) {
+        return this.animate({opacity: 'toggle', height: 'toggle'}, 'fast', easing, callback);
+    };
+    function popupMiniDeselect_tuchoi(e) {
+        jq1102('.pop_tuchoi').popupMiniSlideFadeToggle(function () {
+            e.closest('tr').removeClass('row2');
+            e.removeClass('selected');
+            jq1102('#macongviec').val('');
+        });
+    }
+    function loadDataPopupTuchoi(macongviec, lydo) {
+        jq1102('#macongviec').val(macongviec);
+        jq1102("#lydo").val(lydo);
+    }
+
+    function sendTuChoiNhiemVu() {
+        jq1102('#errorTUCHOI').html("");
+        jq1102.ajax({
+            url: '/giaoviec/index/tuchoi',
+            data: {
+                'macongviec': jq1102('#macongviec').val(),
+                'lydo': jq1102('#lydo').val()
+            },
+            async: false,
+            type: 'post',
+            cache: false,
+            success: function (data) {
+                var jsonObj = jq1102.parseJSON(data);
+                // if(jsonObj.status == 'true'){
+                popupMiniDeselect_cntt(jq1102('a.pop_tuchoi.selected'));
+                //jq1102(jq1102('a.pop_capnhat_nv.selected').closest('tr')).find('#nhiemvu_cn').html(jsonObj.tiendo);                   
+                return false;
+                //}else{
+                // jq1102('#errorCNTT').html("Không thể cập nhật :(");
+                //}
+            }
+        });
+
+    }
+</script>

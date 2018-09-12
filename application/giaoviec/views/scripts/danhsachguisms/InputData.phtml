@@ -1,0 +1,48 @@
+<form id="containerID" action="/giaoviec/danhsachguisms/save" method="post" enctype="multipart/form-data" name="datacdform" >
+    <div style="float: right;"><font color="red">(*) Bắt buộc nhập liệu </font></div>
+    <div class="clr"></div>
+    <fieldset>
+        <div class="required clearfix">
+            <label>Tên đơn vị<font color="red">*</font></label>
+            <input type="text" name="tendonvi" maxlength="200" value="<?php echo htmlspecialchars($this->tendonvibefore); ?>" class="inputText" size="100" >
+            <span class="box_erro_area" id="ERRtendonvi"></span>
+        </div>
+       
+        <div class="required clearfix">
+            <label>Điện thoại<font color="red">*</font></label>
+            <input type="text" name="sodienthoai" maxlength="100" value="<?php echo htmlspecialchars($this->sodienthoaibefore); ?>" class="inputText" size="50" >
+        </div>
+        <div class="required clearfix">
+            <label>Nội dung<font color="red">*</font></label>
+            <textarea name="noidung" id="noidung" rows="4" value="<?php echo htmlspecialchars($this->noidungbefore); ?>"  style="width:30%;"><?php echo htmlspecialchars($this->noidungbefore); ?></textarea>
+        </div>
+        <div class="optional clearfix">
+            <label>Cho phép gửi </label>
+            <select name="active" id="active" class="inputbox" size="1" >
+            <option value="9"> -- Chọn-- </option>
+            <option value="0"  <?php if ($this->activeselect == 0) { echo 'selected';  } ?> >Cho phép gửi tin</option>
+            <option value="9" <?php if ($this->activeselect == 9) { echo 'selected';  } ?> >Không cho phép gửi tin</option>
+
+            </select>
+            
+            
+        </div>
+    </fieldset>
+    <input type=hidden name="InputID" value=<?php echo $this->id ?> >
+    <input type=hidden name="limit" value=<?php echo $this->limit ?> >
+    <input type=hidden name="filter_object" value=<?php echo $this->filter_object ?> >
+    <input type=hidden name="search" value=<?php echo $this->search ?> >
+    <input type=hidden name="page" value=<?php echo $this->page ?> >
+</form>
+<script type="text/javascript">
+
+    function SaveButtonClick() {
+         document.datacdform.submit();
+    }
+
+    function BackButtonClick() {
+        document.datacdform.action = '/giaoviec/danhsachguisms/index';
+        document.datacdform.submit();
+    }
+
+</script>

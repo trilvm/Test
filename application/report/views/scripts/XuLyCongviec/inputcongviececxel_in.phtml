@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style>
+td{
+	border-color: black;
+}
+th{
+	border-color: black;
+}
+</style>
+
+</head>
+<body style="background-color:transparent">
+<table  width=100% >
+<tr >
+  <td align=center ><b><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></b></td>
+
+  <td align=center><b>CỘNG HÒA XÃ HỘI CHỦ
+  NGHĨA VIỆT NAM</b></td>
+ </tr>
+ <tr >
+  <td align=center ><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+  <td align=center ><b>Ðộc lập - Tự do - Hạnh phúc</b></td>
+ </tr>
+ <tr >
+
+ 
+  <td ></td>
+  <td align=right><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+ </tr>
+
+ 
+</table>
+<p align=center><b>THỐNG KÊ TÌNH HÌNH XỬ LÝ VĂN BẢN ĐẾN</b></p>
+<p align=center><?php echo $this->thu;?> năm <?=QLVBDHCommon::getYear()?></p>
+
+<table border="1" style="border: 1px solid black; border-collapse: collapse;">
+	
+	<thead>
+		<tr>
+			<th nowrap>STT</th>
+			<th width=20%>Họ tên</th>
+			<th nowrap>Nhận để xử lý</th>
+			<th nowrap>Đã xử lý</th>
+			<th nowrap>Chưa xử lý</th>
+			<th nowrap>Chờ xử lý</th>
+			<th nowrap>Trễ hạn</th>
+		</tr>
+	</thead>
+	<tbody>
+     <?php foreach($this->data1 as $id_dep){ ?>
+    <tr>
+	 <td colspan=7> <b><?= mb_strtoupper($id_dep["NAME"],"utf-8")?> </b></td>
+	</tr>
+	<?php
+	      $tt= new congviecModel();
+		  $arr_dxl= $tt->counttkedxl($this->fromdate,$this->todate);
+		   $arr_cxl= $tt->counttkecxl($this->fromdate,$this->todate);
+		   $arr_choxl= $tt->counttkechoxl($this->fromdate,$this->todate);
+		   $arr_tre1= $tt->counttketre1($this->fromdate,$this->todate);
+		   $arr_tre2= $tt->counttketre2($this->fromdate,$this->todate);
+
+	       $this->data = $tt->layidu($id_dep["ID_DEP"]);	
+		   $st=1;foreach($this->data as $iduitem){	
+		 
+	?>  
+	   
+		<tr>
+			<td nowrap><?=$st?></td>
+			<td nowrap><?=$iduitem['HOTEN']?></td>			
+			<td nowrap><?php echo (($arr_dxl[$iduitem['ID_U'].""] >0?$arr_dxl[$iduitem['ID_U'].""]:"0") + ($arr_cxl[$iduitem['ID_U'].""] >0?$arr_cxl[$iduitem['ID_U'].""]:"0")+($arr_choxl[$iduitem['ID_U'].""] >0?$arr_choxl[$iduitem['ID_U'].""]:"0")) ; ?></td>
+			<td nowrap><?php echo $arr_dxl[$iduitem['ID_U'].""] >0?$arr_dxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			<td nowrap><?php echo $arr_cxl[$iduitem['ID_U'].""] >0?$arr_cxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			<td nowrap><?php echo $arr_choxl[$iduitem['ID_U'].""] >0?$arr_choxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			<td nowrap><?php echo (($arr_tre1[$iduitem['ID_U'].""] >0?$arr_tre1[$iduitem['ID_U'].""]:"0") + 
+			     ($arr_tre2[$iduitem['ID_U'].""] >0?$arr_tre2[$iduitem['ID_U'].""]:"0")); ?></td>
+		</tr>
+	<?php
+		$st++;}
+	?>
+	<?php
+		}
+	?>
+
+	</tbody>
+</table>
+
+
+</body>
+<script>print();</script>
+</html>

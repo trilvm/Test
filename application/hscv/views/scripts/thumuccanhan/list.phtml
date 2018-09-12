@@ -1,0 +1,381 @@
+<?php
+$disable="/isreadonly/1";
+$disablefile="/isreadonly/1";
+?>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse_state.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<form name=frm method=post onsubmit="document.frm.page.value = 1;document.frm.action = '/hscv/thumucanhan/list/id_thumuc/<?=$this->id_thumuc?>';return true;">
+
+<table><tr><td nowrap="nowrap" valign="top" style="border-right: 1px solid">
+<ul class=treeview id=treemenu2>
+<li>Hồ sơ cá nhân
+<?php 
+$html = "";
+echo ThumuccanhanModel::ToTree($this->thumuc,1,"treemenu2",$html,$this->id_thumuc);
+?>
+</li>
+</ul>
+<script type="text/javascript" src="/js/simpletreemenu.js">
+
+/***********************************************
+* Simple Tree Menu- © Dynamic Drive DHTML code library (www.dynamicdrive.com)
+* This notice MUST stay intact for legal use
+* Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
+***********************************************/
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="/styles/simpletree.css" />
+<script type="text/javascript">
+
+//ddtreemenu.createTree(treeid, enablepersist, opt_persist_in_days (default is 1))
+ddtreemenu.createTree("treemenu2", true, 5)
+ddtreemenu.flatten('treemenu2', 'expand');
+
+</script>
+</td>
+<td width="100%" valign="top">
+<!-- Bat dau Danh sach ho so cong viec -->
+
+
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th colspan="4">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/hscv/thumuccanhan/list/id_thumuc/<?=$this->id_thumuc?>';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+		<tr>
+			<th nowrap="nowrap">
+				#
+			</th>
+			<th width="100%">
+				Tên công việc
+			</th>
+			<th nowrap="nowrap">
+				&nbsp;
+			</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="3">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/hscv/thumuccanhan/list/id_thumuc/<?=$this->id_thumuc?>';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+	if(count($this->data)<=0){
+		echo "<tr><td colspan='3'>Không tìm thấy hồ sơ công việc nào<td></tr>";
+	}else{
+	$stt=($this->page-1)*$this->limit;
+	$i=0;
+	$datatre = "";
+	foreach($this->data as $row){ 
+	$stt++;	
+	?>
+		<tr class="row<?=$this->idhscv==$row['ID_HSCV']?"2":$i?>">
+			<td valign="top" rowspan=2><a name="hscv<?=$row['ID_HSCV']?>"></a><?=$stt?></td>
+			<td valign="top">
+				<?php
+					if($row["ID_LOAIHSCV"]==1){
+						echo "<img src='/images/icon_vbden.jpg'>";
+						$vbden = $this->vbden->findByHscv($row['ID_HSCV']);
+						
+					}else if($row["ID_LOAIHSCV"]==2){
+						echo "<img src='/images/icon_soanthaovb.jpg'>";
+					}else if($row["ID_LOAIHSCV"]>=3){
+						echo "<img src='/images/icon_motcua.jpg'>";
+					}
+				?>
+				<?php if($row["ID_LOAIHSCV"]==1){
+					$vbdeninfo = $this->vbden->find($vbden['ID_VBD'])->current();
+					echo "<b>".$vbdeninfo->SOKYHIEU." - ".QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYBANHANH)." - ".$vbdeninfo->COQUANBANHANH_TEXT."</b><br>";
+				}?>
+				<?=$row['NAME']?><?=$row['EXTRA']!=""?" - ".$row['EXTRA']:""?> <span id="TREHAN<?=$row['ID_HSCV']?>"></span>
+			</td>
+			<td nowrap valign="top">
+				<a href="javascript:SwapIframe(<?=$row['ID_HSCV']?>,'/hscv/thumuccanhan/inputluutmcn/id/<?=$row['ID_HSCV']?>');">QL Thư mục cá nhân</a>
+			</td>
+		</tr>
+		<tr class="row<?=$this->idhscv==$row['ID_HSCV']?"2":$i?>">
+			<td colspan="2">
+				<div>
+					<ul class="chitiethscv">
+					<?php if(QLVBDHCommon::TabHscv(1,$row["ID_LOAIHSCV"])==1){ ?>
+						<li id=groupicon1_<?=$row["ID_HSCV"]?>>
+							<img src="/images/icon_chitiet.jpg" border="0" hspace="5" >
+							<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/vbden/vbden/detail/type/<?=$row["ID_LOAIHSCV"]?>/id/<?=$row["ID_HSCV"]?>/year/<?=$this->realyear?><?=$disable?>",1);
+							<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+							'>Chi tiết</a>
+						</li>
+					<?php } ?>
+					<?php if(QLVBDHCommon::TabHscv(6,$row["ID_LOAIHSCV"])==1){ ?>
+					<li id=groupicon6_<?=$row["ID_HSCV"]?>>
+						<img src="/images/icon_luanchuyen.jpg" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/hscv/way/id/<?=$row["ID_HSCV"]?>/year/<?=$this->realyear?>/type/<?=$row["ID_LOAIHSCV"]?>",6);
+						<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+						'>Luân chuyển</a>
+					</li>
+					<?php } ?>
+					<?php if(QLVBDHCommon::TabHscv(5,$row["ID_LOAIHSCV"])==1){ ?>
+					<li id=groupicon5_<?=$row["ID_HSCV"]?>>
+						<img src="/images/icon_duthao.jpg" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/VanBanDuThao/index/year/<?=$this->realyear?>/iddivParent/groupcontent<?=$row["ID_HSCV"]?>/idHSCV/<?=$row["ID_HSCV"]?><?=$disable?>",5);
+						<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+						'>Dự thảo</a>
+					</li>
+					<?php } ?>
+					<?php if(QLVBDHCommon::TabHscv(8,$row["ID_LOAIHSCV"])==1){ ?>
+					<li id=groupicon8_<?=$row["ID_HSCV"]?>>
+						<img src="/images/icon_vanbanlienquan.jpg" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/hscv/bosung/year/<?=$this->realyear?>/iddivParent/groupcontent<?=$row["ID_HSCV"]?>/id/<?=$row["ID_HSCV"]?><?=$disable?>",8);
+						<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+						'>Bổ sung hồ sơ</a>
+					</li>
+					<?php } ?>
+					<?php if(QLVBDHCommon::TabHscv(2,$row["ID_LOAIHSCV"])==1){ ?>
+					<li id=groupicon2_<?=$row["ID_HSCV"]?>>
+						<img src="/images/icon_butphe.jpg" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/hscv/viewbutphe/id/<?=$row["ID_HSCV"]?>/year/<?=$this->realyear?><?=$disable?>",2);
+						<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+						'>Bút phê</a>
+					</li>
+					<?php } ?>
+					<?php if(QLVBDHCommon::TabHscv(3,$row["ID_LOAIHSCV"])==1){ ?>
+					<li id=groupicon3_<?=$row["ID_HSCV"]?>>
+						<img src="/images/icon_phoihop.gif" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/phoihop/index/idhscv/<?=$row["ID_HSCV"]?>/year/<?=$this->realyear?><?=strtoupper($this->code)=="PHOIHOP"?"":$disable?>",3);
+						<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+						'>Phối hợp</a>
+					</li>
+					<?php } ?>
+					<?php if(QLVBDHCommon::TabHscv(4,$row["ID_LOAIHSCV"])==1){ ?>
+					<li id=groupicon4_<?=$row["ID_HSCV"]?>>
+						<img src="/images/icon_files.jpg" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/file/index/iddiv/groupcontent<?=$row["ID_HSCV"]?>/idObject/<?=$row["ID_LOAIHSCV"]==1?$vbden['ID_VBD']:$row["ID_HSCV"]?>/is_new/0/year/<?=$this->realyear?>/type/<?=$row["ID_LOAIHSCV"]==1?"3":"1"?><?=$disablefile?>",4);
+						<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+						'>Đính kèm</a>
+					</li>
+					<?php } ?>
+					<?php if(QLVBDHCommon::TabHscv(7,$row["ID_LOAIHSCV"])==1){ ?>
+					<li id=groupicon7_<?=$row["ID_HSCV"]?>>
+						<img src="/images/icon_vanbanlienquan.jpg" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/vanbanlienquan/index/year/<?=$this->realyear?>/iddivParent/groupcontent<?=$row["ID_HSCV"]?>/idHSCV/<?=$row["ID_HSCV"]?><?=$disable?>",7);
+						<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+						'>VB liên quan</a>
+					</li>
+					<?php } ?>
+					<?php if($this->id_thumuc>1){ ?>
+					<li id=groupicon9_<?=$row["ID_HSCV"]?>>
+						<img src="/images/icon_vanbanlienquan.jpg" border="0" hspace="5" >
+						<a href='javascript:SwapDiv(<?=$row["ID_HSCV"]?>,"/hscv/hscv/viewresult/iddivParent/groupcontent<?=$row["ID_HSCV"]?>/id/<?=$row["ID_HSCV"]?>",9);
+						<?php if(strtoupper($this->code)=="PHOIHOP"){
+						
+								if($row["IS_NEW_PH"] == 0){?>
+							updateImageNew("img_new_ph_<?=$row["ID_HSCV"]?>",<?=$row["ID_HSCV"]?>);
+							<?php }}?>
+						'>Kết quả</a>
+					</li>
+					<?php } ?>
+					</ul>
+				</div>
+				<div class="groupcontent" id="groupcontent<?=$row["ID_HSCV"]?>" style="display:none;background: #ffffff"></div>
+			</td>
+		</tr>
+<?php
+		$i = (-1+$i)*-1;	
+	}
+}
+?>
+	</tbody>
+</table>
+
+<!-- Ket thuc Danh sach ho so cong viec -->
+</td></tr></table>
+
+
+
+
+
+
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+
+</form>
+
+<script>
+	
+	
+	
+	function DeleteHscv(id,type){
+		if(confirm("Bạn có muốn xóa công việc này không?")){
+			document.location.href = "/hscv/hscv/delete/id_hscv/"+id+"/type/"+type;
+		}
+	}
+	function CreateButtonClick(url){
+		document.frm.action = url;
+		document.frm.submit();
+	}
+	function SwapDiv(id,url,tab){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		if(document.getElementById("groupcontent"+id).style.display==""){
+			document.getElementById("groupcontent"+id).style.display="none";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+
+	}
+	}
+	function SwapIframe(id,url){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+					document.getElementById("groupcontent"+id).style.display="none";
+					document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+					break;
+				}
+			}
+		}
+		if(document.getElementById('groupcontent'+id).style.display == ''){
+			document.getElementById('groupcontent'+id).style.display = 'none';
+		}else{
+			document.getElementById('groupcontent'+id).innerHTML = '<iframe style="overflow-x:visible" height=0 id=iframebutphe'+id+' allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src="'+url+'"></iframe>';
+			document.getElementById('groupcontent'+id).style.display = '';
+		}
+	}
+	function Swap(id,url){
+		if(document.getElementById(id).style.display==""){
+			document.getElementById(id).style.display="none";
+			document.getElementById("groupicon"+id).className = "groupicon";
+		}else{
+			document.getElementById(id).style.display="";
+			document.getElementById("groupicon"+id).className = "groupiconopen";
+			loadDivFromUrl(id,url,1);
+		}
+	}
+	<?php if(count($this->data)>0){ ?>
+	execfunction("auth","user","getnextstep","data/<?=$datanextstep?>");
+	execfunction("auth","user","delay","data/<?=$datatre?>");
+	<?php
+	}
+	?>	
+
+	function updateImageNew(iddiv,id){
+    	var oimg = document.getElementById(iddiv);
+    	if(oimg != null){
+    		if(oimg.style.display != 'none'){
+	    	oimg.style.display = 'none';
+	    
+	    	var AE = new AjaxEngine();
+			var oXmlHttp = AE.createXMLHttp(); 	
+		    <?php 
+		    $authen = Zend_Registry::get('auth');
+		    $user = $authen->getIdentity();
+		    ?>
+			var url = '/hscv/hscv/updatedaxemphoihop?id_hscv='+id+'&id_u=<?=$user->ID_U?>';
+			oXmlHttp.open('post', url , true);
+		    oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		    oXmlHttp.onreadystatechange = function () { 
+		        if (oXmlHttp.readyState == 4) { 
+		        	if (oXmlHttp.status == 200) {             	
+		            	//alert(oXmlHttp.responseText);
+		        	} else { 
+		            	
+		            }            
+		        } 
+		    };  
+		    oXmlHttp.send(null);   
+    		
+    		
+	    	}
+    	}
+	    
+    }
+</script>

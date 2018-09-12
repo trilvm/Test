@@ -1,0 +1,1039 @@
+<script type="text/javascript" src="/js/json/json_parse.js"></script>
+<?php require_once 'Common/FileDinhKem.php';
+$actid = ResourceUserModel::getActionByUrl('hscv','chuyennoibo','chuyennoiboinput');
+$is_cnb = ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0]);
+
+?>
+<?php 
+$arr_col = Common_Sovanban::getColumNameGroup(1);
+$len_arr = count($arr_col);
+
+if($len_arr==0){
+	$year=QLVBDHCommon::getYear();
+	$cur_soden = Common_Sovanban::getCurrentSoden($year,array());
+}
+
+$old_svb = $this->ID_SVB;
+$old_lvb = $this->ID_LVB;
+$old_soden = $this->SODEN;
+$old_soden_in = $this->SODEN_IN; 
+ 
+
+$aff_type  = 0;
+$col_name = "";
+foreach ($arr_col as $itcol){
+	switch ($itcol)
+	{
+		case 'ID_SVB':
+			$aff_type = $this->ID_SVB;
+			$col_name='ID_SVB';
+			break;
+		case 'ID_LVB':
+			$aff_type = $this->ID_LVB;
+			$col_name='ID_LVB';
+			break;
+		default:
+			break; 
+	}
+}
+
+$url = "";
+$is_new = 0;
+$type = 0;
+if((int)$this->ID_VBD==0){
+	$is_new = 1;
+	$type = -1;
+}else{
+	$is_new = 0;
+	$type = 3;
+}
+$url ="'/hscv/file?iddiv=idFileDinhKem&idObject=".$this->ID_VBD."&is_new=".$is_new."&year=".$this->year."&type=".$type."'" ;
+	//Common_FileDinhKem::InsertFileDinhKem("idFileDinhKem",0,1,$this->year,-1); 	
+		//else 
+			//Common_FileDinhKem::InsertFileDinhKem("idFileDinhKem",(int)$this->ID_HSCV,0,$this->year,1);
+
+?>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<form name=frm method="post" action="/vbden/vbden/savevbden" target="submitfrm" >
+<div id="checkdata_err" align="left" style="display:none;">
+<font color="Red">Văn bản này đã có trong hệ thống</font>
+</div>
+
+<div id="load_checkdata_all" align="right" style="display:none;">
+<img src='/images/loading.gif'> <font color="Blue">Đang kiểm tra dữ liệu nhập, xin chờ ...</font>
+</div>
+
+<input type="hidden" name="ID_VBD" value="<?php echo $this->ID_VBD?>">
+<table width="100%" onclick="if(at_container){ if(at_container.style.display!='none')at_Hide(false);}">
+	<?php 
+	$cqnhan = vbdenModel::GetDataCQN((int)$this->data->COQUANNHAN);
+	if( count($cqnhan) > 1){?>
+	<tr>
+	<td nowrap="nowrap" valign="top">
+			<font color="Blue">Cơ quan nhận</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+		<select name="COQUANNHAN" onchange="changeCQNHAN()" >
+				<?php foreach($cqnhan as $cq ){?>
+					<option value="<?=$cq["ID_CQ"]?>"><?=$cq["NAME"]?></option>
+				<?php } ?>
+		</select>
+		
+
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRCOQUANNHAN_TEXT"></span>	
+		</td>
+		
+	</tr>
+	<?php } else {?>
+	<input type=hidden name="COQUANNHAN" value=<?=(int)$cqnhan[0]["ID_CQ"]?>>
+	
+	<?php }?>
+	<tr>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001005 ?><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap">
+			<?php
+				foreach($arr_col as $col)
+				$onok = "";
+				if($col == 'ID_SVB')
+     				$onok = 'checkData(4,document.frm.ID_SVB.value)';
+				echo QLVBDHCommon::AutoComplete(
+				vbdenModel::GetDataSVB((int)$this->ID_SVB),
+				"ID_SVB",
+				"NAME",
+				"ID_SVB",
+				"ID_SVB_TEXT",
+				true,
+				"width:200px",
+				"$onok",
+				(int)$this->ID_SVB,
+				'');
+			?>
+			<div class="clr"></div>            
+			<span class="box_erro_area" id="ERRID_SVB"></span>
+		</td>
+		<td nowrap="nowrap" width="20"></td>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001008 ?><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap">
+			<?php
+				$onok = "";
+				foreach($arr_col as $col)
+					if($col == 'ID_LVB')
+	     				$onok = 'checkData(4,document.frm.ID_LVB.value)';
+				echo QLVBDHCommon::AutoComplete(
+				vbdenModel::GetDataLVB((int)$this->ID_LVB),
+				"ID_LVB",
+				"NAME",
+				"ID_LVB",
+				"ID_LVB_TEXT",
+				true,
+				"width:200px",
+				"$onok;selecthanxulytoanbo();",
+				(int)$this->ID_LVB,
+				'');
+			?>
+			<div class="clr"></div>            
+			<span class="box_erro_area" id="ERRID_LVB"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001009 ?><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap">
+			<input type=text size="30" class=inputbox name=SOKYHIEU value="<?=$this->SOKYHIEU?>"  >
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRSOKYHIEU"></span>
+		</td>
+		<td nowrap="nowrap" width="20"></td>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001010 ?><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap">
+			
+			<input type=text class=inputbox size="4" name=SODEN value="<?php
+			if($len_arr == 0) echo $cur_soden+1;
+			else echo $this->SODEN;
+			?>" size=50 onChange="return checkData(2,0);">
+			<img id="id_img_den" src='/images/loading.gif' style="display:none;"/>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRSODEN"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001012 ?><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap">
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->NGAYBANHANH),"NGAYBANHANH","NGAYBANHANH") ?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGAYBANHANH"></span>
+		</td>
+		<td nowrap="nowrap" width="20"></td>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001011 ?><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap">
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->NGAYDEN),"NGAYDEN","NGAYDEN") ?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGAYDEN"></span>   
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001007 ?><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap">
+			<?php
+				echo QLVBDHCommon::AutoComplete(
+				vbdenModel::GetDataCQ((int)$this->ID_CQ),
+				"ID_CQ",
+				"LONGNAME",
+				"ID_CQ",
+				"COQUANBANHANH_TEXT",
+				false,
+				"width:200px",
+				"",
+				(int)$this->ID_CQ,
+				$this->COQUANBANHANH_TEXT);
+			?>
+		<div class="clr"></div>
+			<span class="box_erro_area" id="ERRCOQUANBANHANH_TEXT"></span>
+		</td>
+		<td nowrap="nowrap" width="20"></td>
+		
+	
+	    <td nowrap="nowrap" style="color:blue">Người ký</td>
+		<td nowrap="nowrap">
+			<?=QLVBDHCommon::AutoComplete(
+				vbdenModel::GetDataNguoiKy(),
+				"NGUOIKY_ID",
+				"NGUOIKY",
+				"NGUOIKY_ID",
+				"NGUOIKY",
+				false,
+				"width:200px",
+				"",
+				$this->NGUOIKY,
+				$this->NGUOIKY);
+			?>
+			
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGUOIKY"></span>
+		</td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001004 ?><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap" valign="top" colspan="4">
+			<TEXTAREA NAME="TRICHYEU" ROWS="3" style="width: 98%"><?=$this->TRICHYEU?></TEXTAREA>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRTRICHYEU"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue">Ghi chú</td>
+		<td nowrap="nowrap" valign="top" colspan="4">
+			<TEXTAREA NAME="GHICHU" ROWS="3" style="width: 98%"><?=$this->GHICHU?></TEXTAREA>
+			<div class="clr"></div>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Hạn xử lý toàn bộ</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top" colspan="4">
+			<input NAME="HANXULYTOANBO" value='<?=$this->HANXULYTOANBO?>' type=text size=4> ngày
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRHANXULYTOANBO"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			
+		</td>
+		<td nowrap="nowrap" valign="top" colspan="4">
+			<input type="checkbox" name='IS_PHOBIEN' value="1" id='IS_PHOBIEN' <?=$this->IS_PHOBIEN==1?"checked":""?> > Là văn bản phổ biến
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue">File đính kèm</td>
+		<td nowrap="nowrap" valign="top" colspan="4" id="idFileDinhKem"></td>
+		<td width="100%"></td>
+	</tr>
+	
+	
+	<tr>
+		<td nowrap="nowrap" style="color:blue" valign="top">Chuyển để biết</td>
+		<td nowrap="nowrap" valign="top" colspan="3">
+			<?php echo QLVBDHCommon::writeMultiSelectDepartmentUser('DEP_NGUOIGUI','NGUOIGUI')?>
+			<input type="button" value="Chọn" onclick="InsertIntoArr()" />
+			
+		</td>
+		<td width="100%"><div id="listuser"></div></td>
+	</tr>
+	<?php if($is_cnb){ ?>
+	<tr>
+		
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Chuyển đơn vị nội bộ</font>
+		</td>
+		<td>
+			<?php 
+			require_once("hscv/models/chuyennoiboModel.php");
+			$data_cqnb = chuyennoiboModel::getDataCQNoibo();
+			?>
+			
+			<select name=CQNOIBO id=CQNOIBO multiple ondblclick="insertArrayCqnb();" >
+				
+				
+			</select>
+		</td>
+		<td> <input type=button class="input_button" onclick="insertArrayCqnb();" value=">" style="width:30px;">  
+		<br><br>
+		<input type=button class="input_button" onclick="insertAllArrayCqnb();" value=">>" style="width:30px;" >
+		</td>
+		<td>
+			<td valign="top" width=100%><div id="listcqnoibo"></div></td>
+		</td>
+		
+	</tr>
+
+	<?php }?>
+	<tr>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001013 ?></td>
+		<td nowrap="nowrap">
+			<input type=text class=inputbox name=SOBAN value="<?=$this->SOBAN==""?1:$this->SOBAN?>" size='3'>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRSOBAN"></span>
+		</td>
+		<td nowrap="nowrap" width="20"></td>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001015 ?></td>
+		<td nowrap="nowrap">
+			<select name="DOMAT" id="DOMAT" class="inputbox" >
+            	<option value="1"><?php echo 'Bình thường' ?></option>
+            	<option value="2"><?php echo 'Mật' ?></option>
+            	<option value="3"><?php echo 'Tối mật' ?></option>
+            	<option value="4"><?php echo 'Tuyệt mật' ?></option>                                
+            	<script>
+            		document.frm.DOMAT.value='<?php echo $this->DOMAT ?>';
+                </script>
+             </select>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRDOMAT"></span>  
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001014 ?></td>
+		<td nowrap="nowrap">
+			<input type=text class=inputbox name=SOTO value="<?=$this->SOTO==""?1:$this->SOTO?>" size=3>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRSOTO"></span>
+		</td>
+		<td nowrap="nowrap" width="20"></td>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001016 ?></td>
+		<td nowrap="nowrap">
+			<select name="DOKHAN" id="DOKHAN" class="inputbox"  >
+				<option value="1"><?php echo 'Bình thường' ?></option>
+				<option value="2"><?php echo 'Khẩn' ?></option>
+				<option value="3"><?php echo 'Hỏa tốc' ?></option>                                
+				<script>
+				document.frm.DOKHAN.value='<?php echo $this->DOKHAN ?>';
+				</script>
+			</select>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRDOKHAN"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue"></td>
+		<td nowrap="nowrap"></td>
+		<td nowrap="nowrap" width="20"></td>
+		<td nowrap="nowrap" style="color:blue"><?php echo MSG11001006 ?></td>
+		<td nowrap="nowrap">
+			<select name="ID_LVVB" id="ID_LVVB"   >
+            	<?php 
+            		echo vbdenModel::WriteLVVB((int)$this->ID_LVVB);
+            	?> 
+            </select>
+		</td>
+		<td width="100%"></td>
+	</tr>
+</table>
+<input type="hidden" name="SODEN_IN" value="<?=$this->SODEN_IN?>">
+<input type="hidden" name="SOKYHIEU_IN" value="<?=$this->SOKYHIEU_IN?>">
+</form>
+<script>
+	function changeCQNHAN(){
+	
+	document.frm.ID_SVB.value = 0;
+	document.frm.ID_SVB_TEXT.value = "";
+	DATA_ID_SVB = new Array();
+	var submitAjax = new AjaxEngine(); 
+			var cqn = document.frm.COQUANNHAN.value;
+			if(cqn == "")
+				cqn = 0;	
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("get", "/vbden/vbden/getsvbbycoquannhan?COQUANNHAN="+cqn , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			
+			oXmlHttp.onreadystatechange = function () { 
+				
+			if (oXmlHttp.readyState == 4) { 
+				//alert(oXmlHttp.responseText);
+				if (oXmlHttp.status == 200) { 
+					var lnc = 0;
+					var id_svb = 0;
+					var name = "";
+					myData = json_parse(oXmlHttp.responseText, function (key, value) {
+						var is_valid = 0;
+						if(key =="ID_SVB"){
+							id_svb = value;
+							lnc ++;
+						}
+						if(key =="NAME"){
+							is_valid = 1;
+							name = value;
+							lnc ++;
+						}
+						if(lnc%2==0 && is_valid==1)
+							DATA_ID_SVB[DATA_ID_SVB.length]= new Array(id_svb,name);
+					}	
+					);
+				
+				
+            } else { 
+               
+            } 
+        } 
+       }; 
+   		
+		oXmlHttp.send(null);
+}
+	
+	/* Load khung file dinh kem*/
+	loadDivFromUrl('idFileDinhKem',<?=$url?>,0);
+	
+	var is_check_sokyhieu=false;
+    var is_check_soden=true;
+    
+    var as_sokyhieu = 0;
+    var as_soden = 0;
+    var is_sokyhieu_valid = true;
+    var is_soden_valid = true;
+    var as_checkdata_all = 0;
+    function check_sokyhieu(msg){
+		//alert(msg);
+    	if(msg=='0'){	
+			document.getElementById('ERRSOKYHIEU').innerHTML = "Số ký hiệu, cơ quan, ngày ban hành trùng";
+    		is_check_sokyhieu=false;
+    		is_sokyhieu_valid = false;
+		}
+		else{
+			document.getElementById('ERRSOKYHIEU').innerHTML = "";
+		    is_check_sokyhieu=true;
+		    is_sokyhieu_valid = true;
+		}
+		as_sokyhieu = 1;
+		//return true;
+    }
+    
+    // Hàm thực hiện khi việc lấy số đến tăng tự động thành công
+    function get_soden(msg){	
+		document.frm.SODEN.value = msg;
+		var fade = function (node) {
+	        var level = 1;
+	        var step = function (  ) {
+	            var hex = level.toString(16);
+	            node.style.backgroundColor = '#FFFF' + hex + hex;
+	            if (level < 15) {
+	                level += 1;
+	                setTimeout(step, 100);
+	            }
+	        };
+	        setTimeout(step, 100);
+	    };
+	    fade(document.frm.SODEN);
+	    oimgsoden = document.getElementById("id_img_den");
+	    oimgsoden.style.display = "none";
+	    		
+    }
+    // Hàm gọi khi thực hiện check dữ liệu trên server không thành công
+    function checkFail(msg){
+		//alert('<?php echo ERR11001027 ?>');
+		oimgsoden = document.getElementById("id_img_den");
+	    oimgsoden.style.display = "none";
+	    as_soden =1;
+	    		
+    }
+    function check_all(msg){
+    	if(msg == 0){
+    		//do something
+    		var odiv_checkdata_err = document.getElementById('checkdata_err');
+    		odiv_checkdata_err.style.display = "";
+    	}else{
+    		var odiv_checkdata_err = document.getElementById('checkdata_err');
+    		odiv_checkdata_err.style.display = "none";
+    		sendEndDataToServer();
+    	}
+    	var odiv_checkdata_all = document.getElementById('load_checkdata_all');
+    	odiv_checkdata_all.style.display = "none";
+        
+    	
+    }
+    
+    // Hàm thực hiện check dữ liệu trên server
+    function checkData(type,value){
+    	
+    	var checkAjax = new AjaxEngine();     	
+    	// var url = "/vbden/vbden/check";    	
+    	var value_cq_bh = document.frm.COQUANBANHANH_TEXT.value;
+    	if(document.frm.ID_CQ.value > 0)
+    		value_cq_bh = "";
+    	
+    	if(document.frm.SODEN.value != "")
+    		document.frm.SODEN_IN.value = checkdinhdangsoden();
+		if(document.frm.SODEN_IN.value != -1){
+		}
+		else
+		{
+			document.getElementById('ERRSODEN').innerHTML = "Số đến sai định dạng";
+			return ;
+		}
+    	var url="/vbden/vbden/check";
+    		url=url+"/SODEN_IN/"+document.frm.SODEN_IN.value;
+    		url=url+"/TYPE/"+type;
+    		url=url+"/VALUECHECKED/"+value;
+    		url=url+"/ID_SVB/"+document.frm.ID_SVB.value;    		    		
+    		url=url+"/SODEN/"+document.frm.SODEN.value;
+			url=url+"/ID_LVB/"+document.frm.ID_LVB.value;
+    		url=url+"/ID_CQ/"+document.frm.ID_CQ.value;    		
+    		url=url+"?COQUANBANHANH_TEXT="+value_cq_bh;
+    		url=url+"&SOKYHIEU="+document.frm.SOKYHIEU.value;
+    		url=url+"&NGAYBANHANH="+document.frm.NGAYBANHANH.value;
+    		url=url+"&ODKHDF=1";
+    	var type_request = "GET";
+    	
+    	switch (type) {	    	
+	    	//SOKYHIEU
+	    	case 1: 
+	    	{
+				sendRequestToServer(url,type_request,check_sokyhieu,checkFail);
+	    	break;
+	    	}
+	    	case 3:
+	    	{
+	    		var odiv_checkdata_all = document.getElementById('load_checkdata_all');
+    			odiv_checkdata_all.style.display = "";
+        		url=url+"&GGHDJJSJ=<?=$this->id_vbd?>"; //kiem tra so ky hieu trong truong hop cap nhat
+	    		//alert(url);
+	    		sendRequestToServer(url,type_request,check_all,checkFail); 
+	    		break;
+	    	}
+	    	// SODEN
+	    	case 2: {
+	    		
+	    		<?php 
+				$value_param = "";
+				foreach($arr_col as $col){
+				if($col == 'ID_LVB')
+	     			$value_param = 'ID_LVB';
+	     		if($col == 'ID_SVB')
+	     			$value_param = 'ID_SVB';
+				}
+				?>
+				value = document.frm.<?=$value_param?>.value;
+	    		oimgsoden = document.getElementById("id_img_den");
+	    		oimgsoden.style.display = "";
+				
+	    		if(value==<?php echo $aff_type?>){
+	    			oimgsoden.style.display = "none";
+	    		}else{
+	    			sendRequestToServer(url,type_request,check_soden,checkFail); 
+	    		}	    		
+	    		break;
+	    	}
+	    	// get SODEN
+	    	case 4: 
+	    	{
+	    		oimgsoden = document.getElementById("id_img_den");
+	    		oimgsoden.style.display = "";
+	    		//alert(value);
+				//alert(<?php echo $aff_type?>);
+	    		if(value==<?php echo $aff_type?>)
+	    		{
+	    			get_soden('<?php echo $old_soden?>');
+	    			oimgsoden.style.display = "none";
+	    		}else{
+	    			sendRequestToServer(url,type_request,get_soden,checkFail); 
+	    		}
+	    		break;
+	    	}
+    		
+	    	default: result = 'unknown';    		
+    	}
+    }
+    function check_soden(msg){
+		
+    	if(msg == 0){		
+			document.getElementById('ERRSODEN').innerHTML = "<?php echo ERR11001022 ?>";
+		    is_check_soden=false;
+		    is_soden_valid = false;
+		}
+		else{
+			document.getElementById('ERRSODEN').innerHTML = "";
+		    is_check_soden=true;
+		    is_soden_valid = true;
+		}		
+		oimgsoden = document.getElementById("id_img_den");
+	    oimgsoden.style.display = "none";
+	    as_soden = 1;
+	    
+    }
+</script>
+<script>
+	var arrLVB = Array();
+	<?php
+	$loaivanban = vbdenModel::GetDataLVB(0);
+	foreach($loaivanban as $item){
+	?>
+		arrLVB[arrLVB.length] = Array('<?=$item['ID_LVB']?>','<?=(float)$item['HANXULY']?>');
+	<?php
+	}
+	?>
+	
+	function SaveButtonClick(){
+        var err = true;
+        err = err & validateInput("gt=0",document.frm.ID_SVB,"<?php echo ERR11001003 ?>");
+        err = err & validateInput("req",document.frm.SOKYHIEU,"<?php echo ERR11001007 ?>");
+        err = err & validateInput("req",document.frm.NGAYBANHANH,"<?php echo ERR11001013 ?>");
+        err = err & err==true?validateInput("nequ=''",document.frm.NGAYBANHANH,"<?php echo ERR11001013 ?>"):false;
+        err = err & err==true?validateInput("date",document.frm.NGAYBANHANH,"<?php echo ERR11001014 ?>"):false;
+        err = err & validateInput("req",document.frm.COQUANBANHANH_TEXT,"<?php echo ERR11001004 ?>");
+        err = err & err==true?validateInput("maxlen=1024",document.frm.COQUANBANHANH_TEXT,"<?php echo ERR11001005 ?>"):false;
+        err = err & validateInput("req",document.frm.TRICHYEU,"<?php echo ERR11001001 ?>");
+        err = err & err==true?validateInput("maxlen=512",document.frm.TRICHYEU,"<?php echo ERR11001002 ?>"):false;
+        err = err & validateInput("gt=0",document.frm.ID_LVB,"<?php echo ERR11001006 ?>");
+              
+        err = err & validateInput("req",document.frm.SODEN,"<?php echo ERR11001009 ?>");
+        //err = err & err==true?validateInput("num",document.frm.SODEN,"<?php echo ERR11001010 ?>"):false;
+        if(!is_check_soden && err==true){
+        	document.getElementById('ERRSODEN').innerHTML = "<?php echo ERR11001022 ?>";
+        	err = false;
+        }
+        err = err & validateInput("req",document.frm.NGAYDEN,"<?php echo ERR11001011 ?>");
+        err = err & err==true?validateInput("nequ=''",document.frm.NGAYDEN,"<?php echo ERR11001011 ?>"):false;
+        err = err & err==true?validateInput("date",document.frm.NGAYDEN,"<?php echo ERR11001012 ?>"):false; 
+        err = err & validateInput("num",document.frm.SOBAN,"<?php echo ERR11001017 ?>");
+        err = err & err==true?validateInput("maxlen=2",document.frm.SOBAN,"<?php echo ERR11001017 ?>"):false;
+        err = err & validateInput("num",document.frm.SOTO,"<?php echo ERR11001019 ?>"); 
+        err = err & err==true?validateInput("maxlen=3",document.frm.SOTO,"<?php echo ERR11001019 ?>"):false; 
+       
+        
+        if(err==true){
+        if(CompareDate(
+				document.frm.NGAYDEN.value + " 00:00",
+				document.frm.NGAYBANHANH.value + " 00:00")==1){
+			document.getElementById('ERRNGAYDEN').innerHTML = "Ngày đến phải sau ngày ban hành";
+			err=false;
+		}
+		}
+        document.frm.SOKYHIEU_IN.value = getSokyhieuIn();
+        if(document.frm.SOKYHIEU_IN.value == -1)
+        	document.frm.SOKYHIEU_IN.value = "";
+        if(document.frm.SODEN.value != "")
+    		document.frm.SODEN_IN.value = checkdinhdangsoden();
+		if(document.frm.SODEN_IN.value != -1){
+		}
+		else
+		{
+			document.getElementById('ERRSODEN').innerHTML = "Số đến sai định dạng";
+			return ;
+		}
+		if(err==true){
+           	//kiem tra lai du lieu mot lan nua
+           	//checkData(3,0);
+        	check_all(1);
+		
+       }else{
+       	
+       }
+       
+		
+		
+    }
+    
+    function sendEndDataToServer(){
+    	var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("post", "/vbden/vbden/savevbden" , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			var post = submitAjax.getDataFromFrm(document.frm);
+			oXmlHttp.onreadystatechange = function () { 
+			if (oXmlHttp.readyState == 4) { 
+				//alert(oXmlHttp.responseText);
+				if (oXmlHttp.status == 200) { 
+				if(oXmlHttp.responseText == 1){
+					window.location = "/vbden/vbden/listall#vbden<?=$this->id_vbd?>";
+					//as_checkdata_all = 1;
+				}
+				else{
+					if(oXmlHttp.responseText == 2){
+						//loi so den khong hop le
+						document.getElementById('ERRSODEN').innerHTML = "<?php echo ERR11001022 ?>";
+						//as_checkdata_all = 1;
+					}
+				}
+				
+            } else { 
+                //as_checkdata_all = 1;
+            } 
+        } 
+       }; 
+   		
+		oXmlHttp.send(post);
+    }
+    
+    function BackButtonClick(){
+        window.location = "/vbden/vbden/listall";
+    	//document.frm.action = "/vbden/vbden";
+        //document.frm.submit();
+        
+    }
+    document.location.href = "#atitle";
+    function PressCtrlS(){
+    	SaveButtonClick();
+    }
+    
+    
+    
+    
+    /* Cac ham xu ly khung chon chuyen de biet */
+//Ham xu ly chon nhieu nguoi dung cua nguyennd
+var arr_user = new Array();
+var arr1 = new Array();
+var arr_user_temp = new Array();
+<?php
+	
+	if(count($this->data_chuyendebiet)>0)
+	{
+		$i=0;
+		foreach ($this->data_chuyendebiet as $item )
+		{
+			$i++;
+?>
+		arr_user.push(new Array(<?php echo $item['DEP_NN'] ?>,"<?php echo $item['NGUOINHAN']?>","<?php echo $item['EMPNN']?>","<? echo $item['EMPNC']?>"
+		,"<? echo $item['ID_DLC']?>","1"
+		));
+		arr_user_temp.push( new Array("<?php echo $item['NGUOINHAN']?>"));
+<?php
+		}
+	}
+?>
+
+<?php //if( $this->id > 0){ ?>
+arr1 = new Array();
+arr1[0] = new Array(100,'Tên');
+arr1[1] = new Array(0,'Xóa');
+
+ShowArr('listuser',arr1,arr_user);
+FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+
+
+<?php //}?>
+function InsertIntoArr()
+{
+	
+		var opt = document.frm.NGUOIGUI.options;
+		for(var i=0;i<opt.length;i++){
+			if(opt[i].selected){
+				arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,opt[i].value,opt[i].text,'<?=$this->name_u?>');
+				arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+			}
+		}
+	    //arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+	    arr1[0] = new Array(100,'Tên');
+	    arr1[1] = new Array(0,'Xóa');
+	    ShowArr('listuser',arr1,arr_user,1);
+	    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	
+	/*var check = true;
+	for(i=0;i<arr_user.length;i++)
+    {
+    	if(document.frm.NGUOIGUI.value==arr_user[i][1])  
+    	{
+    	  check=false;
+    	}
+    	
+    }
+    if(check)
+    {
+    	arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+    	arr1[0] = new Array(100,'Tên');
+    }
+    ShowArr('listuser',arr1,arr_user);*/
+}
+function DeleteFromArr(value)
+{
+    for(i=0;i<arr_user.length;i++)
+    {
+    	if(arr_user[i][1]==value)
+    	delete arr_user[i][1];    	
+    	
+    }
+    ShowArr('listuser',arr1,arr_user);    
+}
+
+/**
+ * Tạo lưới từ 2 mảng
+ * 
+ * @param String idDiv id div hoặc khung chứa lưới
+ * @param int Arr1 mảng chứa tên trường và độ rộng tính theo % của trường
+ * @param int Arr2 mảng chứa dữ liệu của các trường trên
+ * @return html code
+ */
+function ShowArr(idDiv,Arr1,Arr2){
+        var html;
+        if(Arr2.length == 0){
+        	document.getElementById(idDiv).innerHTML = "";
+        	return;
+        }
+	    html = '<table class="adminlist1">';
+	    html += '<thead>';
+	    html += '<tr>';
+	    html += '<th nowrap>#</th>';
+	   
+	    html += '<th nowrap>Người nhận</th>'
+            html += '<th nowrap></th>'
+	    html += '</tr>';
+	    html += '</thead>';
+	    html += '<tfoot><tr><th colspan=3 align=left>';
+	    html += '</th></tr></tfoot>';
+	    html += '<tbody>';
+	    	for(i=0;i<Arr2.length;i++){
+	    		html += '<tr>';
+	    		html += '<td nowrap align="right">' + (i + 1) + '</td>';
+	    		html += '<td nowrap>';
+	    		html += Arr2[i][2];
+	    		if(Arr2[i][5] == 1)
+	    			html += "<input type=hidden name=ID_OLD[] value="+Arr2[i][4]+">";
+	    		else 
+	    			html += "<input type=hidden name=ID_U[] value="+Arr2[i][1]+">";	
+	    		html += '</td>';
+	    		html += '<td nowrap>';
+	    		html += '<a href="javascript:;" onclick="arr_user_temp.splice('+i+',1);arr_user.splice('+i+',1);ShowArr(\'listuser\',arr1,arr_user);FastReload();return false;">Xóa</a>';
+	    		html += '</td>';
+	    		html += '</tr>';
+	        }
+	    	html += '</tbody>';
+	    	html += '</table>';
+	    //
+		    //alert(html);
+	    document.getElementById(idDiv).innerHTML = html;
+	}
+	function FastReload(){
+	    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	}
+
+	 function getSokyhieuIn(){
+    	var sokyhieu_text = document.frm.SOKYHIEU.value;
+    	var sokyhieu_in = "";
+    	
+    	for(var i = 0 ; i < sokyhieu_text.length ;i++){
+    		c = sokyhieu_text.charAt(i);
+    		
+    		
+    		if(isInteger(sokyhieu_text.charAt(i))){
+    			//alert(i);
+    			sokyhieu_in += c  ; 
+    		}
+    		else{
+    			break;
+    		}
+    	}
+    	
+    	
+    	return sokyhieu_in;
+    }
+    
+     function checkdinhdangsoden(){
+    	var soden_text = document.frm.SODEN.value;
+    	var soden_in = "";
+    	
+    	for(var i = 0 ; i < soden_text.length ;i++){
+    		c = soden_text.charAt(i);
+    		
+    		
+    		if(isInteger(soden_text.charAt(i))){
+    			//alert(i);
+    			soden_in += c  ; 
+    		}
+    		else{
+    			break;
+    		}
+    	}
+    	
+    	if(i>5)
+    		return -1;
+    	if(i==0)
+    		return -1;
+    	//var endstr = substring(i,soden_text.length-1);
+    	
+    	return soden_in;
+    	
+    }
+/* Ket thuc cac ham xu ly chon de biet */
+
+
+<?php if($is_cnb){ ?>
+			
+		function fillcomboCqnb(id_combo,arr,arr_exp){
+			var objdesc = document.getElementById(id_combo);
+			
+			
+			for (i = objdesc.length - 1; i>=0; i--) {
+				objdesc.removeChild(objdesc.options[i]);
+			}
+			for(var i=0;i<arr.length;i++){
+				var ln = 0;
+				for(var j= 0;j < arr_exp.length ; j++){
+					//alert(arr_exp[j]);
+					if(arr_exp[j] == arr[i][0] ){
+						ln =1;
+						
+						break;
+						
+					}
+				}
+				if(ln == 0 ){
+					var elOptNew = document.createElement('option');
+					elOptNew.text = arr[i][1];
+					elOptNew.value = arr[i][0];
+					try {
+					  objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+					}
+					catch(ex) {
+					  objdesc.add(elOptNew); // IE only
+					}
+				}
+			}
+			if(objdesc.length)
+				objdesc.style.display = 'block';
+			else
+				objdesc.style.display = 'none';
+			//objdesc.value = sel;
+		}
+		
+		var arr_cqselect = new Array();
+		var arr_cqselect_temp = new Array();
+
+		var arr_cqnb = new Array();
+		<?php $stt = 0 ;foreach ($data_cqnb as $cqnb){ ?>
+		
+		arr_cqnb[<?=$stt?>] =  new Array("<?=$cqnb['ID_CQ']?>", "<?=$cqnb['NAME']?>");
+		<?php $stt++; } ?>
+		
+		
+		fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		
+		function insertArrayCqnb(){
+			var opt = document.frm.CQNOIBO.options;
+			for(var i=0;i<opt.length;i++){
+				if(opt[i].selected){
+					arr_cqselect[arr_cqselect.length] = new Array(opt[i].value,opt[i].text);
+					arr_cqselect_temp[arr_cqselect_temp.length] = new Array(opt[i].value);
+					
+				}
+			}
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}
+
+		function insertAllArrayCqnb(){
+		
+			var opt = document.frm.CQNOIBO.options;
+			for(var i=0;i<opt.length;i++){
+				
+					arr_cqselect[arr_cqselect.length] = new Array(opt[i].value,opt[i].text);
+					arr_cqselect_temp[arr_cqselect_temp.length] = new Array(opt[i].value);
+					
+				
+			}
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}
+
+
+
+		var arr_header = new Array();
+		arr_header[0] = new Array(100,'Tên CQ');
+		arr_header[1] = new Array(0,'Xóa');
+		
+
+		function removeArrCqnoibo(i){
+			
+			arr_cqselect.splice(i,1);
+			arr_cqselect_temp.splice(i,1);
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}
+		function ShowArrCqnoibo(idDiv,Arr1,Arr2){
+			
+			var html;
+			
+			if(Arr2.length == 0){
+				html = "";
+			}else{
+					html = '<table class="adminlist1" width=100%>';
+					html += '<thead>';
+					html += '<tr>';
+					html += '<th nowrap>#</td>';
+					for(i=0;i<Arr1.length;i++){
+						if(Arr1[i][0]==0){
+							html += '<th nowrap>' + Arr1[i][1] + '</td>';
+						}else{
+							html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+						}
+					}
+					html += '</tr>';
+					html += '</thead>';    
+					
+					html += '<tfoot><tr><th colspan=3 align=left>';
+					html += '</th></tr></tfoot>';
+					
+					html += '<tbody>';
+						for(i=0;i<Arr2.length;i++){
+							html += '<tr>';
+							html += '<td nowrap align="right">' + (i + 1) + '</td>';
+							html += '<td>';
+							html += Arr2[i][1];
+							html += "<input type=hidden name=ID_CQNGOAI[] value="+Arr2[i][0]+">";
+							html += '</td>';
+							html += '<td>';
+							html += '<a href="#" onclick=removeArrCqnoibo('+i+');>Xóa</a>';
+							html += '</td>';
+							html += '</tr>';
+						}
+						html += '</tbody>';
+						html += '</table>';
+			}
+			document.getElementById(idDiv).innerHTML = html;
+			
+			
+			
+		}
+<?php } ?>
+function selecthanxulytoanbo(){
+        var idlvb = document.frm.ID_LVB.value;
+        //alert(idsvb);
+        //alert(arrSVB.length);
+        for(var i=0;i<arrLVB.length;i++){
+        	//DATA_ID_LVB
+        	//alert(arrSVB[i][0]);
+        	if(arrLVB[i][0]==idlvb){
+            	document.frm.HANXULYTOANBO.value=arrLVB[i][1];
+            	return;
+        	}
+        }
+    }
+</script>

@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name="frm" method=post action="/hscv/hscv/tofolder">
+	<div class="required clearfix">
+		<label>Thư mục</label>
+<select name=THUMUC>
+<?php
+	foreach($this->thumuc as $row){
+?>
+		<option value="<?=$row['ID_THUMUC']?>"><?=str_repeat("--",$row['LEVEL']).htmlspecialchars($row['NAME'])?></option>
+<?php
+	}
+?>
+	</select>
+	<span id="ERRTHUMUC"></span>
+</div>
+<input type=button value="Lưu trữ" onclick="document.frm.submit();">
+<input type=hidden name=id value="<?=$this->ID_HSCV?>">
+<p id=lasttext></p>
+</form>
+</body>
+</html>
+<script>
+	function resize(){
+		var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+		iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+		iframeElement.width = "100%";
+	}
+	resize();
+</script>

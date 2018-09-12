@@ -1,0 +1,876 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/Json/Base64.js"></script>
+<script type="text/javascript" src="/js/Json/json2.js"></script>
+<script type="text/javascript" src="/js/Json/json_parse.js"></script>
+<script type="text/javascript" src="/js/Json/json_parse_state.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/dlg_confirm.js"></script>
+
+
+</head>
+<body style="background-color:transparent">
+<?=QLVBDHCommon::useDlgConfirm()?>
+<?php
+if($this->nomulti!=1){
+?>
+<form name="frm" method=post action="/hscv/hscv/savebp">
+<?php
+}else{
+?>
+<form name="frm" method=post action="/hscv/hscv/savebutphe">
+<?php
+}
+?>
+<fieldset>
+<legend style="color:#0066CC;">
+	<?=MSG11001002?>
+</legend>
+</fieldset>
+<table class=admintable width=100%>
+	<tr>
+		<td colspan="3"><b style="margin-left: 57px"></b>
+			<select name=goiy onchange="document.frm.NOIDUNG.value=document.frm.goiy.value;">
+				<?=GoiyModel::toCombo($this->goiy,0)?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3"><b style="margin-left: 5px">Nội dung</b>
+			<textarea rows="2" cols="80" name=NOIDUNG></textarea>
+		</td>
+	</tr>
+         <?php 
+
+           if(QLVBDHCommon::TabHscv(8,33)==1){ ?>
+        <tr>
+          
+		<td nowrap="nowrap" valign="top">
+                     <b style="margin-left: 5px">Loại công việc</b>
+                        <?php
+                            $dmloaicv = vbdenModel::getAllDanhMucLoaiCV();
+                            
+                        ?>
+                        <select id="LOAI_CV" name="LOAI_CV">
+                            <option value="-1">-- Chọn loại công việc --</option>
+                            <?php foreach($dmloaicv as $dm ){?>
+                                    <option value="<?=$dm["CODE"]?>" <?php if($dm['CODE'] == $this->hscv["LOAICV_GIAOVIEC"]): ?> selected="selected"<?php endif; ?>><?=$dm["NAME"]?></option>
+                            <?php } ?>
+                        </select>
+                        <div class="clr"></div>
+			<span class="box_erro_area" id="ERRLOAI_CV"></span>
+		</td>
+            
+         </tr>   
+        <tr>
+            <td colspan="3" valign="top" nowrap="nowrap">
+                <b style="margin-left: 5px">Nhóm văn bản</b>
+                <select id="NHOMCV_GV" name="NHOMCV_GV" onchange="changeNHOMCV()" >
+					<option value="0">-Chọn nhóm văn bản-</option>
+					<option value="3" <?=$this->vanbanden["NHOMCVVBD"]=='3' || ($this->vanbanden['HANXULYTOANBO'] != '0' AND $this->vanbanden["MASOLIENTHONG"] != NULL) ?"Selected":""?>><?php echo 'Văn bản đến có hạn xử lý do đơn vị gửi quy định' ?></option>
+					<option value="2" <?=$this->vanbanden["NHOMCVVBD"]=='2'?"Selected":""?>><?php echo 'Văn bản đến để tổng hợp, biết' ?></option>
+					<option value="1" <?=$this->vanbanden["NHOMCVVBD"]=='1'?"Selected":""?>><?php echo 'Văn bản đến phải xử lý thuộc danh mục nội bộ' ?></option>
+				</select>
+            </td>
+        </tr>
+        <tr> 
+            <td id="dmnoibo" class="NonDisplay">
+                  <b style="margin-left: 5px">Danh mục nội bộ </b>
+                     <?php
+                         $dmnoibo = vbdenModel::getAllDanhMucNoiBo();
+                     ?>
+                     <select id="DANHMUCNOIBO" name="DANHMUCNOIBO" onchange="changeHANXULY(this)" >
+                         <option value="0">-- Chọn danh mục --</option>
+                         <?php foreach($dmnoibo as $dm ){?>
+                                 <option id="<?=$dm["HANXULY"]?>,<?=$dm["TYPEHANXULY"]?>"  value="<?=$dm["ID_DMNB"]?>"<?php if($dm['ID_DMNB'] == $this->vanbanden["ID_DMNB"]): ?> selected="selected"<?php endif; ?>><?=$dm["NAME"]?></option>
+                         <?php } ?>
+                     </select>
+             </td>
+             <td colspan="2" id="hanxl" class="NonDisplay">       
+                   <b style="margin-left: 5px">Hạn XL giao việc</b>
+				 <?=QLVBDHCommon::calendarFull(implode("/", array_reverse(explode("-",$this->vanbanden["NGAYHETHAN"]))),"KETTHUC_NGAY","KETTHUC_NGAY") ?>
+                 <input type="text" value="<?php echo (int) $this->vanbanden["HANXULYTOANBO"]; ?>" size="2" name="HANXULY_GIAOVIEC_UB"  id="HANXULY_GIAOVIEC_UB" style=""> 
+				 <input type="radio" name="TYPE_HANXULY_GIAOVIEC_UB" value=8 <?php if($this->vanbanden["TYPEHANXULY"] ==8) echo " checked " ?> /> Giờ
+                 <input type="radio" name="TYPE_HANXULY_GIAOVIEC_UB" value=1 <?php if($this->vanbanden["TYPEHANXULY"] ==1) echo " checked " ?> /> Ngày
+             </td>              
+            <td colspan="2" id="hanxlnoibo" class="NonDisplay">       
+                   <b style="margin-left: 5px">Hạn XL giao việc nội bộ</b>
+                   <input type="text" value="" size="2" name="HANXULY_GIAOVIEC_NB"  id="HANXULY_GIAOVIECNB"> 
+                   <input type="hidden" value="" name="TYPE_HANXULY_GIAOVIECNB"  id="TYPE_HANXULY_GIAOVIECNB">    
+                   <span id="TYPE_HANXULY"> </span>
+             </td>  
+            
+            
+	</tr>
+        
+        <tr>
+            <td id="giaitrinh" colspan="3" class="NonDisplay">
+                <b style="margin-left: 5px">Giải trình</b>
+                <textarea name="GIAITRINH" id="GIAITRINH" cols="80" rows="2"><?=$this->vanbanden["GIAITRINH"]?></textarea>
+            </td>
+        </tr>
+    
+        <?php } ?>
+ 
+	<tr>
+	<?php if($this->nomulti!=1){?>
+		<td valign="top" nowrap="nowrap">
+			<?php echo QLVBDHCommon::writeSelectDepartmentWithMultiUser($this->wf_id_t,'DEP_NGUOIGUI','NGUOIGUI')?>
+		</td>
+		<td valign="top"><input class="input_button" type="button"  value="  &gt;  " title="Chọn" onclick="InsertIntoArr()" style="margin-top:50px;width:30px" />
+			<input type="button" class="input_button"  value=" &gt;&gt; " title="Chọn tất cả" onclick="InsertIntoArrAll()" style="margin-top:10px;width:30px"/></td>
+		<td valign="top" width=100%><div id="listuser"></div></td>
+	<?php } 
+		if($this->nomulti==1){
+	?>
+	<td valign="top" nowrap="nowrap">
+	<div  style="margin-left:-83px">
+	<?php
+		echo WFEngine::FormSend($this->wf_id_t);
+	?>
+	</div>
+	<script>document.getElementById("wfnoidung").style.display='none';</script>
+	</td>
+	<?php } ?>	
+	</tr>
+	
+
+</table>
+
+<?php
+			
+			$actid = ResourceUserModel::getActionByUrl('hscv','chuyennoibo','chuyennoiboinput');
+					if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+						
+					
+			?>
+			
+		
+<fieldset>
+<legend style="color:#0066CC;">
+	Chuyển đơn vị nội bộ
+</legend>
+<table>
+	
+
+	<tr>
+		
+		<td valign="top" nowrap="nowrap" >
+			<?php 
+			require_once("hscv/models/chuyennoiboModel.php");
+			$data_cqnb = chuyennoiboModel::getDataCQNoibo();
+			?>
+			<b>Chọn phòng chuyển </b><br>
+			<select name=CQNOIBO id=CQNOIBO multiple ondblclick="insertArrayCqnb();" >
+				
+				
+			</select>
+		</td>
+		<td> <input type=button class="input_button" onclick="insertArrayCqnb();" value=">" style="width:30px;">  
+		<br><br>
+		<input type=button class="input_button" onclick="insertAllArrayCqnb();" value=">>" style="width:30px;" >
+		</td>
+		<td>
+			<td valign="top" width=100%><div id="listcqnoibo"></div></td>
+		</td>
+		
+	</tr>
+</table>
+
+</fieldset>
+<?php }?>
+
+<input type=button name=SEND value="Chuyển" onclick="SaveButtonClick();" class="butphe">
+<table style="width: 100%;">
+<?php 
+foreach($this->hienthi as $itemFile){
+$extFile = pathinfo($itemFile['filename'], PATHINFO_EXTENSION);
+if($itemFile['mime']=="application/pdf" || strtolower($extFile)=="pdf"){ ?>
+<tr>
+<iframe id="iframepdf" src = "/hscv/File/download?maso=<?php echo $itemFile['maso'];?>&is_hienthi=1" style="width: 100%; height: 600px;" frameborder="0" > 
+</iframe>
+</tr>
+<?php }
+} ?>
+</table>
+<input type=hidden name=id value="<?=$this->ID_HSCV?>">
+<input type=hidden name=wf_id_t value="<?=$this->wf_id_t?>">
+<input type=hidden name=istheodoi value="1">
+<input type=hidden name=nomulti value="<?=$this->nomulti?>">
+<input type=hidden id=TRICHYEU value="<?=$this->vanbanden["TRICHYEU"]?>"> 
+<input type=hidden id=SOKYHIEU value="<?=$this->vanbanden["SOKYHIEU"]?>">    
+<input type=hidden id=HANXULY_GIAOVIEC_DONVIGUI value="<?php echo (int) $this->vanbanden["HANXULYTOANBO"]; ?>">     
+
+<br><br><br><br><br><br><br><br><br><br><br>
+<p id=lasttext></p>
+</form>
+</body>
+</html>
+<script type="text/javascript">
+var retvalue;
+var arr_user = new Array();
+var arr_user_temp = new Array();
+var arr1 = new Array();
+var arr_user_smsemail = new Array();
+var curcombo = null;
+<?php 
+  if(QLVBDHCommon::TabHscv(8,33)==1){ ?>
+function checkNHOMSELECT() {
+      var y = document.getElementById("DANHMUCNOIBO").options;
+      var id      = y[y.selectedIndex].id;
+      var typehanxuly = id.slice(-1);
+      var hanxuly = id.slice(0,-2);
+      document.getElementById('HANXULY_GIAOVIECNB').value = hanxuly;
+      document.getElementById('TYPE_HANXULY_GIAOVIECNB').value = typehanxuly;
+      if(typehanxuly == 1){
+          document.getElementById('TYPE_HANXULY').innerHTML  ='Ngày';
+      }
+      if(typehanxuly == 8){
+          document.getElementById('TYPE_HANXULY').innerHTML  =  'Giờ';
+      }
+     if(document.getElementById("NHOMCV_GV").value == 1) {
+        document.getElementById("dmnoibo").className = "";
+        document.getElementById("hanxl").className = "NonDisplay";
+        document.getElementById("hanxlnoibo").className = "";
+        document.getElementById("giaitrinh").className = "NonDisplay";
+     } else if (document.getElementById("NHOMCV_GV").value == 2){
+        document.getElementById("dmnoibo").className = "NonDisplay";
+        document.getElementById("hanxl").className = "NonDisplay";
+        document.getElementById("hanxlnoibo").className = "NonDisplay";
+        document.getElementById("giaitrinh").className = "";
+     }
+     else if (document.getElementById("NHOMCV_GV").value == 3){
+        document.getElementById("hanxl").className = "";
+        document.getElementById("dmnoibo").className = "NonDisplay";
+        document.getElementById("giaitrinh").className = "NonDisplay";
+        document.getElementById("hanxlnoibo").className = "NonDisplay";
+        document.getElementById("HANXULY_GIAOVIEC_UB").disabled = true;
+     }
+     
+     
+  
+}
+window.onload=checkNHOMSELECT;
+
+function changeNHOMCV() {
+    var nhomgv = document.getElementById("NHOMCV_GV").value;
+    if (nhomgv == 1){ 
+        document.getElementById("hanxl").className = "NonDisplay";
+        document.getElementById("hanxlnoibo").className = "";
+        document.getElementById("dmnoibo").className = "";
+        document.getElementById("HANXULY_GIAOVIEC_UB").disabled = false;
+        document.getElementById("giaitrinh").className = "NonDisplay";
+    } 
+    else if (nhomgv == 2) {
+        document.getElementById("dmnoibo").className = "NonDisplay";
+        document.getElementById("hanxl").className = "NonDisplay";
+        document.getElementById("hanxlnoibo").className = "NonDisplay";
+        document.getElementById("giaitrinh").className = "";
+    } else if (nhomgv == 3) {
+        document.getElementById("HANXULY_GIAOVIEC_UB").value = document.getElementById("HANXULY_GIAOVIEC_DONVIGUI").value;
+        document.getElementById("HANXULY_GIAOVIEC_UB").disabled = true;
+        document.getElementById("hanxl").className = "";
+        document.getElementById("hanxlnoibo").className = "NonDisplay";
+        document.getElementById("dmnoibo").className = "NonDisplay";
+        document.getElementById("giaitrinh").className = "NonDisplay";
+    } 
+}
+
+function changeHANXULY(s){
+    var hanxuly = s[s.selectedIndex].value;
+    var id = s[s.selectedIndex].id;
+    var typehanxuly = id.slice(-1);
+    var hanxuly = id.slice(0,-2);
+    document.getElementById('HANXULY_GIAOVIECNB').value = hanxuly;
+    document.getElementById('TYPE_HANXULY_GIAOVIECNB').value = typehanxuly;
+    if(typehanxuly == 1){
+            document.getElementById('TYPE_HANXULY').innerHTML  ='Ngày';
+    }
+    if (typehanxuly == 8){
+        document.getElementById('TYPE_HANXULY').innerHTML  = 'Giờ';
+    }
+}
+ <?php } ?>
+function SaveButtonClick(){
+    <?php 
+    if(QLVBDHCommon::TabHscv(8,33)==1){ ?>
+        <?php if(count($this->datacongviec->data) >0 ) { ?>
+        var xl  = document.getElementsByName("TYPE[]");
+        for(var k=0;k < xl.length;k++){
+            var one_selected = false;
+            if(xl[k].value==2)
+            {
+                for(var l=0;l < <?=count($this->datacongviec->data)?>;l++){
+                  var CVselect = document.getElementById('checknv['+k+']['+l+']');
+                  if(CVselect.checked)
+                   {
+                      one_selected = true;
+                       break;
+                   }
+                }
+            if(one_selected == false)
+            {
+                alert('Phải chọn ít nhất một nhiệm vụ!');return false;
+            }
+            }
+
+         }
+    <?php } ?>
+        var nhomgv = document.getElementById("NHOMCV_GV").value;
+        var giaitrinh = document.getElementById("GIAITRINH").value;
+	var trichyeu = document.getElementById("TRICHYEU").value;
+        var sokyhieu = document.getElementById('SOKYHIEU').value;
+        var submitAjax = new AjaxEngine();
+        var oXmlHttp = submitAjax.createXMLHttp();
+        oXmlHttp.open("get", "/vbden/vbden/kiemtravanbanden?TRICHYEU="+trichyeu+"&SOKYHIEU="+sokyhieu , true); 
+        oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        oXmlHttp.onreadystatechange = function () { 
+            if (oXmlHttp.readyState == 4 && oXmlHttp.status == 200) { 
+                       if(nhomgv == 2 && giaitrinh == "" && oXmlHttp.responseText == 1){
+                            alert('Văn bản bắt buộc xử lý. Bạn cần nhập giải trình để lưu.');
+                       } else
+                       {
+                            var err = true;
+                            if(err==true){
+                            var alltype = document.getElementsByName("TYPE[]");
+                            for(var i=0;i<alltype.length;i++){
+                                    if(alltype[i].value==2){
+                                            document.frm.istheodoi.value=0;
+                                            break;
+                                    }else{
+                                            document.frm.istheodoi.value=1;
+                                    }
+                            }
+                            <?php
+                            if($this->nomulti==1){
+                            ?>
+                            document.frm.istheodoi.value=0;
+                            <?php
+                            }
+                            ?>
+                            if(document.frm.istheodoi.value==1){
+                                    var func_istheodoi = "document.frm.istheodoi.value=1; document.frm.submit();";
+                                    var func_iskhongtheodoi = "document.frm.istheodoi.value=0; document.frm.submit();";
+                                    displayConfirm("Hồ sơ này chỉ chuyển để biết. Bạn có muốn lưu theo dõi và kết thúc xử lý không?","","",func_istheodoi,func_iskhongtheodoi);
+                                    /*if(confirm("Hồ sơ này chỉ chuyển để biết. Bạn có muốn lưu hồ sơ để theo dõi không?")){
+                                            document.frm.istheodoi.value=1;
+                                            document.frm.submit();
+                                    }else{
+                                            document.frm.istheodoi.value=0;
+                                            document.frm.submit();
+                                    }*/
+                            }else{
+                                    document.frm.istheodoi.value=0;
+                                    document.frm.submit();
+                            }
+                                }
+                         }
+            } 
+        };       
+        oXmlHttp.send(null);
+        
+<?php } else { ?>
+	var err = true;
+        <?php if(count($this->datacongviec->data) >0 ) { ?>
+            var xl  = document.getElementsByName("TYPE[]");
+            for(var k=0;k < xl.length;k++){
+                var one_selected = false;
+                if(xl[k].value==2)
+                {
+                    for(var l=0;l < <?=count($this->datacongviec->data)?>;l++){
+                      var CVselect = document.getElementById('checknv['+k+']['+l+']');
+                      if(CVselect.checked)
+                       {
+                          one_selected = true;
+                           break;
+                       }
+                    }
+                if(one_selected == false)
+                {
+                    alert('Phải chọn ít nhất một nhiệm vụ!');return false;
+                }
+                }
+                
+             }
+        <?php } ?>
+	if(err==true){
+		var alltype = document.getElementsByName("TYPE[]");
+		for(var i=0;i<alltype.length;i++){
+			if(alltype[i].value==2){
+				document.frm.istheodoi.value=0;
+				break;
+			}else{
+				document.frm.istheodoi.value=1;
+			}
+		}
+		<?php
+		if($this->nomulti==1){
+		?>
+		document.frm.istheodoi.value=0;
+		<?php
+		}
+		?>
+		if(document.frm.istheodoi.value==1){
+			var func_istheodoi = "document.frm.istheodoi.value=1; document.frm.submit();";
+			var func_iskhongtheodoi = "document.frm.istheodoi.value=0; document.frm.submit();";
+			displayConfirm("Hồ sơ này chỉ chuyển để biết. Bạn có muốn lưu theo dõi và kết thúc xử lý không?","","",func_istheodoi,func_iskhongtheodoi);
+			/*if(confirm("Hồ sơ này chỉ chuyển để biết. Bạn có muốn lưu hồ sơ để theo dõi không?")){
+				document.frm.istheodoi.value=1;
+				document.frm.submit();
+			}else{
+				document.frm.istheodoi.value=0;
+				document.frm.submit();
+			}*/
+		}else{
+			document.frm.istheodoi.value=0;
+			document.frm.submit();
+		}
+	}
+    <?php }  ?>    
+}
+function InsertIntoArr(){
+	var op_chuyen = 1;
+	if(arr_user.length==0){
+		op_chuyen = 2;
+	}
+	var opt = document.frm.NGUOIGUI.options;
+	for(var i=0;i<opt.length;i++){
+		if(opt[i].selected){
+			arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,opt[i].value,opt[i].text,op_chuyen,'<?=$this->hanxuly?>',1,"","","","","");
+			arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+			for(j=0;j<ARR_NGUOIGUI.length;j++){
+				if(ARR_NGUOIGUI[j][2]==opt[i].value){
+					arr_user_smsemail[arr_user_smsemail.length] = ARR_NGUOIGUIsmsemail[j];
+					break;
+				}
+			}
+		}
+	}
+    //arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+    arr1[0] = new Array(100,'Tên');
+    arr1[1] = new Array(0,'Chức năng');
+    arr1[2] = new Array(0,'Hạn XL');
+    arr1[3] = new Array(0,'Xóa');
+    <?php if(count($this->datacongviec->data) > 0) { ?>
+    arr1[0] = new Array(30,'Tên');
+    arr1[1] = new Array(0,'Chức năng');
+    arr1[2] = new Array(40,'Nhiệm vụ');
+    arr1[3] = new Array(30,'Hạn XL');
+    arr1[4] = new Array(0,'Xóa');
+    <?php } ?>
+    ShowArr('listuser',arr1,arr_user);
+    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+}
+/**
+ * Tạo lưới từ 2 mảng
+ * 
+ * @param String idDiv id div hoặc khung chứa lưới
+ * @param int Arr1 mảng chứa tên trường và độ rộng tính theo % của trường
+ * @param int Arr2 mảng chứa dữ liệu của các trường trên
+ * @return html code
+ */
+function ShowArr(idDiv,Arr1,Arr2){
+    var html;
+    <?php if(count($this->datacongviec->data) == 0) { ?>
+    html = '<table class="adminlist1" width=100%>';
+    html += '<thead>';
+    html += '<tr>';
+    html += '<th nowrap>#</td>';
+    for(i=0;i<Arr1.length;i++){
+        if(Arr1[i][0]==0){
+    		html += '<th nowrap>' + Arr1[i][1] + '</td>';
+        }else{
+        	html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+        }
+    }
+    html += '</tr>';
+    html += '</thead>';    
+    html += '<tfoot><tr><th colspan='+(Arr1.length+1)+' align=left>';
+    html += '</th></tr></tfoot>';
+    html += '<tbody>';
+    	for(i=0;i<Arr2.length;i++){
+    		html += '<tr>';
+    		html += '<td nowrap align="right">' + (i + 1) + '</td>';
+    		html += '<td>';
+    		html += Arr2[i][2];
+    		html += "<input type=hidden name=ID_U[] value="+Arr2[i][1]+">";
+    		html += '</td>';
+    		html += '<td nowrap>';
+    		html += '<select onchange="UpdateType(this,'+i+')" name=TYPE[] style="width:80px">';
+    		html += '<option value=1 '+(Arr2[i][3]==1?"selected":"")+'>Để biết</option>';
+    		html += '<option value=2 '+(Arr2[i][3]==2?"selected":"")+'>Xử lý</option>';
+    		html += '<option value=3 '+(Arr2[i][3]==3?"selected":"")+'>Phối hợp</option>';
+    		html += '</select>';
+                html += '<span id=wf_smsemail'+i+' '+(arr_user_smsemail[i]>0?"":"style='display:none'")+'><br><span '+((arr_user_smsemail[i]==3 || arr_user_smsemail[i]==1)?"":"style='display:none'")+'> SMS<input type=checkbox onclick="document.getElementById(\'SMS'+i+'\').value=(this.checked?1:0);arr_user['+i+'][6]=(this.checked?1:0);" '+(Arr2[i][6]==1?"checked":"")+'> </span><span '+((arr_user_smsemail[i]==3 || arr_user_smsemail[i]==2)?"":"style='display:none'")+'> Email<input type=checkbox onclick="document.getElementById(\'EMAIL'+i+'\').value=(this.checked?1:0);arr_user['+i+'][7]=(this.checked?1:0);" '+(Arr2[i][7]==1?"checked":"")+'></span></span>';
+                html += '<input type=hidden name=SMS[] value='+(Arr2[i][6]==1?"1":"0")+' id=SMS'+i+'><input type=hidden name=EMAIL[] value='+(Arr2[i][7]==1?"1":"0")+' id=EMAIL'+i+'>';
+    		html += '</td>';
+    		html += '<td nowrap>';
+    		html += '<span id=SPANHANXULY'+i+' style="display:'+(Arr2[i][3]==1||Arr2[i][3]==3?"none":"")+'">'+calendarFull(Arr2[i][8],'NGAY_KETTHUC'+i,'ChangeDate','ChangeDate('+i+')')+createInputHanxuly('HANXULY'+i,'HANXULY[]',Arr2[i][4],'UpdateHanXuLy('+i+')',(Arr2[i][3]==1||Arr2[i][3]==3?"none":""),Arr2[i][5])+"</span>";
+    		html += '</td>';
+    		html += '<td nowrap>';
+    		html += '<a href="javascript:;" onclick="arr_user_temp.splice('+i+',1);arr_user.splice('+i+',1);ShowArr(\'listuser\',arr1,arr_user);FastReload();return false;">Xóa</a>';
+    		html += '</td>';
+    		html += '</tr>';
+        }
+    	html += '</tbody>';
+    	html += '</table>';
+         <?php  }else{ ?>
+          html = '<table class="adminlist" width=100%>';
+        html += '<thead>';
+        html += '<tr>';
+        html += '<th nowrap>#</td>';
+        for(i=0;i<Arr1.length;i++){
+            if(Arr1[i][0]==0){
+        		html += '<th nowrap>' + Arr1[i][1] + '</td>';
+            }else{
+            	html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+            }
+        }
+        html += '</tr>';
+        html += '</thead>';    
+        html += '<tfoot><tr><th colspan=6 align=left>';
+        html += '</th></tr></tfoot>';
+        html += '<tbody>';
+            for(i=0;i<Arr2.length;i++){
+        html += '<tr>';
+        html += '<td nowrap align="right">' + (i + 1) + '</td>';
+        html += '<td>';
+        html += ''+(Arr2[i][2]);
+        html += "<input type=hidden name=ID_U[] value="+Arr2[i][1]+">";
+        html += '</td>';
+        html += '<td nowrap>';
+        html += '<select onchange="UpdateType(this,'+i+')" name=TYPE[] style="width:80px">';
+        html += '<option value=1 '+(Arr2[i][3]==1?"selected":"")+'>Để biết</option>';
+        html += '<option value=2 '+(Arr2[i][3]==2?"selected":"")+'>Xử lý</option>';
+        html += '<option value=3 '+(Arr2[i][3]==3?"selected":"")+'>Phối hợp</option>';
+        html += '</select>';
+        html += '<span id=wf_smsemail'+i+' '+(arr_user_smsemail[i]>0?"":"style='display:none'")+'><br><span '+((arr_user_smsemail[i]==3 || arr_user_smsemail[i]==1)?"":"style='display:none'")+'> SMS<input type=checkbox onclick="document.getElementById(\'SMS'+i+'\').value=(this.checked?1:0);arr_user['+i+'][6]=(this.checked?1:0);" '+(Arr2[i][6]==1?"checked":"")+'> </span><span '+((arr_user_smsemail[i]==3 || arr_user_smsemail[i]==2)?"":"style='display:none'")+'> Email<input type=checkbox onclick="document.getElementById(\'EMAIL'+i+'\').value=(this.checked?1:0);arr_user['+i+'][7]=(this.checked?1:0);" '+(Arr2[i][7]==1?"checked":"")+'></span></span>';
+        html += '<input type=hidden name=SMS[] value='+(Arr2[i][6]==1?"1":"0")+' id=SMS'+i+'><input type=hidden name=EMAIL[] value='+(Arr2[i][7]==1?"1":"0")+' id=EMAIL'+i+'>';
+        html += '</td>';
+        html += '<td >';
+        html += '<span id=SPANNHIEMVU'+i+' style="display:'+(Arr2[i][3]==1||Arr2[i][3]==3?"none":"")+'">';
+        var arrNhiemVu = new Array();
+        <?php foreach($this->datacongviec->data as $itemCV){
+            ?>		
+                arrNhiemVu.push(new Array("<?=$itemCV->TENCONGVIEC?>","<?=$itemCV->MACONGVIEC?>","<?=QLVBDHCommon::MysqlDateToVnDate($itemCV->NGAYDUKIENHOANTHANH)?>"));	 
+            <?php 
+            }
+            ?>
+        for(j=0;j<arrNhiemVu.length;j++){                            
+        html += '<span name=nhiemvu'+i+'><br><span>'+arrNhiemVu[j][0]+' ('+arrNhiemVu[j][2]+')&nbsp;<input type="checkbox" value="'+arrNhiemVu[j][1]+'" id=checknv['+i+']['+j+'] name=checknv['+i+']['+j+']></span></span>';
+        //html += '<input type=hidden name=nhiemvu['+i+']['+j+'] value="'+arrNhiemVu[j]+'">'
+        html += '</br>';
+        }
+        html += '</span>';
+        html += '</td>';
+        html += '<td nowrap>';
+        html += '<span id=SPANHANXULY'+i+' style="display:'+(Arr2[i][3]==1||Arr2[i][3]==3?"none":"")+'">'+calendarFull(Arr2[i][8],'NGAY_KETTHUC'+i,'ChangeDate','ChangeDate('+i+')')+createInputHanxuly('HANXULY'+i,'HANXULY[]',Arr2[i][4],'UpdateHanXuLy('+i+')',(Arr2[i][3]==1||Arr2[i][3]==3?"none":""),Arr2[i][5])+"</span>";
+        //html += createInputHanxuly('HANXULY'+i,'HANXULY[]',Arr2[i][4],'UpdateHanXuLy('+i+')',(Arr2[i][3]==1||Arr2[i][3]==3?"none":""),Arr2[i][5]);
+        //html += '<input style="display:'+(Arr2[i][3]==1||Arr2[i][3]==3?"none":"")+'" id=HANXULY'+i+' onchange="UpdateHanXuLy(this,'+i+')" name=HANXULY_XL[] type=text size=2 value="'+Arr2[i][4]+'">';
+        html += '</td>';
+        html += '<td nowrap>';
+        html += '<a href="javascript:;" onclick="arr_user_temp.splice('+i+',1);arr_user.splice('+i+',1);arr_user_smsemail.splice('+i+',1);ShowArr(\'listuser\',arr1,arr_user);FastReload();return false;">Xóa</a>';
+        html += '</td>';
+        html += '</tr>';
+        }
+        html += '</tbody>';
+        html += '</table>';   
+        <?php } ?>
+    document.getElementById(idDiv).innerHTML = html;
+	 for(i=0;i<Arr2.length;i++){
+			var sms_id ="sms_"+i;
+			var email_id ="email_"+i;
+			var sms_main = document.getElementById(sms_id);
+			var email_main = document.getElementById(email_id);
+			if(arr_user[i][6]==1)
+			{
+				sms_main.checked = "checked";
+			}
+			if(arr_user[i][7]==1)
+			{
+				email_main.checked = "checked";
+			}
+		}  
+   resize();    	
+   for(i=0;i<Arr2.length;i++){
+			if(document.getElementById("NGAY_KETTHUC"+i).value=="")UpdateHanXuLy(i);
+   }
+}
+function FastReload(){
+	FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+}
+function resize(){
+	var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+	iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+	iframeElement.width = "100%";
+}
+function hiddennguoi(event){
+    var chonn = document.getElementById('chonng');
+    //alert(event.value);
+    if(event.checked==true){
+        document.getElementById('chonng').style.display = 'none';
+        document.getElementById('checkgro').checked= false;
+        document.getElementById('checkdep').checked= false;
+        event.checked= true;
+    }else{
+        document.getElementById('chonng').style.display = 'block';
+        
+    }
+}
+function showallnhom(event){
+    if(event.selectedIndex.valueOf()!='0'){
+        document.getElementById('groallok').style.display = 'inline-block';
+        
+    }else{
+        document.getElementById('groallok').style.display = 'none';
+        document.getElementById('checkgro').checked= false;
+        document.getElementById('checkdep').checked= false;
+        document.getElementById('chonng').style.display = 'block';
+    }
+}
+
+function showallphong(event){
+    if(event.selectedIndex.valueOf()!='0'){
+        document.getElementById('depallok').style.display = 'inline-block';
+    }else{
+        document.getElementById('depallok').style.display = 'none';
+        document.getElementById('checkdep').checked= false;
+        document.getElementById('checkgro').checked= false;
+        document.getElementById('chonng').style.display = 'block';
+    }
+}
+function UpdateHanXuLy(i){
+	arr_user[i][4] = document.getElementById("HANXULY"+i).value;
+	arr_user[i][5] = document.getElementById("type_real_HANXULY"+i).value;
+}
+function UpdateType(obj,i){
+	curcombo = obj;
+	arr_user[i][3] = obj.value;
+	if(obj.value==1 || obj.value==3 || obj.value==4){
+		document.getElementById("span_HANXULY"+i).style.display="none";
+		//document.getElementById("div_"+i).style.display="";
+		document.getElementById("SPANHANXULY"+i).style.display="none";
+                document.getElementById("SPANNHIEMVU"+i).style.display="none";
+		
+	}else{	   
+		//document.getElementById("div_"+i).style.display="none";
+		document.getElementById("span_HANXULY"+i).style.display="";
+		document.getElementById("SPANHANXULY"+i).style.display="";
+                document.getElementById("SPANNHIEMVU"+i).style.display="";
+		getvalue("auth","user","checksendable","wf_id_t=<?=$this->wf_id_t?>&idu="+arr_user[i][1]);
+	}
+}
+
+function UpdateRet(){
+	<?if($this->nomulti!=1){?> 
+	if(retvalue=="0"){
+		alert("Người được chọn không có quyền xử lý.");
+		curcombo.value = 1;
+		curcombo.onchange();
+		
+	}
+	<?}?>
+}
+
+function InsertIntoArrAll(){
+	var op_chuyen = 1;
+	
+	var opt = document.frm.NGUOIGUI.options;
+	for(var i=0;i<opt.length;i++){
+		if(i==0 && arr_user.length == 0)
+			op_chuyen = 2;
+		else
+			op_chuyen = 1;
+		arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,opt[i].value,opt[i].text,op_chuyen,'<?=$this->hanxuly?>',1);
+		arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+		for(j=0;j<ARR_NGUOIGUI.length;j++){
+			if(ARR_NGUOIGUI[j][2]==opt[i].value){
+				arr_user_smsemail[arr_user_smsemail.length] = ARR_NGUOIGUIsmsemail[j];
+				break;
+			}
+		}
+		
+	}
+    //arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+    arr1[0] = new Array(100,'Tên');
+    arr1[1] = new Array(0,'Chức năng');
+    arr1[2] = new Array(0,'Hạn XL');
+    arr1[3] = new Array(0,'Xóa');
+    ShowArr('listuser',arr1,arr_user);
+    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+}
+
+//resize();
+setTimeout("resize()",10);
+//document.frm.DEP_NGUOIGUI.value="<?=$this->ID_DEP?>";
+//FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+
+
+<?php
+	$actid = ResourceUserModel::getActionByUrl('hscv','chuyennoibo','chuyennoiboinput');
+	if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+?>
+			
+		function fillcomboCqnb(id_combo,arr,arr_exp){
+			var objdesc = document.getElementById(id_combo);
+			
+			
+			for (i = objdesc.length - 1; i>=0; i--) {
+				objdesc.removeChild(objdesc.options[i]);
+			}
+			for(var i=0;i<arr.length;i++){
+				var ln = 0;
+				for(var j= 0;j < arr_exp.length ; j++){
+					//alert(arr_exp[j]);
+					if(arr_exp[j] == arr[i][0] ){
+						ln =1;
+						
+						break;
+						
+					}
+				}
+				if(ln == 0 ){
+					var elOptNew = document.createElement('option');
+					elOptNew.text = arr[i][1];
+					elOptNew.value = arr[i][0];
+					try {
+					  objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+					}
+					catch(ex) {
+					  objdesc.add(elOptNew); // IE only
+					}
+				}
+			}
+			if(objdesc.length)
+				objdesc.style.display = 'block';
+			else
+				objdesc.style.display = 'none';
+			//objdesc.value = sel;
+		}
+		
+		var arr_cqselect = new Array();
+		var arr_cqselect_temp = new Array();
+
+		var arr_cqnb = new Array();
+		<?php $stt = 0 ;foreach ($data_cqnb as $cqnb){ ?>
+		
+		arr_cqnb[<?=$stt?>] =  new Array("<?=$cqnb['ID_CQ']?>", "<?=$cqnb['NAME']?>");
+		<?php $stt++; } ?>
+		
+		
+		fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		
+		function insertArrayCqnb(){
+			var opt = document.frm.CQNOIBO.options;
+			for(var i=0;i<opt.length;i++){
+				if(opt[i].selected){
+					arr_cqselect[arr_cqselect.length] = new Array(opt[i].value,opt[i].text);
+					arr_cqselect_temp[arr_cqselect_temp.length] = new Array(opt[i].value);
+					
+				}
+			}
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}
+
+		function insertAllArrayCqnb(){
+		
+			var opt = document.frm.CQNOIBO.options;
+			for(var i=0;i<opt.length;i++){
+				
+					arr_cqselect[arr_cqselect.length] = new Array(opt[i].value,opt[i].text);
+					arr_cqselect_temp[arr_cqselect_temp.length] = new Array(opt[i].value);
+					
+				
+			}
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}
+
+
+
+		var arr_header = new Array();
+		arr_header[0] = new Array(100,'Tên');
+		//arr1[1] = new Array(0,'Chức năng');
+		//arr1[2] = new Array(0,'Hạn XL');
+		arr_header[1] = new Array(0,'Xóa');
+		
+
+		function removeArrCqnoibo(i){
+			
+			arr_cqselect.splice(i,1);
+			arr_cqselect_temp.splice(i,1);
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}
+		function ShowArrCqnoibo(idDiv,Arr1,Arr2){
+			var html;
+			html = '<table class="adminlist" width=100%>';
+			html += '<thead>';
+			html += '<tr>';
+			html += '<th nowrap>#</td>';
+			for(i=0;i<Arr1.length;i++){
+				if(Arr1[i][0]==0){
+					html += '<th nowrap>' + Arr1[i][1] + '</td>';
+				}else{
+					html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+				}
+			}
+			html += '</tr>';
+			html += '</thead>';    
+			
+			html += '<tfoot><tr><th colspan='+(Arr1.length+1)+' align=left>';
+			html += '</th></tr></tfoot>';
+			
+			html += '<tbody>';
+				for(i=0;i<Arr2.length;i++){
+					html += '<tr>';
+					html += '<td nowrap align="right">' + (i + 1) + '</td>';
+					html += '<td>';
+					html += Arr2[i][1];
+					html += "<input type=hidden name=ID_CQ[] value="+Arr2[i][0]+">";
+					html += '</td>';
+					html += '<td>';
+					html += '<a href="#" onclick=removeArrCqnoibo('+i+');>Xóa</a>';
+					html += '</td>';
+					html += '</tr>';
+				}
+				html += '</tbody>';
+				html += '</table>';
+			
+			document.getElementById(idDiv).innerHTML = html;
+			resize();
+			
+			
+		}
+<?php } ?>
+
+	var stthan = 0;
+	function UpdateRethanxuly(){
+		document.getElementById("HANXULY"+stthan).value=retvalue;
+		arr_user[stthan][4] = document.getElementById("HANXULY"+stthan).value;
+    }
+	function UpdateRetntthuc(){
+		document.getElementById("NGAY_KETTHUC"+stthan).value=retvalue;
+		arr_user[stthan][4] = document.getElementById("HANXULY"+stthan).value;
+		arr_user[stthan][5] = document.getElementById("type_real_HANXULY"+stthan).value;
+		arr_user[stthan][8] = retvalue;
+    }
+	function ChangeDate(i){
+		stthan = i;
+		//alert(i);
+        getvalue("auth","user","adddatehanxuly","date="+document.getElementById("NGAY_KETTHUC"+stthan).value+"&all="+document.getElementById("type_real_HANXULY"+stthan).value+"","UpdateRethanxuly");
+    }
+	function UpdateHanXuLy(i){
+		stthan = i;
+		getvalue("auth","user","adddate","all="+document.getElementById("type_real_HANXULY"+stthan).value+"&value="+(parseInt(document.getElementById("HANXULY"+stthan).value,10)),"UpdateRetntthuc");
+	}
+	//Changhan();
+</script>

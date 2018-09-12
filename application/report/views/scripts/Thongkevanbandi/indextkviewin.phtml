@@ -1,0 +1,275 @@
+<!-- 1/7/2016 - update by hoangnm -  -->
+<meta charset="utf-8">
+<style>
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #FAFAFA;
+        font-family: "Times New Roman";
+        font-size: 13pt;
+    }
+
+    * {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+
+    .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0mm auto;
+        background: white;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        padding: 0mm;
+    }
+
+    .subpage {
+        height: 257mm;
+    }
+
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    @page{
+        size: 210mm 297mm;
+        margin: 2cm 2cm 2cm 2cm;
+    }
+
+    @media print {
+        html, body {
+            width: 210mm;
+            height: 297mm;
+        }
+
+        .page {
+            margin: 0;
+            border: initial;
+            border-radius: initial;
+            width: initial;
+            min-height: initial;
+            box-shadow: initial;
+            background: initial;
+            page-break-after: always;
+        }
+    }
+
+    .text-center{
+        text-align: center;
+    }
+
+    table td{
+        font-size: 12pt;
+    }
+
+    table.table-admin{
+        border-collapse: collapse;
+    }
+
+    table.table-admin td{
+        border: 1px solid #000;
+    }
+
+    .padding-bottom-l{
+        padding-bottom: 0.5cm;
+    }
+
+    .padding-bottom-xl{
+        padding-bottom: 1cm;
+    }
+
+    @page:right{
+        @bottom-left {
+            margin: 10pt 0 30pt 0;
+            border-top: .25pt solid #666;
+            content: "Our Cats";
+            font-size: 9pt;
+            color: #333;
+        }
+
+        @bottom-right {
+            margin: 10pt 0 30pt 0;
+            border-top: .25pt solid #666;
+            content: counter(page);
+            font-size: 9pt;
+        }
+
+        @top-right {
+            content:  string(doctitle);
+            margin: 30pt 0 10pt 0;
+            font-size: 9pt;
+            color: #333;
+        }
+    }
+
+    @page:left {
+        @bottom-right {
+            margin: 10pt 0 30pt 0;
+            border-top: .25pt solid #666;
+            content: "Our Cats";
+            font-size: 9pt;
+            color: #333;
+        }
+
+        @bottom-left {
+            margin: 10pt 0 30pt 0;
+            border-top: .25pt solid #666;
+            content: counter(page);
+            font-size: 9pt;
+        }
+    }
+</style>
+<div class="book">
+    <div class="page">
+        <div class="subpage">
+            <table width="100%">
+                <tr>
+                    <td colspan="3" class="text-center"><?php echo mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center"><b>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-center"><b><?php echo mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center"><u><b>Độc lập - Tự do - Hạnh phúc</b></u></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-center"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center">
+                        <i><?php echo $this->config->sys_info->city ?>, ngày <?php echo date("d")?> tháng <?php echo date("m")?> năm <?php echo date("Y")?></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9" class="padding-bottom-xl"></td>
+                </tr>
+                <tr>
+                    <td class="text-center" colspan="9">
+                        <b>THỐNG KÊ VĂN BẢN ĐI</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center" colspan="9">
+                        <i>(<?php echo $this->thu;?>)</i>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9" class="padding-bottom-l"></td>
+                </tr>
+                <?php
+                    require_once 'report/models/ThongkevanbandiModel.php';
+                ?>
+                <tr>
+                    <td colspan="9">
+                        <table width="100%" class="table-admin">
+                            <tr>
+                                <td class="text-center"><b>STT</b></td>
+                                <td class="text-center"><b>Số/Ký hiệu</b></td>
+                                <td class="text-center" width="10%"><b>Ngày ban hành</b></td>
+                                <td class="text-center" width="25%"><b>Trích yếu</b></td>
+                                <td class="text-center"><b>Thông tin VBĐến</b></td>
+                                <?php
+                                if($this->thongke == 0){
+                                ?>
+                                    <td class="text-center" width="15%"><b>Người xử lý</b></td>
+                                <?php
+                                }
+                                ?>
+                                <td class="text-center" width="10%"><b>Ghi chú</b></td>
+                            </tr>
+                            <?php
+                                foreach($this->data as $dataGroup) {
+                                    $paramData = array('fromdate' => $this->fromdate, 'todate' => $this->todate, 'year' => $this->year, 'id_svb' => $this->sel_svb, 'id_lvb' => $this->sel_lvb);
+                                    if ( $this->thongke == 0 ) {
+                                        $paramData['id_dep'] = $dataGroup['ID_DEP'];
+                                    } else {
+                                        $paramData['id_u'] = $dataGroup['ID_U'];
+                                    }
+                                    $dataRows = ThongkevanbandiModel::getDataThongKeVanBanDi($paramData);
+                            ?>
+                                <tr>
+                                    <td colspan="<?php echo $this->thongke==0?'7':'6' ?>">
+                                        <b>
+                                        <?php
+                                            if($this->thongke == 0){
+                                                echo $dataGroup['NAME'].'('.count($dataRows).')';
+                                            }else{
+                                                echo $dataGroup['FIRSTNAME'].' '.$dataGroup['LASTNAME'].' ('.count($dataRows).') - '.$dataGroup['NAME'];
+                                            }
+                                        ?>
+                                        </b>
+                                    </td>
+                                </tr>
+                            <?php
+                                $stt = 0;
+                                foreach($dataRows as $row){
+                                $stt++;
+                            ?>
+                                <tr>
+                                    <td class="text-center"><?php echo $stt; ?></td>
+                                    <td class="text-center"><?php echo $row['SOKYHIEU']; ?></td>
+                                    <td class="text-center"><?php echo QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]); ?></td>
+                                    <td><?php echo $row['TRICHYEU']; ?></td>
+                                    <td>
+                                        <?php
+                                            if($row['SOKYHIEU_VBDEN']!=null && $row['SOKYHIEU_VBDEN']!=''){
+                                                echo $row['SOKYHIEU_VBDEN'].' ngày ';
+                                                echo QLVBDHCommon::MysqlDateToVnDate($row['NGAYBANHANH_VBDEN']).' của ';
+                                                echo $row['NAME_COQUANBANHANH_VBDEN'];
+                                            }
+                                        ?>
+                                    </td>
+                                    <?php
+                                        if($this->thongke == 0){
+                                    ?>
+                                         <td><?php echo $row['FIRSTNAME'].' '.$row['LASTNAME'] ?></td>
+                                    <?php
+                                        }
+                                    ?>
+                                    <td class="text-center">
+                                        <?php
+                                            if($row['NGAYHETHAN_VBDEN']!=null && $row['NGAYHETHAN_VBDEN']!=''){
+                                                $minusTime=strtotime($row['NGAYBANHANH']) - strtotime($row['NGAYHETHAN_VBDEN']);
+                                                if($minusTime>0){
+                                                    echo 'Trễ hạn';
+                                                }
+                                                if($minusTime==0){
+                                                    echo 'Đúng hạn';
+                                                }
+                                                if($minusTime<0){
+                                                    echo 'Sớm hạn';
+                                                }
+                                            }
+                                        ?>
+                                    </td>
+                                </tr>
+                            <?php
+                                }
+                            }
+                            ?>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    window.print();
+</script>
+<!-- 1/7/2016 - update by hoangnm -  -->

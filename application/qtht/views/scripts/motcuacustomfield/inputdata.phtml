@@ -1,0 +1,234 @@
+<?php 
+require_once('qtht/models/LoaiVanBanModel.php');
+require_once('qtht/models/CoQuanModel.php');
+?>
+<form name="datacdform"  action="/qtht/motcuacustomfield/save" method="post">
+<table  class=admintable >
+<tbody>
+<tr>
+	<td class=key>Tên hiển thị</td> 
+	<td >
+		<input type="text" name="NAME_DISPLAY" maxlength="128" size=50 value="<?php echo htmlspecialchars($this->data["NAME_DISPLAY"]);?>">
+	</td>
+	<td class=error id="ERRname"></td>
+	<tr>
+	
+	<tr id='tr_id_lv_mc'>
+	<td class=key>Lĩnh vực hồ sơ(*)</td>
+	<td>
+	<select name="ID_LV_MC" onchange="choiceLinhvuc();">
+	<option value="0"  >--Chọn lĩnh vực hồ sơ--</option>
+	<?php 
+		$linhvucmotcuaModel = new linhvucmotcuaModel(); 
+		echo $linhvucmotcuaModel->ToCombo($linhvucmotcuaModel->SelectAll(),1);
+	?>   	
+	</select>
+	<script>document.datacdform.ID_LV_MC.value='<?=$this->data["ID_LV_MC"]?>';</script>
+	<?php if(!$this->view->data["ID_MC_CF"]){ ?>
+		<input type=checkbox name="SEL_ALL_LV" value=1 > Chọn toàn bộ lĩnh vực
+	<?php }?>
+	</td>
+	<td class=error id="ERRid_lv_mc"></td>
+	</tr>
+	<tr id='tr_coquan'>
+	<td class=key>Loại hồ sơ</td>
+	<td>
+	<select name="LOAIHOSO_CODE<?php if($this->data["ID_MC_CF"]==0){echo "[]";}?>" <?php if($this->data["ID_MC_CF"]==0){echo "multiple size=10";}?>>
+	<?php 
+		motcua_custom_fieldModel::toComboLoaihosoByLinhvuc($this->data["ID_LV_MC"]);
+	?>   	
+	</select>
+	 <script>document.datacdform.LOAIHOSO_CODE.value='<?=$this->data["LOAIHOSO_CODE"]?>';</script>
+	</td>
+	<td class=error ></td>
+	</tr>
+	<tr id='tr_coquan'>
+	<td class=key>Tên cột trong CSDL</td>
+	<td>
+	<select name="NAME_COLUMN" >
+	<option value="0" >--Chọn tên cột--</option>
+	
+	<?php 
+		motcua_custom_fieldModel::getColumnMotcuaHoso();
+	?>   	
+	</select>
+	 <script>document.datacdform.NAME_COLUMN.value='<?=$this->data["NAME_COLUMN"]?>';</script>
+	</td>
+	<td class=error >  </td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><input type=checkbox name=is_new_column onclick="selectNewColumn();" > Thêm cột mới</td>
+	</tr>
+	
+	<tr id='tr_name_column_new' style="display:none">
+	<td class=key>Tên cột mới</td>
+	<td>
+		<input type="text" name="NAME_COLUMN_NEW" value='<?=$this->data["NAME_COLUMN_NEW"]?>'>
+	</td>
+	<td class=error ></td>
+	</tr>
+	<tr id='tr_type_column_new' >
+	<td class=key >Kiểu</td>
+	<td>
+		<select name=TYPE>
+			<option value="VARCHAR" >Chuỗi ký tự</option>
+			<option value="INTEGER" >Số nguyên</option>
+			<option value="DOUBLE" >Số thực</option>
+			<option value="DATE" >Ngày tháng</option>
+			
+		</select>
+		 <script>document.datacdform.TYPE.value='<?=$this->data["TYPE"]?>';</script>
+	</td>
+	<td class=error ></td>
+	</tr>
+	<td class=key >Có bắt buộc nhập liệu</td>
+	<td>
+		<input type=checkbox name=IS_REQUIRED value=1 > (Khi tiếp nhận)
+		 <script>document.datacdform.IS_REQUIRED.checked=<?=$this->data["IS_REQUIRED"]==1?"true":"false"?>;</script>
+	</td>
+	<td class=error ></td>
+	</tr>
+	<tr>
+		<td class=key>Loại</td>
+		<td>
+			<input type=checkbox name="IS_TIEPNHAN" value=1 <?=$this->data["IS_TIEPNHAN"]==1?"checked":""?> > Tiếp nhận
+			<input type=checkbox name="IS_KETQUA" value=1  <?=$this->data["IS_KETQUA"]==1?"checked":""?> > Kết quả
+			<input type=checkbox name="IS_BAOCAO" value=1  <?=$this->data["IS_BAOCAO"]==1?"checked":""?> > Báo cáo
+		</td>
+	</tr>
+	<tr>
+	<td class=key>Đã được sử dụng</td>
+	<td>
+	<?php
+		if($this->data["ACTIVE"] == 1){
+			echo '<input type="checkbox" value=1 name="ACTIVE" checked=checked>';
+		}
+		else {
+			echo '<input type="checkbox" value=1 name="ACTIVE">';
+		}
+	?>
+	</td>
+	<td class=error> </td>
+</tr>
+</tbody>
+</table>
+
+<input type=hidden name="ID_MC_CF" value=<?php echo (int)$this->data["ID_MC_CF"]?> >
+<input type=hidden name="limit" value=<?php echo $this->limit?> >
+<input type=hidden name="filter_object" value=<?php echo $this->filter_object?> >
+<input type=hidden name="search" value=<?php echo $this->search?> >
+<input type=hidden name="page" value=<?php echo $this->page?> >
+<input type=hidden name="ID_DEP" value="<?=$this->ID_DEP?>">
+</form>
+
+<script>
+
+init();
+function init(){
+	document.datacdform.is_new_column.checked = false;
+	var otr_name_column_new = document.getElementById("tr_name_column_new");
+	otr_name_column_new.display = "none";
+}
+function checkFormData(){
+
+	/*var str = "Bạn phải nhập tên sổ văn bản";
+	var strerr = validateInput("required",document.datacdform.name,str);
+	if(!strerr){
+		document.datacdform.name.focus();
+		return false;
+	}
+	str="Tên hiển thị không được quá 128 ký tự";
+	strerr = validateInput("maxlen=128",document.datacdform.name,str);
+	if(!strerr){
+		
+		document.datacdform.name.focus();
+		return false;
+	}
+	
+	if(document.datacdform.choiceSVB.value == 3){
+		str ="Bạn phải chọn một lĩnh vực";
+		strerr = validateInput("greaterthan=0",document.datacdform.id_lv_mc,str);
+	
+		if(!strerr){
+		
+			document.datacdform.id_lv_mc.focus();
+			return false;
+		}
+	}*/
+	return true;
+}
+
+function selectNewColumn(){
+	//var otr_type_column_new = document.getElementById("tr_type_column_new");
+	var otr_name_column_new = document.getElementById("tr_name_column_new");
+	if(document.datacdform.is_new_column.checked){
+		//otr_type_column_new.style.display = "";
+		otr_name_column_new.style.display = "";
+		document.datacdform.NAME_COLUMN.disabled = true;
+	}else{
+		//otr_type_column_new.style.display = "none";
+		otr_name_column_new.style.display = "none";
+		document.datacdform.NAME_COLUMN.disabled = false;
+	}
+}
+
+
+
+function SaveButtonClick(){
+	
+	if(checkFormData()){
+		//document.datacdform.method ="get";
+		document.datacdform.submit();
+	}
+}
+function BackButtonClick(){
+	document.datacdform.action = '/qtht/motcuacustomfield/index';
+	document.datacdform.submit();
+}
+
+function onchange_choiceLSVB(){
+	
+	var tr_lvb_lienquan = document.getElementById('tr_lvb_lienquan');
+	var tr_coquan = document.getElementById('tr_coquan');
+	var tr_id_lv_mc = document.getElementById('tr_id_lv_mc');
+	if(document.datacdform.choiceSVB.value == 3){
+		
+		tr_lvb_lienquan.style.display = "none";
+		tr_coquan.style.display = "none";	
+		tr_id_lv_mc.style.display = "";
+	}
+	else{
+		tr_lvb_lienquan.style.display = "";
+		tr_coquan.style.display = "";
+		tr_id_lv_mc.style.display = "none";
+		
+	}
+
+}
+function choiceLinhvuc(){
+	document.datacdform.action ="/qtht/motcuacustomfield/input/";
+	document.datacdform.submit();
+}
+onchange_choiceLSVB();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

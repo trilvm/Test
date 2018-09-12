@@ -1,0 +1,77 @@
+<form name=frm method=post>
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th nowrap="nowrap">STT</th>
+			<?php if($this->lock==0){ ?>
+			<th nowrap="nowrap"><input type=checkbox name=CHECKALL onclick="SelectAll(this,'DEL')"></th>
+			<?php } ?>
+			<th width="100%">Tên Lịch </th>
+			<th nowrap>Người đăng lịch</th>
+			<th nowrap>Nội dung lịch</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="<?=$this->lock==0?5:4?>"></th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+$stt=0;
+foreach ($this->data as $item ){ 
+		$stt++;
+?>
+		<tr style="height:15px">
+			<td nowrap="nowrap" style="height:15px"><?=$stt?></td>
+			<?php if($this->lock==0){ ?>
+			<td nowrap="nowrap" style="height:15px"><input type=checkbox name=DEL[] value=<?=$item["ID_LICHUB"]?>></td>
+			<?php } ?>
+			<td width="100%" style="height:15px">
+				<?php if($this->lock==0){ ?>
+				<a href="#" onclick="ItemClick(<?=$item["ID_LICHUB"]?>);"><?=$item["TENLICH"]?></a>
+				<?php }else{ ?>
+				<?=$item["TENLICH"]?>
+				<?php } ?>
+			</td>
+			<td nowrap="nowrap" style="height:15px"><?=$item["NGUOITAO"]?></td>
+			<td nowrap="nowrap" style="height:15px">
+				<?php if($item["FILE_MASO"]!=""){?>
+				<a href="/qtht/LichUB/download/id/<?=$item["ID_LICHUB"]?>"><?=$item["FILE_NAME"]?></a>
+				<?php } else { ?>
+				<?=$item["FILE_NAME"]?>
+				<?php } ?>
+			</td>
+			
+		</tr>
+<?php 
+} 
+?>
+	</tbody>
+</table>
+</form>
+<script>
+function DeleteButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","Chọn một lịch ủy ban để xóa");
+	if(mess){
+		if(confirm("Bạn có muốn xóa không")){
+			document.frm.action = "/qtht/LichUB/delete";
+			document.frm.submit();
+		}
+	}else{
+		alert("Chọn một lịch ủy ban để xóa");
+	}
+}
+function AddNewButtonClick(){
+	document.frm.action = "/qtht/LichUB/input";
+	document.frm.submit();
+}
+function ItemClick(id){
+	document.frm.action = "/qtht/LichUB/input/id/"+id;
+	document.frm.submit();
+}
+</script>
+
+
+

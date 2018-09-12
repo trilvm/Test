@@ -1,0 +1,393 @@
+
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<?php
+    require_once 'Common/FileDinhKem.php';
+    require_once 'qlcuochop/models/DMdiadiemModel.php';
+    $url = "";
+    $is_new = 0;$type = -1;
+    if((int)$this->data->ID_DINHKEM == 0)
+    {
+       $idObject = $this->idObject;
+    }
+    else
+    {
+        $idObject = $this->data->ID_DINHKEM;
+    }
+    $url ="'/hscv/file?iddiv=idFileDinhKem&idObject=".$idObject."&is_new=".$is_new."&type=".$type."'" ;
+?>
+
+<script>
+
+function setDefaultValue()
+    {
+        var OptionCVROOT= document.getElementById('OptionCVROOT');
+        OptionCVROOT.setAttribute('id','OptionCVROOT');
+        OptionCVROOT.setAttribute('name','OptionCVROOT');
+    }
+</script>
+<table>        
+        <tr>
+		<td width="">
+			<font nowrap="nowrap" style="color:blue"> Thời gian </font></td>
+		<td><?=QLVBDHCommon::calendarFull($this->BEGINDATE==""?date("d/m/Y"):QLVBDHCommon::MysqlDateToVnDate($this->BEGINDATE),"BEGINDATE","BEGINDATE") ?>
+                    <font nowrap="nowrap" style="color: blue">Vào lúc </font>
+                    <input type=text  size="4" name=gio value="<?php echo $this->data->GIO ?>">
+                    <input type="hidden" name="ngay" value="<?= date("d/m/Y") ?>">
+                </td>
+	</tr>
+
+	<tr>
+		<td nowrap="nowrap" width="10%" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Địa điểm</font></td>
+                <td nowrap="nowrap" with="10%">
+                   <?=qlcuochop_DMdiadiemModel::toCombo('frm',''); ?>
+                   <script>
+                       document.frm.diadiem.value='<?=$this->data->DIADIEM?>';
+                   </script>
+		</td>
+	</tr>
+
+        <tr>
+            <td nowrap="nowrap" style="color: blue" >Người chủ trì <font
+			color="Red" size="3">*</font></td>
+                    <td nowrap>
+                        <?//php echo QLVBDHCommon::writeSingleSelectUser1('DEP_NGUOICHUTRI','NGUOICHUTRI')?>
+                        <?=quanlycuochopModel::Combonguoichutri('frm',0,NGUOICHUTRI) ?>
+                    </td>
+        <script type="text/javascript">document.frm.NGUOICHUTRI.value = '<?=$this->data->ID_CUOCHOP!=""?$this->data->NGUOICHUTRI:''?>';</script>
+        </tr>
+        <tr id="show4">
+            <td nowrap="nowrap" style="color: blue">Thư ký</td>
+            <td><input type="text" name="thuky" value="<?=$this->data->THUKY?>" size="40"></td>
+        </tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Danh sách tham dự </font>
+                </td>
+                <td nowrap>
+                        <?=quanlycuochopModel::Combonguoithamgia('frm',0,"COMBONGUOITHAMGIA") ?>
+                        <?//php echo QLVBDHCommon::writeSingleSelectUser2('DEP_NGUOITHAMDU','NGUOITHAMDU')?>
+                
+                    <input type ="button" value="Chọn" name="btChon1" Onclick="chonNguoithamgia1()">
+                </td>
+         </tr>
+                <td></td>
+                <td>
+                    <select name="list_dstg" id="SelectDSTG" size="3" multiple="multiple" style="margin-bottom: 5px; width: 300px;">
+                    <?php
+                        $sttOption = 0;
+                        foreach($this->listHoten as $row)
+                        {
+                                $sttOption++;
+                                echo '<option value='.$row["MACANBO"].'>'.$row["TEN"].'</option>';
+                        }
+                    ?>
+                    </select>
+                </td>
+        </tr>        
+     
+        <tr>
+            <td  nowrap="nowrap" style="color: blue" >Theo dõi</td>
+            <td colspan="2">
+            <table class="adminlist">
+                <thead>
+                    <tr>
+                        
+                        <td>
+                            Người xử lý
+                        </td>
+                        <td style="width:30%"> Công việc thực hiện</td>
+                        <td style="width:auto"> Đính kèm file</td>
+                        <td>
+                            Hạn xử lý
+                        </td>                        
+                        <td nowrap><img src="/images/icon_add.jpg" onclick="addCongViec();"></td>
+                        </td>
+                    </tr>
+                    <tr>
+
+                    </tr>
+                </thead>
+                <tbody id="listCongViec">
+                     <tr id="CVroot" onclick="" style="display: none">
+                               
+                                <input id="IS_CVOLDROOT" type="hidden" name="IS_CVOLDROOT" value="" />
+                                <td>
+                                    <?= quanlycuochopModel::toCombo('frm',0,"OptionCVROOT") ?>
+                                </td>
+                                <td>
+                                    <TEXTAREA id="NOIDUNGROOT" NAME="NoiDungRoot" ROWS="1" COLS="10" style="width:98%"></TEXTAREA
+                                </td>
+                                <td>
+                                    <div class="required">
+                                    <label class="input" id="lblTextIput">File đính kèm</label>
+                                    <div id="idFileDinhKemCVROOT" name="FileDinhKemCVroot"></div>
+                                    <span class="box_erro_area">
+                                    </span>
+                                    </div>
+                                    <?php
+                                            if(null!=$this->type)
+                                            {
+                                                    $type=$this->type;
+                                            }
+                                            else if($this->idTemp>0)
+                                            {
+                                                    $type=6;
+                                            }
+                                            else $type=-1;
+                                    ?>
+                                    <script type="text/javascript">
+                                            divFileDinhKemId='idFileDinhKemCVROOT';
+                                            url='/hscv/file/attachment?iddiv=idFileDinhKemCV&idObject=<?php echo ($this->idTemp>0?$this->idTemp:0) ?>&is_new=<?php echo ($this->idTemp>0?0:1)  ?>&year=<?php echo $this->year ?>&type=<?php echo $type; ?>';
+                                            loadDivFromUrl(divFileDinhKemId,url,0);
+                                    </script>
+                                    <div class="clr"></div>
+                                </td>
+                                <td>
+                                    <?=QLVBDHCommon::calendarFull($this->DATE==""?date("d/m/Y"):QLVBDHCommon::MysqlDateToVnDate($this->DATE),"DATE[]","DATEROOT") ?>
+                                    <font nowrap="nowrap" style="color: blue">Vào lúc </font>
+                                    <input id="VAOLUCROOT" type=text  size="4" name=VAOLUCROOT value="">
+                                    <input type="hidden" name="NGAYHETHONG[]"
+                                    value="<?= date("d/m/Y") ?>"> </td>
+                                </td>
+                                <td >
+                                    <a id="idxoa" onclick="" style="color: blue;cursor: pointer">Xóa</a>
+                                </td>
+                        </tr>
+                        <?php if((int)$this->data->ID_CUOCHOP == 0){ ?>
+                        
+                        <tr id="CV0">                           
+                            <input type="hidden" name="IS_CVOLD[]" value="" />
+                            <td>
+                                <? quanlycuochopModel::toCombo('frm',0) ?>
+                            </td>
+                            <td>
+                                <TEXTAREA NAME="NOIDUNG[]" ROWS="1" COLS="10" style="width:98%" value=""></TEXTAREA>
+                            </td>
+                            <td>
+                                <div class="required">
+                                    <label class="input" id="lblTextIput">File đính kèm</label>
+                                    <div id="idFileDinhKemCV" name="FileDinhKemCV[]"></div>
+                                    <span class="box_erro_area">
+                                    </span>
+                                    </div>
+                                    <?php
+                                            if(null!=$this->type)
+                                            {
+                                                    $type=$this->type;
+                                            }
+                                            else if($this->idTemp>0)
+                                            {
+                                                    $type=6;
+                                            }
+                                            else $type=-1;
+                                    ?>
+                                    <script type="text/javascript">
+                                            divFileDinhKemId='idFileDinhKemCV';
+                                            url='/hscv/file/attachment?iddiv=idFileDinhKemCV&idObject=<?php echo ($this->idTemp>0?$this->idTemp:0) ?>&is_new=<?php echo ($this->idTemp>0?0:1)  ?>&year=<?php echo $this->year ?>&type=<?php echo $type; ?>';
+                                            loadDivFromUrl(divFileDinhKemId,url,0);
+                                    </script>
+                                <div class="clr"></div>
+                            </td>
+                            <td style="width: 21%">
+                                <?=QLVBDHCommon::calendarFull($this->DATE==""?date("d/m/Y"):QLVBDHCommon::MysqlDateToVnDate($this->DATE),"DATE[]","DATE") ?>
+                                <font nowrap="nowrap" style="color: blue">Vào lúc </font>
+                                <input type=text  size="3" name=VAOLUC[]>
+                                <input type="hidden" name="NGAYHETHONG[]"
+                                value="<?= date("d/m/Y") ?>"> </td>
+                            </td>
+                            <td>
+                                <a onclick="removeCongViec('CV0','STTCV0')" style="color: blue;cursor: pointer">Xóa</a>
+                            </td>
+                        </tr>
+                        <script>
+                               setDefaultValue();
+                        </script>
+                        <?php } else { ?>
+                            <script>
+                               setDefaultValue();
+                            </script>
+                        
+                        <?php
+                            $stt = 0;
+                            foreach ($this->data_cv as $item_cv) {
+                                $stt++;
+                        ?>
+                        <tr id="CV<?=$stt?>">
+                           
+                            <input type="hidden" name="IS_CVOLD[]" value="<?=$item_cv['ID_CONGVIEC']?>" />
+                            <td>
+                                <? quanlycuochopModel::toCombo('frm', $item_cv['NGUOIXULY'], 'OptionCV'.$stt) ?>
+                                <script type="text/javascript">document.getElementById("OptionCV<?=$stt?>").value = '<?=$item_cv['NGUOIXULY']?>';</script>
+                            </td>
+                            <td>
+                                <TEXTAREA NAME="NOIDUNG[]" ROWS="1" COLS="10" style="width:98%" value=""><?=$item_cv['CONGVIEC']?></TEXTAREA>
+                            </td>
+
+                            <td>
+                            <?= QLVBDHCommon::calendarFull($item_cv['NGAYXULY'] == "" ? date("d/m/Y") : QLVBDHCommon::MysqlDateToVnDate($item_cv['NGAYXULY']), "DATE[]", "DATE") ?>
+                                <font nowrap="nowrap" style="color: blue">Vào lúc </font>
+                                <input type=text  size="4" name=VAOLUC[] value="<?=$item_cv['VAOLUC']?>">
+                                <input type="hidden" name="NGAYHETHONG[]"
+                                       value="<?= date("d/m/Y") ?>"> </td>
+                            </td>    
+                            <td>
+                                <a onclick="removeCongViec('CV<?=$stt?>','STTCV<?=$stt?>');setIDXoa('<?=$item_cv['ID_CONGVIEC']?>')" style="color: blue;cursor: pointer">Xóa</a>
+                            </td>
+                            </tr>
+                        <?php }}?>
+
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th colspan="7"></th>
+                </tr>
+                </tfoot>
+                <span id="ERRCV"></span>
+            </table>
+            </td>
+        </tr>       
+        <tr>
+            <td nowrap valign="top" style="color:blue">
+                    Đính kèm biên bản cuộc họp
+            </td>
+            <td>
+                    <div id="idFileDinhKem" style="width:80%;"></div>
+            </td>
+        </tr>
+        <input type=hidden name="id" value="<?php echo $this->data->ID_CUOCHOP; ?>">
+        <input type=hidden name="IS_FINISH" value="0">
+        <span id="listIdXoa">
+        </span>       
+
+<script>
+loadDivFromUrl('idFileDinhKem',<?=$url?>,0);
+        var arr_user_temp = new Array();
+
+//        function  SaveButtonClick(){
+//           var err1 =  getCountCV();
+//
+//            if(document.frm.phamvi.checked==true)
+//                {
+//                    document.frm.phamvi.value = 1;
+//                }
+//                else
+//                    {
+//                        document.frm.value = 0;
+//                    }
+//            if(document.frm.is_public1.checked == true)
+//            {
+//                document.frm.is_public.value = 1;
+//            }
+//            else
+//            {
+//                document.frm.is_public.value = 0;
+//            }
+//            var err = true;
+//            err = err & validateInput("req",document.frm.ten,"Tên cuộc họp không được rỗng.");
+//           // validcv=document.frm.NGUOI.value != "";
+//           // err = err & err==true?validcv:false;
+//            if(err==true && err1 == 1)
+//                {
+//                    document.frm.submit();
+//                }
+//        }
+	
+   
+    cvNumber = <?php
+
+           if((int)$this->data->ID_CUOCHOP == 0)
+           {
+               echo 1;
+
+           }
+           else
+           {
+             echo count($this->data_cv);
+           }
+
+    ?>;
+    sttCV = <?php
+        if(count($this->data_cv) == 0)
+        {
+           if((int)$this->data->ID_CUOCHOP == 0)
+           {
+               echo 1;
+
+           }
+           else
+           {
+            echo 0;
+           }
+        }
+        else
+        {
+            echo 1;
+        }
+    ?>;    
+    function removeCongViec(id,idnumber)
+    {
+        sttCV--;
+        var listCV = document.getElementById('listCongViec');
+        var olddiv = document.getElementById(id);
+        listCV.removeChild(olddiv);
+        for(var i = 0;i<sttCV;i++)
+        {            
+            if(arrSTT[i]==idnumber)
+            {               
+                arrSTT.splice(i,1);
+            }            
+        }
+    }
+    function setIDXoa(value)
+    {
+        var elem = document.createElement('input');
+        elem.setAttribute('type','hidden');
+        elem.setAttribute('name','DEL[]');
+        elem.setAttribute('value',value);
+        document.getElementById('listIdXoa').appendChild(elem);
+    }
+    function setSELECTEDAttribute(value,id)
+    {
+       var e = document.getElementById(id);       
+       for(var i = 0;i<soOption;i++)
+       {
+           var str = e.options[i].value;
+           if(str == value)
+           {
+               e.options[i].setAttribute("selected", "true");              
+           }
+       }
+    }
+    function setTEXTAREAvalue(id,value)
+    {
+         document.getElementById(id).innerHTML = value;
+    }
+
+    function getCountCV()
+    {
+        var leh= document.getElementById('listCongViec').getElementsByTagName('tr');
+        if(leh.length > 1)
+        {
+            for(var i = 0; i< leh.length; i++)
+            {
+                if(i > 0)
+                {
+                    var id = leh[i].id;
+                    var ElementTD = document.getElementById(id).getElementsByTagName('td')[0];
+                    var ElementSELECT = ElementTD.getElementsByTagName('select')[0];
+                    var id_select = ElementSELECT.id;
+
+                    var vlu = document.getElementById(id_select).value;                   
+                    if(vlu == "")
+                    {                       
+                        document.getElementById('ERRCV').innerHTML = "<font color='red'> Chọn người xử lý</font>";
+                        return 0;
+                    }
+                 }
+            }
+        }
+        document.getElementById('ERRCV').innerHTML = "";
+        return 1;
+    }
+</script>

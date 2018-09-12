@@ -1,0 +1,118 @@
+
+<form name="frm">
+    <ul style="margin: 0; padding: 0; ">
+        <li style="float: left; display: inline-block;">&nbsp;Từ: &nbsp;</li>
+        <li style="float: left; display: inline-block;">
+            <?php echo QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->fromsearch),"fromsearch","fromsearch") ?>
+            	
+        </li>
+        <li style="float: left; display: inline-block;">&nbsp; Đến: &nbsp; </li>
+        <li style="float: left; display: inline-block;">
+            <?php echo QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->tosearch),"tosearch","tosearch") ?>
+            
+        </li>
+        <li style="float: left; display: inline-block;">&nbsp;&nbsp;&nbsp;&nbsp;<input name="checkbox" type="checkbox" value="1" <?php echo $this->checkbox==1?'checked="checked"':'' ?>/></li>
+        <li style="float: left; display: inline-block;">Chưa hoàn thành</li>
+        <li style="float: left; display: inline-block;">&nbsp;<input onclick="search();" type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Tìm"/></li>
+        <li style="float: left; display: inline-block;"><input onclick="clearInput();" type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Nhập lại"/></li>
+    </ul>
+    <div style="clear: both"></div> 
+<table class="adminlist">
+<thead>
+	<th style="width:20px; text-align: center">#</th>
+        <th style="text-align: center">Ngày yêu cầu phục hồi</th>
+        <th style="text-align: center">Ngày dự kiến phục hồi</th>
+        <th style="text-align: center">Trạng thái</th>
+	<th  style="text-align: center; width: 50px;"></th>
+</thead>
+<tbody>
+	<?php $stt = 1 ;foreach ($this->data as $data){
+            if((int)($stt%2)==0){
+                $style = "background:#f5f5f5;";
+            }else{
+                $style = "background:#fff;";
+            }
+            ?>
+	<tr>
+	<td style="text-align: center;<?php echo $style?>"><?php echo $stt?></td>
+        <td style="<?php echo $style?>"><?php echo $data['REQUEST_DATE']!=''?date('H:i:s d/m/Y',strtotime($data['REQUEST_DATE'])):'Chưa xác định'?></td>
+        <td style="<?php echo $style?>"><?php echo $data['RESTORE_DATE']!=''?date('H:i:s d/m/Y',strtotime($data['RESTORE_DATE'])):'Chưa xác định'?></td>
+        <td style="<?php echo $style?>"><?php echo $data['RESTORED']==1?'Đã hoàn thành':'Chưa hoàn thành';?></td>
+        
+        <td style="text-align: right; width: 50px;<?php echo $style?>"><a id="a-detail_<?php echo $data["ID"]?>" href="javascript:viewdetail('<?php echo $data["ID"]?>');">Chi tiết</a></td>
+	</tr>
+        <tr style="display: none" id="tr_dis_<?php echo $data["ID"]?>">
+            <td colspan="5" style="<?php echo $style?>">
+                 <div style="border: 1px solid #CCCCCC; border-top:none; display: none;margin: 0 58px 0 28px;" id="viewDetail_<?php echo $data["ID"]?>"></div>
+            </td>
+        </tr>
+	<?php $stt++;}?>
+        <tfoot>
+		<tr>
+			<td colspan="7">
+					<div class="pagination">
+						<div class="limit">Hiển thị #
+							<select name="limit" id="limit" class="inputbox" size="1" onchange="selectLimit();" style="width:60px;">
+                                                                <option value="10" <?php echo $this->limit==10?'selected="selected"':''?>>10</option>
+								<option value="20" <?php echo $this->limit==20?'selected="selected"':''?>>20</option>
+								<option value="30" <?php echo $this->limit==30?'selected="selected"':''?>>30</option>
+								<option value="40" <?php echo $this->limit==40?'selected="selected"':''?>>40</option>
+								<option value="50" <?php echo $this->limit==50?'selected="selected"':''?>>50</option>
+								<option value="100" <?php echo $this->limit==100?'selected="selected"':''?>>100</option>
+							</select>
+							
+						</div>
+						<div style="float:right"><?php echo $this->showPage; ?></div>
+					</div>
+			</td>
+		</tr>
+	</tfoot>
+</tbody>
+</table>
+    
+    <input hidden="hidden" name="page" value="<?php echo $this->page;?>"/>
+   
+</form>
+<script>
+   
+    function selectLimit(){
+        //alert(document.getElementById('limit').value);
+        document.frm.action='/qtht/phuchoi/list';
+        document.frm.limit.value= document.getElementById('limit').value;
+        document.frm.method="post";
+        document.frm.submit();
+    }
+    function search(){
+        document.frm.action='/qtht/phuchoi/list';
+        document.frm.fromsearch.value= document.getElementById('fromsearch').value;;
+        document.frm.tosearch.value= document.getElementById('tosearch').value;;
+        document.frm.method="post";
+        document.frm.submit();
+    }
+    function clearInput(){
+        document.getElementById('fromsearch').value = '';
+        document.getElementById('tosearch').value = '';
+    }
+     function viewdetail(id){
+        var a = document.getElementById('viewDetail_'+id);
+        var b = document.getElementById('a-detail_'+id);
+        var c = document.getElementById('tr_dis_'+id);
+        if(a.style.display =='none'){
+            b.text = 'Đóng';
+            c.style.display = '';
+            a.innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+            loadDivFromUrl('viewDetail_'+id,'/qtht/phuchoi/viewphuchoi?id='+id,1);
+        }else{
+            b.text = 'Chi tiết';
+            a.style.display = 'none';
+            c.style.display = 'none';
+        }
+        
+       
+    }
+    function AddNewButtonClick()
+    {
+        window.location='/qtht/phuchoi/add'
+        
+    }
+</script>

@@ -1,0 +1,151 @@
+<?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'qtht/models/CoquanModel.php'; 
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'qtht/models/sovanbanModel.php'
+?>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<form name=frm action="/report/vanbandi/reportview" method="POST" target="reportview">
+<div class=clr></div>
+<div>
+<label><b>Ngày nhận:</b></label>
+<?=QLVBDHCommon::calendar($this->fromdate,"fromdate","fromdate") ?>
+>>
+<?=QLVBDHCommon::calendar($this->todate,"todate","todate") ?>
+</div>
+<div class=clr></div>
+<div>
+<div>
+<label><b>Tháng:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/1')">1
+<?php 
+$year = QLVBDHCommon::getYear();
+$d = strtotime($year."-3-1") ;
+$d = $d - 86400;
+$str_cuoi2 =date('d/m',$d); 
+ ?>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/2','<?php echo $str_cuoi2 ?>')" >2
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/3','31/3')">3
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/4','30/4')" >4
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/5','31/5')">5
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/6','30/6')">6
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7','31/7')" >7
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/8','31/8')" >8
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/9','30/9')">9
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10','31/10')">10
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/11','30/11')">11
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/12','31/12')">12
+</div>
+<div class=clr></div>
+<div>
+<label><b>Quí:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/3')">I
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/4','30/6')">II
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7','30/9')">III
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10','31/12')">IV
+</div>
+<div class=clr></div>
+<div>
+<label><b>Năm:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/12')">
+</div>
+<div class=clr></div>
+<div>
+<label><b>Văn bản liên thông:</b></label>
+<input type="checkbox" name="IS_LIENTHONG" value="1" />
+</div>
+</div>
+<div class=clr></div>
+<div>
+   <label><b>Chọn kiểu xuất:</b></label>
+   <input type="radio" name='xuat' value=2 > Nằm dọc
+   <input type="radio" name='xuat' value=1 checked> Nằm ngang
+</div>
+
+<div class=clr></div>
+<div>
+   <label><b>Tùy biến các cột:</b></label>
+   
+   <input type="checkbox" name="ngaybh" value="1" <?=$this->ngaybh>0?"checked":""?> checked> Ngày ban hành
+   <input type="checkbox" name="sodi" value="1" <?=$this->sodi>0?"checked":""?> checked> Số đi
+   <input type="checkbox" name="sokyhieu" value="1" <?=$this->sokyhieu>0?"checked":""?> checked> Số ký hiệu
+   <input type="checkbox" name="trichyeund" value="1" <?=$this->trichyeund>0?"checked":""?> checked> Trích yếu nội dung
+   <input type="checkbox" name="soban" value="1" <?=$this->soban>0?"checked":""?> checked> Số bản   
+</div>
+<div class=clr></div>
+<div>
+   <label><b></b></label>    
+   <input type="checkbox" name="luuhoso" value="1" <?=$this->luuhoso>0?"checked":""?> checked> Người ký
+   <input type="checkbox" name="nguoinbl" value="1" <?=$this->nguoinbl>0?"checked":""?> checked>Người nhận bản lưu 
+    <input type="checkbox"  name="noinhan" value="1" <?=$this->noinhan>0?"checked":""?>checked> Nơi nhận   
+</div>
+<div class=clr></div>
+<div>
+<label><b>Sổ văn bản:</b></label>
+<select name="sel_sovanban" id="sel_tinhtrang" >
+	<option value="0">-- Chọn sổ văn bản --</option>
+	<?php sovanbanModel::toComboNameWithDep(1);?>
+</select>
+</div>
+<div class=clr></div>
+<input type=hidden id=h_isexel name=h_isexel value=0>
+<div style="display: none">
+<label><b>Loại văn bản:</b></label>
+<select name="sel_lvb[]" id="sel_lvb" multiple="multiple" size=3>
+	<option value=0>[Tất cả loại văn bản]</option>
+	<?php LoaiVanBanModel::toComboName(); ?>
+</select>
+</div>	
+<div>
+<label><b>Loại văn bản:</b></label>
+<select name="sel_lvb" id="sel_lvb">
+	<option value="0">--- Tất cả loại văn bản ---</option>
+	<?php LoaiVanBanModel::toComboName(); ?>
+</select>
+</div>	
+<div class=clr></div>
+<div>
+    <label><b>Sắp xếp:</b></label>
+    <select name=SORTTYPE onchange="document.frm.submit();">
+        <option value="ASC">Tăng dần theo người ký</option>
+        <option value="DESC" >Giảm dần theo người ký</option>
+    </select>
+</div>
+<div class=clr></div>
+<input type="button" title="Hiện thị báo cáo" value="Hiển thị" onclick="
+document.frm.target='reportview';
+document.frm.h_isexel.value = 0;
+document.frm.action='/report/vanbandi/reportview';
+document.frm.submit();
+return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
+
+<input type="button" title="Xuất excel theo CVTLT" value="Xuất Excel theo CVTLT" onclick="
+document.frm.target='reportview';
+document.frm.h_isexel.value = 1;
+document.frm.action='/report/vanbandi/reportviewexcelcvtlt/h_isexel/1';
+document.frm.submit();
+return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
+
+<input type="button" title="In báo cáo" value="In báo cáo" onclick="
+document.frm.target='_blank';
+document.frm.h_isexel.value = 0;
+document.frm.action = '/report/vanbandi/reportview/is_in/1';
+document.frm.submit();
+return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
+
+<input type="button" title="In báo cáo" value="In báo cáo theo CVTLT" onclick="
+document.frm.target='_blank';
+document.frm.h_isexel.value = 0;
+document.frm.action = '/report/vanbandi/reportviewcvtlt/is_in/1';
+document.frm.submit();
+return false;" style="background: url(/images/hscv-input-bg.png) repeat-x; display: none" >
+</form>
+<iframe style="overflow-x:visible" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no 
+ id="reportview" name="reportview">
+</iframe>
+<script>
+var arr_user = new Array();
+function setvalueDateD(value_from,value_to){
+	document.frm.fromdate.value = value_from;
+	document.frm.todate.value = value_to;
+}
+</script>

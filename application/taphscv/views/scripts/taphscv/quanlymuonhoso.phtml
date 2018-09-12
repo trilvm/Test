@@ -1,0 +1,24 @@
+<table>
+    <tr>
+        <th>Stt</th>
+        <th>Người mượn</th>
+        <th>Hồ sơ mượn</th>
+        <th>Ngày mượn</th>
+        <th>Cho phép</th>
+    </tr>
+    <?php
+    $stt=1;
+    foreach ($this->data_muonhs as $value) {
+      ?>
+    <tr>
+        <td><?=$stt  ?></td>
+        <td><?=$value['USERNAME'] ?></td>
+        <td><?=$value['TEN'] ?></td>
+        <td><?=$value['NGAYMUON'] ?></td>
+        <td><a href="/taphscv/taphscv/xacnhanmuonhoso/ID_MUON/<?=$value['ID'] ?>">Đồng ý </a></td>
+    </tr>
+    <?php
+    $stt++;
+}
+    ?>
+</table>

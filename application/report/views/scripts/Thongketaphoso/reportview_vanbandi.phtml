@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+
+</style>
+</head>
+<body style="background-color:transparent">
+<table  width=100%>
+<tr >
+  <td align=center ><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></td>
+
+  <td align=center>CỘNG HÒA XÃ HỘI CHỦ
+  NGHĨA VIỆT NAM</td>
+ </tr>
+ <tr >
+  <td align=center ><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+  <td align=center style="text-decoration:underline;text-underline-style:single;">Ðộc lập - Tự do - Hạnh phúc</td>
+ </tr>
+ <tr >
+
+ 
+  <td ></td>
+  <td align=right style="font-style:italic"><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+ </tr>
+ <tr >
+  <td></td>
+ </tr>
+ <tr >
+
+  <td  ></td>
+  <td ></td>
+ </tr>
+ <tr >
+  <td ></td>
+  <td  ></td>
+ </tr>
+</table>
+<p align=center><b>BÁO CÁO SỐ LƯỢNG VĂN BẢN ĐI TRONG TẬP HỒ SƠ </b> <br>
+<?php echo $this->thu;?> năm <?=QLVBDHCommon::getYear();?></p>
+<table border="1" style="border: 1px solid black; border-collapse: collapse;">
+ <thead bgcolor=gray>
+ 	<tr>
+	    <th nowrap rowspan=2>Stt</th>
+	    
+ 		<th style="border-color: black;" nowrap >Số đi</th>
+         
+	
+ 		<th style="border-color: black;" nowrap >Ngày tháng</th>
+			
+
+		<th style="border-color: black;" nowrap >Số ký hiệu</th>
+         
+		
+ 		<th style="border-color: black;" nowrap >Trích yếu nội dung</th>
+       
+		
+ 		<th style="border-color: black;" nowrap >Số bản</th>
+         
+		
+		
+ 		<th style="border-color: black;" nowrap >Nơi nhận</th>
+        
+		
+		<th style="border-color: black;">Người ký</th>
+        
+		
+		<th style="border-color: black;"nowrap >Người nhận bản lưu</th>        
+		
+ 	</tr>
+ 	
+ </thead>
+ <tbody>
+<?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'qtht/models/CoquanModel.php'; 
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'qtht/models/UsersModel.php';
+require_once 'report/models/VanbandireportModel.php';
+?>
+<?php  $stt=1; 
+$num = count($this->datavbdi);
+
+foreach($this->datavbdi as $row){ 
+ ?>
+	<tr>
+
+	<td nowrap valign=top ><?=$stt?></td>
+	
+ 	<td style="border-color: black;" align="center" nowrap valign=top ><?php echo $row["SODI"]?></td>
+   
+
+ 	<td style="border-color: black;" width="15%" nowrap align="center"  valign=top ><?php echo QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></td>
+   
+
+   
+	<td style="border-color: black;"  width="15%" nowrap valign=top align="center"  ><?php echo $row["SOKYHIEU"]?></td>
+     
+   
+ 	<td style="border-color: black;" width="40%"  valign=top ><?php echo $row["TRICHYEU"] ?></td>
+     
+ 	 <td style="border-color: black;" align="center" nowrap valign=top ><?php echo $row["SOBAN"] ?></td>
+     
+      <td style="border-color: black;" width="15%" valign=top ><?php echo $row["NOIDEN"] ?></td>
+    
+	<td style="border-color: black;" width="25%" nowrap valign=top ><?php echo UsersModel::getEmloyeeNameByIdUser($row["NGUOIKY"]) ?></td>
+    
+	<td style="border-color: black;" width="25%" nowrap valign=top ><?php  	
+			echo VanbandireportModel::getNguoinhanFromVbandi($row["ID_VBDI"]);	
+		 ?> </td>
+	</tr> 
+ 	
+ <?php $stt++ ; } ?>
+ </tbody>
+ <tfoot>
+ </tfoot>
+</table>
+</body>
+<script>print();</script>
+</html>

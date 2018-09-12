@@ -1,0 +1,316 @@
+<?=QLVBDHCommon::useDlgConfirm()?>
+<form name=frm method=post>
+<fieldset>
+<legend>Quy trình</legend>
+<table class="adminlist">
+	<thead>
+	<tr>
+    	<th nowrap>#</th>
+        <th nowrap>
+        	<?php echo QLVBDHButton::EnableCheckAll("DELPR") ?>
+        </th>
+        <th width="100%" colspan="3">Quy trình</th>
+        <th nowrap>Sử dụng</th>
+    </tr>
+    </thead>
+    <tfoot>
+		<tr>
+			<td colspan="6">
+				<del class="container">
+					<span class=error>Chú ý: quy trình hiện tại có màu vàng</span>
+				</del>
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+foreach($this->process as $rowpr){
+	$stt++;
+	$i = 1 - $i;
+	$classname = "row$i";
+	if($this->idp==$rowpr->ID_P)$classname="row2";
+?>
+    <tr class="<?=$classname?>">
+    	<td nowrap><?php echo $stt; ?></td>
+        <td nowrap>
+        	<input type=checkbox name="DELPR[]" value='<?php echo $rowpr->ID_P ?>'>
+        </td>
+		<td nowrap><a href="#" onclick="Selectpr('<?php echo $rowpr->ID_P ?>');">Chọn</a></td>
+        <td width="100%">
+        	<a href="/wf/Process/Input/id/<?php echo $rowpr->ID_P ?>">
+				<?php echo htmlspecialchars($rowpr->NAME) ?>
+			</a>
+		</td>
+		<td nowrap>
+			<a href="/wf/process/Input/id/<?=$rowpr->ID_P?>/code/copy">Sao chép</a>
+		</td>
+        <td nowrap><?php echo $rowpr->ACTIVE==1?"Có":"Không"; ?></td>
+    </tr>
+<?php
+}
+?>
+	</tbody>
+</table>
+</fieldset>
+<fieldset>
+<legend>Trạng thái</legend>
+<table class=adminlist>
+	<thead>
+		<tr>
+	    	<th nowrap>#</th>
+	        <th nowrap>
+	        	<?php echo QLVBDHButton::EnableCheckAll("DELA") ?>
+	        </th>
+	        <th width="100%">Trạng thái</th>
+	        <th nowrap>
+	        	Quyền truy cập
+	        </th>
+	        <th nowrap>Sử dụng</th>
+	    </tr>
+    </thead>
+    <tfoot>
+		<tr>
+			<td colspan="5">
+				<del class="container">
+					<span class=error>Chú ý: Trạng thái chưa phân quyền có màu vàng</span>
+				</del>
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+foreach($this->activity as $rowa){
+	$stt++;
+	$i = 1 - $i;
+	$classname = "row$i";
+	if($rowa["ACCOUNT"]==0)$classname="row2";
+?>
+    <tr class="<?=$classname?>">
+    	<td nowrap><?php echo $stt; ?></td>
+        <td nowrap>
+        	<input type=checkbox name="DELA[]" value='<?php echo $rowa["ID_A"] ?>'>
+        </td>
+        <td width="100%">
+        	<a href="/wf/Activity/Input/id/<?php echo $rowa["ID_A"] ?>/idp/<?php echo $this->idp; ?>">
+				<?php echo htmlspecialchars($rowa["NAME"]) ?>
+			</a>
+		</td>
+		<td nowrap>
+			<a href="#" onclick="ActivityAccessClick('<?php echo $rowa["ID_A"] ?>');">Quyền truy cập</a>
+		</td>
+        <td nowrap><?php echo $rowa["ACTIVE"]==1?"Có":"Không"; ?></td>
+    </tr>
+<?php
+}
+?>
+	</tbody>
+</table>
+</fieldset>
+<fieldset>
+<legend>Sơ đồ quy trình 
+<?php
+$actid = ResourceUserModel::getActionByUrl('wf','transition','indexnew');
+if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+?>
+<a href='#' onclick='
+		//document.getElementById("transitionlist").style.display="none";
+		document.getElementById("transitionimage").style.display="";
+		document.getElementById("indexnew").src="/wf/transition/indexnew/idp/<?=$this->idp?>/idc/<?=$this->idc?>";
+		return false;
+	'>(Xem sơ đồ trực quan)</a>
+<?php
+}
+?>
+</legend>
+<div style="width: 100%;overflow: auto;display:none;" id=transitionimage>
+	<iframe id=indexnew src="about:blank" width=99% height=500></iframe>
+</div>
+<div style="width: 100%;overflow: auto;" id=transitionlist>
+<table class=adminlist >
+	<thead>
+		<tr>
+	    	<th nowrap>#</th>
+	    	<th nowrap><?php echo QLVBDHButton::EnableCheckAll("DELT") ?></th>
+	        <th >Trạng thái bắt đầu</th>
+	        <th >Hành động</th>
+	        <th>Tên hiển thị</th>
+	        <th >Hạn xử lý</th>
+	        <th >Kết thúc tại</th>
+	        <th >Trạng thái kết thúc</th>
+			<th>Thứ tự</th>
+	    </tr>
+    </thead>
+    <tfoot>
+		<tr>
+			<td colspan="9">
+				<del class="container">
+					
+				</del>
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+foreach($this->transition as $rowtr){
+	$stt++;
+	$i = 1 - $i;
+	$classname = "row$i";
+?>
+    <tr class="<?=$classname?>" id="RT_<?=$rowtr["ID_T"]?>">
+    	<td nowrap><?php echo $stt; ?></td>
+        <td nowrap>
+        	<input type=checkbox name="DELT[]" value='<?php echo $rowtr["ID_T"] ?>'>
+        </td>
+        <td >
+        	<input type="hidden" name="ID_T[]" value="<?php echo $rowtr["ID_T"] ?>">
+        	<select name=ID_A_BEGIN[] style="width:130px" id=ABNAME_T_<?=$rowtr["ID_T"]?>>
+        	<?php echo ActivityModel::ToCombo($this->activity,$rowtr["ID_A_BEGIN"]) ?>
+        	</select><br>
+        	<input type="radio" name="ISFIRST" value="<?php echo $rowtr["ID_T"] ?>" <?php echo $rowtr["ISFIRST"]==1?"checked":"" ?>>Bắt đầu
+        	<input type="checkbox" name="ISLAST[]" value="<?php echo $rowtr["ID_T"] ?>" <?php echo $rowtr["ISLAST"]==1?"checked":"" ?>>Kết thúc<br>
+			<input type="checkbox" name="BEGINDEADLINE[]" value="<?php echo $rowtr["ID_T"] ?>" <?php echo $rowtr["BEGINDEADLINE"]==1?"checked":"" ?>>Bắt đầu tính hạn
+			<input type="checkbox" name="ENDDEADLINE[]" value="<?php echo $rowtr["ID_T"] ?>" <?php echo $rowtr["ENDDEADLINE"]==1?"checked":"" ?>>Kết thúc tính hạn
+        </td>
+        <td >
+        	<select name=ID_TP[] style="width:130px" id=ID_TP_T_<?=$rowtr["ID_T"]?>>
+        	<?php echo TransitionPoolModel::ToCombo($this->transitionpool,$rowtr["ID_TP"]) ?>
+        	</select>
+        </td>
+        <td >
+        	<input type=text size=30 name=NAME[] value="<?=$rowtr["NAME"]?>" style="width:130px"  id=NAME_T_<?=$rowtr["ID_T"]?>><br>
+			Vào sổ <input type=checkbox name="IS_VAOSO[]" value="<?=$rowtr["ID_T"]?>" <?=$rowtr['IS_VAOSO']==1?"checked":""?>>
+        </td>
+        <td >
+        	<input type=text size=2 name=HANXULY[] value="<?=$rowtr["HANXULY"]?>" id=HANXULY_T_<?=$rowtr["ID_T"]?>>
+        </td>
+        <td >
+        	<select name=END_AT[] style="width:130px" id=END_AT_T_<?=$rowtr["ID_T"]?>>
+        	<option value=0>Lần chuyển tiếp theo</option>
+        	<?php echo TransitionModel::ToComboEnd($this->transition,$rowtr["END_AT"]) ?>
+        	</select>
+        </td>
+        <td >
+        	<select name=ID_A_END[] style="width:130px" id=AENAME_T_<?=$rowtr["ID_T"]?>>
+        	<?php echo ActivityModel::ToCombo($this->activity,$rowtr["ID_A_END"]) ?>
+        	</select>
+        </td>
+		<td>
+			<input type="text" name="ORDERS[]" value="<?= $rowtr['ORDERS']?>" size="3" />
+		</td>
+    </tr>
+<?php
+}
+$stt="*";
+$classname = "row$i";
+?>
+	    <tr class="<?=$classname?>">
+	    	<td nowrap><?php echo ++$stt; ?></td>
+	        <td nowrap>
+	        	&nbsp;
+	        </td>
+	        <td >
+	        	<input type="hidden" name="ID_T[]" value="0">
+	        	<select name=ID_A_BEGIN[] style="width:130px">
+	        	<option value="-1"></option>
+	        	<?php echo ActivityModel::ToCombo($this->activity,-1) ?>
+	        	</select><br>
+	        	<input type="radio" name="ISFIRST" value="-1">Bắt đầu
+	        	<input type="checkbox" name="ISLAST[]" value="-1">Kết thúc<br>
+	        	<input type="checkbox" name="BEGINDEADLINE[]" value="-1">Bắt đầu tính hạn
+	        	<input type="checkbox" name="ENDDEADLINE[]" value="-1">Kết thúc tính hạn
+	        </td>
+	        <td width="25%">
+	        	<select name=ID_TP[] style="width:130px" style="width:130px">
+	        	<option value="-1"></option>
+	        	<?php echo TransitionPoolModel::ToCombo($this->transitionpool,-1) ?>
+	        	</select>
+	        </td>
+	        <td >
+	        	<input type=text size=30 name=NAME[] style="width:130px"><br>
+				Vào sổ <input type=checkbox name="IS_VAOSO[]" value="<?=$rowtr["ID_T"]?>" <?=$rowtr['IS_VAOSO']==1?"checked":""?>>
+	        </td>
+	        <td nowrap>
+        		<input type=text size=2 name=HANXULY]>
+       	 	</td>
+       	 	<td nowrap>
+        		<select name=END_AT[] style="width:130px">
+        		<option value=0>Lần chuyển tiếp theo</option>
+	        	<?php echo TransitionModel::ToComboEnd($this->transition,$rowtr["END_AT"]) ?>
+	        	</select>
+       	 	</td>
+	        <td >
+	        	<select name=ID_A_END[] style="width:130px">
+	        	<option value="-1"></option>
+	        	<?php echo ActivityModel::ToCombo($this->activity,-1) ?>
+	        	</select>
+	        </td>
+	        <td><input type="text" name="ORDERS[]" value="<?= $rowtr['ORDERS']?>" size="3" /></td>
+	    </tr>
+    </tbody>
+</table>
+</div>
+</fieldset>
+<input type=hidden name=idp value="<?php echo $this->idp; ?>">
+<input type=hidden name=idc value="<?php echo $this->idc; ?>">
+</form>
+<script>
+function DeleteprButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DELPR[]","Phải chọn ít nhất một quy trình để xóa.");
+	if(mess){
+		var func_ok = "document.frm.action = '/wf/Process/Delete';document.frm.submit();";
+		var func_cancel = "";
+		displayConfirm("Lưu ý: xóa qui trình vừa chọn có thể ảnh hưởng đến qui trình luân chuyển công việc trong hệ thống, bạn có đồng ý xóa ?","","",func_ok,func_cancel);
+		
+	}else{
+		alert("Phải chọn ít nhất một quy trình để xóa.");
+	}
+}
+function DeletetrButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DELT[]","Phải chọn ít nhất một dòng luân chuyển để xóa.");
+	if(mess){
+		var func_ok = "document.frm.action = '/wf/Transition/Delete';document.frm.submit();";
+		var func_cancel = "";
+		displayConfirm("Lưu ý: xóa dòng luân chuyển vừa chọn có thể ảnh hưởng đến qui trình luân chuyển công việc trong hệ thống, bạn có đồng ý xóa ?","","",func_ok,func_cancel);
+		
+	}else{
+		alert("Phải chọn ít nhất một dòng luân chuyển để xóa.");
+	}
+}
+function DeleteaButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DELA[]","<?=ERR11005003?>");
+	if(mess){
+		var func_ok = "document.frm.action = '/wf/Activity/Delete';document.frm.submit();";
+		var func_cancel = "";
+		displayConfirm("Lưu ý: xóa trạng thái vừa chọn có thể ảnh hưởng đến qui trình luân chuyển công việc trong hệ thống, bạn có đồng ý xóa ?","","",func_ok,func_cancel);
+	
+	}else{
+		alert("<?=ERR11005003?>");
+	}
+}
+function Selectpr(id){
+	document.frm.action = "/wf/Workflow/index";
+	document.frm.idp.value=id;
+	document.frm.submit();
+}
+function AddaButtonClick(){
+	document.frm.action = "/wf/Activity/Input";
+	document.frm.submit();
+}
+function UpdatetrButtonClick(){
+	document.frm.action = "/wf/Transition/save";
+	document.frm.submit();
+}
+function ActivityAccessClick(ida){
+	document.frm.action = "/wf/ActivityAccess/index/ida/"+ida;
+	document.frm.submit();
+}
+</script>

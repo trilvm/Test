@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name=frm method="post" action="/taphscv/phanquyen/save" enctype="multipart/form-data" >
+<div class=clr></div>
+<fieldset style="width:30%;float:left">    
+	<legend>
+            Quyền truy cập - Phòng
+        </legend>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>#</th>
+				<th nowrap>Phòng ban</th>
+				<th nowrap>xem</th>
+				<th nowrap>cập nhật</th>
+				<th nowrap>phân quyền</th>
+			</tr>
+		</thead>
+		<tfoot><tr><td colspan=5></td></tr></tfoot>
+		<tbody>
+<?php
+	$i=0;
+	$stt = 1;
+	foreach($this->dep as $rowd){
+?>
+			<tr class="row<?=$i?>">
+				<th nowrap><?=$stt;?></th>
+				<th nowrap><?=htmlspecialchars($rowd['NAME'])?></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_DEP_XEM[]" value="<?=$rowd['ID_DEP']?>" <?=$rowd['QUYENXEM']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_DEP_THEMMOI[]" value="<?=$rowd['ID_DEP']?>" <?=$rowd['QUYENTHEMMOI']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_DEP_PHANQUYEN[]" value="<?=$rowd['ID_DEP']?>" <?=$rowd['QUYENPHANQUYEN']==1?"checked":""?>></th>
+			</tr>
+<?php
+		$stt++;
+		$i = (-1+$i)*-1;
+	}
+?>
+		</tbody>
+	</table>
+</fieldset>
+<div class=clr></div>
+<fieldset style="width:30%;float:left">
+	<legend>Quyền truy cập - Nhóm</legend>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>#</th>
+				<th nowrap>Nhóm</th>
+				<th nowrap>xem</th>
+				<th nowrap>cập nhật</th>
+				<th nowrap>phân quyền</th>
+			</tr>
+		</thead>
+		<tfoot><tr><td colspan=5></td></tr></tfoot>
+		<tbody>
+<?php
+	$i=0;
+	$stt = 1;
+	foreach($this->group as $rowg){
+?>
+			<tr class="row<?=$i?>">
+				<th nowrap><?=$stt;?></th>
+				<th nowrap><?=htmlspecialchars($rowg['NAME'])?></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_GROUP_XEM[]" value="<?=$rowg['ID_G']?>" <?=$rowg['QUYENXEM']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_GROUP_THEMMOI[]" value="<?=$rowg['ID_G']?>" <?=$rowg['QUYENTHEMMOI']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_GROUP_PHANQUYEN[]" value="<?=$rowg['ID_G']?>" <?=$rowg['QUYENPHANQUYEN']==1?"checked":""?>></th>
+			</tr>
+<?php
+		$stt++;
+		$i = (-1+$i)*-1;
+	}
+?>
+		</tbody>
+	</table>
+</fieldset>
+<div class=clr></div>
+<fieldset style="width:30%;float:left">
+	<legend>Quyền truy cập - Nhân viên</legend>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>#</th>
+				<th nowrap>Nhân viên</th>
+				<th nowrap>xem</th>
+				<th nowrap>cập nhật</th>
+				<th nowrap>phân quyền</th>
+			</tr>
+		</thead>
+		<tfoot><tr><td colspan=5></td></tr></tfoot>
+		<tbody>
+<?php
+	$i=0;
+	$stt = 1;
+	foreach($this->user as $rowu){
+?>
+			<tr class="row<?=$i?>">
+				<th nowrap><?=$stt;?></th>
+				<th nowrap><?=htmlspecialchars($rowu['NAME'])?></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_USER_XEM[]" value="<?=$rowu['ID_U']?>" <?=$rowu['QUYENXEM']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_USER_THEMMOI[]" value="<?=$rowu['ID_U']?>" <?=$rowu['QUYENTHEMMOI']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_USER_PHANQUYEN[]" value="<?=$rowu['ID_U']?>" <?=$rowu['QUYENPHANQUYEN']==1?"checked":""?>></th>
+			</tr>
+<?php
+		$stt++;
+		$i = (-1+$i)*-1;
+	}
+?>
+		</tbody>
+	</table>
+</fieldset>
+<input type=hidden name=ID_THUMUC value="<?php echo $this->data->ID_THUMUC; ?>"/>
+<input type=hidden name=ISCOQUAN value="<?php echo $this->ISCOQUAN; ?>"/>
+<input type=hidden name=idtaphoso value="<?php echo $this->idtaphoso; ?>" />
+</form>
+<script>
+	function SaveButtonClick(){
+		
+			document.frm.submit();
+		
+	}
+	function BackButtonClick(){
+		document.frm.action = "/taphscv/taphscv/list";
+		document.frm.submit();
+	}
+</script>
+<p id=lasttext></p>
+
+</body>
+</html>

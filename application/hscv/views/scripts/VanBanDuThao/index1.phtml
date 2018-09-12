@@ -1,0 +1,372 @@
+<?php /**
+   * @author trunglv 
+   * @version 1.0
+   * Lop View hiện thị trang danh sách các văn bản dự thảo
+   */ ?>
+<?php require_once 'qtht/models/usersModel.php';
+ require_once 'hscv/models/phienbanduthaoModel.php';
+ require_once 'hscv/models/phienbanfileModel.php';
+ 
+ global $auth;
+?>
+<style type="text/css">
+table.adminlist1 thead th {
+    background: none repeat scroll 0 0 #F0F0F0;
+    border-color: -moz-use-text-color -moz-use-text-color #999999 #FFFFFF;
+    border-style: none none solid solid;
+    border-width: 1px 1px 1px 1px;
+    border: 1px solid #ccc;
+    color: #000000;
+    text-align: left;
+}
+table.adminlist1 tbody tr td {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: -moz-use-text-color -moz-use-text-color #999999 #FFFFFF;
+    border-style: none none solid solid;
+    border-width: 1px 1px 1px 1px;
+    border: 1px solid #ccc;
+    color: #000000;
+    text-align: left;
+}
+table.adminlist1 tfoot {
+    background: none repeat scroll 0 0 #F0F0F0;
+    border-color: -moz-use-text-color -moz-use-text-color #999999 #FFFFFF;
+    border-style: none none solid solid;
+    border-width: 1px 1px 1px 1px;
+    border: 1px solid #ccc;
+    color: #000000;
+    text-align: left;
+}
+</style>
+<table class="adminlist1">
+<thead>
+<tr>
+    <th nowrap colspan=6><input type="hidden" name="is_congviec" value="<?=$this->is_congviec?>"/>
+<?php 
+if($this->isCapnhat == 1){ ?>
+<a href="javascript:;" onclick="
+		document.getElementById('addVanBanDuThaoFrm<?php echo $this->idHSCV ?>').src='/hscv/vanbanduthao/input?isNoHSCV=<?php echo $this->isNoHSCV?>&idHSCV=<?php echo $this->idHSCV?>&isnew=1&iddivParent=<?php echo $this->iddivParent ?>&idDuthao=0&year=<?php echo $this->year ?><?=$this->is_congviec==1?"&is_congviec=$this->is_congviec":''?>';
+		//alert(document.getElementById('addVanBanDuThaoFrm<?php echo $this->idHSCV ?>').src);
+		document.getElementById('addVanBanDuThaoFrm<?php echo $this->idHSCV ?>').style.display='';
+"><img src="/images/icon_add.gif" border="0">Thêm mới dự thảo</a>
+<a href="javascript:;" onclick="
+	//var oData = new Object();
+	//sendDataToServer(oData,'/hscv/vanbanduthao/delete?isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&idDuthao=<?php echo  $item->ID_DUTHAO ?>&year=<?php echo $this->year ?>&iddivParent=<?php echo $this->iddivParent ?>');
+	var ln = 0;
+	var arr = document.getElementsByName('DELidvanbanduthao<?php echo $this->idHSCV ?>[]');	
+	for(var i = 0 ; i < arr.length ;i++ ){
+		if(arr[i].checked == true){
+			ln = 1;
+		}
+	}
+	if(ln == 1){
+		if(confirm('<?php echo "Bạn có muốn xóa không"; ?>')){
+			sendDataObjectNameToServer('DELidvanbanduthao<?php echo $this->idHSCV ?>[]','/hscv/vanbanduthao/delete?isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&idDuthao=<?php echo  $item->ID_DUTHAO ?>&year=<?php echo $this->year ?>&iddivParent=<?php echo $this->iddivParent ?>');
+		}
+	}else{
+		document.getElementById('VBDT_ERRNochoiceDelete<?php echo $this->idHSCV ?>').innerHTML = 'Bạn phải chọn ít nhất một dòng để xóa';
+	}
+	"><img src="/images/icon_del.gif" border="0">Xóa dự thảo</a>
+<?php } ?>
+<span class="box_erro_area" id="VBDT_ERRNochoiceDelete<?php echo $this->idHSCV ?>"></span>
+</th>
+
+
+</tr>
+<tr>
+<th nowrap>#</th>
+<?php if($this->isCapnhat == 1){ ?>
+<th nowrap><input type=checkbox name='DELidvanbanduthao<?php echo $this->idHSCV ?>' onclick="SelectAll(this,'DELidvanbanduthao<?php echo $this->idHSCV ?>')"></th>
+<?php } ?>
+<th width="100%">Tên dự thảo</th>
+<th nowrap="nowrap" colspan=2>Người soạn</th>
+</tr>
+</thead>
+<tbody>
+<?php 
+$stt = 1;
+if( count($this->data) == 0){
+	 ?>
+<tr><td colspan=6> Không có văn bản dự thảo liên quan </td> </tr>
+<?php }else{
+foreach ($this->data as $item){ ?>
+<tr>
+ 
+	<td nowrap valign="center"><?php echo $stt?></td>
+	<?php if($this->isCapnhat){ 
+	  $this->a= PhienBanDuThaoModel::gettongphienbanduthao($item->ID_DUTHAO);
+	  $this->b= PhienBanDuThaoModel::gettongphienbanduthaoidu($this->ID_U,$item->ID_DUTHAO); 
+	?>	
+	<?php if(($this->a < 2 && $this->b ==1)||($this->b ==$this->a)){?>
+	<td nowrap valign="center">
+            <input type=checkbox id ='DELidvanbanduthao<?php echo $this->idHSCV ?>_<?=$item->ID_DUTHAO?>' name='DELidvanbanduthao<?php echo $this->idHSCV ?>[]' value='<?=$item->ID_DUTHAO?>'>
+	</td>
+	<?php }else{?>
+	<td nowrap valign="top">	
+	</td>
+	<?php }} ?>
+	<td width="100%"><b>
+	<a href="#" 
+	onclick="
+	<?php if($this->isCapnhat == 1){ ?>
+	loadDivFromUrl('idcapnhatduthao<?php echo $item->ID_DUTHAO ?>','/hscv/vanbanduthao/input?isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&iddivParent=<?php echo $this->iddivParent ?>&idDuthao=<?php echo $item->ID_DUTHAO?>&year=<?php echo $this->year ?>',0) ;
+	<?php } ?>
+	return false;"
+	>
+	<?=$item->TENDUTHAO ?>
+	</a>
+	</b>	
+	<input type=hidden name='duthaovanbanId[]' value="<?php echo $item->ID_DUTHAO ?>">
+	<input type=hidden name='idHSCV' value="<?php echo $this->idHSCV ?>">
+	<div id="idcapnhatduthao<?php echo $item->ID_DUTHAO ?>"></div>
+	<div class="clr"></div>
+	<div id="PhienBanDiv<?php echo $item->ID_DUTHAO ?>">
+		<?php
+			global $auth;
+			$user = $auth->getIdentity();
+			$year = QLVBDHCommon::getYear(); 
+			$dtidDuthao = $item->ID_DUTHAO;
+			$dtidHSCV = $this->idHSCV;
+			$dtmodel = new PhienBanDuThaoModel($year);
+			$dtdata = $dtmodel->getListByIdDuthao($dtidDuthao,$year);
+                        $cnt_phienban = count($dtdata);
+			$dtisXoa = $this->isXoa;
+			$dtID_U=$user->ID_U;
+			$dtisreadonly = $this->isreadonly;
+			if(!$dtisreadonly)
+			     $dtisreadonly = 0;
+			$dtisCapnhat = 1;
+			if(hosocongviecModel::isLuutru($dtidHSCV,$year) == true || $dtisreadonly == 1){
+				$dtisCapnhat = 0;
+				
+				}else{$dtisCapnhat = 1; }
+		?>
+		<table class=adminlist1>
+		<thead>
+		<tr>
+		<th nowrap colspan=6>
+		<?php 
+                    $actid = ResourceUserModel::getActionByUrl("hscv","phienbanduthao","input");
+                    if($dtisCapnhat == 1 && ResourceUserModel::isAcionAlowed($auth->getIdentity()->USERNAME,$actid[0])){ ?>
+		<a href="javascript:;" onclick="
+		document.getElementById('PBDuThao_ThemMoiDiv<?php echo $dtidDuthao ?>').src='/hscv/phienbanduthao/input?is_new=1&idDuthao=<?php echo $dtidDuthao ?>&year=<?php echo $year?>&idPBDuthao=0&idHSCV=<?php echo $this->idHSCV;?>&sophienban=<?=$cnt_phienban+1?>';
+		document.getElementById('PBDuThao_ThemMoiDiv<?php echo $dtidDuthao ?>').style.display='';
+		">[ Thêm mới phiên bản]</a>	
+		
+		<a href="javascript:;" onclick="
+			var ln = 0;
+			var arr = document.getElementsByName('DELidpbdt<?php echo $dtidDuthao ?>[]');
+			for(var i = 0 ; i < arr.length ;i++ ){
+				if(arr[i].checked == true){
+					ln = 1;
+				}
+			}
+			if(ln == 1){
+				if(confirm('<?php echo 'Bạn có muốn xóa không'; ?>')){
+					var oData = new Object();
+					sendDataObjectNameToServer('DELidpbdt<?php echo $dtidDuthao ?>[]','/hscv/phienbanduthao/delete?idDuthao=<?php echo $dtidDuthao ?>&year=<?php echo $year ?>&idHSCV=<?php echo $this->idHSCV;?> ',true);
+				}
+			}else{
+				document.getElementById('PBDT_ERRNochoiceDelete<?php echo $dtidDuthao ?>').innerHTML = 'Bạn phải chọn ít nhất một dòng để xóa';
+			}
+			">[ Xóa phiên bản]</a>
+		<?php } ?>
+		<span class="box_erro_area" id="PBDT_ERRNochoiceDelete<?php echo $dtidDuthao ?>"></span>
+		</th>		
+		</tr>
+		<tr>
+                <th nowrap style="width: 3%; text-align: center;">#</th>
+		<?php if($dtisCapnhat == 1){ ?>
+                <th nowrap style="width: 3%; text-align: center;">
+                    <input type=checkbox name='DELALLidpbdt<?php echo $dtidDuthao ?>' onclick="SelectAll(this,'DELidpbdt<?php echo $dtidDuthao ?>')">
+		</th>
+		<?php } ?>
+		<th width=20%>Phiên bản</th>
+                <!--BEGIN Thangtba thêm zô nè -->
+		<th nowrap>Chọn ban hành</th>
+                <!--END Thangtba thêm zô nè -->
+		<th nowrap width=100%>Tệp đính kèm</th>
+		<th nowrap="nowrap">Người tạo</th>
+		</tr>
+		</thead>
+		<tbody>
+		<?php 
+		$dtstt = 1;
+		//var_dump($dtdata);
+		foreach ($dtdata as $dtitem) {?>
+		<tr>
+			<td><?php echo $dtstt ?></td>
+			<?php if($dtisCapnhat == 1){ ?>
+			<td nowrap>
+				<?php if($dtID_U==$dtitem['ID_U']){?>
+				<input type=checkbox name='DELidpbdt<?php echo $dtidDuthao ?>[]' value='<?=$dtitem["ID_PB_DUTHAO"].','.$dtitem["MASO"]; ?>'>
+				<?php } ?>
+			</td>
+			<?php }?>
+			<td  width=20%>				
+				
+				Phiên bản <?php echo $dtitem["VERSION"]?>	
+				
+				<div class="clr"></div>
+				<iframe   width="100%" style="overflow-x:hidden;overflow-y:hidden;display:none" allowTransparency=true border="0" scrolling="no" frameborder="no"   name="PBDuThao_CapNhatFrame<?php echo $dtitem["ID_PB_DUTHAO"]?>" id="PBDuThao_CapNhatFrame<?php echo $dtitem["ID_PB_DUTHAO"]?>" src="" ></iframe>
+			
+			</td>
+			<!--BEGIN Thangtba thêm zô nè -->
+                        <?php
+                        $actid = ResourceUserModel::getActionByUrl('hscv','vanbanduthao','chonbanhanh');
+                        $isAllow = ResourceUserModel::isAcionAlowed($user->USERNAME,$actid[0]);
+                        ?>
+                        <td align=center style="text-align: center;"><input type='radio' name='chonBH[]' <?=$isAllow==false||$item->TRANGTHAI==2?"DISABLED":""?> onclick='
+					if(this.checked == true)
+					{
+						var submitAjax = new AjaxEngine();
+						var oXmlHttp = submitAjax.createXMLHttp();
+						oXmlHttp.open("post", "/hscv/vanbanduthao/chonbanhanh/idpbdt/<?php echo $dtitem["ID_PB_DUTHAO"]?>/idDuthao/<?php echo $dtidDuthao ?>/value/1" , true);
+						oXmlHttp.onreadystatechange = function () {
+							if (oXmlHttp.readyState == 4) {
+								if (oXmlHttp.status == 200) {
+									//alert(oXmlHttp.responseText);
+								}
+							} else {
+								
+							}
+						};
+						oXmlHttp.send(null);
+					}'
+			value='<?php echo $dtitem["ID_PB_DUTHAO"]?>' <?=$dtitem["CHONBANHANH"]==1?"checked":""?> /></td>
+<!--END Thangtba thêm zô nè -->
+			<td nowrap width=100%>
+	<div id="PhienBanDiv<?php echo $dtitem['ID_PB_DUTHAO']?>_<?php echo $item->ID_DUTHAO ?>">
+		<?php
+			global $auth;
+			$user = $auth->getIdentity();
+			$year = QLVBDHCommon::getYear(); 
+			$dtidDuthao = $item->ID_DUTHAO;
+			$dtidHSCV = $this->idHSCV;
+			$dtmodel1 = new PhienBanFileModel($year);
+			$dtdata1 = $dtmodel1->getListByIdPBDuthao($dtitem["ID_PB_DUTHAO"],$year);
+			$dtisXoa = $this->isXoa;
+			$dtID_U=$user->ID_U;
+			$dtisreadonly = $this->isreadonly;
+			if(!$dtisreadonly)
+			     $dtisreadonly = 0;
+			$dtisCapnhat = 1;
+			if(hosocongviecModel::isLuutru($dtidHSCV,$year) == true || $dtisreadonly == 1){
+				$dtisCapnhat = 0;
+				
+				}else{$dtisCapnhat = 1; }
+		?>
+		<table class=adminlist1>
+		<thead>
+		<tr>
+                    <th nowrap colspan=4 style="text-align: left;">
+		<?php if($dtisCapnhat == 1 && $dtdata1[0]['ID_U']==$auth->getIdentity()->ID_U){ ?>
+		<a href="javascript:;" onclick="
+		document.getElementById('PBDuThao_ThemMoiDiv_file<?php echo $dtitem['ID_PB_DUTHAO']?>').src='/hscv/phienbanfile/input?is_new=1&idDuthao=<?php echo $dtidDuthao ?>&year=<?php echo $year?>&idPBDuthao=<?php echo $dtitem['ID_PB_DUTHAO'] ?>&idHSCV=<?php echo $this->idHSCV ?>';
+		document.getElementById('PBDuThao_ThemMoiDiv_file<?php echo $dtitem['ID_PB_DUTHAO'] ?>').style.display='';
+		">[ Thêm mới tệp]</a>	
+		
+		<a href="javascript:;" onclick="
+			var ln = 0;
+			var arr = document.getElementsByName('DELidpbdt<?php echo $dtitem['ID_PB_DUTHAO']?>_<?php echo $dtidDuthao ?>[]');
+			for(var i = 0 ; i < arr.length ;i++ ){
+				if(arr[i].checked == true){
+					ln = 1;
+				}
+			}
+			if(ln == 1){
+				if(confirm('<?php echo 'Bạn có muốn xóa không'; ?>')){
+					var oData = new Object();
+					sendDataObjectNameToServer('DELidpbdt<?php echo $dtitem['ID_PB_DUTHAO']?>_<?php echo $dtidDuthao ?>[]','/hscv/phienbanfile/delete?idPBDuthao=<?php echo $dtitem['ID_PB_DUTHAO']?>&idDuthao=<?php echo $dtidDuthao?>&year=<?php echo $year ?>&idHSCV=<?php echo $this->idHSCV;?>',true);
+				}
+			}else{
+				document.getElementById('PBF_ERRNochoiceDelete<?php echo $dtitem['ID_PB_DUTHAO']?>_<?php echo $item->ID_DUTHAO ?>').innerHTML = 'Bạn phải chọn ít nhất một dòng để xóa';
+			}
+			">[ Xóa tệp]</a>
+		<?php } ?>
+		<span class="box_erro_area" id="PBF_ERRNochoiceDelete<?php echo $dtitem['ID_PB_DUTHAO']?>_<?php echo $item->ID_DUTHAO ?>"></span>
+		</th>
+		
+		</tr>
+		<tr>
+		<th nowrap width=10%>#</th>
+		<?php if($dtisCapnhat == 1){ ?>
+                <th nowrap width=5% style="text-align: center;">
+			<input type=checkbox name='DELALLidpbdt<?php echo $dtitem["ID_PB_DUTHAO"]?>_<?php echo $dtidDuthao ?>' onclick="SelectAll(this,'DELidpbdt<?php echo $dtitem['ID_PB_DUTHAO']?>_<?php echo $dtidDuthao ?>')">
+		</th>
+		<?php } ?>
+		
+		<th nowrap>Tệp đính kèm</th>
+		
+		</tr>
+		</thead>
+		<tbody>
+		<?php 
+		$dtstt1 = 1;
+		//var_dump($this->data);
+		foreach ($dtdata1 as $dtitem1) {?>
+		<tr>
+			<td><?php echo $dtstt1 ?></td>
+			<?php if($dtisCapnhat == 1){ ?>
+			<td nowrap style="text-align: center;">
+				<?php if($dtID_U==$dtitem1['USER']){?>
+				<input type=checkbox name='DELidpbdt<?php echo $dtitem["ID_PB_DUTHAO"]?>_<?php echo $dtidDuthao ?>[]' value='<?=$dtitem1["ID_PB_DUTHAO"].','.$dtitem1["MASO"]; ?>'>
+				<?php } ?>
+			</td>
+			<?php }?>
+			
+			
+			<td nowrap><a href="/hscv/File/download?year=<?php $year?>&maso=<?php echo $dtitem1['MASO'] ?>"><?php echo $dtitem1["FILENAME"] ?></a></td>
+			
+		
+		<?php $dtstt1++ ;} ?>
+		</tbody>
+		<tfoot>	
+		<tr><th colspan=5>
+		<iframe style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no id="PBDuThao_ThemMoiDiv_file<?php echo $dtitem['ID_PB_DUTHAO'] ?>" name="PBDuThao_ThemMoiDiv_file<?php echo $dtitem['ID_PB_DUTHAO'] ?>"></iframe>
+		</th>	
+		</tr>
+		</table>
+	</div>
+	</td>
+			<td nowrap="nowrap"><?php if($dtitem['ID_U']){echo  UsersModel::getEmloyeeNameByIdUser($dtitem['ID_U']);}else{echo 'Chưa có';} ?></td>
+		</tr>
+		
+		<?php $dtstt++ ;} ?>
+		</tbody>
+		<tfoot>
+		<tr><th colspan=6>
+		<iframe style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no id="PBDuThao_ThemMoiDiv<?php echo $dtidDuthao ?>" name="PBDuThao_ThemMoiDiv<?php echo $dtidDuthao ?>"></iframe>
+		</th>
+                </tfoot>
+		</table>
+	</div>
+	</td>
+	<td nowrap valign="top"><b><?php if($item->NGUOISOAN){echo  UsersModel::getEmloyeeNameByIdUser($item->NGUOISOAN);}else{echo 'Chưa có';} ?></b></td>
+	
+	<?php 
+		if($item->TRANGTHAI!=2) {
+		require_once('hscv/models/hosocongviecModel.php');
+		$auth = Zend_Registry::get('auth');
+		$id_u = $auth->getIdentity()->ID_U;
+		if(hosocongviecModel::isVanthu($id_u)){
+	?>
+        <td nowrap valign="top">
+	<a href="/vbdi/banhanh/input/idduthao/<?=$item->ID_DUTHAO?>/year/<?=$this->year?>/is_noibo/<?=$this->is_noibo?>">Ban hành</a> 
+        </td>
+	<? }}else{?>
+        <td nowrap valign="top">
+	Đã ban hành
+        </td>
+	<?php }?>
+	
+	
+</tr>
+<?php $stt++;}} 
+?>
+</tbody>
+<tfoot>
+	<tr><th align="left" colspan=6><iframe style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no name="addVanBanDuThaoFrm<?php echo $this->idHSCV ?>" id="addVanBanDuThaoFrm<?php echo $this->idHSCV ?>" src="" width="100%"> </iframe></tr>
+</tfoot>
+</table>
+

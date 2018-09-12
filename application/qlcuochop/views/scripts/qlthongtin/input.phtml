@@ -1,0 +1,822 @@
+<?php
+    require_once 'Common/FileDinhKem.php';
+    require_once 'qlcuochop/models/DMdiadiemModel.php';    
+?>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="/js/jx.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script src="/js/validate.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="/styles/general.css" />
+    <script type="text/javascript" src="/js/calendar.js"></script>
+    <link rel="stylesheet" type="text/css" href="/styles/general.css" />
+    <script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+</head>
+<body style="background-color: transparent" onload="hidden(),hidd_sel()">
+<script>
+var idObject_CH= <?php
+$IdObject_Gel = 0;
+if((int)$this->data->ID_CUOCHOP != 0){
+	$IdObject_Gel = $this->data->ID_DINHKEM;
+	$IdObject_Gel_NCH = $this->data->ID_DINHKEM;
+	echo $this->data->ID_DINHKEM;
+}else{
+	$IdObject_Gel = $this->idObject;
+	$IdObject_Gel_NCH = $this->idObjectNCQ;
+	echo $this->idObject;
+}
+?>;
+function hidden(){
+//    if((document.frm.thuky2.value !="")){
+//        document.getElementById("thuky_hid").style.display="none";
+//    }
+}
+function hidd_sel1(){
+            var tk = document.getElementById('THUKY');
+            var element = document.createElement('option');
+            element.value = '0';
+            element.innerHTML = '-- Chọn --';
+            element.selected = "true";
+            tk.appendChild(element);
+        }
+function hidd_sel(){
+        //document.getElementById("thuky_hid").style.display="none";
+        if(document.frm.ten.value == ""){
+            var tk = document.getElementById('THUKY');
+            var element = document.createElement('option');
+            element.value = '0';
+            element.innerHTML = '-- Chọn --';
+            element.selected = "true";
+            tk.appendChild(element);
+
+            var tk1 = document.getElementById('NGUOICHUTRI');
+            var element1 = document.createElement('option');
+            element1.value = '0';
+            element1.innerHTML = '-- Chọn --';
+            element1.selected = "true";
+            tk1.appendChild(element1);
+
+            var tk2 = document.getElementById('LDTHUCHIEN');
+            var element2 = document.createElement('option');
+            element2.value = '0';
+            element2.innerHTML = '-- Chọn --';
+            element2.selected = "true";
+            tk2.appendChild(element2);
+
+            var tk3 = document.getElementById('NGUOITHAMGIA');
+            var element3 = document.createElement('option');
+            element3.value = '0';
+            element3.innerHTML = '-- Chọn --';
+            element3.selected = "true";
+            tk3.appendChild(element3);
+        }
+}
+
+function showDivTrongCoQuan(){
+    var DIVngoaicoquan = document.getElementById("DIVngoaicoquan");
+    DIVngoaicoquan.style.display = "none";
+    var DIVtrongcoquan = document.getElementById("DIVtrongcoquan");
+    DIVtrongcoquan.style.display = "";
+}
+function showDivNgoaiCoQuan(){
+    var DIVtrongcoquan = document.getElementById("DIVtrongcoquan");
+    DIVtrongcoquan.style.display = "none";
+    var DIVngoaicoquan = document.getElementById("DIVngoaicoquan");
+    DIVngoaicoquan.style.display = "";
+}
+var cvNumber = 0;
+var sttCV = 0;
+var arrSTT = new Array();
+    arrSTT[0] = 'STTCV0';
+    
+    function addCongViec()
+    {
+//        Jx.setParameter("is_ajax","1");
+//        Jx.setParameter("varName","idObject");
+//        Jx.success('receiveIdObject');
+//        Jx.request('/qlcuochop/qlthongtin/input','POST');
+        addScript();
+    }
+    function receiveIdObject()
+    {
+        
+    }
+    function loadDivDinhKem(divFileDinhKemId,idObject,year){
+       var content = '';
+        content +='<a onclick=" var ln = 0; var arr = '+"document.getElementsByName('DELidfiledk"+idObject+"[]'); for(var i = 0 ; i < arr.length ;i++ ){ if(arr[i].checked == true){ ln = 1; } } if(ln == 1){ if(confirm('Bạn có muốn xóa không')){ var url='/hscv/File/delete?type=-1&year=&iddiv="+divFileDinhKemId+"&idObject="+idObject+"&isTemp=&from=attachment'; sendDataObjectNameToServer('DELidfiledk"+idObject+"[]',url,false,'"+divFileDinhKemId+"'); } } else { alert('Bạn phải chọn ít nhất một dòng để xóa'); } "+'"return false; " href="#">';
+        content +='<img border="0" src="/images/icon_del.gif">';
+        content +='</a>';
+        content +=' <a onclick="document.getElementById'+"('tftemp"+idObject+"').style.display=''; document.getElementById('tftemp"+idObject+"').src = '/hscv/File/input?type=-1&year="+year+"&idObject="+idObject+"&iddiv="+divFileDinhKemId+"&isTemp=&from=attachment'; "+'return false;" href="#">';
+        content +='<img border="0" alt="Click để đính kèm tệp" src="/images/icon_add.gif">';
+        content +='</a><br>';
+        content +='<iframe id="tftemp'+idObject+'" class="iframeinputfile" scrolling="no" frameborder="no" src="" name="tftemp'+idObject+'" border="0" allowtransparency="true" style="overflow-x:visible;display:none;"></iframe>';
+        document.getElementById(divFileDinhKemId).innerHTML = content;
+        document.getElementById('divROOT').innerHTML = "";
+    }
+
+    function addScript(){
+        
+        cvNumber++;
+        arrSTT[sttCV] = 'STTCV'+cvNumber;
+        sttCV++;
+        
+        /*lan dau tien add cong viec thi xoa dong dau tien*/
+        if(cvNumber==2){
+			if(<?=(int)$this->data->ID_CUOCHOP?> == 0){
+            var list = document.getElementById('listCongViec');
+            var CV0 = document.getElementById('CV0'); 
+            list.removeChild(CV0);
+			}
+        }
+       
+        /* Lấy thẻ xóa của element mẫu và tạo các thuộc tính - Trước khi lấy HTML 24*/
+        var idxoa = document.getElementById('idxoa');
+        idxoa.setAttribute('onclick','removeCongViec("CV'+cvNumber+'","STTCV'+cvNumber+'")');
+        idxoa.setAttribute('id','xoaCV'+cvNumber);
+
+        var OptionCVROOT= document.getElementById('OptionCVROOT');
+        OptionCVROOT.setAttribute('id','OptionCV'+cvNumber);
+        OptionCVROOT.setAttribute('name','NGUOI[]');
+
+        var OptionngayROOT= document.getElementById('DATEROOT');
+        OptionngayROOT.setAttribute('id','DATE'+cvNumber);
+        OptionngayROOT.setAttribute('name','DATE[]');
+
+        var ImageROOT=document.getElementById('IDATEROOT');
+        ImageROOT.setAttribute('id','IDATE'+cvNumber);
+        var onClickCld = "document.getElementById('DATE"+cvNumber+"').focus();var dp_cal_DATE"+cvNumber+" = null;";
+            onClickCld += "dp_cal_DATE"+cvNumber+"  = new Epoch('epoch_popup','popup',document.getElementById('DATE"+cvNumber+"'),false,2011,'d/m/Y');";
+            onClickCld +="dp_cal_DATE"+cvNumber+".show();HasEvent=true;";
+        ImageROOT.setAttribute('onclick',onClickCld);
+		//09
+        var IS_CVOLDROOT = document.getElementById('IS_CVOLDROOT');
+        IS_CVOLDROOT.setAttribute('id','IS_CVOLD'+cvNumber);
+        IS_CVOLDROOT.setAttribute('name','IS_CVOLD[]');
+		
+//	var ID_OBJECT_ROOT = document.getElementById('ID_OBJECT_ROOT');
+//        ID_OBJECT_ROOT.setAttribute('id','ID_OBJECT_'+cvNumber);
+//        ID_OBJECT_ROOT.setAttribute('name','id_object[]');
+//        ID_OBJECT_ROOT.setAttribute('value',idObject);
+//	
+        //var divROOT = document.getElementById('divROOT');
+        //divROOT.setAttribute('id','divROOT'+cvNumber);
+        
+        var VAOLUCROOT = document.getElementById('VAOLUCROOT');
+        VAOLUCROOT.setAttribute('id','VaoLucCV'+cvNumber);
+        VAOLUCROOT.setAttribute('name','VAOLUC[]');
+
+        var NoidungRoot = document.getElementById('NOIDUNGROOT');
+        NoidungRoot.setAttribute('id','NoiDungCV'+cvNumber);
+        NoidungRoot.setAttribute('name','NOIDUNG[]');
+
+//      var FileDinhKemCVroot = document.getElementById('idFileDinhKemCVROOT');
+//      FileDinhKemCVroot.setAttribute('id','FileDinhKemCV'+cvNumber);
+//      FileDinhKemCVroot.setAttribute('name','FileDinhKemCV[]');
+
+        /* Lấy các phần tử HTML trong CVroot */
+        var html = document.getElementById('CVroot').innerHTML;        
+        /* Replace lại id xóa của CVroot - sau khi đã lấy HTML */
+        idxoa.setAttribute('id','idxoa');
+       
+        //sttCVRoot.setAttribute('id','sttCVRoot');
+        OptionCVROOT.setAttribute('id','OptionCVROOT');
+        OptionCVROOT.setAttribute('name','OptionCVROOT');
+        OptionngayROOT.setAttribute('id','DATEROOT');
+        OptionngayROOT.setAttribute('name','DATE');
+        ImageROOT.setAttribute('id','IDATEROOT');
+        NoidungRoot.setAttribute('name','NoiDungRoot');
+        NoidungRoot.setAttribute('id','NOIDUNGROOT');
+
+//        FileDinhKemCVroot.setAttribute('name','FileDinhKemCVroot');
+//        FileDinhKemCVroot.setAttribute('id','idFileDinhKemCVROOT');
+
+        VAOLUCROOT.setAttribute('id','VAOLUCROOT');
+        VAOLUCROOT.setAttribute('name','VAOLUCROOT');
+
+        IS_CVOLDROOT.setAttribute('id','IS_CVOLDROOT');
+        IS_CVOLDROOT.setAttribute('name','IS_CVOLDROOT');
+	//	ID_OBJECT_ROOT.setAttribute('id','ID_OBJECT_ROOT');
+	//	ID_OBJECT_ROOT.setAttribute('name','id_objectROOT');
+        //divROOT.setAttribute('id','divROOT');
+        
+        var tr = document.createElement('tr');
+        tr.setAttribute('id','CV'+cvNumber);
+        document.getElementById('listCongViec').appendChild(tr);
+        document.getElementById('CV'+cvNumber).innerHTML = html;
+        //loadDivDinhKem('divROOT'+cvNumber,idObject,year);
+    }
+	/* Save 06 */
+    function  SaveButtonClick(){
+        if(document.getElementById("trong").checked==true)
+        {
+            document.frm.phamvi.value = 1;
+        }
+        else
+        {
+            document.frm.phamvi.value = 0;
+        }
+		
+        var phamvi = document.frm.phamvi.value;
+        var listbox = document.getElementById("SelectDSTG");
+        for(var count=0; count < listbox.options.length; count++) {
+            listbox.options[count].selected = true;
+        }
+        var listbox2 = document.getElementById("SelectDSTD");
+        for(var count=0; count < listbox2.options.length; count++) {
+            listbox2.options[count].selected = true;
+        }
+        var listbox_hid = document.getElementById("SelectDSTD2");
+        for(var count1=0; count1 < listbox_hid.options.length; count1++) {
+            listbox_hid.options[count1].selected = true;
+        }
+
+        var err = true;
+        err = err & validateInput("req",document.frm.ten,"Tên cuộc họp không được rỗng");
+        err = err & err==true?validateInput("maxlen=512",document.frm.ten,"Kết quả xử lý không được quá 512 ký tự"):false;
+		
+        if((phamvi == 1) && (err == true))
+        {
+            document.frm.HTML_nguoithamgia.value = document.getElementById('SelectDSTG').innerHTML;
+            document.frm.action = "/qlcuochop/qlthongtin/savetrongcoquan";
+            document.frm.submit();
+        }
+        else if((phamvi == 0) && (err == true))
+        {
+            document.frm.HTML_nguoithamdu.value = document.getElementById('SelectDSTD').innerHTML;
+            document.frm.action = "/qlcuochop/qlthongtin/savengoaicoquan";
+            ////
+            document.frm.HTML_nguoithamdu2.value = document.getElementById('SelectDSTD2').innerHTML;
+            document.frm.submit();
+        }
+    }
+    function BackButtonClick(){
+		document.location.href='/qlcuochop/qlthongtin/index';
+	}
+
+    function chonNguoithamgia1(){
+        var index = document.getElementById("NGUOITHAMGIA").selectedIndex;
+        var value = document.getElementById("NGUOITHAMGIA").options[index].value;
+        var name = document.getElementById("NGUOITHAMGIA").options[index].innerHTML;
+
+        var com = document.getElementById("SelectDSTG");
+        var element = document.createElement('option');
+        element.value = name;
+        element.innerHTML = name;
+        com.appendChild(element);
+    }
+
+    function xoaNguoithamgia1(){
+        var com = document.getElementById("SelectDSTG");
+        var index = com.selectedIndex;
+        com.options[index] = null;
+    }
+
+    function chonNguoithamgia2(){
+        var index = document.getElementById("COMBONGUOITHAMGIA2").selectedIndex;
+        var value = document.getElementById("COMBONGUOITHAMGIA2").options[index].value;
+        var name = document.getElementById("COMBONGUOITHAMGIA2").options[index].innerHTML;
+
+        var com = document.getElementById("SelectDSTD");
+        var element = document.createElement('option');
+        element.value = name;
+        element.innerHTML = name;
+        com.appendChild(element);
+
+        var com2 = document.getElementById("SelectDSTD2");
+        var element2 = document.createElement('option');
+        element2.value = value;
+        element2.innerHTML = name;
+        com2.appendChild(element2);
+        //alert(name);
+    }
+
+    function xoaNguoithamgia2(){
+        var com = document.getElementById("SelectDSTD");
+        var index = com.selectedIndex;
+        com.options[index] = null;
+
+        var com2 = document.getElementById("SelectDSTD2");
+        //var index2 = com2.selectedIndex;
+        com2.options[index] = null;
+    }
+
+    cvNumber = <?php
+
+           if((int)$this->data->ID_CUOCHOP == 0)
+           {
+               echo 1;
+
+           }
+           else
+           {
+             echo count($this->data_cv);
+           }
+
+    ?>;
+    sttCV = <?php
+        if(count($this->data_cv) == 0)
+        {
+           if((int)$this->data->ID_CUOCHOP == 0)
+           {
+               echo 1;
+
+           }
+           else
+           {
+            echo 0;
+           }
+        }
+        else
+        {
+            echo 1;
+        }
+    ?>;
+    function removeCongViec(id,idnumber)
+    {
+        sttCV--;
+        var listCV = document.getElementById('listCongViec');
+        var olddiv = document.getElementById(id);
+        listCV.removeChild(olddiv);
+        for(var i = 0;i<sttCV;i++)
+        {
+            if(arrSTT[i]==idnumber)
+            {
+                arrSTT.splice(i,1);
+            }
+        }
+    }
+    function setIDXoa(value)
+    {
+        var elem = document.createElement('input');
+        elem.setAttribute('type','hidden');
+        elem.setAttribute('name','DEL[]');
+        elem.setAttribute('value',value);
+        document.getElementById('listIdXoa').appendChild(elem);
+    }
+    function setSELECTEDAttribute(value,id)
+    {
+       var e = document.getElementById(id);
+       for(var i = 0;i<soOption;i++)
+       {
+           var str = e.options[i].value;
+           if(str == value)
+           {
+               e.options[i].setAttribute("selected", "true");
+           }
+       }
+    }
+    function setTEXTAREAvalue(id,value)
+    {
+         document.getElementById(id).innerHTML = value;
+    }
+
+    function getCountCV()
+    {
+        var leh= document.getElementById('listCongViec').getElementsByTagName('tr');
+        if(leh.length > 1)
+        {
+            for(var i = 0; i< leh.length; i++)
+            {
+                if(i > 0)
+                {
+                    var id = leh[i].id;
+                    var ElementTD = document.getElementById(id).getElementsByTagName('td')[0];
+                    var ElementSELECT = ElementTD.getElementsByTagName('select')[0];
+                    var id_select = ElementSELECT.id;
+
+                    var vlu = document.getElementById(id_select).value;
+                    if(vlu == "")
+                    {
+                        document.getElementById('ERRCV').innerHTML = "<font color='red'> Chọn người xử lý</font>";
+                        return 0;
+                    }
+                 }
+            }
+        }
+        document.getElementById('ERRCV').innerHTML = "";
+        return 1;
+    }
+
+    function loadDivFileDinhKem(divFileDinhKemId){
+        url='/hscv/file/attachment?iddiv=idFileDinhKemCV&idObject=<?php echo ($this->idTemp>0?$this->idTemp:0) ?>&is_new=<?php echo ($this->idTemp>0?0:1)  ?>&year=<?php echo $this->year ?>&type=<?php echo $type; ?>';
+        loadDivFromUrl(divFileDinhKemId,url,0);
+    }
+    
+    var arr_user_temp = new Array();
+
+</script>
+<table style="display: none">
+<tr id="CVroot" onclick="" style="display: none">
+	<input id="IS_CVOLDROOT" type="hidden" name="IS_CVOLDROOT" value="" />
+	<input id="ID_OBJECT_ROOT" type="hidden" name="id_objectROOT" value="" />
+	<td>
+		<?= quanlycuochopModel::toComboNguoiXuLy('frm',0,"OptionCVROOT") ?>
+	</td>
+	<td>
+		<TEXTAREA id="NOIDUNGROOT" NAME="NoiDungRoot" ROWS="1" COLS="10" style="width:98%"></TEXTAREA
+	</td> <!-- 2005 -->
+        <td>
+		<?=QLVBDHCommon::calendarFull($this->DATE==""?date("d/m/Y"):QLVBDHCommon::MysqlDateToVnDate($this->DATE),"DATE[]","DATEROOT") ?>
+		<font nowrap="nowrap" style="color: blue">Vào lúc </font>
+		<input id="VAOLUCROOT" type=text  size="4" name=VAOLUCROOT value="">
+		<input type="hidden" name="NGAYHETHONG[]"
+		value="<?= date("d/m/Y") ?>">
+	</td>
+	<td >
+		<a id="idxoa" onclick="" style="color: blue;cursor: pointer">Xóa</a>
+	</td>
+</tr>
+</table>
+<form name="frm" action="" method="post">
+<table>
+    <tr>
+		<td width="9%" nowrap="nowrap" style="color: blue" >Tên cuộc họp <font
+			color="Red" size="3">*</font></td>
+		<td  style="padding-left: 75px" nowrap="nowrap" width=""><?php if( (int)$this->data->ID_CUOCHOP==0){?>
+                    <input  type="text" id="ten" name="ten"
+                            value="<?php echo ($this->data->TEN);?>" size="60" >
+                    <div class="clr"></div>
+                    <span class="box_erro_area" id="ERRten"></span> <?php }else {?>
+                    <input type="text" name="ten"
+                            value="<?php echo ($this->data->TEN);?>" size="60">
+                    <div class="clr"></div>
+                    <span class="box_erro_area" id="ERRten"></span> <?php }?>
+                </td>
+	</tr>
+
+        <tr>
+            <td width="9%" nowrap="nowrap" style="color: blue" >Phạm vi <font
+			color="Red" size="3">*</font></td>
+                    <td style="padding-left: 75px" nowrap id="TDphamvi">
+                        Trong cơ quan  <input type="radio" name="selectcq" id="trong" value="1" onclick="showDivTrongCoQuan();"/>
+                        
+                        Ngoài cơ quan  <input type="radio" name="selectcq" id="ngoai" value="0" onclick="showDivNgoaiCoQuan();"/>
+                    </td>
+                    <input type="hidden" name="phamvi" id="phamvi"/>
+        </tr>
+</table>
+    <div id="DIVngoaicoquan" style="">
+    <table>
+        <tr>
+		<td
+                    <font nowrap="nowrap" style="color:blue"> Thời gian </font>
+                </td>
+		<td style="padding-left:9px"><?=QLVBDHCommon::calendarFull($this->data->NGAY==""?date("d/m/Y"):QLVBDHCommon::MysqlDateToVnDate($this->data->NGAY),"BEGINDATE2","BEGINDATE2") ?>
+		<font nowrap="nowrap" style="color: blue">Vào lúc </font>
+		  <input type=text  size="4" name=gio2 value="<?php echo $this->data->GIO ?>">
+		  <input type="hidden" name="ngay2"
+			value="<?//= date("d/m/Y") ?>"> </td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Địa điểm họp</font>
+                </td>
+                <td style="padding-left:9px" nowrap="nowrap">
+                    <input type="text" name="diadiem2"
+                            value="<?php echo $this->data->DIADIEM_NCQ;?>" size="40" >
+                    <div class="clr"></div>
+                    <span class="box_erro_area" id="ERRdiadiem2"></span>
+                </td>
+	</tr>
+        <tr>
+		<td nowrap="nowrap" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Lãnh đạo chủ trì</font>
+                </td>
+                <td style="padding-left:9px" nowrap="nowrap">
+                    <input type="text" name="nguoichutri2"
+                            value="<?php echo $this->data->NGUOICHUTRI;?>" size="40" >
+                    <div class="clr"></div>
+                    <span class="box_erro_area" id="ERRnguoichutri2"></span>
+                </td>
+	</tr>
+<!--        <tr>
+            <td nowrap="nowrap" style="color: blue">Phòng</td>
+            <td><select name=ID_DEP onchange="">
+                    <option value="0">-- Chọn phòng --</option>
+			<?//= quanlycuochopModel::ToDepCombo($this->dep,$this->sel_dep) ?>
+                </select>
+            </td>
+            <script> document.frm.ID_DEP.value="<?//=$this->sel_dep?>"</script>
+        </tr>-->
+        <tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Người tham dự </font>
+                </td>
+                <td style="padding-left:9px">
+                    <?//=quanlycuochopModel::Combonguoithamgia2('frm',0,"COMBONGUOITHAMGIA2") ?>
+                    <?php echo QLVBDHCommon::writeSingleSelectUser1('DEP_NGUOITHAMGIA2','COMBONGUOITHAMGIA2');?>
+                    <input type ="button" value="Chọn" name="btChon2" onclick="chonNguoithamgia2()">
+                </td>
+         </tr>
+         <tr>
+                <td></td>
+                <td style="padding-left:9px">
+                    <select style="vertical-align: middle;" name="list_dstd[]" id="SelectDSTD" size="4" multiple="multiple" style="margin-bottom: 5px; width: 300px;">
+                    <?php
+                        $danhsach_thamgia = split("~",$this->data->NGUOITHAMGIA);
+                        echo $danhsach_thamgia[1];
+                        ?>
+                    </select>      
+                    <select style="vertical-align: middle; display:none;" name="list_dstd2[]" id="SelectDSTD2" size="4" multiple="multiple" style="margin-bottom: 5px; width: 300px;">
+                    <?php
+                        $danhsach_thamgia2 = split("~",$this->data->IDS_NGUOITHAMGIA);
+                        echo $danhsach_thamgia2[1];
+                    ?>
+                    </select>
+                    <input type ="button" value="Xóa" name="btXoa2" Onclick="xoaNguoithamgia2()">
+                </td>
+        </tr>
+        <tr>
+		<td nowrap="nowrap" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Báo cáo nội dung cuộc họp</font>
+                </td>
+                <td style="padding-left:9px" nowrap="nowrap">
+                    <input type="text" name="noidung"
+                            value="<?php echo $this->data->NOIDUNG;?>" size="60" >
+                    <div class="clr"></div>
+                    <span class="box_erro_area" id="ERRnoidung"></span>
+                </td>
+	</tr>
+        <tr>
+            <td style="color: blue">
+                Đính kèm file
+            </td>
+            <td style="padding-left:9px">
+                <div id="idFileNCQ"></div>
+
+				<?php
+
+                                if((!$this->phamvi) || ($this->phamvi == 0)){
+                                if(($this->phamvi != 1))
+                                {
+				$this->idTemp = $IdObject_Gel_NCH;
+				if(null!=$this->type)
+				{
+					$type=$this->type;
+				}
+				else if($this->idTemp>0)
+				{
+					$type=6;
+				}
+				else $type=-1;
+				?>
+				<script type="text/javascript">
+						divFileDinhKemId='idFileNCQ';
+						url='/hscv/file/attachment?iddiv=idFileNCQ&idObject=<?=$IdObject_Gel_NCH?>&is_new=<?php echo ($this->idTemp>0?0:1)  ?>&year=<?=QLVBDHCommon::getYear();?>&type=-1';
+						loadDivFromUrl(divFileDinhKemId,url,0);
+				</script>
+                                <?php }} ?>
+            </td>
+        </tr>
+    </table>
+    </div>
+    
+    <div id="DIVtrongcoquan" style="display: none">
+    <table>
+        <tr>
+		<td width="">
+			<font nowrap="nowrap" style="color:blue"> Thời gian </font></td>
+                <td>
+                    <?= QLVBDHCommon::calendarFull($this->data->NGAY== "" ? date("d/m/Y") : QLVBDHCommon::MysqlDateToVnDate($this->data->NGAY),"BEGINDATE","BEGINDATE");?>
+                    <font nowrap="nowrap" style="color: blue">Vào lúc </font>
+                    <input type=text  size="4" name=gio value="<?php echo $this->data->GIO ?>">
+                    <input type="hidden" name="ngay" value="<?//= date("d/m/Y") ?>">
+                </td>
+	</tr>
+
+	<tr>
+		<td nowrap="nowrap" width="10%" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Địa điểm</font></td>
+                <td nowrap="nowrap" with="10%">
+                   <?=qlcuochop_DMdiadiemModel::toCombo('frm',0); ?>
+                   <script>
+                       document.frm.diadiem.value='<?=$this->data->DIADIEM?>';
+                   </script>
+		</td>
+	</tr>
+
+        <tr>
+            <td nowrap="nowrap" style="color: blue" >Lãnh đạo chủ trì </td>
+                    <td nowrap>                        
+                        <?php echo QLVBDHCommon::writeSingleSelectUser2('DEP_NGUOICHUTRI','NGUOICHUTRI');?>
+                        <?//=quanlycuochopModel::Combonguoichutri('frm',0,NGUOICHUTRI) ?>
+                    </td>
+        <script type="text/javascript">document.frm.NGUOICHUTRI.value = '<?=$this->data->ID_CUOCHOP!=""?$this->data->NGUOICHUTRI:''?>';</script>
+        </tr>
+        <tr id="show4">
+            <td nowrap="nowrap" style="color: blue">Lãnh đạo phòng thực hiện</td>
+            <td>
+                <?php echo QLVBDHCommon::writeSingleSelectUser2('DEP_LDTHUCHIEN','LDTHUCHIEN');?>            
+            </td>
+            <script type="text/javascript">document.frm.LDTHUCHIEN.value = '<?=$this->data->ID_CUOCHOP!=""?$this->data->LD_THUCHIEN:''?>';</script>
+        </tr>
+         <tr id="show4">
+            <td nowrap="nowrap" style="color: blue">Thư ký</td>
+            <td>
+                <span id="thuky_hid"><?php echo QLVBDHCommon::writeSingleSelectUser2('DEP_THUKY','THUKY');?>
+                <font style="color: blue">Thư ký là người ngoài cơ quan</font></span>
+                <input type="text" id="thuky2" name="thuky2" onclick="hidd_sel1()"
+                        value="<?php echo $this->data->THUKY2;?>" size="34%" >
+                <div class="clr"></div>
+                <span class="box_erro_area" id="ERRthuky2"></span>
+            </td>
+            <script type="text/javascript">document.frm.THUKY.value = '<?=$this->data->ID_CUOCHOP!=""?$this->data->THUKY:''?>';</script>
+        </tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Danh sách tham dự </font>
+                </td>
+                <td nowrap>
+                        <?//=quanlycuochopModel::Combonguoithamgia('frm',0,"COMBONGUOITHAMGIA") ?>
+                        <?php echo QLVBDHCommon::writeSingleSelectUser2('DEP_NGUOITHAMGIA','NGUOITHAMGIA')?>
+
+                    <input type ="button" value="Chọn" name="btChon1" Onclick="chonNguoithamgia1()">
+                </td>
+         </tr>
+         <tr>
+                <td></td>
+                <td>
+                    <select name="list_dstg[]" style="vertical-align: middle;" id="SelectDSTG" size="4" multiple="multiple" style="margin-bottom: 5px; width: 300px;">
+                    <?php
+					$danhsach_thamgia = split("~",$this->data->NGUOITHAMGIA);
+					echo $danhsach_thamgia[1];
+					?>
+                    </select>
+                    <input type ="button" value="Xóa" name="btXoa1" Onclick="xoaNguoithamgia1()">
+                </td>               
+        </tr>
+         <tr>
+		<td nowrap="nowrap" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Người ngoài cơ quan</font>
+                </td>
+                <td  nowrap="nowrap">
+                    <textarea id="dsncq" name="dsncq"  cols="100" rows="2"><?php echo($this->data->NGUOITHAMGIA_NCQ);?></textarea>
+                    <div class="clr"></div>
+                    <span class="box_erro_area" id="ERRdsncq"></span>
+                </td>
+	</tr>
+        <tr>
+            <td nowrap valign="top" style="color:blue">
+                    Đính kèm biên bản cuộc họp
+            </td>
+            <td style="padding-left: 10px;">
+                <div id="idFileTCQ"></div>
+                <?php
+                if((!$this->phamvi) || ($this->phamvi == 1) || ($this->phamvi != 0)){
+                $this->idTemp = $IdObject_Gel;
+                if(null!=$this->type)
+                {
+                        $type=$this->type;
+                }
+                else if($this->idTemp>0)
+                {
+                        $type=6;
+                }
+                else $type=-1;
+                ?>
+                <script type="text/javascript">
+                divFileDinhKemId='idFileTCQ';
+                url='/hscv/file/attachment?iddiv=idFileTCQ&idObject=<?=$IdObject_Gel?>&is_new=<?php echo ($this->idTemp>0?0:1)  ?>&year=<?=QLVBDHCommon::getYear();?>&type=-1';
+                loadDivFromUrl(divFileDinhKemId,url,0);
+                </script>
+                <?php }?>
+            </td>
+        </tr>
+        <tr>
+            <td  nowrap="nowrap" style="color: blue" >Theo dõi</td>
+            <td colspan="2">
+            <table class="adminlist">
+                <thead>
+                    <tr>
+                        <td style="width:20%">
+                            Người xử lý
+                        </td>
+                        <td style="width:50%">
+                            Công việc thực hiện
+                        </td>
+<!--                        <td style="width:auto">
+                            Đính kèm file
+                        </td>-->
+                        <td>
+                            Hạn xử lý
+                        </td>
+                        <td nowrap>
+                            <img src="/images/icon_add.jpg" onclick="addCongViec();">Thêm
+                        </td>
+                    </tr>      
+                </thead>
+
+                <tbody id="listCongViec">                     
+						<!-- 01 Thêm mới -->
+                        <?php if((int)$this->data->ID_CUOCHOP == 0){ ?>
+
+                        <tr id="CV0">                           
+                            <td>                                
+                            </td>
+                            <td>                                
+                            </td>
+                            
+                            <td>
+                            </td>
+                            <td>                                
+                            </td>
+                        </tr>                       
+						<!-- 02 Cập nhật -->
+                        <?php }else { 
+                            $stt = 0;
+                            foreach ($this->data_cv as $item_cv) {
+                                $stt++;
+                        ?>
+                        <tr id="CV<?=$stt?>">
+                            <input type="hidden" name="IS_CVOLD[]" value="<?=$item_cv['ID_CONGVIEC']?>" />
+                            <td>
+                                <? quanlycuochopModel::toComboNguoiXuLy('frm', $item_cv['NGUOIXULY'], 'OptionCV'.$stt) ?>
+                                <script type="text/javascript">document.getElementById("OptionCV<?=$stt?>").value = '<?=$item_cv['NGUOIXULY']?>';</script>
+                            </td>
+                            <td>
+                                <TEXTAREA NAME="NOIDUNG[]" ROWS="1" COLS="10" style="width:98%" value=""><?=$item_cv['CONGVIEC']?></TEXTAREA>
+                            </td>
+<!--                            <td>
+                               <input id="ID_OBJECT_<?//=$stt?>" type="hidden" value="<?//=$item_cv['ID_OBJECT']?>" name="id_object[]"/>
+                                <?php
+//								 echo "<div id='divROOT".$stt."'></div>";
+//								 $this->idTemp = $item_cv['ID_OBJECT'];
+//
+//                                if(null!=$this->type)
+//                                {
+//									$type=$this->type;
+//                                }
+//                                else if($this->idTemp>0)
+//                                {
+//                                    $type=6;
+//                                }
+//                                else $type=-1;
+                                ?>
+                                <script type="text/javascript">
+                                    divFileDinhKemId='divROOT'+<?="'".$stt."'"?>;
+                                    url='/hscv/file/attachment?iddiv=divROOT<?=$stt?>&idObject=<?//php echo ($this->idTemp>0?$this->idTemp:0) ?>&is_new=<?//php echo ($this->idTemp>0?0:1)  ?>&year=<?//php echo $this->year ?>&type=-1';
+                                    loadDivFromUrl(divFileDinhKemId,url,0);
+                                </script>
+                            </td>-->
+                            <td>
+                            <?= QLVBDHCommon::calendarFull($item_cv['NGAYXULY'] == "" ? date("d/m/Y") : QLVBDHCommon::MysqlDateToVnDate($item_cv['NGAYXULY']), "DATE[]", "DATE") ?>
+                                <font nowrap="nowrap" style="color: blue">Vào lúc </font>
+                                <input type=text  size="4" name=VAOLUC[] value="<?=$item_cv['VAOLUC']?>">
+                                <input type="hidden" name="NGAYHETHONG[]"
+                                       value="<?= date("d/m/Y") ?>">
+                            </td>
+                            <td>
+                                <a onclick="removeCongViec('CV<?=$stt?>','STTCV<?=$stt?>');setIDXoa('<?=$item_cv['ID_CONGVIEC']?>')" style="color: blue;cursor: pointer">Xóa</a>
+                            </td>
+                            </tr>                            
+                        <?php }}?>
+
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th colspan="7"></th>
+                </tr>
+                </tfoot>
+                <span id="ERRCV"></span>
+            </table>
+            </td>
+        </tr>
+        
+        <input type=hidden name="id" value="<?php echo $this->data->ID_CUOCHOP; ?>" />
+<!--        <input type=hidden name="IS_FINISH" value="<?//php echo $this->data->IS_FINISH;?>"/>-->
+        <input type=hidden name="HTML_nguoithamgia" value=""/>
+        <input type=hidden name="HTML_nguoithamdu" value=""/>
+        <input type=hidden name="HTML_nguoithamdu2" value=""/>
+        <input type=hidden name="idobject_ch" value="<?=$IdObject_Gel?>"/>
+        <input type=hidden name="idobject_ch_ncq" value="<?=$IdObject_Gel_NCH?>"/>
+        <span id="listIdXoa"></span>
+        </table>
+    </div>
+    <script>
+		var phamvi = "<?php echo $this->phamvi; ?>";
+        <?php if((int)$this->data->ID_CUOCHOP == 0){ ?>		
+        if(phamvi == '1' || phamvi == ""){
+            showDivTrongCoQuan();
+            document.getElementById("trong").checked = true;
+        }if(phamvi == '0'){
+            showDivNgoaiCoQuan();
+            document.getElementById("ngoai").checked = true;
+        }
+		<?php }else{?>
+		if(phamvi == '1' || phamvi == ""){
+            showDivTrongCoQuan();
+            document.getElementById("trong").checked = true;
+            document.getElementById("ngoai").disabled = true;
+            document.getElementById("phamvi").value = '1';
+        }if(phamvi == '0'){
+            showDivNgoaiCoQuan();
+            document.getElementById("ngoai").checked = true;
+            document.getElementById("trong").disabled = true;
+            document.getElementById("phamvi").value = '0';
+        }
+		<?php } ?>
+   </script>
+</form>
+</body>
+</html>

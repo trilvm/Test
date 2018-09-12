@@ -1,0 +1,22 @@
+<table class=adminlist1>
+<thead>
+<tr>
+<th nowrap>#</th>
+<th width="50%">Trích yếu</th>
+<th nowrap>Số ký hiệu</th>
+<th nowrap>Ngày ban hành</th>
+
+</tr>
+</thead>
+<tbody>
+<?php $stt = 1; foreach ($this->data as $item){?>
+<tr>
+<td nowrap><?=$stt?></td>
+<td width="50%"><?=$item["TRICHYEU"]?></td>
+<td nowrap><?=$item["SOKYHIEU"]?></td>
+<td nowrap><?=QLVBDHCommon::MysqlDateToVnDate($item["NGAYBANHANH"])?></td>
+
+</tr>
+<?php $stt++;}?>
+</tbody>
+</table>

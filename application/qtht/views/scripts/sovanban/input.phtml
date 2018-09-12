@@ -1,0 +1,69 @@
+﻿<form name="frm" action="/qtht/sovanban/save" method="POST">
+<div>
+<label><b>Mô tả</b></label>
+<input type="text" name=des />
+</div>
+<div class="clr"></div>
+<div>
+<label><b>Chọn loại văn bản</b></label>
+<select name=sel_vbtype id=sel_vbtype onchange="sel_field_init();">
+<option value=1>Văn bản đến</option>
+<option value=2>Văn bản đi</option>
+
+</select>
+</div>
+<div class="clr"></div>
+<div>
+<label><b>Chọn thuộc tính</b></label>
+<select name=sel_coltype id=sel_coltype>
+
+</select>
+
+</div>
+<div class="clr"></div>
+</form>
+
+<script>
+
+function SaveButtonClick(){
+	document.frm.submit();
+}
+
+function sel_field_init(){
+	
+	var loaic = document.getElementById("sel_vbtype");
+	var fieldc = document.getElementById("sel_coltype");
+	var arr = new Array();
+//van ban den : coquan/so ban
+	arr[0] = new Array();
+	arr[0][0] = 1;
+	arr[0][2] = 'Sổ văn bản';
+	arr[0][1] = 'ID_SVB';
+	arr[1] = new Array();
+	arr[1][0] = 1;
+	arr[1][2] = 'Loại Văn Bản';
+	arr[1][1] = 'ID_LVB';
+	arr[2] = new Array();
+	arr[2][0] = 1;
+	arr[2][2] = 'Năm';
+	arr[2][1] = 'YEAR_SYS';
+	//van ban di
+	arr[3] = new Array();
+	arr[3][0] = 2;
+	arr[3][2] = 'Loại Văn Bản';
+	arr[3][1] = 'ID_LVB';
+	arr[4] = new Array();
+	arr[4][0] = 2;
+	arr[4][2] = 'Số văn bản';
+	arr[4][1] = 'ID_SVB';
+	arr[5] = new Array();
+	arr[5][0] = 2;
+	arr[5][2] = 'Năm';
+	arr[5][1] = 'YEAR_SYS';
+//ho so mot cua
+	
+	
+	FillComboByCombo(loaic,fieldc,arr);
+}
+sel_field_init();
+</script>

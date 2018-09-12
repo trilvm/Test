@@ -1,0 +1,240 @@
+<?php
+/**
+ * @author  trunglv
+ * @version 1.0
+ * Lop view chuyen xu ly(chuyen ban hanh) ho so cong viec
+ */ 
+require_once 'Common/Common.php';
+require_once 'Common/FileDinhKem.php';
+require_once 'Common/VanBanDuThao.php';
+require_once 'qtht/models/usersModel.php'; ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<script>
+<?php if($this->isBanhanh==1 && $this->canBanhanh==0){
+	echo "
+	alert('Công việc chưa có dự thảo nào nên không thể ban hành được.');
+	window.parent.document.getElementById('groupcontent".$this->ID_HSCV."').style.display='none';
+	window.parent.SwapDiv(".$this->ID_HSCV.",'/hscv/VanBanDuThao/index/year/".QLVBDHCommon::getYear()."/iddivParent/groupcontent".$this->ID_HSCV."/idHSCV/".$this->ID_HSCV."',5);
+	";
+} 
+?>
+</script>
+<!-- Form nhap lieu to trinh de chuyen xy ly ho so cong viec -->
+<form name="frm" method=post action="/hscv/chuyenxuly/save">
+<fieldset>
+<legend style="color:#0066CC;"><?php 
+if($this->code == "banhanh"){
+	echo "Chuyển ban hành"; 
+}else if($this->code == "noprocess"){
+	echo "Chuyển lưu trữ"; 
+}
+else if($this->code == "mc_khongxl"){
+	echo "Không xử lý hồ sơ";
+}
+else{
+	echo "Chuyển xử lý";
+} 
+?></legend>
+<!-- table hien thong tin ve ho so  -->
+<table class=admintable>
+	<tr>
+		<td valign=top nowrap><B>Các ý kiến trước</B></td>
+		<td nowrap>
+			<?php for ($i=1;$i<count($this->data);$i++){ ?>
+				<div><b> <?php echo UsersModel::getEmloyeeNameByIdUser($this->data[$i]['NGUOITRINH'])  ?> </b>
+				(<?php echo QLVBDHCommon::doDateStandard2Viet($this->data[$i]['NGAYTRINH']) ?>) - Hạn xử lý : <?=QLVBDHCommon::createTextHanXuLy($this->data[$i]['HANXULY'])?></div>
+				<?=nl2br($this->data[$i]['NOIDUNG']) ?>
+			<?php } ?>
+		</td>
+	</tr>
+    <?php if( count($this->congviec->data)> 0 ){ ?>
+        <tr>
+		<td valign=top nowrap><B>Tiến độ</B></td>
+                <td>
+                <select name="TIENDO_GIAOVIEC" style="width:200px">
+                <option value="0" <?=$this->congviec->data[0]->TIENDOHIENTAI == 0?"selected":"" ?>>--Chọn tiến độ (0%)--</option>
+                <option value="10" <?=$this->congviec->data[0]->TIENDOHIENTAI == 10?"selected":"" ?>>10%</option>
+                <option value="20" <?=$this->congviec->data[0]->TIENDOHIENTAI == 20?"selected":"" ?>>20%</option>
+                <option value="30" <?=$this->congviec->data[0]->TIENDOHIENTAI == 30?"selected":"" ?>>30%</option>
+                <option value="40" <?=$this->congviec->data[0]->TIENDOHIENTAI == 40?"selected":"" ?>>40%</option>
+                <option value="50" <?=$this->congviec->data[0]->TIENDOHIENTAI == 50?"selected":"" ?>>50%</option>
+                <option value="60" <?=$this->congviec->data[0]->TIENDOHIENTAI == 60?"selected":"" ?>>60%</option>
+                <option value="70" <?=$this->congviec->data[0]->TIENDOHIENTAI == 70?"selected":"" ?>>70%</option>
+                <option value="80" <?=$this->congviec->data[0]->TIENDOHIENTAI == 80?"selected":"" ?>>80%</option>                        
+                <option value="90" <?=$this->congviec->data[0]->TIENDOHIENTAI == 90?"selected":"" ?>>90%</option>
+                <option value="100" <?=$this->congviec->data[0]->TIENDOHIENTAI == 100?"selected":"" ?>>100%</option>                
+                </select>
+                </td>
+	</tr>
+        <tr>
+                <td valign=top nowrap><B>Mô tả tiến độ</B></td>
+                 <td nowrap style="color: red; border: none;width: 700px">
+                 <textarea name="motatiendo" style="width: 230px; height: 30px;"><?=$this->data['MOTATIENDO']?></textarea>
+                 </td>
+         </tr>
+        <?php } ?>
+	<tr>
+		<td colspan=3 width=100% nowrap><!-- de cho dep -->
+		</td>
+	</tr>
+</table>
+<!-- end table the hien thong tin ve ho so  -->
+</fieldset>
+<fieldset>
+<legend style="color:#0066CC;">Người nhận</legend>
+<?php
+    //form chuyen cho nguoi tiep theo
+    echo WFEngine::FormSend($this->wf_id_t,$this->ID_HSCV);	
+		
+    //require_once 'giamsatgiaoviec/models/GiamSatGiaoViecModel.php';
+   // $giamSatGiaoViecModel = new GiamSatGiaoViecModel();
+   // $checkIsGiaoViec = $giamSatGiaoViecModel->checkIsGiaoViec((int)$this->ID_HSCV);
+  //  if($checkIsGiaoViec){
+       // $thisdata=$giamSatGiaoViecModel->getInfoHSCVById((int)$this->ID_HSCV);
+        ?>
+       <!-- <div class="clr"></div>
+        <div class="required clearfix">
+            <label>Tiến độ</label>    
+            <select name="TIENDO_GIAOVIEC" style="width:200px">
+                <option value="0" <?//=$thisdata["TIENDO_GIAOVIEC"] == 0?"selected":"" ?>>--Chọn tiến độ (0%)--</option>
+                <option value="10" <?//=$thisdata["TIENDO_GIAOVIEC"] == 10?"selected":"" ?>>10%</option>
+                <option value="20" <?//=$thisdata["TIENDO_GIAOVIEC"] == 20?"selected":"" ?>>20%</option>
+                <option value="30" <?//=$thisdata["TIENDO_GIAOVIEC"] == 30?"selected":"" ?>>30%</option>
+                <option value="40" <?//=$thisdata["TIENDO_GIAOVIEC"] == 40?"selected":"" ?>>40%</option>
+                <option value="50" <?//=$thisdata["TIENDO_GIAOVIEC"] == 50?"selected":"" ?>>50%</option>
+                <option value="60" <?//=$thisdata["TIENDO_GIAOVIEC"] == 60?"selected":"" ?>>60%</option>
+                <option value="70" <?//=$thisdata["TIENDO_GIAOVIEC"] == 70?"selected":"" ?>>70%</option>
+                <option value="80" <?//=$thisdata["TIENDO_GIAOVIEC"] == 80?"selected":"" ?>>80%</option>                        
+                <option value="90" <?//=$thisdata["TIENDO_GIAOVIEC"] == 90?"selected":"" ?>>90%</option>
+                <option value="100" <?//=$thisdata["TIENDO_GIAOVIEC"] == 100?"selected":"" ?>>100%</option>                
+            </select>
+        </div>-->
+		<input type=hidden name=TIENDO_GIAOVIEC value=100>
+        <?php 
+    //}
+    if(($this->code != "noprocess" && $this->code != "mc_khongxl")){
+?>
+<fieldset>
+<legend style="color:#0066CC;">Dự thảo</legend>
+
+<div  id=groupcontent<?=$this->ID_HSCV?>></div>
+
+</fieldset>
+<?php
+}
+?>
+
+<input type=button name=SEND value="<?php 
+if($this->code == "banhanh"){
+	echo "Chuyển";
+}else if($this->code == "noprocess"){
+	echo "Chuyển lưu trữ";
+}else if($this->code == "mc_khongxl"){
+	echo "Chuyển tổ một cửa";
+}else{
+	echo " Chuyển ";
+}
+?>" onclick="Submit();" class="chuyenxuly" id=SEND>
+<input type=hidden name=id value="<?=$this->ID_HSCV?>">
+<input type=hidden name=macongviec value="<?=$this->congviec->data[0]->MACONGVIEC?>">
+<input type=hidden name=wf_id_t value="<?=$this->wf_id_t?>">
+<input type=hidden name=year value="<?=$this->year?>">
+<input type=hidden name="isBanhanh" value="<?=$this->isBanhanh?>">
+<input type=hidden name="type" value="<?=$this->id_loaihscv?>">
+<input type=hidden name="code" value=<?=$this->code?> >
+</form>
+<!-- end form nhap lieu cho to trinh -->
+<p id=lasttext1></p>
+
+</body>
+</html>
+
+<script>
+function checkBanHanh(code){
+    if(code == 'banhanh'){
+        var name = document.getElementsByName('chonBH[]');
+        var temp = 0;
+        for (var i = 0; i<name.length; i++) {
+           if (name[i].checked)
+               temp = 1;
+        }
+        if (temp == 1)
+            return true;
+        else {
+            alert('Bạn phải chọn phiên bản để ban hành.');
+            return false;
+        }
+    }else return true;
+}
+function resize(){
+	try{
+		//alert("aa");
+	var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+	iframeElement.style.height = ""+ (document.getElementById("lasttext1").offsetTop+300) +"px";
+	iframeElement.width = "100%"; 
+	setTimeout("resize()",1000);
+	}catch(ex){
+	}
+}
+function checkInputData(){
+	return true;
+}
+function Submit(){
+	if(checkInputData() == true && checkBanHanh("<?=$this->code?>") == true)
+		document.frm.submit();
+}
+function SwapDiv(id,url){
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+}
+<?php
+if(($this->code != "noprocess" && $this->code != "mc_khongxl")){
+?>
+SwapDiv(<?=$this->ID_HSCV?>,"/hscv/VanBanDuThao/index/iddivParent/groupcontent<?=$this->ID_HSCV?>/idHSCV/<?=$this->ID_HSCV?>");
+<?php }?>
+//resize();
+setTimeout("resize()",1000);
+var retvalue;
+function UpdateRet(){
+		document.frm.wf_sms.checked=false;
+		document.frm.wf_email.checked=false;    	
+		if(parseInt(retvalue,10) > 0){
+			//chi co sms
+    		if(parseInt(retvalue,10)==1){
+				document.getElementById("wf_sms").style.display='';
+				document.getElementById("wf_email").style.display='none';
+			}
+			if(parseInt(retvalue,10)==2){
+				document.getElementById("wf_sms").style.display='none';
+				document.getElementById("wf_email").style.display='';
+			}
+			if(parseInt(retvalue,10)==3){
+				document.getElementById("wf_sms").style.display='';
+				document.getElementById("wf_email").style.display='';
+			}
+			document.getElementById("wf_smsemail").style.display='';
+    	}else{
+			document.getElementById("wf_smsemail").style.display='none';
+		}
+    }
+	wf_changeuser(document.frm.wf_nextuser);
+	//document.frm.wf_seldep.value = 22;
+	/*alert(wf_arr_user);
+	FillComboBy2Combo(document.getElementById("wf_selg"),this,document.getElementById("wf_nextuser"),wf_arr_user);
+	
+	wf_changeuser(document.getElementById("wf_nextuser"));*/
+	
+</script>

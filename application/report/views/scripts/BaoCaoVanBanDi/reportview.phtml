@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<? $num = count($this->data); 
+   if ($num>0) { ?>
+    
+    <br>
+    <div style="color: blue; font-weight: bold">
+        SỐ LƯỢNG VĂN BẢN ĐI CÓ TRONG DANH SÁCH : <?=$num?>
+    </div>
+    <br>
+    
+   <? }
+?>    
+<table class=adminlist width="100%">
+ <thead>
+ 	<tr>
+	    <!-- <th nowrap >Stt</th> -->
+		
+ 		<th nowrap >STT</th>
+ 		<th nowrap >Ký hiệu VB</th>
+		<th nowrap >Trích Yếu VB</th>
+ 		<th nowrap >Cơ Quan Ban Hành</th>
+ 		<th nowrap >Ngày Ban Hành</th>
+ 		<th>Thông Tin Văn Bản Đến</th>
+		<th>Gửi Liên Thông</th>
+		<th>Có File Đính Kèm </th>
+		<th nowrap >Dòng Luân Chuyển</th>
+		<th nowrap >Phòng Xử lý</th>
+    <th nowrap >Người Soạn VB</th>
+    <th nowrap >Trạng Thái</th>
+    <th nowrap >Số Văn Bản</th>
+    <th nowrap >Ghi chú</th>
+ 	</tr>
+ 	
+ </thead>
+ <tbody>
+<?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'qtht/models/CoquanModel.php'; 
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'qtht/models/UsersModel.php';
+require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'report/models/BaocaovanbandireportModel.php';
+?>
+<?php 
+require_once("hscv/models/coquanlienthongModel.php");
+$data_cqlt = coquanlienthongModel::getDataCQLienThong();
+
+$stt=1; 
+$num = count($this->data);
+// echo "<pre>";print_r($this->data);
+foreach($this->data as $row){ 
+  
+ ?>
+	<tr>
+	 <td align="center" ><?= $stt ?></td>
+ 	<td><?php echo $row["SOKYHIEU"]?></td>
+ 	<td width="5%" valign=top ><?php echo $row['TRICHYEU'] ?></td>
+	<td width="5%" valign=top ><?php echo LoaiVanBanModel::getCQNameById($row["ID_CQ"])?></td>
+ 	<td width="5%"  valign=top ><?php echo $row["NGAYBANHANH"] ?></td>
+ 	<td width="10%"  align="center" ><?php echo BaocaovanbandireportModel::getIdHscvVBDFromIDHscvVBDi($row["ID_HSCV"]) ?></td>
+  <td  width="5%" align="center"  ><?php if ($row['MASOLIENTHONG'] !=0) {
+    echo "Có";
+  }
+  else echo "Không"; ?></td>
+  <td width="5%" align="center" ><?php if(!empty($row['TEP_DINHKEM'])){echo "Có";}else{echo "Không";} ?></td>
+  <?php  {?>
+  <td valign=top>
+  <i><?php 
+
+           if($row["IS_KHONGXULY"] == 1)
+    echo "Văn bản không xử lý";
+  else{   
+            $xl= WFEngine::GetProcessLogByObjectId((int)$row['ID_HSCV']);
+            $rowsend = $xl[0]['EMPNCNAME'];
+            for($j=0;$j<count($xl);$j++){
+                    if($j==10){
+                    $rowsend .="<br/>" ;
+                    $rowsend .=" <br> " ;
+                    $rowsend .= $xl[$j]['EMPNCNAME'];
+
+                    }else{
+                            if($rowsend != $xl[$j]['EMPNNNAME'])
+                            {
+                                    //var_dump($xl[$j]);
+                                    //exit;
+                                    $rowsend .=" <br> " ;
+                                    if($xl[$j]["ID_U_EXECUTE"]>0 && $xl[$j]["ID_U_EXECUTE"]!=$xl[$j]["ID_U_NC"]){
+                                        $rowsend .= "(". $xl[$j]["EMPEXNAME"]." chuyển giúp) <br>" ;
+                                    }
+                                    if($xl[$j]['NAME'] == "Chuyển xử lý")
+                                          $rowsend .= "<font color=blue>";
+                                    $rowsend .= $xl[$j]['EMPNNNAME'];  
+                                    
+                                    if($xl[$j]['NAME'] == "Chuyển xử lý" )
+                                      $rowsend .= "</font>";
+
+                                    $rowsend .= "[".$xl[$j]['NAME']." &ndash; ".date('d/m/Y', strtotime($xl[$j]['DATESEND']))."]";
+                            }
+                    }
+            }
+            $rowsend .=" <br> " ;
+            //$rowsend .= $xl[$j-1]['EMPNNNAME'];
+            
+            ?>
+            <i> <?          
+                    echo $rowsend;
+            ?></i> 
+            
+            <?php
+          
+  }
+   
+     ?>
+    
+  </i></td>
+  <?php } ?>
+    <?php {?>
+	<td  valign=top ><?php
+            $idemp = BaocaovanbandireportModel::getIdempFromVBDI($row["ID_VBDI"]); 
+            $iddep = BaocaovanbandireportModel::getIdDepFromIDemp($idemp);
+            echo $iddep;
+
+
+
+  ?></td>
+    <?php }?>
+    <?php {?>
+	<td  valign=top ><?php  	
+			 echo UsersModel::getEmloyeeNameByIdUser($row["NGUOISOAN"]);
+                        
+                        //echo BaocaovanbandireportModel::getDonViNoiBoFromVbandi($row["ID_VBDI"]);
+		 ?> </td>
+       <?php }?>
+    <?php {?>
+  <td valign=top ><?php
+      $nhh = BaocaovanbandireportModel::getNhhfromIdHscv($row['ID_HSCV']); 
+      if ( $nhh != NULL && $nhh != '' ) {
+                                  $minusTime = strtotime($row['NGAYBANHANH']) - strtotime($row['NGAYHETHAN']);
+                                  if ( $minusTime > 0 ) {
+                                      echo 'Trễ hạn';
+                                  }
+                                  if ( $minusTime == 0 ) {
+                                      echo 'Đúng hạn';
+                                  }
+                                  if ( $minusTime < 0 ) {
+                                      echo 'Sớm hạn';
+                                  }
+                              }
+    
+
+   ?></td>
+    <?php }?>
+    <td valign=top><?php echo LoaiVanBanModel::getArrNameSVBById($row["ID_SVB"]) ?></td>
+    <td valign=top><?php echo $row["GHICHU"] ?></td>
+	
+	</tr> 
+ 	
+ <?php $stt++ ; } ?>
+ </tbody>
+ <tfoot>
+ </tfoot>
+ 
+</table>
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%"; 
+</script>

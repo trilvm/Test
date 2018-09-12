@@ -1,0 +1,1244 @@
+<?php require_once 'qtht/models/LoaiVanBanModel.php';?>
+<?php if($this->xuat==1){?>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 11">
+<link rel=File-List href="2003vbdi1_files/filelist.xml">
+<link rel=Edit-Time-Data href="2003vbdi1_files/editdata.mso">
+<link rel=OLE-Object-Data href="2003vbdi1_files/oledata.mso">
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>nguyennd</o:Author>
+  <o:LastAuthor>hatdh</o:LastAuthor>
+  <o:LastPrinted>2011-01-17T03:26:33Z</o:LastPrinted>
+  <o:Created>2009-08-25T14:43:47Z</o:Created>
+  <o:LastSaved>2011-01-17T04:05:33Z</o:LastSaved>
+  <o:Company>Hewlett-Packard</o:Company>
+  <o:Version>11.9999</o:Version>
+ </o:DocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:AllowPNG/>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]-->
+<style>
+<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\,";}
+@page
+	{margin:.2in .2in .2in .2in;
+	mso-header-margin:.2in;
+	mso-footer-margin:.2in;
+	mso-page-orientation:landscape;
+	mso-horizontal-page-align:center;}
+.font6
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font7
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font8
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font9
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font10
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font11
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font12
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font13
+	{color:windowtext;
+	font-size:14.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+tr
+	{mso-height-source:auto;}
+col
+	{mso-width-source:auto;}
+br
+	{mso-data-placement:same-cell;}
+.style0
+	{mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	white-space:nowrap;
+	mso-rotate:0;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial;
+	mso-generic-font-family:auto;
+	mso-font-charset:0;
+	border:none;
+	mso-protection:locked visible;
+	mso-style-name:Normal;
+	mso-style-id:0;}
+td
+	{mso-style-parent:style0;
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	border:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	mso-protection:locked visible;
+	white-space:nowrap;
+	mso-rotate:0;}
+.xl65
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl66
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl67
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl68
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-weight:700;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl69
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl70
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl71
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	white-space:normal;}
+.xl72
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\@";
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;
+	white-space:normal;}
+.xl73
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	background:silver;
+	mso-pattern:auto none;
+	white-space:normal;}
+.xl74
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	background:silver;
+	mso-pattern:auto none;
+	white-space:normal;}
+.xl75
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	white-space:normal;}
+.xl76
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	vertical-align:middle;}
+.xl77
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	vertical-align:middle;}
+.xl78
+	{mso-style-parent:style0;
+	font-size:14.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl79
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\[$-1010000\]d\/m\/yyyy\;\@";
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	white-space:normal;}
+.xl80
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;}
+.xl81
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl82
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl83
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:right;}
+.xl84
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl85
+	{mso-style-parent:style0;
+	font-size:14.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;}
+.xl86
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:left;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	white-space:normal;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <x:ExcelWorkbook>
+  <x:ExcelWorksheets>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet1</x:Name>
+    <x:WorksheetOptions>
+     <x:DefaultRowHeight>315</x:DefaultRowHeight>
+     <x:FitToPage/>
+     <x:FitToPage/>
+     <x:Print>
+      <x:ValidPrinterInfo/>
+      <x:PaperSizeIndex>9</x:PaperSizeIndex>
+      <x:Scale>94</x:Scale>
+      <x:HorizontalResolution>600</x:HorizontalResolution>
+      <x:VerticalResolution>600</x:VerticalResolution>
+     </x:Print>
+     <x:PageBreakZoom>60</x:PageBreakZoom>
+     <x:Selected/>
+     <x:Panes>
+      <x:Pane>
+       <x:Number>3</x:Number>
+       <x:ActiveRow>7</x:ActiveRow>
+       <x:ActiveCol>3</x:ActiveCol>
+      </x:Pane>
+     </x:Panes>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+    <x:PageBreaks>
+     <x:ColBreaks>
+      <x:ColBreak>
+       <x:Column>9</x:Column>
+      </x:ColBreak>
+     </x:ColBreaks>
+    </x:PageBreaks>
+    <x:PublishObjects>
+     <x:PublishObject>
+      <x:Id>24271</x:Id>
+      <x:DivID>hjhjj44555566_24271</x:DivID>
+      <x:SourceType>SourceSheet</x:SourceType>
+      <x:HtmlType>HtmlStatic</x:HtmlType>
+      <x:Location
+       HRef="C:\Documents and Settings\locbc\Desktop\hjhjj445555669999.htm"/>
+     </x:PublishObject>
+    </x:PublishObjects>
+   </x:ExcelWorksheet>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet2</x:Name>
+    <x:WorksheetOptions>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet3</x:Name>
+    <x:WorksheetOptions>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+  </x:ExcelWorksheets>
+  <x:WindowHeight>11640</x:WindowHeight>
+  <x:WindowWidth>15315</x:WindowWidth>
+  <x:WindowTopX>885</x:WindowTopX>
+  <x:WindowTopY>-135</x:WindowTopY>
+  <x:ProtectStructure>False</x:ProtectStructure>
+  <x:ProtectWindows>False</x:ProtectWindows>
+ </x:ExcelWorkbook>
+ <x:ExcelName>
+  <x:Name>Print_Area</x:Name>
+  <x:SheetIndex>1</x:SheetIndex>
+  <x:Formula>=Sheet1!$B$1:$I$9</x:Formula>
+ </x:ExcelName>
+</xml><![endif]-->
+</head>
+
+<body link=blue vlink=purple class=xl65>
+
+<table x:str border=0 cellpadding=0 cellspacing=0 width=1701 style='border-collapse:
+ collapse;table-layout:fixed;width:1277pt'>
+ <col class=xl65 width=13 style='mso-width-source:userset;mso-width-alt:475;
+ width:10pt'>
+ <col class=xl65 width=87 style='mso-width-source:userset;mso-width-alt:3181;
+ width:65pt'>
+ <col class=xl65 width=97 style='mso-width-source:userset;mso-width-alt:3547;
+ width:73pt'>
+ <col class=xl65 width=255 style='mso-width-source:userset;mso-width-alt:9325;
+ width:191pt'>
+ <col class=xl65 width=136 style='mso-width-source:userset;mso-width-alt:4973;
+ width:102pt'>
+ <col class=xl65 width=148 style='mso-width-source:userset;mso-width-alt:5412;
+ width:111pt'>
+ <col class=xl65 width=154 style='mso-width-source:userset;mso-width-alt:5632;
+ width:116pt'>
+ <col class=xl65 width=94 style='mso-width-source:userset;mso-width-alt:3437;
+ width:71pt'>
+
+ <col class=xl65 width=121 style='mso-width-source:userset;mso-width-alt:4425;
+ width:91pt'>
+ <col class=xl65 width=52 style='mso-width-source:userset;mso-width-alt:1901;
+ width:39pt'>
+ <col class=xl65 width=149 style='mso-width-source:userset;mso-width-alt:5449;
+ width:112pt'>
+ <col class=xl65 width=139 style='mso-width-source:userset;mso-width-alt:5083;
+ width:104pt'>
+ <col class=xl65 width=125 style='mso-width-source:userset;mso-width-alt:4571;
+ width:94pt'>
+ <col class=xl65 width=131 style='mso-width-source:userset;mso-width-alt:4790;
+ width:98pt'>
+ <tr class=xl66 height=23 valign=bottom style='mso-height-source:userset;
+  height:17.25pt'>
+  <td height=23 class=xl76 width=13 style='height:17.25pt;width:10pt'></td>
+  <td colspan=3 class=xl81 align=center valign=middle width=439
+  style='width:329pt'><a name="Print_Area"><font class="font7"
+  face="Times New Roman" size="4"><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></font></a></td>
+
+  <td colspan=5 class=xl81 align=center valign=middle width=653
+  style='width:491pt'><font class="font7" face="Times New Roman" size="4">C&#7896;NG
+  HÒA XÃ H&#7896;I CH&#7910; NGH&#296;A VI&#7878;T NAM</font></td>
+  <td class=xl67 width=52 style='width:39pt'></td>
+  <td class=xl66 width=149 style='width:112pt'></td>
+  <td class=xl66 width=139 style='width:104pt'></td>
+  <td class=xl66 width=125 style='width:94pt'></td>
+
+  <td class=xl66 width=131 style='width:98pt'></td>
+ </tr>
+ <tr class=xl66 height=23 valign=bottom style='mso-height-source:userset;
+  height:17.25pt'>
+  <td height=23 class=xl77 style='height:17.25pt'></td>
+  <td colspan=3 class=xl84 align=center valign=middle><font class="font8"
+  face="Times New Roman" size="4"><b></b></font></td>
+  <td colspan=5 class=xl82 align=center valign=middle><font class="font12"
+  face="Times New Roman" size="3"><b><u>Ð&#7897;c l&#7853;p - t&#7921; do -
+  h&#7841;nh phúc</u></b></font></td>
+
+  <td class=xl68></td>
+  <td colspan=4 class=xl66 style='mso-ignore:colspan'></td>
+ </tr>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td height=21 colspan=2 class=xl65 style='height:15.75pt;mso-ignore:colspan'></td>
+  <td colspan=2 class=xl69 style='mso-ignore:colspan'></td>
+  <td colspan=5 class=xl83 align=right><font class="font10"
+  face="Times New Roman" size="3"><i><?=$this->config->sys_info->city?>,ngày<?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></i></font></td>
+
+  <td class=xl69></td>
+  <td colspan=4 class=xl65 style='mso-ignore:colspan'></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=14 class=xl65 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=25 valign=bottom style='height:18.75pt'>
+  <td height=25 class=xl78 style='height:18.75pt'></td>
+  <td colspan=8 class=xl85 align=center><font class="font13"
+  face="Times New Roman" size="4"><b>SỔ ĐĂNG KÝ V&#258;N B&#7842;N &#272;I</b></font></td>
+  <td colspan=5 class=xl65 style='mso-ignore:colspan'></td>
+ </tr>
+ <?php 
+	if(count($this->id_lvbs) > 0) 
+	{ 
+		$lvb = htmlspecialchars(LoaiVanBanModel::getArrNameById($this->id_lvbs));
+	?>
+ <tr height=25 valign=bottom style='height:18.75pt'>
+  <td height=25 class=xl78 style='height:18.75pt'></td>
+  <td colspan=8 class=xl85 align=center><font class="font13"
+  face="Times New Roman" size="4">Loại Văn Bản: <?= $this->id_lvbs > 0 ? $lvb : 'Tất cả các loại';?></td>
+  <td colspan=5 class=xl65 style='mso-ignore:colspan'></td>
+ </tr>
+ <?php } ?>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td height=21 class=xl69 style='height:15.75pt'></td>
+  <td colspan=8 class=xl80 align=center><font class="font10"
+  face="Times New Roman" size="3"><i><?php echo $this->thu;?> năm <?=date("Y")?></i></font></td>
+  <td colspan=5 class=xl65 style='mso-ignore:colspan'></td>
+
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=14 class=xl65 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr class=xl70 height=52 valign=middle style='mso-height-source:userset;
+  height:39.0pt'>
+  <td height=52 class=xl71 style='height:39.0pt'></td>
+  <?php if(count($this->sokyhieu) >0) {?>
+  <td class=xl73 bgcolor="#C0C0C0" align=center width=97 style='width:65pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Số, ký hi&#7879;u VB</b></font></td>
+   <?php } ?>
+  <?php if(count($this->ngaybh) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=97 style='width:73pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Ngày tháng v&#259;n
+  b&#7843;n</b></font></td>
+   <?php } ?>
+  <?php if(count($this->trichyeund) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=255 style='width:191pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Tên loại và trích y&#7871;u n&#7897;i
+  dung VB</b></font></td>
+   <?php } ?>
+  <?php if(count($this->luuhoso) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=136 style='width:102pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Người ký</b></font></td>
+   <?php } ?>
+  <?php if(count($this->noinhan) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=148 style='width:111pt'><font
+  class="font11" face="Times New Roman" size="3"><b>N&#417;i nh&#7853;n văn bản</b></font></td>
+   <?php } ?>
+  <?php if(count($this->nguoinbl) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=154 style='width:116pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Đơn vị, ng&#432;&#7901;i nh&#7853;n
+  b&#7843;n l&#432;u</b></font></td>
+   <?php } ?>
+   <?php if(count($this->soban) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=50 style='width:51pt'><font
+  class="font11" face="Times New Roman" size="3"><b>S&#7889; l&#432;&#7907;ng
+  b&#7843;n</b></font></td>
+   <?php } ?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=121 style='width:91pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Ghi chú</b></font></td>
+
+  <td colspan=5 class=xl70 style='mso-ignore:colspan'></td>
+ </tr>
+ <?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'qtht/models/CoquanModel.php'; 
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'qtht/models/UsersModel.php';
+
+?>
+
+  <?php $stt=1;foreach($this->data as $row){ ?>
+ <tr height=42 valign=bottom style='height:31.5pt'>
+  <td height=42 class=xl72 width=13 style='height:31.5pt;width:10pt'><font
+  class="font6" face="Times New Roman" size="3">&nbsp;</font></td>
+     <?php if(count($this->sokyhieu) >0) {?>
+  <td class=xl75 align=center valign=middle width=87 style='width:65pt'><font
+  class="font6" face="Times New Roman" size="3"><?php echo $row["SOKYHIEU"]?></font></td>
+  <?php }?>
+  <?php if(count($this->ngaybh) >0) {?>
+  <td class=xl79 align=center valign=middle width=97 style='width:73pt'
+  ><font class="font6" face="Times New Roman" size="3"><?=QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></font></td>
+  <?php }?>
+    <?php if(count($this->trichyeund) >0) {?>
+  <td class=xl86 align=left valign=middle width=255 style='width:191pt'><font
+  class="font6" face="Times New Roman" size="3"><?=$row["TRICHYEU"] ?></font></td>
+  <?php }?>
+  <?php if(count($this->luuhoso) >0) {?>
+  <td class=xl75 align=center valign=middle width=136 style='width:102pt'><font
+  class="font6" face="Times New Roman" size="3"><?php echo UsersModel::getEmloyeeNameByIdUser($row["NGUOIKY"]) ?></font></td>
+  <?php }?>
+   <?php if(count($this->noinhan) >0) {?>
+  <td class=xl86 align=center valign=middle width=148 style='width:111pt'><font
+  class="font6" face="Times New Roman" size="3"><?php echo nl2br($row["NOIDEN"]) ?></font></td>
+  <?php }?>
+   <?php if(count($this->nguoinbl) >0) {?>
+  <td class=xl86 align=center valign=middle width=154 style='width:116pt'><font
+  class="font6" face="Times New Roman" size="3"><?php  	
+			echo nl2br(UsersModel::getEmloyeeNameByIdUser($row["NGUOISOAN"]));		
+		 ?></font></td>
+<?php }?>
+ <?php if(count($this->soban) >0) {?>
+  <td class=xl75 width=94 style='width:71pt'><font class="font6"
+  face="Times New Roman" size="3"><?php echo $row["SOBAN"] ?></font></td>
+  <?php }?>  
+  <td class=xl75 width=121 style='width:91pt'><font class="font6"
+  face="Times New Roman" size="3">&nbsp;</font></td>
+  <td colspan=5 class=xl65 style='mso-ignore:colspan'></td>
+ </tr>
+   <?php $stt++;} ?>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=13 style='width:10pt'></td>
+  <td width=87 style='width:65pt'></td>
+  <td width=97 style='width:73pt'></td>
+
+  <td width=255 style='width:191pt'></td>
+  <td width=136 style='width:102pt'></td>
+  <td width=148 style='width:111pt'></td>
+  <td width=154 style='width:116pt'></td>
+  <td width=94 style='width:71pt'></td>
+  <td width=121 style='width:91pt'></td>
+  <td width=52 style='width:39pt'></td>
+  <td width=149 style='width:112pt'></td>
+  <td width=139 style='width:104pt'></td>
+
+  <td width=125 style='width:94pt'></td>
+  <td width=131 style='width:98pt'></td>
+ </tr>
+ <![endif]>
+</table>
+
+</body>
+
+</html>
+<?php }else{?>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 11">
+<link rel=File-List href="2003vbdidoc_files/filelist.xml">
+<link rel=Edit-Time-Data href="2003vbdidoc_files/editdata.mso">
+<link rel=OLE-Object-Data href="2003vbdidoc_files/oledata.mso">
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>nguyennd</o:Author>
+  <o:LastAuthor>hatdh</o:LastAuthor>
+  <o:LastPrinted>2011-01-17T03:26:33Z</o:LastPrinted>
+  <o:Created>2009-08-25T14:43:47Z</o:Created>
+  <o:LastSaved>2011-01-17T04:12:45Z</o:LastSaved>
+  <o:Company>Hewlett-Packard</o:Company>
+  <o:Version>11.9999</o:Version>
+ </o:DocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:AllowPNG/>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]-->
+<style>
+<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\,";}
+@page
+	{margin:.2in .2in .2in .2in;
+	mso-header-margin:.2in;
+	mso-footer-margin:.2in;
+	mso-horizontal-page-align:center;}
+.font6
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font7
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font8
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font9
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font10
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font11
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font12
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font13
+	{color:windowtext;
+	font-size:14.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+tr
+	{mso-height-source:auto;}
+col
+	{mso-width-source:auto;}
+br
+	{mso-data-placement:same-cell;}
+.style0
+	{mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	white-space:nowrap;
+	mso-rotate:0;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial;
+	mso-generic-font-family:auto;
+	mso-font-charset:0;
+	border:none;
+	mso-protection:locked visible;
+	mso-style-name:Normal;
+	mso-style-id:0;}
+td
+	{mso-style-parent:style0;
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	border:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	mso-protection:locked visible;
+	white-space:nowrap;
+	mso-rotate:0;}
+.xl65
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl66
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl67
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl68
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-weight:700;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl69
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl70
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl71
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	white-space:normal;}
+.xl72
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\@";
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;
+	white-space:normal;}
+.xl73
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	background:silver;
+	mso-pattern:auto none;
+	white-space:normal;}
+.xl74
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	background:silver;
+	mso-pattern:auto none;
+	white-space:normal;}
+.xl75
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	white-space:normal;}
+.xl76
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	vertical-align:middle;}
+.xl77
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	vertical-align:middle;}
+.xl78
+	{mso-style-parent:style0;
+	font-size:14.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl79
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\[$-1010000\]d\/m\/yyyy\;\@";
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	white-space:normal;}
+.xl80
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;}
+.xl81
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl82
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl83
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:right;}
+.xl84
+	{mso-style-parent:style0;
+	font-size:13.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;}
+.xl85
+	{mso-style-parent:style0;
+	font-size:14.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <x:ExcelWorkbook>
+  <x:ExcelWorksheets>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet1</x:Name>
+    <x:WorksheetOptions>
+     <x:DefaultRowHeight>315</x:DefaultRowHeight>
+     <x:FitToPage/>
+     <x:FitToPage/>
+     <x:Print>
+      <x:ValidPrinterInfo/>
+      <x:PaperSizeIndex>9</x:PaperSizeIndex>
+      <x:Scale>64</x:Scale>
+      <x:HorizontalResolution>600</x:HorizontalResolution>
+      <x:VerticalResolution>600</x:VerticalResolution>
+     </x:Print>
+     <x:PageBreakZoom>60</x:PageBreakZoom>
+     <x:Selected/>
+     <x:Panes>
+      <x:Pane>
+       <x:Number>3</x:Number>
+       <x:ActiveRow>7</x:ActiveRow>
+       <x:ActiveCol>3</x:ActiveCol>
+      </x:Pane>
+     </x:Panes>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+    <x:PageBreaks>
+     <x:ColBreaks>
+      <x:ColBreak>
+       <x:Column>9</x:Column>
+      </x:ColBreak>
+     </x:ColBreaks>
+    </x:PageBreaks>
+    <x:PublishObjects>
+     <x:PublishObject>
+      <x:Id>24271</x:Id>
+      <x:DivID>hjhjj44555566_24271</x:DivID>
+      <x:SourceType>SourceSheet</x:SourceType>
+      <x:HtmlType>HtmlStatic</x:HtmlType>
+      <x:Location
+       HRef="C:\Documents and Settings\locbc\Desktop\hjhjj445555669999.htm"/>
+     </x:PublishObject>
+    </x:PublishObjects>
+   </x:ExcelWorksheet>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet2</x:Name>
+    <x:WorksheetOptions>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet3</x:Name>
+    <x:WorksheetOptions>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+  </x:ExcelWorksheets>
+  <x:WindowHeight>11640</x:WindowHeight>
+  <x:WindowWidth>15315</x:WindowWidth>
+  <x:WindowTopX>885</x:WindowTopX>
+  <x:WindowTopY>-135</x:WindowTopY>
+  <x:ProtectStructure>False</x:ProtectStructure>
+  <x:ProtectWindows>False</x:ProtectWindows>
+ </x:ExcelWorkbook>
+</xml><![endif]-->
+</head>
+
+<body link=blue vlink=purple class=xl65>
+
+<table x:str border=0 cellpadding=0 cellspacing=0 width=1681 style='border-collapse:
+ collapse;table-layout:fixed;width:1262pt'>
+ <col class=xl65 width=13 style='mso-width-source:userset;mso-width-alt:475;
+ width:10pt'>
+ <col class=xl65 width=87 style='mso-width-source:userset;mso-width-alt:3181;
+ width:65pt'>
+ <col class=xl65 width=97 style='mso-width-source:userset;mso-width-alt:3547;
+ width:73pt'>
+ <col class=xl65 width=255 style='mso-width-source:userset;mso-width-alt:9325;
+ width:191pt'>
+ <col class=xl65 width=136 style='mso-width-source:userset;mso-width-alt:4973;
+ width:102pt'>
+ <col class=xl65 width=148 style='mso-width-source:userset;mso-width-alt:5412;
+ width:111pt'>
+ <col class=xl65 width=154 style='mso-width-source:userset;mso-width-alt:5632;
+ width:116pt'>
+ <col class=xl65 width=94 style='mso-width-source:userset;mso-width-alt:3437;
+ width:71pt'>
+
+ <col class=xl65 width=121 style='mso-width-source:userset;mso-width-alt:4425;
+ width:91pt'>
+ <col class=xl65 width=32 style='mso-width-source:userset;mso-width-alt:1170;
+ width:24pt'>
+ <col class=xl65 width=149 style='mso-width-source:userset;mso-width-alt:5449;
+ width:112pt'>
+ <col class=xl65 width=139 style='mso-width-source:userset;mso-width-alt:5083;
+ width:104pt'>
+ <col class=xl65 width=125 style='mso-width-source:userset;mso-width-alt:4571;
+ width:94pt'>
+ <col class=xl65 width=131 style='mso-width-source:userset;mso-width-alt:4790;
+ width:98pt'>
+ <tr class=xl66 height=23 valign=bottom style='mso-height-source:userset;
+  height:17.25pt'>
+  <td height=23 class=xl76 width=13 style='height:17.25pt;width:10pt'></td>
+  <td colspan=3 class=xl81 align=center valign=middle width=439
+  style='width:329pt'><font class="font7" face="Times New Roman" size="4"><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></font></td>
+
+  <td colspan=5 class=xl81 align=center valign=middle width=653
+  style='width:491pt'><font class="font7" face="Times New Roman" size="4">C&#7896;NG
+  HÒA XÃ H&#7896;I CH&#7910; NGH&#296;A VI&#7878;T NAM</font></td>
+  <td class=xl67 width=32 style='width:24pt'></td>
+  <td class=xl66 width=149 style='width:112pt'></td>
+  <td class=xl66 width=139 style='width:104pt'></td>
+  <td class=xl66 width=125 style='width:94pt'></td>
+
+  <td class=xl66 width=131 style='width:98pt'></td>
+ </tr>
+ <tr class=xl66 height=23 valign=bottom style='mso-height-source:userset;
+  height:17.25pt'>
+  <td height=23 class=xl77 style='height:17.25pt'></td>
+  <td colspan=3 class=xl84 align=center valign=middle><font class="font8"
+  face="Times New Roman" size="4"><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></font></td>
+  <td colspan=5 class=xl82 align=center valign=middle><font class="font12"
+  face="Times New Roman" size="3"><b><u>Ð&#7897;c l&#7853;p - T&#7921; do -
+  H&#7841;nh phúc</u></b></font></td>
+
+  <td class=xl68></td>
+  <td colspan=4 class=xl66 style='mso-ignore:colspan'></td>
+ </tr>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td height=21 colspan=2 class=xl65 style='height:15.75pt;mso-ignore:colspan'></td>
+  <td colspan=2 class=xl69 style='mso-ignore:colspan'></td>
+  <td colspan=5 class=xl83 align=right><font class="font10"
+  face="Times New Roman" size="3"><i><?=$this->config->sys_info->city?>, ngày<?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></i></font></td>
+
+  <td class=xl69></td>
+  <td colspan=4 class=xl65 style='mso-ignore:colspan'></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=14 class=xl65 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=25 valign=bottom style='height:18.75pt'>
+  <td height=25 class=xl78 style='height:18.75pt'></td>
+  <td colspan=8 class=xl85 align=center><font class="font13"
+  face="Times New Roman" size="4"><b>BÁO CÁO V&#258;N B&#7842;N &#272;I</b></font></td>
+
+  <td colspan=5 class=xl65 style='mso-ignore:colspan'></td>
+ </tr>
+ <?php 
+	if(count($this->id_lvbs) > 0) 
+	{ 
+		$lvb = htmlspecialchars(LoaiVanBanModel::getArrNameById($this->id_lvbs));
+	?>
+ <tr height=25 valign=bottom style='height:18.75pt'>
+  <td height=25 class=xl78 style='height:18.75pt'></td>
+  <td colspan=8 class=xl85 align=center><font class="font13"
+  face="Times New Roman" size="4">Loại Văn Bản: <?= $this->id_lvbs > 0 ? $lvb : 'Tất cả các loại';?></td>
+  <td colspan=5 class=xl65 style='mso-ignore:colspan'></td>
+ </tr>
+ <?php } ?>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td height=21 class=xl69 style='height:15.75pt'></td>
+  <td colspan=8 class=xl80 align=center><font class="font10"
+  face="Times New Roman" size="3"><i><?php echo $this->thu;?> năm <?=date("Y")?></i></font></td>
+  <td colspan=5 class=xl65 style='mso-ignore:colspan'></td>
+
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=14 class=xl65 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr class=xl70 height=52 valign=middle style='mso-height-source:userset;
+  height:39.0pt'>
+  <td height=52 class=xl71 style='height:39.0pt'></td>
+  <?php if(count($this->sokyhieu) >0) {?>  
+  <td class=xl73 bgcolor="#C0C0C0" align=center width=87 style='width:65pt'><font
+  class="font11" face="Times New Roman" size="3"><b>S&#7889; ký hi&#7879;u</b></font></td>
+   <?php } ?>
+ <?php if(count($this->ngaybh) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=97 style='width:73pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Ngày tháng v&#259;n
+  b&#7843;n</b></font></td>
+   <?php } ?>
+  <?php if(count($this->trichyeund) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=255 style='width:191pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Tên loại và trích y&#7871;u n&#7897;i
+  dung</b></font></td>
+   <?php } ?>
+  <?php if(count($this->luuhoso) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=136 style='width:102pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Người ký</b></font></td>
+   <?php } ?>
+   <?php if(count($this->noinhan) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=148 style='width:111pt'><font
+  class="font11" face="Times New Roman" size="3"><b>N&#417;i nh&#7853;n</b></font></td>
+   <?php } ?>
+  <?php if(count($this->nguoinbl) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=154 style='width:116pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Đơn vị, ng&#432;&#7901;i nh&#7853;n
+  b&#7843;n l&#432;u</b></font></td>
+   <?php } ?>
+   <?php if(count($this->soban) >0) {?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=94 style='width:71pt'><font
+  class="font11" face="Times New Roman" size="3"><b>S&#7889; l&#432;&#7907;ng
+  b&#7843;n</b></font></td>
+   <?php } ?>
+  <td class=xl74 bgcolor="#C0C0C0" align=center width=121 style='width:91pt'><font
+  class="font11" face="Times New Roman" size="3"><b>Ghi chú</b></font></td>
+
+  <td colspan=5 class=xl70 style='mso-ignore:colspan'></td>
+ </tr>
+  <?php $stt=1;foreach($this->data as $row){ ?>
+ <tr height=42 valign=bottom style='height:31.5pt'>
+  <td height=42 class=xl72 width=13 style='height:31.5pt;width:10pt'><font
+  class="font6" face="Times New Roman" size="3">&nbsp;</font></td>
+    <?php if(count($this->sokyhieu) >0) {?>
+  <td class=xl75 align=center valign=middle width=87 style='width:65pt'><font
+  class="font6" face="Times New Roman" size="3"><?php echo $row["SOKYHIEU"]?></font></td>
+    <?php }?>
+     <?php if(count($this->ngaybh) >0) {?>
+  <td class=xl79 align=center valign=middle width=97 style='width:73pt'
+  ><font class="font6" face="Times New Roman" size="3"><?=QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></font></td>
+    <?php }?>
+      <?php if(count($this->trichyeund) >0) {?>
+  <td class=xl75 align=center valign=middle width=255 style='width:191pt'><font
+  class="font6" face="Times New Roman" size="3"><?=$row["TRICHYEU"] ?></font></td>
+    <?php }?>
+<?php if(count($this->luuhoso) >0) {?>
+  <td class=xl75 align=center valign=middle width=136 style='width:102pt'><font
+  class="font6" face="Times New Roman" size="3"><?php echo UsersModel::getEmloyeeNameByIdUser($row["NGUOIKY"]) ?></font></td>
+    <?php }?>
+    <?php if(count($this->noinhan) >0) {?>
+  <td class=xl75 align=center valign=middle width=148 style='width:111pt'><font
+  class="font6" face="Times New Roman" size="3"><?php echo $row["NOIDEN"] ?></font></td>
+    <?php }?>
+  <?php if(count($this->nguoinbl) >0) {?>
+  <td class=xl75 align=center valign=middle width=154 style='width:116pt'><font
+  class="font6" face="Times New Roman" size="3"><?php  	
+			echo VanbandireportModel::getNguoinhanFromVbandi($row["ID_VBDI"]);	
+		 ?></font></td>
+	  <?php }?>
+ <?php if(count($this->soban) >0) {?>
+  <td class=xl75 width=94 style='width:71pt'><font class="font6"
+  face="Times New Roman" size="3"><?php echo $row["SOBAN"] ?></font></td>
+    <?php }?>
+  <td class=xl75 width=121 style='width:91pt'><font class="font6"
+  face="Times New Roman" size="3">&nbsp;</font></td>
+  <td colspan=5 class=xl65 style='mso-ignore:colspan'></td>
+ </tr>
+  <?php $stt++;} ?>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=13 style='width:10pt'></td>
+  <td width=87 style='width:65pt'></td>
+  <td width=97 style='width:73pt'></td>
+
+  <td width=255 style='width:191pt'></td>
+  <td width=136 style='width:102pt'></td>
+  <td width=148 style='width:111pt'></td>
+  <td width=154 style='width:116pt'></td>
+  <td width=94 style='width:71pt'></td>
+  <td width=121 style='width:91pt'></td>
+  <td width=32 style='width:24pt'></td>
+  <td width=149 style='width:112pt'></td>
+  <td width=139 style='width:104pt'></td>
+
+  <td width=125 style='width:94pt'></td>
+  <td width=131 style='width:98pt'></td>
+ </tr>
+ <![endif]>
+</table>
+
+</body>
+
+</html>
+
+<?php }?>

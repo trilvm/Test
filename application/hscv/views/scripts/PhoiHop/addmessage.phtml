@@ -1,0 +1,25 @@
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<p><?php echo $this->idhscv; echo $this->id_u ?></p>
+<p>
+<textarea cols="50" rows="5" name="message"></textarea>
+</p>
+<a  href="#"  
+	onClick='
+	var aj = new AjaxEngine();
+	var id_u=document.getElementById("id_u").value;
+	alert("/hscv/phoihop/add/idhscv/<?php echo $this->idhscv ?>/id_u/"+id_u);
+	objtemp=document.getElementById("iddiv<?php echo $this->idhscv?>");
+	alert(objtemp);
+	visibletemp=(objtemp.style.display!="none")
+	if(visibletemp)
+	{
+		objtemp.style.display="none";	
+		document.frmPhoiHop.idhscv.value=<?php echo $this->idhscv ?>;
+		document.frmPhoiHop.id_u.value=id_u;
+		aj.loadDivFromForm("iddiv<?php echo $this->idhscv ?>",document.frmPhoiHop);	
+	}
+	else
+	objtemp.style.display="block";
+	loadDiv("iddiv<?php echo $this->idhscv ?>","/hscv/phoihop/add/idhscv/<?php echo $this->idhscv ?>/id_u/"+id_u);
+	'>Thêm mới</a>
+<input type=hidden name="idhscv" value="<?php echo $this->idhscv;?>">

@@ -1,0 +1,64 @@
+<?php
+$this->dojo()->enable();
+?>
+<form name=frm method="post" action="/wf/ActivityPool/Save" enctype="multipart/form-data" >
+<fieldset>
+	<div class="required">
+		<label>Tên trạng thái(*)</label>
+		<input type=text class=inputbox name=NAME value="<?=$this->data->NAME?>" class="inputText" size="50" maxlength="100">
+    	<span class="box_erro_area" id="ERRname"></span>
+	</div>
+    <div class="required">
+		<label>Mã số(*)</label>
+		<input type=text class=inputbox name=ALIAS value="<?=$this->data->ALIAS?>" class="inputText" size="50" maxlength="100">
+    	<span class="box_erro_area" id="ERRALIAS"></span>
+	</div>
+    <div class="required">
+		<label>URL(*)</label>
+		<input type=text class=inputbox name=LINK value="<?=$this->data->LINK?>" class="inputText" size="50" maxlength="100">
+    	<span class="box_erro_area" id="ERRLINK"></span>
+	</div>
+	<div class="required">
+		<label>Thuộc đối tượng(*)</label>
+        <select name="ID_C" id="ID_C" class="selectOne">
+            <?php
+                foreach($this->class as $row){
+                    echo "<option value='".$row->ID_C."'>".$row->NAME."</option>";
+                }
+            ?>
+		</select>
+		<script>
+			document.getElementById("ID_C").value='<?php echo $this->data->ID_C; ?>';
+		</script>
+        <span class="box_erro_area" id="ERRID_C"></span>
+	</div>
+    <div class="optional">
+		<label>(*) Bắt buộc nhập liệu.</label>
+	</div>
+</fieldset>
+<input type=hidden name=IP_AP value="<?php echo $this->data->IP_AP; ?>">
+<input type=hidden name=page value="<?php echo $this->page; ?>">
+<input type=hidden name=limit value="<?php echo $this->limit; ?>">
+<input type=hidden name=search value="<?php echo $this->search; ?>">
+<input type=hidden name=filter_object value="<?php echo $this->filter_object; ?>">
+</form>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+		err = err & validateInput("req",document.frm.NAME,"<?=ERR11001003?>");
+		err = err & err==true?validateInput("maxlen=50",document.frm.NAME,"<?=ERR11001004?>"):false;
+		err = err & validateInput("req",document.frm.ALIAS,"<?=ERR11001005?>");
+		err = err & err==true?validateInput("maxlen=20",document.frm.ALIAS,"<?=ERR11001006?>"):false;
+		err = err & err==true?validateInput("alnum",document.frm.ALIAS,"<?=ERR11001007?>"):false;
+		err = err & validateInput("req",document.frm.LINK,"<?=ERR11001009?>");
+		err = err & err==true?validateInput("maxlen=128",document.frm.LINK,"<?=ERR11001010?>"):false;
+		err = err & validateInput("req",document.frm.ID_C,"<?=ERR11001008?>");
+		if(err==true){
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+		document.frm.action = "/wf/activitypool";
+		document.frm.submit();
+	}
+</script>

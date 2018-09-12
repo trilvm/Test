@@ -1,0 +1,107 @@
+
+<table width="100%" class=adminlist1>
+	
+	
+	
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Số ký hiệu</td>
+		<td nowrap="nowrap"><?=$this->data['SOKYHIEU']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Loại văn bản</td>
+		<td nowrap="nowrap"><?=$this->data['LVBNAME']?></td>
+		<td width="100%"></td>
+	</tr>
+	
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Ngày ban hành</td>
+		<td nowrap="nowrap"><?=date("d/m/Y",strtotime($this->data["NGAYBANHANH"]))?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Ngày gửi</td>
+		<td nowrap="nowrap"><?=date("d/m/Y",strtotime($this->data["NGAYGUI"]))?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Cơ quan ban hành</td>
+		<td><?=$this->data['COQUANBANHANH_TEXT']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Người ký</td>
+		<td nowrap="nowrap"><?=$this->data['NGUOIKY']?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Cơ quan chuyển</td>
+		<td nowrap="nowrap"><?=$this->data['NAMECQCHUYEN']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue"></td>
+		<td nowrap="nowrap"></td>
+		<td width="100%"></td>
+	</tr>
+	
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Số tờ</td>
+		<td nowrap="nowrap"><?=$this->data['SOTO']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Độ mật</td>
+		<td nowrap="nowrap"><?php 
+							switch($this->data['DOMAT']){
+								case 0:
+									echo "Chưa nhập";
+									break;
+								case 1:
+									echo "bình thường";
+									break;
+								case 2:
+									echo "mật";
+									break;
+								case 3:
+									 echo "tuyệt mật";
+									break;
+								break;
+							}
+							?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Số bản</td>
+		<td nowrap="nowrap"><?=$this->data['SOBAN']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Độ khẩn</td>
+		<td nowrap="nowrap"><?php 
+							switch($this->data['DOKHAN']){
+								case 0:
+									echo "Chưa nhập";
+									break;
+								case 1:
+									echo "bình thường";
+									break;
+								case 2:
+									echo "khẩn";
+									break;
+								case 3:
+									 echo "hỏa tốc";
+									 break;
+								break;
+							}
+							?></td>
+		<td width="100%"></td>
+	</tr>
+	
+	
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">File đính kèm</td>
+		<td nowrap="nowrap" >
+			<?php
+				foreach($this->file as $fileitem){
+					echo "<a href='/hscv/File/download?year=&maso=".$fileitem['MASO']."'>".$fileitem['FILENAME']."</a>, ";
+				}
+			?>
+		</td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue"></td>
+		<td nowrap="nowrap"></td>
+		<td width="100%"></td>
+	</tr>
+	
+
+	
+</table>

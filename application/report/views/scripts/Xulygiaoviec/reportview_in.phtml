@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+td{
+	border-color: black;
+}
+th{
+	border-color: black;
+}
+</style>
+</head>
+<body style="background-color:transparent">
+<table  width=100%>
+<tr >
+  <td align=center ><b><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></b></td>
+
+  <td align=center><b>CỘNG HÒA XÃ HỘI CHỦ
+  NGHĨA VIỆT NAM</b></td>
+ </tr>
+ <tr >
+  <td align=center ><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+  <td align=center ><b>Ðộc lập - Tự do - Hạnh phúc</b></td>
+ </tr>
+ <tr >
+
+ 
+  <td ></td>
+  <td align=right><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+ </tr>
+ <tr >
+  <td></td>
+ </tr>
+ <tr >
+
+  <td  ></td>
+  <td ></td>
+ </tr>
+ <tr >
+  <td ></td>
+  <td  ></td>
+ </tr>
+</table>
+<p align=center><b>BÁO CÁO XỬ LÝ VĂN BẢN GIAO VIỆC </b></p>
+<p align=center><?php echo $this->thu;?> năm <?=QLVBDHCommon::getYear()?></p>
+<table border="1" style="border: 1px solid black; border-collapse: collapse;">
+ <thead>
+
+<tr>
+	<th>#</th>
+	<th colspan=<?php echo $this->xulyvanban;?>><?php
+	switch($this->type){
+		case 1:
+			echo "Xử lý văn bản giao việc";
+			break;
+		case 2:
+			echo "Công việc";
+			break;
+		case 3:
+			echo "Hồ sơ một cửa";
+			break;
+		default:
+			echo "Không xác định";
+	}
+	?></th>
+	<th colspan=<?php echo $this->tinhhinhxl +1;?>>Tình hình xử lý</th>
+</tr>
+<tr>
+	<th></th>
+	
+	<?php if(count($this->coquanbh) >0){?>
+	<th>Đơn vị giao việc</th>
+	<?php }?>
+	<?php if(count($this->trichyeu) >0){?>
+	<th>Trích yếu</th>
+	<?php } ?>
+    <?php if(count($this->ngayden) >0){?>
+	<th>Ngày đến</th>
+	<?php } ?>
+	<?php if(count($this->nguoiky) >0){?>
+	<th>Người ký</th>
+	<?php } ?>
+	<?php if(count($this->sokh) >0){?>
+	<th>Số ký hiệu</th>
+	<?php }?>
+	
+	<?php if(count($this->domat) >0){?>
+	<th>Độ mật</th>
+	<?php } ?>
+	<?php if(count($this->dokhan) >0){?>
+	<th>Độ khẩn</th>
+	<?php } ?>
+        <th>Loại công việc</th>
+        <th>Cấp giao việc</th>
+	<th>Hạn xử lý</th>
+        <th>Tiến độ</th>
+        
+	<?php if(count($this->nguoixl) >0){?>
+	<th>Người xử lý</th>
+	<?php } ?>
+	<?php if(count($this->trangthai) >0){?>
+	<th>Trạng thái</th>
+	<?php } ?>
+	<?php if(count($this->ketquaxl) >0){?>
+	<th>Kết quả xử lý</th>
+	<?php } ?>
+</tr>
+</thead>
+<tbody>
+<?php 
+$arr_thongke = $this->arr_thongke;
+/*$arr_thongke = array();
+$dem_ktxl_tre = 0;
+$dem_ktxl = 0;
+$dem_dangxl = 0;
+$dem_dangxl_tre = 0;
+$dem_ktxlluutheodoi = 0;
+$dem_khongxuly = 0;*/
+
+$stt=1;foreach($this->data as $item){
+
+			/*if($item["IS_KHONGXULY"]){
+				$dem_khongxuly++;
+				$dem_ktxl++;
+			}else
+			if($item["IS_FINISH"]){
+				$dem_ktxl++;
+				if($item["IS_TRE_KT"])
+					$dem_ktxl_tre++;
+				
+			}else{
+				if($item["IS_THEODOI"]){
+					$dem_ktxl++;
+					$dem_ktxlluutheodoi++;
+				}else{
+					$dem_dangxl++;
+					$dis_hour = QLVBDHCommon::getTreHan($item["DATESEND"],$item["HANXULY"]);
+					if($dis_hour > 0){
+						$dem_dangxl_tre++;
+					}
+				}
+					
+			}*/
+
+			
+		
+			
+?>
+<tr>
+	<td>
+		<?=$stt?>
+	</td>
+	
+    <?php if(count($this->coquanbh) >0){?>
+	<td>
+		<?=$item["COQUANBANHANH_TEXT"]?>
+	</td>
+	<?php } ?>
+	<?php if(count($this->trichyeu) >0){?>
+	<td>
+	<?=$item["TRICHYEU"]?>
+	</td>
+	<?php }?>
+	<?php if(count($this->ngayden) >0){?>
+	<td>
+	<?=QLVBDHCommon::MysqlDateToVnDate($item["NGAYDEN"])?>
+	</td>
+	<?php }?>
+	<?php if(count($this->nguoiky) >0){?>
+	<td>
+	<?=$item["NGUOIKY"]?>
+	</td>
+	<?php }?>
+	<?php if(count($this->sokh) >0){?>
+	<td>
+	<?=$item["SOKYHIEU"]?> <br/>
+	<i><?=QLVBDHCommon::MysqlDateToVnDate($item["NGAYBANHANH"])?></i>
+	</td>
+	<?php } ?>
+	
+	<?php if(count($this->domat) >0){?>
+	<td>
+	<?php if($item["DOMAT"]==1) echo 'Bình thường';
+	      if($item["DOMAT"]==2) echo 'Mật';
+		  if($item["DOMAT"]==3) echo 'Tối mật';
+		  if($item["DOMAT"]==4) echo 'Tuyệt mật';
+	 ?>
+	</td>
+	<?php }?>
+	<?php if(count($this->dokhan) >0){?>
+	<td>
+	<?php if($item["DOKHAN"]==1) echo 'Bình thường';
+	   if($item["DOKHAN"]==2) echo 'Khẩn';
+	   if($item["DOKHAN"]==3) echo 'Hỏa tốc';
+	?>
+	</td>
+	<?php }?>
+         <td width="8%">
+            <?=vbdenModel::getNameLoaiCVByCode($item['LOAICV_GIAOVIEC'])?>
+	</td>
+    
+        <td width="8%">
+		<?=$item["CAP_GIAOVIEC"]?>
+	</td>
+	<td width="8%">
+            <?=QLVBDHCommon::createTextHanXuLy($item["HANXULY_GIAOVIEC"])?>
+	</td>
+    <td width="5%">
+	<?=$item["TIENDO_GIAOVIEC"]?>
+	</td>   
+	<?php if(count($this->nguoixl) >0){?>
+	<td>
+		
+		
+		 <?php 
+			$arr_u_xl = explode(",",$item["NAME_U"] );	
+			
+			$ii = 0;
+			foreach( $arr_u_xl as $id_user_xl){
+				if($ii == 0 && $item["IS_FINISH"]!=1 )
+					echo "<font color=blue>";
+				echo UsersModel::getEmloyeeNameByIdUser((int)$id_user_xl);
+				if($ii == 0 && $item["IS_FINISH"]!=1 )
+					echo "</font>";
+				echo "<br>";
+				$ii++;
+				
+			}
+		?>
+		
+			
+		
+	</td>
+	<?php }?>
+    <?php if(count($this->trangthai) >0){?>
+	<td>
+		
+		<?php 
+		if($item["ID_HSCV"]=="")
+		{
+			if($item["IS_KHONGXULY"] == 1)
+					echo "văn bản không xử lý";
+		}
+		else if($item["IS_THEODOI"]==1){
+			echo "Đang lưu theo dõi";
+		}else{
+		if($item["IS_FINISH"]==1){
+			echo "Đã kết thúc";
+		}else{
+		
+		$dis_hour = QLVBDHCommon::getTreHan($item["DATESEND"],$item["HANXULY"]);
+				if($dis_hour > 0){
+					
+					if($this->id_u == $item_luanchuyen["ID_U_RECEIVE"])
+						echo '<font color="Red">đang xử lý (trễ '. (int)($dis_hour/8) .' ngày '.($dis_hour%8).' giờ)</font>';
+					else 
+						echo 'đang xử lý (trễ '. (int)($dis_hour/8) .' ngày '.($dis_hour%8).' giờ)';
+				}
+				else{ 
+					$con = 0- $dis_hour;
+					echo 'đang xử lý (còn '. (int)($con/8) .' ngày '.($con%8).' giờ)';
+				}
+		}}
+		?>
+	</td>
+	<?php }?>
+    
+        <?php if(count($this->cvtrinhki) > 0){?>
+        <td>
+            <?php 
+			$arr_u_xl = explode(",",$item["NAME_U"] );	
+			
+			$ii = 0;
+			foreach( $arr_u_xl as $id_user_xl){
+				if($ii == 0 && $item["IS_FINISH"]!=1 )
+					echo "<font color=blue>";
+				echo UsersModel::getEmloyeeNameByIdUser((int)$id_user_xl);
+				if($ii == 0 && $item["IS_FINISH"]!=1 )
+					echo "</font>";
+				echo "<br>";
+				$ii++;
+				
+			}
+		?>
+        </td>
+        <?php } ?>
+    
+	<?php if(count($this->ketquaxl) >0){?>
+	<td><?
+		if($item["ID_HSCV"] != "")	{
+			$list_vbdi = XulygiaoviecModel::getListVanbandiByIdHSCV($item["ID_HSCV"]);
+			if(count($list_vbdi) > 0){
+				//if($item["IS_FINISH"] == 1)
+					//$ktxuly_ravbdi++;
+				//else
+					//$dangxuly_ravbdi++;
+				foreach($list_vbdi as $vbdi){
+					echo  $vbdi["SOKYHIEU"]."<br/>";
+				}
+			}
+			
+			if($item["IS_THEODOI"]==1){
+				echo $item["KQ_DEXUAT"];
+			}
+			
+		}
+
+	?></td>
+	<?php } ?>
+</tr>
+<?php $stt++;} 
+/*$arr_thongke["dem_ktxl"] = $dem_ktxl;
+$arr_thongke["dem_ktxl_tre"] = $dem_ktxl_tre;
+$arr_thongke["dem_dangxl"] = $dem_dangxl;
+$arr_thongke["dem_dangxl_tre"] = $dem_dangxl_tre;
+$arr_thongke["dem_ktxlluutheodoi"] = $dem_ktxlluutheodoi;
+$arr_thongke["dem_khongxuly"] = $dem_khongxuly;*/
+?>
+</tbody>
+ <tfoot>
+ </tfoot>
+</table>
+</body>
+<script>print();</script>
+</html>

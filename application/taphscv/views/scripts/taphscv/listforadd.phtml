@@ -1,0 +1,63 @@
+<link rel="stylesheet" href="/styles/system.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/../../../styles/rounded.css" />
+<link rel="stylesheet" type="text/css" href="/../../../styles/general.css" />
+<link rel="stylesheet" type="text/css" href="/../../../styles/template.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<form action="/taphscv/taphscv/addvanbantotaphoso" method="post" name="frm">
+<table class=adminlist1 width="100%" style="font-size: 9pt;">
+	<thead>
+            <tr>
+                <th colspan="4">Chọn tập hồ sơ công việc</th>
+            </tr>
+            <tr>
+                <th width="5%">STT</th>
+                <th>Tên tập hồ sơ</th>
+                <th>Thư mục</th>
+                <th>Mã số</th>
+            </tr>
+	</thead>
+	<tfoot>
+	</tfoot>
+	<tbody>
+<?php
+	if(count($this->data)<=0){
+		echo "<tr><td colspan='5'>Không tìm thấy tập hồ sơ công việc nào</td></tr>";
+	}else{
+	$stt=($this->page-1)*$this->limit;
+	$i=0;
+	foreach($this->data as $row){$stt++;?>
+            <?php
+            $array = array();
+            QLVBDHCommon::getDirThuMucTapHSCV(&$array, $row['ID_THUMUC']);
+            ?>
+        <input type="hidden" name="idtaphoso" value="<?=$row['ID_TAPHOSO']?>" />
+            <tr class="row<?=$i?>" id="row_hscv<?=$stt?>">
+                <td valign="top"><?=$stt?></td>
+                <td>
+                    <a href="#" onclick="ItemClick('<?=$row['ID_TAPHOSO']?>');">
+                    <?=$row['TEN']?></a>
+                </td>
+                <td><?= implode(">>", array_reverse($array)) ?></td>
+                <td><?=Common_Maso::getKyhieuDeptById($row['ID_DEP']);?><?=$row['CODE']?></td>
+            </tr>
+<?php
+		$i = (-1+$i)*-1;
+	}
+}
+?>
+	</tbody>
+</table>
+    <input type="hidden" name="idvbd" value="<?=$this->idvbd?>" />
+</form>
+<script>
+function ItemClick(id) {
+    var answer = confirm("Bạn chắc chắn muốn thêm văn bản vào tập hồ sơ này ?")
+    if (answer){
+        document.frm.action = '/taphscv/taphscv/addvanbantotaphoso/idtaphoso/'+id+'/idobject/<?=$this->idobject?>/loai/<?=$this->loai?>';
+        document.frm.submit();
+    }
+    else{
+            
+    }    
+}
+</script>

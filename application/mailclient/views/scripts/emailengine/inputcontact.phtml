@@ -1,0 +1,83 @@
+<div align="right" style="float:right;cursor:pointer;width:20px;"  onclick="closeEditGroup();return false;">
+<img src="/images/email/close_tooltip.jpg" onclick="closeEditContact();return false;" ></img>
+</div>
+<div class="clr"></div>
+<div style="border:1px solid #888888;margin:7px;padding:5px 8px;position:relative;white-space:nowrap;">
+<b><i><?php echo $this->id_ead ==0?"Thêm liên lạc":"Cập nhật liên lạc" ?> </i></b>
+<form name="frm_inputcontact">
+<div class="clr"></div>
+<div class="required clearfix">
+<label>
+Tên:
+</label>
+<input type="input" name='NAME_FRIEND' value="<?=$this->object->_name_friend?>"> 
+<span class="box_erro_area" id="ERRNAME_FRIEND"> </span>
+</div>
+
+<div class="clr"></div>
+
+<div class="required clearfix">
+<label>
+Email:
+</label>
+<input type="input" name='EMAIL_ADDR_FR' value="<?=$this->object->_email_addr_fr?>"> 
+<span class="box_erro_area" id="ERREMAIL_ADDR_FR" > </span>
+</div>
+<div class="clr"></div>
+<!-- 
+<div class="required clearfix">
+<label>
+Thuộc nhóm:
+</label>
+<select name="ID_EG"  multiple="multiple" size=5>
+<?php Email_group::toComboGroupsByIdUser($this->id_u) ?>	
+</select>
+<input type="hidden" name='ID_EG_H' value="<?=$this->object->_id_eg?>" >
+</div>
+-->
+
+<div class="clr"></div>
+<div class="required clearfix">
+<label>
+Ghi chú:
+</label>
+<textarea rows="2" cols="80" name="COMMENT" ><?=$this->object->_comment?></textarea>
+</div>
+<div class="clr"></div>
+<div class="required clearfix">
+<label>
+Thuộc nhóm:
+</label>
+<table>
+<?php  
+$stt = 0;
+foreach ($this->groups as $it_g){
+?>
+<?php if($stt%3 ==0){?>
+	<tr>
+<?php }?>
+<td>
+<input type="checkbox" name="ID_EG[]" id="IC_ID_EG<?=$it_g["ID_EG"]?>"  value="<?=$it_g["ID_EG"]?>"
+<?=$it_g["IS_OLD"]==1?"checked":""?>
+> <?=$it_g["NAME"]?>
+</td>
+<?php if($stt%3 ==2){?>
+	</tr>
+<?php }?>
+
+
+<?php $stt++;}?>
+</table>
+
+<input type="hidden" name='ID_EG_H' value="<?=$this->object->_id_eg?>" >
+</div>
+
+<div class="clr"></div>
+
+
+<div align="center" style="cursor:pointer;width:73px;margin-left:140px;"  onclick="addContact();return false;"><img src="/images/email/button_dongy.jpg" ></img></div>
+	
+
+<input type="hidden" name="id_ead" value="<?=$this->id_ead?>">
+</form>
+</div>

@@ -1,0 +1,337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php
+	global $auth;
+	global $url;
+	$config = Zend_Registry::get('config');
+	require_once 'hscv/models/hosocongviecModel.php';
+        header("Cache-Control: max-age=600");
+?>
+<?php if($auth->hasIdentity()){ ?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr" >
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>QLVBDH</title>
+<script>
+	READY_STATE = 0;
+	setTimeout(function(){
+			if(READY_STATE == 0){
+				alert('Đường truyền không ổn định, xin vui lòng nhấn OK để nạp lại !');
+				document.location.href = document.location.href;
+			}
+		},10000
+	)
+</script>
+<link rel="stylesheet" href="/styles/default.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel="stylesheet" href="/styles/reset.css" type="text/css" />
+<link rel="stylesheet" href="/styles/typography.css" type="text/css" />
+<link rel="stylesheet" href="/styles/menu.css" type="text/css" media="screen" />
+
+<!--[if IE 7]>
+<link href="/styles/ie7.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+<!--[if lte IE 6]>
+<link href="/styles/ie6.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+<!--[if lte IE 7]>
+<style type="text/css">
+html .jqueryslidemenu{height: 1%;} /*Holly Hack for IE7 and below*/
+</style>
+<![endif]-->
+<!--[if lte IE 6]>
+<script type="text/javascript" src="/js/DD_belatedPNG.js"></script>
+<script type="text/javascript" src="/js/styleie6.js"></script>
+<![endif]-->
+<script type="text/javascript" src="/js/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="/js/jqueryslidemenu.js"></script>
+	<script type="text/javascript" src="/js/LoadDynamicJs.js"></script> <!-- cai nay cua trung, khong ai duoc dung vao --> 
+	<script type="text/javascript" src="/js/common.js"></script>
+	<script type="text/javascript" src="/js/jx.js"></script>
+    <script src="/js/validate.js" type="text/javascript"></script>
+	<script type="text/javascript" src="/js/joomla.javascript.js"></script>
+	<script type="text/javascript" src="/js/calendar.js"></script>
+	<script type="text/javascript" src="/js/ajax/AjaxEngine.js"></script>
+	<script type="text/javascript" src="/js/dlg_confirm.js"></script>
+	<script type="text/javascript" src="/js/jquery.cycle.all.js"></script>
+	<script type="text/javascript" src="/js/jquery.cycle.all.js"></script>
+	<script type="text/javascript" src="/js/constant/message.js"></script>
+	<script type="text/javascript" src="/js/jquery.scrollFollow.js"></script>
+	<script type="text/javascript" src="/js/jqModal.js"></script>
+<script type="text/javascript">
+    var $slidemenu = $("#slidemenu");
+
+    jQuery(window).load(function(){
+    	$('#slidemenu span').hide();
+	    $("#slidemenu li").hover(function() {
+		    $(this).stop().animate({'width':'157px'}, 250);
+		    $('#slidemenu span').show();
+	    }, function() {
+		    $(this).stop().animate({'width':'43px'}, 250);
+		    $('#slidemenu span').hide();
+	    });
+    	
+	    //1040
+	    // Get page sizes
+    	
+	    var $smleft = $("#container").offset().left;
+	    if ($smleft > 50) {
+		    $smleft1 = $smleft - 50;
+		    $slidemenu.css({'left': $smleft1 + "px"})
+	    }
+
+    });
+
+    $(window).resize(function() {
+	    $smleft = $("#container").offset().left;
+	    if ($smleft > 50) {
+		    $smleft1 = $smleft - 50;
+		    $slidemenu.css({'left': $smleft1 + "px"})
+	    } else {
+		    $slidemenu.removeAttr("style");
+	    }
+    });;
+    </script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		READY_STATE = 1;
+		$('.thongbao').cycle({ 
+		fx:    'scrollDown', 
+		delay: -1000 
+	});
+	});
+	</script>
+	<script type="text/javascript">
+	$().ready(function() {
+	  $('#dialog').jqm();
+	});
+	</script>
+	<script type="text/javascript">
+	 $( document ).ready( function () {
+	   $( '#slidemenu' ).scrollFollow( {
+		speed: 1000,
+		offset: 5,
+		killSwitch: 'exampleLink',
+		onText: 'Disable Follow',
+		offText: 'Enable Follow'
+	   } );
+	 } );
+</script>
+</head>
+<body>
+<div style="position:absolute;display:none;z-index:99;" id="atAutoComplete"></div>
+<div id="maincontainer">
+	<div id="topsection" style="height: 94px;position: relative;background: #1BCFFE url(/images/<?=IMAGE_PATH?>/mainbanner.jpg) no-repeat scroll center center;">
+	   <div>	
+	   </div>
+	  <div>    	
+        <div class="namlamviec">
+        	<form action="" method="get" name="form">
+                <label for="year">Năm làm việc</label>
+                <?php
+					$year = new qtht_year();
+					echo $year->ToCombo("currentyear","onchange=\"sendDataObjectNameToServer('currentyear','/auth/user/changeyear',true,'');\"");
+				?>
+            </form>
+        </div>
+      </div>
+    </div>
+    <div id="myslidemenu" class="jqueryslidemenu">
+        <ul>
+		
+			<?php
+				$menu = new Zend_Session_Namespace('menu');
+				echo $menu->menu;
+			?>
+        </ul>
+        <div class="user-control">
+        	<a href="/auth/user/changepassword" class="user-admin"><?=$auth->getIdentity()->FULLNAME?></a> | <a href="/auth/logout" style="color:red;font-weight:bold">Thoát</a>
+        </div>
+    </div>
+    <div id="contentwrapper">
+    	<div id="slidemenu">
+            <ul>
+                <li>
+					<?php			
+						$actid = ResourceUserModel::getActionByUrl("vbden","vbden","input");
+						if(ResourceUserModel::isAcionAlowed($auth->getIdentity()->USERNAME,$actid[0])){
+					?>
+                	<div class="menu-item" onclick="document.location.href='/vbden/vbden/input/type/1/draft/1'"><img src="/images/icon/taovbden.png" /><span><a href="/vbden/vbden/input/type/1/draft/1">TẠO VĂN BẢN ĐẾN</a></span></div>
+					<?php
+						}
+					?>
+					<?php
+						//cong viec
+                        $actid = ResourceUserModel::getActionByUrl("vbdi","soanthao","input");
+						$bt = WFEngine::GetBeginTransition('VBSOANTHAO',$auth->getIdentity()->ID_DEP);
+						$loaihscv = WFEngine::GetIdLoaiHSCVFromIdT($bt);
+						$createarr = WFEngine::GetCreateProcessButtonFromLoaiCV($loaihscv,$auth->getIdentity()->ID_U);
+						if(count($createarr)>0 && ResourceUserModel::isAcionAlowed($auth->getIdentity()->USERNAME,$actid[0])){
+					?>
+                	<div class="menu-item" onclick="document.location.href='<?=$createarr["LINK"]."/type/2/wf_id_t/".$createarr["ID_T"]."/year/".$this->year?>'"><img src="/images/icon/taocv.png" /><span><a href="<?=$createarr["LINK"]."/type/2/wf_id_t/".$createarr["ID_T"]."/year/".$this->year?>"><?=mb_strtoupper($createarr["NAME"], 'UTF-8')?></a></span></div>
+					<?php
+						}
+					?>
+					<?php
+						$actid = ResourceUserModel::getActionByUrl("motcua","motcua","input");
+						if(ResourceUserModel::isAcionAlowed($auth->getIdentity()->USERNAME,$actid[0])){
+					?>
+                	<div class="menu-item" onclick="document.location.href='/motcua/motcua/input'"><img src="/images/icon/taohs1c.png" /><span><a href="/motcua/motcua/input">TẠO HỒ SƠ 1 CỬA</a></span></div>
+					<?php
+						}
+					?>
+                	<div class="menu-item" onclick="document.location.href='/traodoi/traodoi/index'"><img src="/images/icon/traodoinoibo.png" /><span><a href="/traodoi/traodoi/index">TRAO ĐỔI NỘI BỘ</a></span></div>
+                	<div class="menu-item" onclick="document.location.href='/lichcttext/index/index'"><img src="/images/icon/lichcanhan.png" /><span><a href="/lichcttext/index/index">LỊCH CÁ NHÂN</a></span></div>
+                	<div class="menu-item" onclick="document.location.href='/lichcttext/index/indexd'"><img src="/images/icon/lichphong.png" /><span><a href="/lichcttext/index/indexd">LỊCH PHÒNG</a></span></div>
+                	<div class="menu-item" onclick="document.location.href='/lichcttext/index/indexc'"><img src="/images/icon/lichcoquan.png" /><span><a href="/lichcttext/index/indexc">LỊCH CƠ QUAN</a></span></div>
+                	<div class="menu-item" onclick="document.location.href='/hscv/hscv/list/duthao/2'"><img src="/images/icon/xulycv.png" /><span><a href="/hscv/hscv/list/duthao/2">XỬ LÝ CÔNG VIỆC</a></span></div>
+                        <div class="menu-item" onclick="javascript: var url1 = '/vbden/vbden/listall';var url2 = '/vbden/vbden/list';<?=  hosocongviecModel::isVanthu($auth->getIdentity()->ID_U)==true?'document.location.href=url1':'document.location.href=url2'?>"><img src="/images/icon/vbden.png" /><span><a href="<?=  hosocongviecModel::isVanthu($auth->getIdentity()->ID_U)==true?'/vbden/vbden/listall':'/vbden/vbden/list'?>">VĂN BẢN ĐẾN</a></span></div>
+                	<div class="menu-item" onclick="javascript: var url3 = '/vbdi/banhanh/listall';var url4 = '/vbdi/banhanh/list';<?=hosocongviecModel::isVanthu($auth->getIdentity()->ID_U)==true?'document.location.href=url3':'document.location.href=url4'?>"><img src="/images/icon/vbdi.png" /><span><a href="<?=  hosocongviecModel::isVanthu($auth->getIdentity()->ID_U)==true?'/vbdi/banhanh/listall':'/vbdi/banhanh/list'?>">VĂN BẢN ĐI</a></span></div>
+                	<div class="menu-item" onclick="document.location.href='/taphscv/taphscv/list'"><img src="/images/icon/hscvdientu.png" /><span><a href="/taphscv/taphscv/list">HSCV ĐIỆN TỬ</a></span></div>
+                	<div class="menu-item" onclick="document.location.href='/iso/iso/list'"><img src="/images/icon/tailieuiso.png" /><span><a href="/iso/iso/list">TÀI LIỆU ISO</a></span></div>
+					
+				<div class="clearfix"></div>
+                </li>
+              </ul>
+        </div>
+        <div id="contentcolumn">
+		<?php
+			include_once 'thongbao/models/thongbao.php';
+			$thongbao = new thongbao();
+			$datathongbao = $thongbao->SelectAllVisible(0,0,"hieuluc desc,ngaytao desc");
+			if(count($datathongbao)>0){
+		?>
+        	<div class="thongbao jqModal" id="thongbaodata" onclick="document.getElementById('dialog').innerHTML='';loadDivFromUrl('dialog','/thongbao/index/get',1);window.event.cancelBubble = true;" style="cursor:pointer">
+			<?php
+				echo "Thông báo toàn cơ quan:";
+				foreach($datathongbao as $item){
+					echo "<span ".(count($datathongbao)==1?"style='padding-left:5px'":"")."><a class=\"jqModal\" href=\"#\" onclick=\"document.getElementById('dialog').innerHTML='';loadDivFromUrl('dialog','/thongbao/index/get/id/".$item["ID_TB"]."/aa/aa',1);window.event.cancelBubble = true;\">".htmlspecialchars($item["TIEUDE"])."</a></span>";
+				}
+			?>
+            </div>
+		<?php
+			}
+		?>
+			<div class="home-table">
+                            <div class="hscv_table">
+                                    <?php
+                                            if($this->ishomepage==0){
+                                    ?>
+                                    <h3><?=$this->title?></h3>
+                                    <? } ?>
+                                    <div class="toolbar_list">
+                                            <?php echo(QLVBDHButton::DrawButton()) ?>
+                                </div>				
+                                    <?php echo $this->layout()->content ?>
+                                <div class="clearfix"></div>
+                            </div>
+			</div>
+        </div>
+        
+        
+    </div>
+</div>
+<div id="footer">
+    <span>Phiên bản 4.0 - Phát triển bởi <a href="http://unitech.vn" target="_blank">Unitech</a></span>
+</div>
+
+</body>
+</html>
+<div class="jqmWindow" id="dialog" style="overflow-y:visible;">
+
+</div>
+<?php
+}else{
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr" >
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Unispace - Đăng nhập</title>
+
+<link rel="stylesheet" href="/styles/login/login.css" type="text/css" />
+
+
+<!--[if IE 7]>
+<link href=/styles/login/ie7.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+<!--[if lte IE 6]>
+<link href="/styles/login/ie6.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+</head>
+<body>
+
+	<div id="content-box">
+		<div class="padding">
+        	<div class="login" id="element-box">
+            	<div class="loginbanner"></div>
+                <div class="login-content">
+                	<div class="login-left"></div>
+                    <div class="login-right">
+						<?php echo $this->layout()->content ?>
+                    </div>
+                </div>
+                <div class="login-bottom">
+                	<span>Phiên bản 4.0 - Phát triển bởi <a href="http://unitech.vn" target="_blank">Unitech</a></span>
+                </div>
+				<?php
+					if($this->loginerror!=""){
+				?>
+				<div class="login-error" >
+					<?=$this->loginerror?>
+				</div>
+				<?php
+					}
+				?>
+				<?php
+					if(date("m-d")>="12-15"){
+				?>
+				<span id="nhacnhonam"></span>
+				<script>
+					document.getElementById("currentyear").value = "<?=date("Y")+1?>";
+					if(document.getElementById("currentyear").value==""){
+						
+				<?php
+					if(date("m-d")>="12-15"){
+				?>
+					document.getElementById("nhacnhonam").innerHTML = "<font color=orangered><b>Năm làm việc tiếp theo (<?=date("Y")+1?>) chưa được tạo. Vui lòng thông báo cho quản trị hệ thống khởi tạo.</b>";
+				<?php
+					}
+				?>
+					}
+					document.getElementById("currentyear").value = "<?=date("Y")?>";
+				</script>
+				<?php
+					}
+				?>
+            </div>
+		</div>	
+	</div>
+</body>
+</html>
+
+<?php
+	}
+?>
+<script type="text/javascript">
+  
+    var item = document.getElementById("myslidemenu")==null?'':document.getElementById("myslidemenu");
+    if (item != null) {
+        if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
+            item.className="jqueryslidemenu clearfixFireFox";
+        }
+        
+        if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
+            var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+            if (ieversion>=8)
+                item.className="jqueryslidemenu clearfixie8";
+            else if (ieversion>=7)
+                item.className="jqueryslidemenu clearfixie7";
+            //    else if (ieversion>=6)
+            //        document.write("You're using IE6.x")
+            //    else if (ieversion>=5)
+            //        document.write("You're using IE5.x")
+        }
+    }
+</script>

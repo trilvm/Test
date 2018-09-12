@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<? $num = count($this->data); 
+   if ($num>0) { ?>
+    
+    <br>
+    <div style="color: blue; font-weight: bold">
+        SỐ LƯỢNG VĂN BẢN ĐI CÓ TRONG DANH SÁCH : <?=$num?>
+    </div>
+    <br>
+    
+   <? }
+?>    
+<table class=adminlist>
+ <thead>
+ 	<tr>
+	    <!-- <th nowrap >Stt</th> -->
+		<?php if(count($this->sodi) >0) {?>
+ 		<th nowrap >Số đi</th>
+         <?php } ?>
+		<?php if(count($this->ngaybh) >0) {?>
+ 		<th nowrap >Ngày tháng</th>
+		<?php } ?>
+		
+		<?php if(count($this->sokyhieu) >0) {?>
+		<th nowrap >Số ký hiệu</th>
+          <?php } ?>
+		<?php if(count($this->trichyeund) >0) {?>
+ 		<th nowrap >Trích yếu nội dung</th>
+         <?php } ?>
+		<?php if(count($this->soban) >0) {?>
+ 		<th nowrap >Số bản</th>
+         <?php } ?>
+		<?php if(count($this->noinhan) >0) {?>
+ 		<th nowrap >Nơi nhận</th>
+         <?php } ?>
+		<?php if(count($this->luuhoso) >0) {?>
+		<th>Người ký</th>
+         <?php } ?>
+		<?php if(count($this->nguoinbl) >0) {?>
+		<th nowrap >Người nhận bản lưu </th>
+         <?php } ?>
+		<?php if(count($this->domat) >0) {?>
+		<th nowrap >Độ mật</th>
+         <?php } ?>
+		<?php if(count($this->dokhan) >0) {?>
+		<th nowrap >Độ khẩn</th>
+		<?php } ?>
+ 	</tr>
+ 	
+ </thead>
+ <tbody>
+<?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'qtht/models/CoquanModel.php'; 
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'qtht/models/UsersModel.php';
+
+?>
+<?php 
+require_once("hscv/models/coquanlienthongModel.php");
+$data_cqlt = coquanlienthongModel::getDataCQLienThong();
+
+$stt=1; 
+$num = count($this->data);
+
+foreach($this->data as $row){ 
+ ?>
+	<tr>
+	<!-- <td nowrap valign=top ><?=$stt ?></td> -->
+	<?php if(count($this->sodi) >0) {?>
+ 	<td nowrap valign=top ><?php echo $row["SODI"]?></td>
+     <?php }?>
+	<?php if(count($this->ngaybh) >0) {?>
+ 	<td nowrap valign=top ><?php echo QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></td>
+    <?php }?>
+	
+     <?php if(count($this->sokyhieu) >0) {?>
+	<td nowrap valign=top ><?php echo $row["SOKYHIEU"]?></td>
+      <?php }?>
+     <?php if(count($this->trichyeund) >0) {?>
+ 	<td width="30%"  valign=top ><?php echo $row["TRICHYEU"] ?></td>
+      <?php }?>
+     <?php if(count($this->soban) >0) {?>
+ 	<td nowrap valign=top ><?php echo $row["SOBAN"] ?></td>
+      <?php }?>
+     <?php if(count($this->noinhan) >0) {?>
+ 	<td width="15%" valign=top ><?php 
+            echo $row["NOIDEN"];
+            echo "<br>";
+            echo VanbandireportModel::getDonViNoiBoFromVbandi($row["ID_VBDI"]);
+            // Thêm thông tin văn bản liên thông
+            /*
+			$model = new vanbandireportModel();
+            $session = $model->LoginService();
+            $masovanban = $row["ID_VBDI"];
+            $vanbanlienthong = $model->DongLuanChuyenLienThong($masovanban,$session);
+             foreach ($vanbanlienthong as $row) {
+                  echo $row['DONVI_NHAN_NAME'];
+             }
+			 */
+			$coquanlienthong=json_decode($row['CQLIENTHONG_DRAFT']);
+            foreach($coquanlienthong as $item){
+                foreach ($data_cqlt as $cqlt){
+                     if($cqlt['CODE'] == $item){
+                         echo $cqlt['NAME'].'<br>';
+                     }
+                }
+                 
+            }
+           
+        ?></td>
+       <?php }?>
+    <?php if(count($this->luuhoso) >0) {?>
+	<td width="15%" nowrap valign=top ><?php echo UsersModel::getEmloyeeNameByIdUser($row["NGUOIKY"]) ?></td>
+      <?php }?>
+    <?php if(count($this->nguoinbl) >0) {?>
+	<td nowrap valign=top ><?php  	
+			echo VanbandireportModel::getNguoinhanFromVbandi($row["ID_VBDI"]);
+                        
+                        //echo VanbandireportModel::getDonViNoiBoFromVbandi($row["ID_VBDI"]);
+		 ?> </td>
+       <?php }?>
+	<?php if(count($this->domat) >0) {?>
+	<td nowrap valign=top ><?php if($row["DOMAT"]==1) echo 'Bình thường';
+	      if($row["DOMAT"]==2) echo 'Mật';
+		  if($row["DOMAT"]==3) echo 'Tối mật';
+		  if($row["DOMAT"]==4) echo 'Tuyệt mật';
+	 ?> </td>
+      <?php }?>
+    <?php if(count($this->dokhan) >0) {?>
+	<td nowrap valign=top ><?php if($row["DOKHAN"]==1) echo 'Bình thường';
+	   if($row["DOKHAN"]==2) echo 'Khẩn';
+	   if($row["DOKHAN"]==3) echo 'Hỏa tốc';
+	?> </td>
+	 <?php }?>
+	</tr> 
+ 	
+ <?php $stt++ ; } ?>
+ </tbody>
+ <tfoot>
+ </tfoot>
+</table>
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%"; 
+</script>

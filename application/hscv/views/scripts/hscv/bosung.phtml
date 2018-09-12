@@ -1,0 +1,52 @@
+<?php 
+	require_once 'motcua/models/motcua_thutuc_bosungModel.php';
+?>
+
+<table class=adminlist1>
+	<thead>
+		<tr>
+			<th nowrap>STT</th>
+			<th nowrap>Người yêu cầu</th>
+			<th nowrap>Số phiếu</th>
+			<th width="100%">Nội dung cần bổ sung</th>
+			<th nowrap>Ngày yêu cầu</th>
+			<th nowrap>Ngày bổ sung</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="6">
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+	$i=0;
+	$stt=1;
+	if(count($this->data)>0){
+		foreach($this->data as $row){
+?>
+		<tr class="row<?=$i?>">
+			<td nowrap><?=$stt?></td>
+			<td nowrap><?=$row['UYCNAME']?></td>
+			<td nowrap><?=$row['SOPHIEU']?></td>
+			<td width="100%"><?=nl2br($row['CACGHICHU'])?><br>
+			
+			</td>
+			<td nowrap><?=QLVBDHCommon::MysqlDateToVnDate($row['NGAY_YEUCAU'])?></td>
+			<td nowrap><?=$row['NGAY_BOSUNG']==""?"Chưa bổ sung":QLVBDHCommon::MysqlDateToVnDate($row['NGAY_BOSUNG'])." <i>(".$row['UBSNAME'].")</i>"?></td>
+		</tr>
+<?php
+			$stt++;
+			$i = (-1+$i)*-1;
+		}
+	}else{
+?>
+		<tr>
+			<td colspan="6">Chưa có bổ sung nào</td>
+		</tr>
+<?php
+	}
+?>
+	</tbody>
+</table>

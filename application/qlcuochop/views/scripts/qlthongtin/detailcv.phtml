@@ -1,0 +1,321 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent;font-size: 9pt" >
+<?php require_once 'qlcuochop/models/quanlycuochopModel.php';
+$data_congviec = $this->data_congviec; 
+$data_cuochop = $this->data_cuochop;
+?>
+<form name="frm" action="">
+    <table style="font-size: 9pt">
+    <tr>
+        <td style="color: blue" nowrap="nowrap" >Tên cuộc họp</td>
+        <td><?=$data_cuochop->TEN?></td>
+        <td nowrap="nowrap" style="color: blue">Phạm vi</td>
+        <td style="color: red"><?php echo $data_cuochop->PHAMVI==1? 'Trong cơ quan':'Ngoài cơ quan';?></td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap" style="color: blue">Địa điểm</td>
+        <td ><?php if($data_cuochop->PHAMVI==1) echo quanlycuochopModel::GetDiaDiemById($data_cuochop->DIADIEM);
+                  else{
+                      echo $data_cuochop->DIADIEM_NCQ;
+                  }
+        ?></td>
+        <td nowrap="nowrap" style="color: blue">Thời gian</td>
+        <td><?= QLVBDHCommon::MysqlDateToVnDate($data_cuochop->NGAY)?> : <?=$data_cuochop->GIO?></td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap" style="color: blue" >Người chủ trì</td>
+        <td><?php
+            if($data_cuochop->PHAMVI==0) 
+            {
+                echo $data_cuochop->NGUOICHUTRI;
+            }
+            else
+            {
+                echo UsersModel::getEmloyeeNameByIdUser((int)$data_cuochop->NGUOICHUTRI);
+                //echo $data_cuochop->NGUOICHUTRI;
+            }?>            
+        </td>
+        <td nowrap="nowrap" style="color: blue">Người tham gia</td>
+        <td><?php
+		$danhsach_thamgia = split("~",$data_cuochop->NGUOITHAMGIA);
+		echo $danhsach_thamgia[0];
+		?></td>
+    </tr>
+    <tr>
+        <?php if($data_cuochop->PHAMVI==1){?>
+        <td nowrap="nowrap" style="color: blue" >Lãnh đạo phòng thực hiện</td>
+        <td><?=UsersModel::getEmloyeeNameByIdUser((int)$data_cuochop->LD_THUCHIEN);?></td>        
+        <td nowrap="nowrap" style="color: blue" >Thư ký</td>
+        <?php if($data_cuochop->THUKY2 == null){?>
+        <td><?=UsersModel::getEmloyeeNameByIdUser((int)$data_cuochop->THUKY);?></td>
+        <?php } else{ ?>
+        <td><?php echo $data_cuochop->THUKY2; ?></td>
+        <?php }}?>
+    </tr>
+    <tr>
+        <?php if($data_cuochop->PHAMVI==0){?>
+        <td nowrap="nowrap" style="color: blue" >Nội dung báo cáo</td>
+        <td><?=$data_cuochop->NOIDUNG?></td>
+        <?php }?>
+        <?php if($data_cuochop->PHAMVI==1){?>
+        <td nowrap="nowrap" style="color: blue" >Người ngoài cơ quan</td>
+        <td><?=$data_cuochop->NGUOITHAMGIA_NCQ?></td>
+        <?php }?>
+    </tr>   
+
+    <TR>
+        <TD style="COLOR: blue">Biên bản cuộc họp</TD>
+        <TD>
+                <?php
+                    foreach($this->datadk as $itemdk){
+                            echo "|  <a href='#' onclick=\"document.location.href='/qlcuochop/qlthongtin/download/id_vb/".$this->idvb
+                                            ."/nam/".$this->nam."/maso/".$itemdk['MASO']."'\">".$itemdk['FILENAME'].
+                                            "</a>  ";
+                    }
+                ?>
+        </TD>
+    </TR>
+</table>
+<?php if($data_cuochop->PHAMVI==1){?>
+<table class=adminlist style="font-size: 9pt;">    
+	<thead>
+		<tr>
+			<th nowrap style="width:4%;text-align: right">STT</th>
+			<th nowrap style="width:15%">Người xử lý</th>
+			<th nowrap>Công việc</th>
+			<th style="width:10%">Hạn xử lý</th>
+<!--                        <th nowrap>Đính kèm</th>-->
+			<th nowrap style="width:30%">Kết quả</th>
+		</tr>
+	</thead>	
+	<tbody>
+
+<?php $stt=1;
+		// locate REGION_UPDATE_6|  Xóa $finish_count  -->     
+	$duocgiaoviec = 0;
+	$idObject_CV = 0;
+	$is_duocgiaoviec = 0;
+	$noidunghoanthanh = 0;
+        $model=new quanlycuochopModel();
+    foreach ($data_congviec as $item) {     
+        if($this->ID_U == $item['NGUOIXULY'])
+        {
+			$duocgiaoviec = $item['ID_CONGVIEC'];
+			$idObject_CV = $item['ID_DINHKEM'];
+			$noidunghoanthanh = $item['NOIDUNGHOANTHANH'];
+		}
+		if(($this->ID_U == $item['NGUOIXULY'])||($this->ID_U == $this->id_nguoitao))
+        {
+			$is_duocgiaoviec = 1;
+		// locate REGION_UPDATE_1| -->
+		$is_finish_cv = array(0 => "Chưa hoàn thành",1=>"Đã hoàn thành",2=>"Đã hoàn thành");
+		$is_duyet_cv = array(0 => "Chưa duyệt",1=>"Chưa duyệt",2=>"Đã duyệt");
+    ?>
+    <tr>
+        <td align="right"><?= $stt?> </td>
+        <td ><?=UsersModel::getEmloyeeNameByIdUser((int)$item['NGUOIXULY'])?>
+            <?//= $item['NGUOIXULY']?>
+        </td>
+        <td><?=$item['CONGVIEC']?></td>
+        <td><?=  QLVBDHCommon::MysqlDateToVnDate($item['NGAYXULY'])?> : <?=$item['VAOLUC']?></td>
+<!--        <td>
+            <?php
+//                 if($this->ID_U == $this->id_nguoitao)
+//                 {
+//
+//                 }
+//                 else
+//                 {
+//                    if($this->ID_U == $item['NGUOIXULY'])
+//                    {
+//                    echo '<img src="/images/icon_add.jpg" onclick="">';
+//                    }
+//                 }
+         ?>
+        </td>-->
+<!--        <td>  <?php
+//                $dk= $model->GetFileDinhKem($item['ID_OBJECT']);
+//                foreach ($dk as $row) {
+//                    echo "<a href='#' onclick=\"document.location.href='/qlcuochop/qlthongtin/download/maso/".$row['MASO']."'\">".$row['FILENAME'].
+//                                    "</a>    ";
+//                }
+        ?>		
+        </td>-->
+        <td>
+         <span id="text1" >
+            <?php
+            //if($item['ID_OBJECT']){
+            $dk1= $model->GetCVByIdCV($item['ID_CONGVIEC']);
+            foreach ($dk1 as $row1) {
+                if($row1['NOIDUNGHOANTHANH'] != "")
+                {
+                    echo $row1['NOIDUNGHOANTHANH'];
+                }
+            }
+
+            if((int)$item['ID_DINHKEM']>0){
+				echo '<br>';
+				$dk2 = $model->GetFileDinhKem($item['ID_DINHKEM']);
+				$stringFile = "";
+				$sttttt = 0;
+				for($d=0;$d<count($dk2);$d++) {
+					$stringFile .= "<a href='#' onclick=\"document.location.href='/qlcuochop/qlthongtin/download/maso/".$dk2[$d]['MASO']."'\">".$dk2[$d]['FILENAME']."</a>  |  ";
+				}
+				$stringFile = rtrim($stringFile," | ");
+				echo $stringFile;
+            }
+            //}
+            ?>
+			
+        </span>
+            <input type="text" name="ketqua" value="<?php
+            ?>" id="1" style="display: none;">
+          
+        </td>        
+        
+    </tr>
+    <?php $stt++;} }
+	if($is_duocgiaoviec == 0){
+	echo "<tr><td colspan='6'>Bạn không có công việc nào</td></tr>";
+	}
+
+	}
+    ?>
+	</tbody>
+    <tfoot>
+		<tr>
+			<th colspan="7">
+			</th>
+		</tr>
+	</tfoot>
+	
+</table>
+</form>
+ <?php 
+ if($duocgiaoviec > 0){
+ ?>
+ <br>
+ <div style="float: left;">
+ <form name="submitCV" action="/qlcuochop/qlthongtin/detailcv">
+<div style="margin-bottom:5px;"> 
+ <b>Kết quả công việc</b>
+</div>
+ <div style="width:100%;position:relative;">
+ <div style="float:left;"> 
+ <input type="text" style="color:black" name="noidung_hoanthanh" value="<?=$noidunghoanthanh?>" size="60" style="padding-top:16px;"></div>
+<div style="float:left;width:450px;height: 200px">
+ <?
+	 $IdObject_Gel = 0;
+	if((int)$idObject_CV != 0){
+		$IdObject_Gel = $idObject_CV;
+	}else{
+		$IdObject_Gel = $this->idObject;
+	}
+	 echo "<div id='divResultFile".$IdObject_Gel."' width='100%'></div>";
+	 $this->idTemp = $IdObject_Gel;
+	 $this->year = QLVBDHCommon::getYear();
+	if(null!=$this->type)
+	{
+		$type=$this->type;
+	}
+	else if($this->idTemp>0)
+	{
+		$type=6;
+	}
+	else $type=-1;
+	?> </div>
+	<div style="width:20%;position:absolute;top:45px;">
+		<input type="submit" id="xacnhan" value="Hoàn thành">
+	</div>
+	<script type="text/javascript">
+			divFileDinhKemId='divResultFile'+<?="'".$IdObject_Gel."'"?>;
+			url='/hscv/file/attachment?iddiv=divResultFile<?=$IdObject_Gel?>&idObject=<?php echo ($this->idTemp>0?$this->idTemp:0) ?>&is_new=<?php echo ($this->idTemp>0?0:1)  ?>&year=<?php echo $this->year ?>&type=-1';
+			loadDivFromUrl(divFileDinhKemId,url,0);
+	</script>
+ </div>
+ </div><br><br><br><br><br><br>
+ <input type="hidden" value="0" name="is_finish_ch"/>
+ <input type="hidden" name="idObject" value="<?=$IdObject_Gel?>" />
+ <input type="hidden" name="submit_CV" value="1" />
+ <input type="hidden" name="id_congviec" value="<?=$duocgiaoviec?>" />
+ <input type="hidden" name="iframeSRC" id="iframeSRC" value="" />
+ <script>
+ document.getElementById('iframeSRC').value = parent.document.getElementById('<?=$this->IdFrame ?>').src;
+ </script>
+</form>
+<?php } ?>
+<p id=lasttext></p>
+    <script>
+	<!-- locate REGION_UPDATE_4| Xóa hàm finishProcess(id) và $finish_count -->
+   
+    function AjaxCompleteAction(id_cv,id_ch)
+    {
+        var r=confirm("Bạn đã hoàn thành công việc ?");
+        if (r==true)
+        {
+            var submitAjax = new AjaxEngine();
+            var oXmlHttp = submitAjax.createXMLHttp();
+            oXmlHttp.open('post', '/qlcuochop/qlthongtin/detailcv/complete_cv/'+ id_cv +'/ID_CUOCHOP/'+ id_ch +'/ID_CONGVIEC/'+ id_cv, true);
+            oXmlHttp.onreadystatechange = function () {
+                if (oXmlHttp.readyState == 4) {
+                    if (oXmlHttp.status == 200) {
+                        var aler = oXmlHttp.responseText;
+                        window.location.href=window.location.href;
+                }
+                } else {
+                    //as_checkdata_all = 1;
+                }
+            };
+            oXmlHttp.send(null);
+        }
+    }
+    function AjaxFinishAction(id_cv,id_ch)
+    {
+        var r=confirm("Xác nhận rằng thao tác của bạn là không nhầm lẫn ?");
+        if (r==true)
+        {
+            var submitAjax = new AjaxEngine();
+            var oXmlHttp = submitAjax.createXMLHttp();
+            oXmlHttp.open('post', '/qlcuochop/qlthongtin/detailcv/finish_cv/'+ id_cv +'/ID_CUOCHOP/'+ id_ch +'/ID_CONGVIEC/'+ id_cv, true);
+            oXmlHttp.onreadystatechange = function () {
+                if (oXmlHttp.readyState == 4) {
+                    if (oXmlHttp.status == 200) {
+                        var aler = oXmlHttp.responseText;                        
+                        if(aler == 1)
+                        {
+                            window.location.href=window.location.href;
+                        }
+                }
+                } else {
+                    //as_checkdata_all = 1;
+                }
+            };
+            oXmlHttp.send(null);
+        }
+    }
+    function resize(){
+		var iframeElement = parent.document.getElementById('<?=$this->IdFrame ?>');		
+		iframeElement.style.height = "" + (document.getElementById("lasttext").offsetTop + 20) + "px";
+		iframeElement.width = "100%";
+    }
+   resize();
+
+ ///////////////////////////////////////////////////////////
+    function showText1(idLabel, idText) {
+        var label = document.getElementById(idLabel);
+        var text = document.getElementById(idText);
+
+        label.style.display = "none";
+        text.style.display = "inline";
+    }
+////////////////////////////////////////////////////////////////
+    </script>
+</body>
+</html>

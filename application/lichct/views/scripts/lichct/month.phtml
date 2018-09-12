@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name="frm" method=post action="/lichct/lichct/month">
+<div style="float: left;width: 100%;height:100%;">
+<table class=adminlist width=100%>
+	<thead>
+		<tr>
+			<th><a href="/lichct/lichct/month/curmonth/<?=$this->curmonth-1?>">&lt;&lt;</a></th>
+			<th colspan="5" style="text-align: center">
+				Tháng <?=$this->curmonth?>
+			</th>
+			<th><a href="/lichct/lichct/month/curmonth/<?=$this->curmonth+1?>">&gt;&gt;</a></th>
+		</tr>
+		<tr>
+			<th>Thứ 2</th>
+			<th>Thứ 3</th>
+			<th>Thứ 4</th>
+			<th>Thứ 5</th>
+			<th>Thứ 6</th>
+			<th>Thứ 7</th>
+			<th>Chủ Nhật</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+	for($i=1;$i<=6;$i++){
+?><tr>
+<?php
+		for($j=1;$j<=7;$j++){
+?>
+			<td <?=BussinessDateModel::IsNonWorkingDate($this->fromdate,1)==true?"class=row2":""?>>
+				<?php
+					if($this->fromdate['year']==QLVBDHCommon::getYear()){				
+						if($this->fromdate['mon']!=$this->curmonth)
+							echo '<i>'.str_pad($this->fromdate['mday'],2,"0",STR_PAD_LEFT). "/".str_pad($this->fromdate['mon'],2,"0",STR_PAD_LEFT).'</i>';
+						else
+							echo str_pad($this->fromdate['mday'],2,"0",STR_PAD_LEFT);
+					}
+				?>
+			</td>
+<?php
+			$this->fromdate['mday']++;
+			$this->fromdate = mktime(0,0,0,$this->fromdate['mon'],$this->fromdate['mday'],$this->fromdate['year']);
+			$this->fromdate = getdate($this->fromdate);
+		}
+?></tr>
+<?php
+	}
+?>
+	</tbody>
+</table>
+</div>
+</form>
+</body>
+</html>
+<script>
+function resize(){
+			var iframeElement = parent.document.getElementById('frmbussday');
+			iframeElement.style.height = "300px";
+			iframeElement.width = "100%";
+}
+resize();
+</script>

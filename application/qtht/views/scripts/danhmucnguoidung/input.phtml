@@ -1,0 +1,410 @@
+<form name=frm method="post" action="/qtht/danhmucnguoidung/Save" enctype="multipart/form-data" >
+<fieldset>
+	<legend>Thông tin cá nhân</legend>
+    <table class=admintable>
+		<tr>
+			<td class=key>
+				<b>Họ(*)</b>
+			</td>
+			<td>
+				<input type=text class=inputbox name=FIRSTNAME value="<?=$this->data['FIRSTNAME']?>" class="inputText" size="30" maxlength="30">
+    			<span class="box_erro_area" id="ERRFIRSTNAME"></span>
+			</td>
+			<td class=key>
+				<b>Tên(*)</b>
+			</td>
+			<td>
+				<input type=text class=inputbox name=LASTNAME value="<?=$this->data['LASTNAME']?>" class="inputText" size="30" maxlength="30">
+    			<span class="box_erro_area" id="ERRLASTNAME"></span>
+			</td>
+		</tr>
+		<tr>
+			<td class=key>
+				<b>Số điện thoại</b>
+			</td>
+			<td>
+					<input type=text name="PHONE" size=30 value="<?=$this->data['PHONE']?>">
+					<span class="box_erro_area" id="ERRPHONE"></span>
+			</td>
+			<td class=key>
+				<b>Thư điện tử</b>
+			</td>
+			<td>
+				<input type=text name="EMAIL" size=30 value="<?=$this->data['EMAIL']?>" maxlength="50">
+				<span class="box_erro_area" id="ERREMAIL"></span>
+			</td>
+		</tr>
+                <tr>
+                    <td class=key> 
+                        <b>Thuộc phòng ban(*)</b>
+                    </td>
+                    <td>
+                        <select name="NGUOIDUNG">
+                            <?=nguoidungModel::ToDepCombo($this->dep,$this->data['ID_DEP']) ?>
+                        </select>
+                        <span class="box_erro_area" id="ERRLASTNAME"></span>
+                    </td>
+                    <td class=key>
+                <b>Địa chỉ nhà</b>
+            </td>
+            <td>
+                <input type=text name="ADDRESS" size=30 value="<?=$this->data['ADDRESS']?>" maxlength="100">
+                <span class="box_erro_area" id="ERRADDRESS"></span>
+            </td>
+		</tr>
+		<tr>
+			<td class=key> 
+				<b>Phòng ban quản lý (*)</b>
+			</td>
+			<td>
+                           <?php 
+                            foreach($this->depMulti as $value)
+                            {
+                              $arr[]=   $value['ID_D'];
+                            }
+                            ?>
+                            <select name="ID_DEP[]" multiple="true" size="5">
+                            <?php 
+                            
+                                foreach($this->dep2 as $value) {
+                            ?>
+                                <option value="<?=$value['ID_DEP']?>" <?php if(in_array($value['ID_DEP'], $arr)){echo "selected";}else{echo "";}?>><?=$value['NAME'];?></option>
+                            <?php } ?>
+                            </select>
+    			<span class="box_erro_area" id="ERRLASTNAME"></span>
+			</td>
+            <td class=key> 
+				<b>Chức danh(*)</b>
+			</td>
+			<td>
+				<select name=ID_CHUCDANH>
+                                 <?php
+                                
+                                 foreach ($this->datachucdanh as $value) {
+                                     echo" <option value={$value['ID_CD']} ";
+                                          if($value['ID_CD']==$this->data['ID_CD']) echo 'selected';
+                                     echo ">{$value['NAME']}</option>";
+                                         
+                                 }
+                                 ?>
+                                     
+                                 
+				</select>
+    			<span class="box_erro_area" id="ERRLASTNAME"></span>
+                </td>  
+		</tr>
+        <tr>
+            <td class=key>
+                <b>Số máy lẻ cá nhân</b>
+            </td>
+            <td>
+                <input type=text name="PHONE_EXT" size=30 value="<?=$this->data['PHONE_EXT']?>" maxlength="21">
+                <span class="box_erro_area" id="ERRPHONEEXT"></span>
+            </td>
+            <td></td>       
+            <td></td>       
+        </tr>
+	</table>
+	
+	
+	
+	
+</fieldset>
+<fieldset>
+	<legend>Thông tin tài khoản</legend>
+	<div align="center"><span class="box_erro_area"><?php echo $this->error; ?></span></div>
+	<table class=admintable>
+		<tr>
+			<td class=key >
+				<b>Tài khoản(*)</b>
+			</td>
+			<td>
+				<input type=text class=inputbox name=USERNAME value="<?=$this->data['USERNAME']?>" class="inputText" size="30" maxlength="100"  onChange="return checkData(this.value);">
+				<input name="check" class=input_button type="button" value="Ki&#7875;m tra" onclick="return checkData(document.frm.USERNAME.value);" />	
+    			<span class="box_erro_area" id="ERRUSERNAME"></span>
+				<!--. -->
+			</td>
+			
+		</tr>
+		<tr>
+			<td class=key>
+				<b>Mật khẩu(*)</b>
+			</td>
+			<td>
+				<input type="password" class=inputbox name=PASSWORD class="inputText" size="30" maxlength="100">
+    			<span class="box_erro_area" id="ERRPASSWORD"></span>
+			</td>
+		</tr>
+		<tr>
+			<td class=key>
+				<b>Nhập lại mật khẩu(*)</b>
+			</td>
+			<td>
+				<input type="password" class=inputbox name=REPASSWORD class="inputText" size="30" maxlength="100">
+    			<span class="box_erro_area" id="ERRREPASSWORD"></span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			</td>
+			<td>
+				<label><b>Được sử dụng</b></label>
+				<input type=checkbox class=inputbox name=ACTIVE value="1" <?php echo $this->data['ACTIVE']==1?"checked":"" ?> class="inputText" size="50" maxlength="100">
+				<label><b>Là quản lý</b></label>
+				<input type=checkbox class=inputbox name=ISLEADER value="1" <?php echo $this->data['ISLEADER']==1?"checked":"" ?> class="inputText" size="50" maxlength="100">
+			</td>
+		</tr>
+		
+	</table>
+	
+	<font color=red>(*) Bắt buộc nhập liệu </font>
+
+	<div class=clr></div>
+    <div style="float:left">
+		
+		<span class="box_erro_area" id="ERRACTIVE"></span>
+	</div>
+	
+	<div style="float:left">
+		
+		<span class="box_erro_area" id="ERRISLEADER"></span>
+	</div>
+	<div class=clr></div>
+   
+</fieldset>
+<fieldset>
+	<legend>Nhóm</legend>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th colspan=3><span class="box_erro_area" id="ERRSELGROUP"></span></th>
+			</tr>
+			
+			<tr>
+				<th>#</th>
+				<th><input type=checkbox name=DELALL onclick="SelectAll(this,'SELGROUP')"></th>
+				<th>Tên nhóm</th>
+			</tr>
+		</thead>
+		<tfoot><tr><th colspan="3"></th></tr></tfoot>
+		<tbody>
+
+
+
+<?php
+$i=0;
+$stt=1;
+foreach($this->group as $group){
+?>
+			<tr class="row<?=$i?>">
+				<td nowrap><?=$stt?></td>
+				<td nowrap><input type=checkbox name=SELGROUP[] value=<?=$group['ID_G']?> <?=$group['SEL']==1?"checked":""?>></td>
+				<td width=100%><?=$group['NAME']?></td>
+			</tr>
+<?php
+	$stt++;
+	$i = (-1+$i)*-1;
+}
+?>
+		</tbody>
+	</table>
+	
+</fieldset>
+<fieldset>
+	<legend>Chức năng</legend>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th>#</th>
+				<th><input type=checkbox onclick="SelectAllByTitle(this,'GMODNAME')">Tên Module</th>
+				<th>Tên Chức năng</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th colspan="3">
+				</th>
+			</tr>
+		</tfoot>
+		<tbody>
+<?php
+	$i=0;
+	$out = false;
+	$stt=1;
+	while(!$out){
+?>
+			<tr>
+				<td ><?=$stt?></td>
+				<td nowrap ><input type=checkbox title="GMODNAME" name="ID_GMOD<?=$this->action[$i]['ID_GMOD']?>" onclick="SelectAllByTitle(this,'MODNAME<?=$this->action[$i]['ID_GMOD']?>')"><?=$this->action[$i]['GMODNAME']?></td>
+				<td>
+					<table class=adminlist>
+<?php
+		while(!$out){
+?>
+						<tr>
+							
+							<td class=key colspan=2>
+								<b><input type=checkbox title="MODNAME<?=$this->action[$i]['ID_GMOD']?>" name="ID_MOD<?=$this->action[$i]['ID_MOD']?>" onclick="SelectAllByTitle(this,'ACTNAME<?=$this->action[$i]['ID_MOD']?>')"><?=$this->action[$i]['MODNAME']?></b>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+<?php
+			while(!$out){
+?>
+								<span><input type=checkbox name=ID_ACT[] title="ACTNAME<?=$this->action[$i]['ID_MOD']?>" onclick="DeSelectParentByTitle(this,'ID_MOD<?=$this->action[$i]['ID_MOD']?>','ID_GMOD<?=$this->action[$i]['ID_GMOD']?>','ACTNAME<?=$this->action[$i]['ID_MOD']?>')" value=<?=$this->action[$i]['ID_ACT']?> <?=$this->action[$i]['SEL']==1?"checked":""?>><?=$this->action[$i]['NAME']?></span>
+<?php
+				if($this->action[$i]['ID_MOD']!=$this->action[$i+1]['ID_MOD']){
+					$out=true;
+				}else{
+					$i++;
+				}
+			}
+			$out = false;
+?>
+							</td>
+						</tr>
+<?php
+			if($this->action[$i]['ID_GMOD']!=$this->action[$i+1]['ID_GMOD']){
+				$out=true;
+			}else{
+				$i++;
+			}
+		}
+		$out = false;
+?>
+					</table>
+				</td>
+			</tr>
+<?php
+		if($i>=count($this->action)-1){
+			$out=true;
+		}else{
+			$i++;
+			$stt++;
+		}
+	}
+?>
+
+		</tbody>
+</table>
+</fieldset>
+<input type=hidden name=id value="<?php echo $this->id; ?>">
+<input type=hidden name=ID_EMP value="<?php echo $this->data['ID_EMP']; ?>">
+<input type=hidden name=ID_U value="<?php echo $this->data['ID_U']; ?>">
+<input type=hidden name=page value="<?php echo $this->page; ?>">
+<input type=hidden name=limit value="<?php echo $this->limit; ?>">
+<input type=hidden name=search value="<?php echo $this->search; ?>">
+</form>
+<script>
+    function indanhba(id_u){
+		document.frm.action = "/qtht/danhmucnguoidung/printcontact/ID_U/"+id_u;
+		document.frm.submit();
+	}
+	var test="2";
+	function SaveButtonClick(){
+		var spERRSELGROUP = document.getElementById("ERRSELGROUP");
+		spERRSELGROUP.innerHTML = "";
+		var err = true;
+		err = err & validateInput("req",document.frm.USERNAME,"Tài khoản không được rỗng.");
+		err = err & validateInput("equ="+document.frm.REPASSWORD.value,document.frm.PASSWORD,"Mật khẩu không hợp lệ.");
+		err = err & validateInput("req",document.frm.FIRSTNAME,"Họ nhân viên không được rỗng.");
+		err = err & validateInput("req",document.frm.LASTNAME,"Tên nhân viên không được rỗng.");
+        err = err & validateInput("num",document.frm.PHONE,"Vui lòng nhập đúng số điện thoại.");
+        err = err & validateInput("email",document.frm.EMAIL,"Vui lòng nhập đúng địa chỉ email.");
+        err = err & validateInput("address",document.frm.ADDRESS,"Vui lòng nhập đúng địa chỉ.");
+        err = err & validateInput("phone_ext",document.frm.PHONE_EXT,"Vui lòng nhập đúng số máy lẻ.");
+		if(err == true)
+		err= validateInput("selone_check","SELGROUP[]","Bạn phải chọn ít nhất một nhóm.")
+		if(err == false){
+			spERRSELGROUP.innerHTML = "Bạn phải chọn ít nhất một nhóm.";		
+		}
+
+		
+		
+        if(err==true & test=="2")
+    	{
+	      document.frm.submit();
+    	}
+    	else
+    	{
+    		if(test=='1')
+			{
+				document.getElementById('ERRUSERNAME').innerHTML ="Tên người dùng đã tồn tại";
+			}			
+    	}
+			
+	}
+	function BackButtonClick(){
+		document.frm.action = "/qtht/danhmucnguoidung";
+		document.frm.submit();
+	}
+	function check_sokyhieu(msg)
+	{
+		if(msg=='1')
+		{
+			document.getElementById('ERRUSERNAME').innerHTML ="Tên người dùng đã tồn tại";
+			test='1';
+			return true;
+		}
+		else if(msg=='2')
+		{
+			document.getElementById('ERRUSERNAME').innerHTML ="<font color='blue'>Tên người dùng hợp lệ</font>";
+			test="2";
+			return false;
+		}
+		else 
+		{
+			document.getElementById('ERRUSERNAME').innerHTML ="Vui lòng nhập tên người dùng";
+			test="3";
+			return false;
+		}		
+	}
+	//
+	function checkFail(msg)
+	{
+		alert('Kiểm tra dữ liệu gặp lỗi');
+	}
+	//
+	function checkData(value)
+	{
+		var checkAjax = new AjaxEngine();     	
+		var url="/qtht/danhmucnguoidung/check";	
+			if(document.frm.id.value!="")
+			{
+				url=url+"/id_u/"+document.frm.id.value;		
+			}			
+			url=url+"?username="+value;	
+			var type_request = "GET";
+			if(trim(value)!='')
+			{
+				sendRequestToServer(url,type_request,check_sokyhieu,checkFail);
+			}		
+	}
+    function DeSelectParentByTitle(selobj,parentobjname,parentobjname2,thischilds){
+        var parentobj = document.getElementsByName(parentobjname);
+        var parentobj2 = document.getElementsByName(parentobjname2);
+        var fire = selobj.checked; 
+        if (fire==false) {//con khong check
+//        console.log(parentobj);
+        parentobj[0].checked = false;	 		    	
+        parentobj2[0].checked = false;
+        }
+        //Select lại tập 2 ;D
+        var arr = document.getElementsByTagName("input");
+        var checkall = true;
+        for(var i=0;i<arr.length;i++){
+            if(arr[i].title==thischilds){
+                if(arr[i].checked==false) {
+                    checkall = false;
+                }
+            }
+        }
+        if (checkall==true) {
+            parentobj[0].checked = true;
+        }        
+        
+        
+    }
+</script>

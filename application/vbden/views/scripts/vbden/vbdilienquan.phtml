@@ -1,0 +1,41 @@
+<table class=adminlist1>
+<thead>
+<tr>
+<th nowrap>#</th>
+<th width="50%">Trích yếu</th>
+<th nowrap>Số ký hiệu</th>
+<th nowrap>Ngày ban hành</th>
+<th nowrap>Đính kèm</th>
+</tr>
+</thead>
+<tbody>
+<?php $stt = 1; foreach ($this->data as $item){?>
+<tr>
+<td nowrap><?=$stt?></td>
+<td width="50%"><?=$item["TRICHYEU"]?></td>
+<td nowrap><?=$item["SOKYHIEU"]?></td>
+<td nowrap>
+<?=QLVBDHCommon::MysqlDateToVnDate($item["NGAYBANHANH"])?></td>
+<td>
+<?php
+//lay thong tin file dinh kem
+	try{
+		$db = Zend_Db_Table::getDefaultAdapter();
+		$sql = " select MASO, FILENAME from ".QLVBDHCommon::Table("gen_filedinhkem")."  where ID_OBJECT = ? and TYPE=5 ";
+		$qr = $db->query($sql,array((int)$item["ID_VBDI"]));
+		$re = $qr->fetchAll();
+		
+	}catch(Exception $ex){
+
+	}
+	foreach($re as $row){
+?>
+<a href="/hscv/file/download/maso/<?=$row["MASO"]?>" ><?=$row["FILENAME"]?></a>
+<?php
+	}
+?>
+</td>
+</tr>
+<?php $stt++;}?>
+</tbody>
+</table>

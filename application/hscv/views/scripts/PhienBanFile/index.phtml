@@ -1,0 +1,72 @@
+	<table class=adminlist1>
+		<thead>
+		<tr>
+		<th nowrap colspan=2>
+		<?php if($this->isCapnhat == 1){ ?>
+		<a href="javascript:;" onclick="
+		document.getElementById('PBDuThao_ThemMoiDiv_file<?php echo $this->idPBDuthao ?>').src='/hscv/phienbanfile/input?is_new=1&idDuthao=<?php echo $this->idDuthao ?>&year=<?php echo $this->year?>&idPBDuthao=<?php echo $this->idPBDuthao ?>&idHSCV=<?php echo $this->idHSCV ?>';
+		document.getElementById('PBDuThao_ThemMoiDiv_file<?php echo $this->idPBDuthao ?>').style.display='';
+		">[ Thêm mới tệp ]</a>	
+		
+		<a href="javascript:;" onclick="
+			var ln = 0;
+			var arr = document.getElementsByName('DELidpbdt<?php echo $this->idPBDuthao?>_<?php echo $this->idDuthao ?>[]');
+			for(var i = 0 ; i < arr.length ;i++ ){
+				if(arr[i].checked == true){
+					ln = 1;
+				}
+			}
+			if(ln == 1){
+				if(confirm('<?php echo 'Bạn có muốn xóa không'; ?>')){
+					var oData = new Object();
+					sendDataObjectNameToServer('DELidpbdt<?php echo $this->idPBDuthao?>_<?php echo $this->idDuthao ?>[]','/hscv/phienbanfile/delete?idPBDuthao=<?php echo $this->idPBDuthao?>&idDuthao=<?php echo $this->idDuthao?>&year=<?php echo $this->year ?>&idHSCV=<?php echo $this->idHSCV ?>',true);
+				}
+			}else{
+				document.getElementById('PBF_ERRNochoiceDelete<?php echo $this->idPBDuthao?>_<?php echo $this->idDuthao ?>').innerHTML = 'Bạn phải chọn ít nhất một dòng để xóa';
+			}
+			">[ Xóa tệp]</a>
+		<?php } ?>
+		</th>
+		<th>
+		<span class="box_erro_area" id="PBF_ERRNochoiceDelete<?php echo $this->idPBDuthao?>_<?php echo $this->idDuthao ?>"></span>
+		</th>
+		</tr>
+		<tr>
+		<th nowrap width=10%>#</th>
+		<?php if($this->isCapnhat == 1){ ?>
+		<th nowrap width=10%>
+			<input type=checkbox name='DELALLidpbdt<?php echo $this->idPBDuthao?>_<?php echo $this->idDuthao ?>' onclick="SelectAll(this,'DELidpbdt<?php echo $this->idPBDuthao?>_<?php echo $this->idDuthao ?>')">
+		</th>
+		<?php } ?>
+		
+		<th nowrap>Tệp đính kèm</th>
+		
+		</tr>
+		</thead>
+		<tbody>
+		<?php 
+		$dtstt = 1;
+		//var_dump($this->data);
+		foreach ($this->data as $dtitem) {?>
+		<tr>
+			<td><?php echo $dtstt ?></td>
+			<?php if($this->isCapnhat == 1){ ?>
+			<td nowrap>
+				<?php if($this->ID_U==$dtitem['USER']){?>
+				<input type=checkbox name='DELidpbdt<?php echo $this->idPBDuthao?>_<?php echo $this->idDuthao ?>[]' value='<?=$this->idPBDuthao.','.$dtitem["MASO"]; ?>'>
+				<?php } ?>
+			</td>
+			<?php }?>
+			
+			
+			<td nowrap><a href="/hscv/File/download?year=<?php $year?>&maso=<?php echo $dtitem['MASO'] ?>"><?php echo $dtitem["FILENAME"] ?></a></td>
+			
+		
+		<?php $dtstt++ ;} ?>
+		</tbody>
+		<tfoot>	
+		<tr><th colspan=5>
+		<iframe style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no id="PBDuThao_ThemMoiDiv_file<?php echo $this->idPBDuthao ?>" name="PBDuThao_ThemMoiDiv_file<?php echo $this->idPBDuthao ?> ?>"></iframe>
+		</th>	
+		</tr>
+	</table>

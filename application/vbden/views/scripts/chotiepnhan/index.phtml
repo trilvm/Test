@@ -1,0 +1,331 @@
+<?=QLVBDHCommon::useDlgConfirm()?>
+<?php
+require_once "giaoviec/models/giaoviecservice.php";
+?>
+<form name="frm" action="/vbden/chotiepnhan/" method="post">
+<table class="adminlist">
+        <thead>
+            <tr>
+                <th colspan="3">
+                    <div class="pagination">
+                        <div class="limit">Hiển thị #
+                            <select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+                        </div>
+                        <div style="float:right"><?php echo $this->showPage; ?></div>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th nowrap>STT</th>
+                <th nowrap colspan="2">                    
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php
+            $stt = 0;
+            $i = 0;
+            if (count($this->data)==0) {
+                echo '<tr><td colspan=3>Không có dữ liệu</td><tr>';
+            } else {
+            $arrDoMat = array(
+                "Chưa nhập",
+                "Bình thường",
+                "Mật",
+                "Tối mật",
+                "Tuyệt mật"
+            );
+            $arrDoKhan = array(
+                "Chưa nhập",
+                "Bình thường",
+                "Khẩn",
+                "Hỏa tốc"
+            );
+            $configlienthong = new Zend_Config_Ini('../application/config.ini', 'general');
+            $madonvi = $configlienthong->service->lienthong->username;
+            $password = $configlienthong->service->lienthong->password;
+            $giaoviecservice = new GiaoViecService();
+            $token = $giaoviecservice->login($madonvi,md5($password),"");
+            foreach ($this->data as $row) {
+            $reCongViec = $giaoviecservice->SelectCongViecByIdlt(
+                            $token
+                            ,$row['MASOVANBAN']
+            );
+            $this->congviec = json_decode($reCongViec);    
+                $stt++;
+            ?>
+                <tr class="row<?php echo $i; ?>">
+                    <td nowrap align="right"><?php echo $stt ?></td>
+                    <td width=100%>
+                    <?= $row['SOKYHIEU'] ?> - <?= $row['NOIBANHANH'] ?> - <?= QLVBDHCommon::MysqlDateToVnDateNoneZero($row['NGAYGOI']) ?><?='<b>&nbsp;&nbsp;&nbsp;<i><font style="color:red;">'.(count($this->congviec->data) ? 'Văn bản giao nhiệm vụ' : '').'</font></i></b>'?><br>
+                    <?= $row['TRICHYEU'] ?> 
+					<?
+					//if($row['IS_GV'] ==1){
+						//echo "<b>"."<font color=red>"." Văn bản giao nhiệm vụ"."</font>"."</b>";
+					//}
+                                        ?>
+                    <div>
+                        <ul class="chitiethscv">
+                            <li id="groupicon1_<?= $row['MASOVANBAN'] ?>">
+                                <img hspace="5" border="0" src="/images/icon_chitiet.jpg">
+                                <a href="" onclick="DetailClick('<?= $row['MASOVANBAN'] ?>');return false;">Chi tiết</a>
+                            </li>
+                            <li id="groupicon2_<?= $row['MASOVANBAN'] ?>">
+                                <img hspace="5" border="0" src="/images/icon_giaoviec_di.gif">
+                                <a href="javascript:{SwapDiv(<?= $row['MASOVANBAN'] ?>,'/vbden/chotiepnhan/luanchuyen/masovanban/<?= $row['MASOVANBAN'] ?>',2);ReSize('<?= $row['MASOVANBAN'] ?>');}">Luân chuyển</a>
+                            </li>
+                            <div class="clr"></div>
+                            <div style="display:none;height: auto;border:1px solid #ccc;" id="groupcontent<?= $row['MASOVANBAN'] ?>" class="groupcontent"></div>
+                            <div style="display:none;height: auto;border:1px solid #ccc;" id="detail<?= $row['MASOVANBAN'] ?>" class="detail">
+                                <table width="100%" class=adminlist1 style="">
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Nơi ban hành</td>
+                                        <td nowrap="nowrap"><?= $row['NOIPHATHANH'] ?></td>
+                                        <td width="20" nowrap="nowrap"></td>
+                                        <td nowrap="nowrap" style="color:blue">Loại văn bản</td>
+                                        <td nowrap="nowrap">
+                                           <?= $row['ID_LOAIVANBAN'] ?>
+                                        </td>
+                                        <td width="100%"></td>
+                                    </tr>
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Số, ký hiệu VB</td>
+                                        <td nowrap="nowrap">
+                                           <?= $row['SOKYHIEU'] ?>
+                                        </td>
+                                        <td width="20" nowrap="nowrap"></td>
+                                        <td nowrap="nowrap" style="color:blue">Ngày ban hành</td>
+                                        <td nowrap="nowrap">
+                                           <?= QLVBDHCommon::MysqlDateToVnDate($row['NGAYBANHANH']) ?>
+                                        </td>
+                                        <td width="100%"></td>
+                                    </tr>
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Cơ quan</td>
+                                        <td><?= $row['NOIBANHANH'] ?></td>
+                                        <td width="20" nowrap="nowrap"></td>
+                                        <td nowrap="nowrap" style="color:blue">Người ký</td>
+                                        <td nowrap="nowrap"><?= $row['NGUOIBANHANH'] ?></td>
+                                        <td width="100%"></td>
+                                    </tr>
+                                    <!-- Thêm phần quản lý giao việc -->
+                                    <?php 
+                                     if(QLVBDHCommon::TabHscv(8,33)==1){ ?>
+                                    <!--
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Cấp giao việc</td>
+                                        <td width="100%" colspan="5"><?= $row['CAP_GV'] ?></td>
+                                    </tr>
+                                      <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Loại công việc</td>
+                                        <td width="100%" colspan="5"><?=vbdenModel::getNameLoaiCVByCode($row['LOAICV_GV'])?></td>
+                                       
+                                    </tr>
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Nội dung giao việc</td>
+                                        <td width="100%" colspan="5"><?=$row['NOIDUNG_GV']?></td>
+                                       
+                                    </tr>
+                                    -->
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Nhiệm vụ</td>
+                                        <td width="100%" colspan="5"><?=$row['NHIEMVU']?></td>
+                                       
+                                    </tr>
+                                    
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Hạn xử lý</td>
+                                        <td width="100%" colspan="5"><?=$row["HANXULY"] ;
+                                             if($row["TYPEHANXULY"] ==8)
+                                             {
+                                                 echo ' Giờ';
+                                             }
+                                             elseif ($row["TYPEHANXULY"] ==1) {
+                                                 echo ' Ngày';
+                                                 }
+                                             ?>
+
+                                        </td>
+                                       
+                                    </tr>
+                                     <?php } ?>
+                                    <!-- Kết thúc phần quản lý giao việc -->
+                                     
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Lĩnh vực văn bản</td>
+                                        <td nowrap="nowrap"><?php echo $this->arrLinhVuc[$row['LINHVUC']]?></td>
+                                        <td width="20" nowrap="nowrap"></td>
+                                        <td nowrap="nowrap" style="color:blue">Độ mật</td>
+                                        <td nowrap="nowrap"><?=$arrDoMat[$row['DOMAT']] ?></td>
+                                        <td width="100%"></td>
+                                    </tr>
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Số tờ</td>
+                                        <td nowrap="nowrap"><?=$row['SOTO']?></td>
+                                        <td width="20" nowrap="nowrap"></td>
+                                        <td nowrap="nowrap" style="color:blue">Độ khẩn</td>
+                                        <td nowrap="nowrap"><?=$arrDoKhan[$row['DOKHAN']] ?></td>
+                                        <td width="100%"></td>
+                                    </tr>
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">Số bản</td>
+                                        <td nowrap="nowrap"><?=$row['SOBAN']?></td>
+                                        <td width="20" nowrap="nowrap"></td>
+                                        <td nowrap="nowrap" style="color:blue"></td>
+                                        <td nowrap="nowrap"></td>
+                                        <td width="100%"></td>
+                                    </tr>
+                                    <tr class=row1>
+                                        <td nowrap="nowrap" style="color:blue">File đính kèm</td>
+                                        <td width="100%" colspan="5">
+                                            <?php 
+                                                require_once 'vbden/models/chotiepnhanModel.php';
+                                                ChoTiepNhanModel::ShowFileAttackment($this->session, $row['MASOVANBAN']);
+                                            ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </ul></div>
+                </td>
+                <td nowrap>
+                    <a href="#" onclick="TiepNhanClick(1, '<?=$row['MASOVANBAN']?>', '<?=$row['MASOVANBANCHA']?>', '<?=$row['DONVI_NHAN_NAME']?>', '<?=$row['DONVI_GOI_NAME']?>');return false;">Tiếp nhận</a><br>
+                    <a href="#" onclick="TiepNhanClick(0, '<?=$row['MASOVANBAN']?>', '<?=$row['MASOVANBANCHA']?>', '<?=$row['DONVI_NHAN_NAME']?>', '<?=$row['DONVI_GOI_NAME']?>', '<?=$row['ID_VBLTCP']?>');return false;">Không tiếp nhận</a>
+                </td>
+
+            </tr>
+            <?php
+                    $i = (-1 + $i) * -1;
+                    }
+                }
+            ?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <div class="pagination">
+                            <div class="limit">Hiển thị #                                
+                                <select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+                            </div>
+                            <div style="float:right"><?php echo $this->showPage; ?></div>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <input type="hidden" name="page" value="<?php echo $this->page; ?>">
+        <input type="hidden" name="masovanban" value="">
+        <input type="hidden" name="masovanbancha" value="">
+        <input type="hidden" name="donvinhan" value="">
+        <input type="hidden" name="donvigui" value="">
+        <input type="hidden" name="istiepnhan" value="">
+        <input type="hidden" name="id_object" value="">
+        <input type="hidden" name="ID_VBLTCP" value="">
+</form>
+
+<script type="text/javascript">
+    
+    function SwapDiv(id,url,tab){
+        document.getElementById('detail'+id).style.display = 'none';
+        for(var i=1;i<11;i++){
+            if(document.getElementById("groupicon"+i+"_"+id)){
+                if(tab!=i){
+                    if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+                        document.getElementById("groupcontent"+id).style.display="none";
+                        document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+                        break;
+                    }
+                }
+            }
+        }
+        if(document.getElementById("groupcontent"+id).style.display==""){
+            document.getElementById("groupcontent"+id).style.display="none";
+            document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+        }else{
+            document.getElementById("groupcontent"+id).style.display="";
+            document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+            document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+            loadDivFromUrl("groupcontent"+id,url,1);
+        }
+    }
+    function ReSize(id){
+        document.getElementById("groupcontent"+id).style.height='auto';
+        document.getElementById("groupcontent"+id).style.overflow='hidden';
+    }
+    function DetailClick(masovanban) {
+        if (document.getElementById('detail'+masovanban).style.display == '') {
+            document.getElementById('detail'+masovanban).style.display = 'none';
+        } else {
+            document.getElementById('groupcontent'+masovanban).style.display = 'none';
+            document.getElementById('detail'+masovanban).style.display = '';
+        }
+        
+    }
+    function TiepNhanClick(istiepnhan, masovanban, masovanbancha, donvinhan, donvigui,ID_VBLTCP) {
+        document.frm.masovanban.value = masovanban;
+        document.frm.masovanbancha.value = masovanbancha;
+        document.frm.donvinhan.value = donvinhan;
+        document.frm.donvigui.value = donvigui;
+        document.frm.istiepnhan.value = istiepnhan;
+        document.frm.ID_VBLTCP.value = ID_VBLTCP;
+        var func_tiepnhan = "document.frm.action = '/vbden/vbden/input/';document.frm.submit();";
+        var func_tuchoi = "document.frm.action = '/vbden/chotiepnhan/tuchoi';document.frm.submit();";
+        var func_cancel = "";
+        if (istiepnhan == 1) {
+            //insert file đính kèm
+            var AE = new AjaxEngine();
+			var oXmlHttp = AE.createXMLHttp();
+			oXmlHttp.open("post", "/vbden/chotiepnhan/file/masovanban/"+ masovanban, true);
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			oXmlHttp.onreadystatechange = function () {
+				if (oXmlHttp.readyState == 4) {
+					if (oXmlHttp.status == 200) {
+                        if (oXmlHttp.responseText != '' || oXmlHttp.responseText != 0) {
+                            document.frm.id_object.value = oXmlHttp.responseText;
+                            displayConfirm("Bạn có muốn tiếp nhận văn bản này không?","","",func_tiepnhan,func_cancel);
+                        }
+                        
+					} else {
+
+					}
+				}
+			};
+			oXmlHttp.send(null);            
+        }
+        else displayConfirm("Bạn có muốn từ chối văn bản này không?","","",func_tuchoi,func_cancel);
+    }
+</script>
+
+
+

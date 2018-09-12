@@ -1,0 +1,111 @@
+<?
+require_once 'hscv/models/GopYModel.php';
+?>
+<table class=adminlist1>
+	<thead>
+		<?php
+			if($this->isreadonly==0){
+		?>
+		<tr>
+			<th colspan="5">
+			<?php
+				if($this->havegopy){
+			?>
+			<a href="#" onclick="
+				document.getElementById('phoihop<?=$this->idhscv?>').style.display='';
+				document.getElementById('phoihop<?=$this->idhscv?>').src = '/hscv/phoihop/addgopy/idhscv/<?=$this->idhscv?>';
+				return false;
+			">Góp ý&nbsp;&nbsp;&nbsp;</a>
+			<?php
+				}
+			?>
+			<a href="#" onclick="
+				document.getElementById('phoihop<?=$this->idhscv?>').style.display='';
+				document.getElementById('phoihop<?=$this->idhscv?>').src = '/hscv/phoihop/viewuser/idhscv/<?=$this->idhscv?>';
+				return false;
+			">Người phối hợp</a></th>
+		</tr>
+		<?php
+			}
+		?>			
+	  <tr>
+			<th>#</th>
+			<th width="">Nội dung góp ý</th>
+			<th nowrap width="">Người góp ý</th>
+			<th nowrap width="">Tệp đính kèm</th>
+			<th nowrap width=""></th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="5">
+					<iframe style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no name="phoihop_<?=$this->idhscv?>" id="phoihop<?=$this->idhscv?>" src="" width="100%"></iframe>	
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+	$i=0;
+	$stt=1;
+	if(count($this->data)>0){
+		foreach($this->data as $row){
+?>
+		<tr class="row<?=$i?>">
+			<td nowrap><?=$stt?></td>
+			<td ><?=nl2br(htmlspecialchars($row['NOIDUNG']))?></td>
+			<td nowrap><?=$row['EMPNAME']?></td>
+			<td >	
+			<?php
+			$db = Zend_Db_Table::getDefaultAdapter();
+			$sql = "
+	    		SELECT dk.* FROM ".QLVBDHCommon::Table("GEN_FILEDINHKEM")." dk 
+	    		WHERE
+	    			 ID_OBJECT = '".$row['ID_GOPY']."'
+	    			 and
+	    			 TYPE = 20
+	    	";
+				//echo $sql;
+				$r = $db->query($sql);
+				$file = $r->fetchAll();
+				foreach($file as $fileitem){
+					echo "<a href='/hscv/File/download?year=&maso=".$fileitem['MASO']."'>".$fileitem['FILENAME']."</a> <br/>";
+				}
+			?></td>
+			<td nowrap>
+			<a  href="#" onclick="
+				document.getElementById('dis_ph_<?=$this->idhscv?>_<?=$row['ID_GOPY']?>').style.display='';
+				document.getElementById('phoihop<?=$this->idhscv?>_<?=$row['ID_GOPY']?>').src = '/hscv/phoihop/addphanhoi/idgopy/<?=$row['ID_GOPY']?>/idhscv/<?=$this->idhscv?>';
+				return false;
+			"
+			>Phản hồi</a> <br/>
+			<a  href="#" onclick=" document.getElementById('dis_ph_<?=$this->idhscv?>_<?=$row['ID_GOPY']?>').style.display='';
+				document.getElementById('phoihop<?=$this->idhscv?>_<?=$row['ID_GOPY']?>').src = '/hscv/phoihop/detailphanhoi/idgopy/<?=$row['ID_GOPY']?>/idhscv/<?=$this->idhscv?>';
+				
+				return false;
+			"
+			>Xem phản hồi			
+			</a>
+			</td>
+
+		   </tr >
+			 <tr id="dis_ph_<?=$this->idhscv?>_<?=$row['ID_GOPY']?>" style="display:none">
+			   <td colspan="5"  >
+						<iframe allowTransparency=true BORDER=0 scrolling=yes FRAMEBORDER=no name="phoihop_<?=$this->idhscv?>_<?=$row['ID_GOPY']?>" id="phoihop<?=$this->idhscv?>_<?=$row['ID_GOPY']?>" src="" width="70%" height="130px"></iframe>			
+			   </td>
+			</tr>
+<?php
+		$i = (-1+$i)*-1;
+		$stt++;
+		}
+	}else{
+?>
+		<tr class="row<?=$i?>">
+			<td colspan="5">
+				Chưa có góp ý nào
+			</td>
+		</tr>
+<?php
+	}
+?>
+	</tbody>
+</table>

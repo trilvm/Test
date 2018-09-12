@@ -1,0 +1,116 @@
+<?php
+	require_once('qtht/models/Vb_nguoikyModel.php');
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+
+<script type="text/javascript" src="/js/validate.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<script type="text/javascript" src="/js/common.js"></script>
+</head>
+<body style="background-color:transparent">
+<div style="position:absolute;display:none;" id="atAutoComplete"></div>
+<table class=adminlist1>
+	<thead>
+		<tr>
+			<th nowrap="nowrap">#</th>
+			<th width="100%">Văn bản</th>
+			<th nowrap="nowrap">Người ký</th>
+			<th nowrap="nowrap">Ngày ban hành</th>
+			<th nowrap="nowrap"></th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="5"></th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+	$stt=0;
+	$i=0;
+	foreach($this->data as $row){
+		$stt++;
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td nowrap="nowrap">
+				<?php echo $stt ?>
+			</td>
+			<td width="100%">
+				<b><?=$row["TEN"]?>
+			</td>
+			<td nowrap="nowrap">
+				<?=$row["EMPNAME"] ?>
+			</td>
+			
+			<td nowrap="nowrap">
+				<?=QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"])?>
+			</td>
+			<td>
+				<?=($row["IS_DELETE"]==1&&$this->isreadonly != 1)?"<a href='/hscv/hscv/qlvanbanketqua/isdelete/1/ID_HSCV/".$this->ID_HSCV."/id_kq_mc/".$row["ID_KQ_MC"]."'>Xóa</a>":""?> 
+			</td>
+		</tr>
+<?php
+	}
+?>
+	</tbody>
+	<?php if($this->isreadonly != 1){?>
+	<form name=frm action="/hscv/hscv/qlvanbanketqua/" method=post>
+	<table onclick="if(at_container){ if(at_container.style.display!='none')at_Hide(false);}">
+		<tr>
+			<td><b>Số ký hiệu</b></td>
+			<td><input name=SOKYHIEU type=text></td>
+			
+			<td><b>Ngày ban hành</b></td>
+			<td><?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["NGAYBANHANH"]),"NGAYBANHANH","NGAYBANHANH") ?></td>
+			
+			<td><b>Người ký</b></td>
+			<td>
+				<?php
+				echo QLVBDHCommon::AutoComplete(
+				Vb_nguoikyModel::getData(0),
+				"ID_U",
+				"NAME",
+				"NGUOIKY",
+				"NGUOIKY_TEXT",
+				true,
+				"width:150px",
+				"",
+				0,
+				'');
+			?>
+			</td>
+		</tr>
+		<tr>
+			<td><input type=button value="Thêm mới" width=200px onclick="document.frm.submit();"></td>
+		</tr>
+
+		<tr></tr>
+	</table>
+
+	<input type=hidden name="ID_HSCV" value="<?=$this->ID_HSCV?>" >
+	</form>
+	<?php }?>
+</table>
+
+
+<div id=lasttext1></div>
+
+</body>
+</html>
+<script>
+function resize(){
+	try{
+	var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+	iframeElement.style.height = ""+ (document.getElementById("lasttext1").offsetTop+100) +"px";
+	iframeElement.width = "100%"; 
+	setTimeout("resize()",1000);
+	}catch(ex){
+	}
+}
+resize();
+</script>

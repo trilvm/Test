@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<title> Thêm mới liên lạc  </title>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+</head>
+<body style="background-color:white">
+<form name="frm">
+
+<div style="background-color:#f0f0f0 ;border:1px solid #888888;margin:7px;padding:5px 8px;position:relative;white-space:nowrap;">
+<table width="100%">
+<tr>
+<td nowrap><b>Gửi đến:</b></td>
+<td width="100%"><input type="text" style="width:95%" name="addr_to" value="<?=htmlspecialchars($this->addr_to)?>"></td>
+</tr>
+<tr>
+<td nowrap><b>CC:</b></td>
+<td width="100%"><input type="text" style="width:95%" name="addr_cc" value="<?=htmlspecialchars($this->addr_cc)?>"></td>
+</tr>
+<tr>
+<td nowrap><b>BCC:</b></td>
+<td><input type="text" style="width:95%" name="addr_bcc" value="<?=htmlspecialchars($this->addr_bcc)?>"></td>
+</tr>
+</table>
+</div>
+<div align="right">
+	<input type="button" value="Đồng ý" onclick="doOk();">
+	<input type="button" value="Đóng lại" onclick="doCancel();">
+</div>
+
+<div style="background-color:#f0f0f0 ;border:1px solid #888888;margin:7px;padding:5px 8px;position:relative;white-space:nowrap;">
+<table width="100%">
+<thead></thead>
+<tbody>
+	<tr>
+		<td >
+			<b>Nhóm:</b>
+		</td>
+		<td style="width : 100%;">
+			<select name="ID_EG" style="width : 100%;" onchange="document.frm.submit();">
+				<?php Email_group::toComboGroupsByIdUser($this->id_u,1) ?>	
+			</select>
+			<script> document.frm.ID_EG.value = "<?=$this->id_eg?>"</script>
+		</td>
+	</tr>
+	<tr>
+		<td nowrap>
+			<b>Tìm tên/email:</b>
+		</td>
+		<td style="width : 100%;">
+			<input type="text" name="txtsearch_contact" style="width : 95%;" value="<?=$this->txtsearch_contact?>">
+		</td>
+		
+		
+	</tr>
+
+	<tr>
+		<td></td>
+		<td nowrap>
+			<input type="submit" value="Tìm kiếm" >
+		</td>
+	</tr>
+</tbody>
+</table>
+</div>
+<div style="border:1px solid #888888;margin:7px;padding:5px 8px;position:relative;white-space:nowrap;overflow-x:hidden;overflow-y:scroll;">
+<table class="adminlist" >
+	<thead>
+		<tr>
+		<td colspan="4">Thên tất cả vào <a href="#" style="cursor:pointer;">Gửi đến</a></td>
+		</tr>
+		<tr>
+			<th>
+				Tên
+			</th>
+			<th>
+				Email
+			</th>
+			<th>
+				Ghi chú
+			</th>
+			<th></th>
+		<tr>
+	</thead>
+	<tbody>
+		
+		
+		<?php
+		$stt = 1;
+		foreach($this->addr_ing as $it_eg){
+		?>
+			<tr>
+			<td><img src="/images/email/person.gif"></img><?=$it_eg["NAME_FRIEND"]?></td>
+			<td><?=$it_eg["EMAIL_ADDR_FR"]?>
+			<input type="hidden" id="emadd_<?=$stt?>" name="emadd_<?=$stt?>" value=<?=$it_eg["EMAIL_ADDR_FR"]?>>
+			</td>
+			
+			<td><?=$it_eg["COMMENT"]?></td>
+			<td>
+			<b>Thêm vào </b><br>
+			<a href="#" title="Thêm liên lạc vào gửi đến" onclick="addTo(<?=$stt?>); return false;" >[ Gửi đến ]</a>
+			<a href="#" title="Thêm liên lạc vào CC" onclick="addCC(<?=$stt?>); return false;" >[ CC ]</a>
+			<a href="#" title="Thêm liên lạc vào BCC" onclick="addBCC(<?=$stt?>); return false;">[ BCC ]</a>
+			</td>
+			</tr>
+		<?php $stt++;} ?>
+		
+		
+	</tbody>
+</table>
+
+</div>
+
+</form>
+</body>
+
+<script>
+function addTo(id){
+	if(id > 0){
+		var id_h = "emadd_"+id;
+		var o_emd = document.getElementById(id_h);
+		if(document.frm.addr_to.value =="")
+			document.frm.addr_to.value = o_emd.value;
+		else
+			document.frm.addr_to.value += ";"+o_emd.value;
+	}
+
+}
+
+function addCC(id){
+	if(id > 0){
+		var id_h = "emadd_"+id;
+		var o_emd = document.getElementById(id_h);
+		if(document.frm.addr_cc.value =="")
+			document.frm.addr_cc.value = o_emd.value;
+		else
+			document.frm.addr_cc.value += ";"+o_emd.value;
+	}
+
+}
+
+function addBCC(id){
+	if(id > 0){
+		var id_h = "emadd_"+id;
+		var o_emd = document.getElementById(id_h);
+		if(document.frm.addr_bcc.value =="")
+			document.frm.addr_bcc.value = o_emd.value;
+		else
+			document.frm.addr_bcc.value += ";"+o_emd.value;
+	}
+
+}
+
+function doOk(){
+	if(window.opener != null)
+		window.opener.doFillAddr(document.frm.addr_to.value,document.frm.addr_cc.value,document.frm.addr_bcc.value);
+	self.close();
+}
+
+function doCancel(){
+	self.close();
+
+}
+</script>

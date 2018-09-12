@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style>
+td{
+	border-color: black;
+}
+th{
+	border-color: black;
+}
+</style>
+
+</head>
+<body style="background-color:transparent">
+<table  width=100% >
+<tr >
+  <td align=center ><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></td>
+
+  <td align=center>CỘNG HÒA XÃ HỘI CHỦ
+  NGHĨA VIỆT NAM</td>
+ </tr>
+ <tr >
+  <td align=center ><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+  <td align=center style="text-decoration:underline;text-underline-style:single;">Ðộc lập - Tự do - Hạnh phúc</td>
+ </tr>
+ <tr >
+
+ 
+  <td ></td>
+  <td align=right style="font-style:italic"><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+ </tr>
+
+ 
+</table>
+<p align=center><b>BÁO CÁO SỐ LƯỢNG VĂN BẢN, TỆP ĐÍNH KÈM TRONG TẬP HỒ SƠ </b> <br/>
+<?php echo $this->thu;?></p>
+
+<table border="1" style="border: 1px solid black; border-collapse: collapse;">
+ <thead bgcolor=gray>
+     <tr>
+	   <th nowrap colspan=6>Văn bản trong tập hồ sơ</th>
+	 </tr>
+ 	<tr>
+		<th nowrap >Stt</th>
+	    <th nowrap >Số ký hiệu</th>	
+		<th nowrap >Ngày ban hành</th>	
+		<th nowrap >Cơ quan ban hành</th>
+ 		<th >Trich yếu</th>        
+ 		<th nowrap >Loại</th>			
+ 	</tr> 	
+ </thead>
+ <tbody>
+<?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'qtht/models/CoquanModel.php'; 
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'qtht/models/UsersModel.php';
+ require_once 'report/models/ThongketaphosoModel.php';
+?>
+<?php  $stt=1; 
+$num = count($this->datavb);
+foreach($this->datavb as $row){
+ 
+ ?>	
+	<tr>
+   <td nowrap valign=top ><?=$stt?></td>   
+ 	<td nowrap valign=top ><?=$row["SOKYHIEU"]?></td>	
+ 	<td nowrap valign=top width="10%" ><?php echo QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></td>	
+	
+	<td  width="20%" valign=top ><?=$row["COQUANBANHANH"]?></td>  	
+	<td  valign=top width=40% ><?php echo $row["TRICHYEU"] ?></td> 	
+	<td nowrap valign=top ><?php if($row["LOAI"]==1) echo "Văn bản đến";if($row["LOAI"]==2) echo "Văn bản đi";if($row["LOAI"]==3) echo "Văn bản ngoài"; ?></td>
+	</tr>
+<?php
+  $stt++ ; } ?>
+ </tbody>  
+</table>
+</body>
+<script>print();</script>
+</html>

@@ -1,0 +1,17 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body style="background-color:transparent">
+<form name="frm" method=post action="/hscv/hscv/savethuhoi">
+<input type=hidden name=id value="<?=$this->ID_HSCV?>">
+<input type=hidden name=year value="<?=$this->year?>">
+<p id=lasttext></p>
+</form>
+</body>
+</html>
+<script>
+var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>').offsetParent;
+iframeElement.style.display="none";
+document.frm.submit();
+</script>

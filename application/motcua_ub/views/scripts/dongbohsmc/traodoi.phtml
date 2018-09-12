@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<div style="background-border:1px solid;">
+<p><b>Các ý kiến trước:</b></p>
+<?php 
+	foreach($this->data as $row){
+?>
+<b><?=$row["NAME_U"]?>(<?=$row["DATESEND"]?>):</b> <?=$row["NOIDUNG"]?> <br>
+<?php }?>
+</div>
+
+
+
+<form name=frm action="/motcua/dongbohsmc/traodoisave" method=post>
+
+<div>	
+	<label><b>Nhập nội dung:</b></label>
+	<textarea name=NOIDUNG ></textarea>
+</div>
+
+<input type=button value="Gửi ý kiến" onclick="document.frm.submit();" >
+<input type=hidden name=ID_MC_HSW value="<?=$this->ID_MC_HSW?>">
+<input type=hidden name=code value="<?=$this->code?>">
+</form>
+
+<p id=lasttext1></p>
+</body>
+</html>
+
+<script>
+function resize(){
+	try{
+		//alert("aa");
+	var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_MC_HSW?>');
+	iframeElement.style.height = ""+ (document.getElementById("lasttext1").offsetTop+150) +"px";
+	iframeElement.width = "100%"; 
+	setTimeout("resize()",1000);
+	}catch(ex){
+	}
+}
+setTimeout("resize()",1000);
+</script>

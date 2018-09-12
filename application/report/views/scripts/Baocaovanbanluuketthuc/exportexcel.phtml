@@ -1,0 +1,188 @@
+<meta charset="utf-8">
+<style>
+    .text-center{
+        text-align: center;
+    }
+
+    table td{
+        font-size: 12pt;
+    }
+
+    table.table-admin{
+        border-collapse: collapse;
+    }
+
+    table.table-admin td, table.table-admin th{
+        border: 1px solid #000;
+    }
+
+</style>
+
+<div class="book">
+    <div class="page">
+        <div class="subpage">
+            <table width="100%">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td colspan="3" class="text-center"><?php echo mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center" colspan="3"><b>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td colspan="3" class="text-center"><b><?php echo mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center" colspan="3"><u><b>Độc lập - Tự do - Hạnh phúc</b></u></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td colspan="3" class="text-center"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center" colspan="3">
+                        <i><?php echo $this->config->sys_info->city ?>, ngày <?php echo date("d")?> tháng <?php echo date("m")?> năm <?php echo date("Y")?></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td colspan="9" class="padding-bottom-xl"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center" colspan="9">
+                        <b>BÁO CÁO LƯU KẾT THÚC VĂN BẢN</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center" colspan="9">
+                        <i>(<?php echo $this->datetxt;?>)</i>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9" class="padding-bottom-l"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td colspan="9">
+                        <table width="100%" class="table-admin">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center; width: 5%">STT</th>
+                                <th style="text-align: center">Số, ký hiệu VB</th>
+                                <th style="text-align: center">Ngày ban hành</th>
+                                <th style="text-align: center">Cơ quan ban hành</th>
+                                <th style="text-align: center">Trích yếu</th>
+                                <?php
+                                    if($this->params->thongke == 0){
+                                        ?>
+                                        <th style="text-align: center">Người lưu VB</th>
+                                        <?php
+                                    }
+                                ?>
+                                <th style="text-align: center">Ngày lưu VB</th>
+                                <th style="text-align: center">Ghi chú</th>
+                                <?php
+                                    if($this->params->TYPE_LUUKT == 0){
+                                        ?>
+                                        <th style="text-align: center">Hình thức</th>
+                                        <?php
+                                    }
+                                ?>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <?php
+                                foreach($this->dataGroup as $dataGroup){
+                                    ?>
+                                    <tr>
+                                        <td colspan="<?php echo $this->params->thongke==0?9:8 ?>">
+                                            <b>
+                                                <?php
+                                                    if($this->params->thongke == 0){
+                                                        echo $dataGroup['NAME'];
+                                                    }else{
+                                                        echo $dataGroup['FIRSTNAME']. ' '.$dataGroup['LASTNAME'];
+                                                    }
+                                                ?>
+                                            </b>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    foreach($this->data as $key => $value){
+                                        if($this->params->thongke == 0 && $dataGroup['ID_DEP'] == $key){
+                                            $i = 0;
+                                            foreach($value as $item) {
+                                                $item = (object)$item;
+                                                $i++;
+                                                ?>
+                                                <tr>
+                                                    <td style="text-align: center"><?php echo $i; ?></td>
+                                                    <td><?php echo $item->SOKYHIEU; ?></td>
+                                                    <td style="text-align: center"><?php echo QLVBDHCommon::MysqlDateToVnDate($item->NGAYBANHANH); ?></td>
+                                                    <td style="width: 17%"><?php echo $item->COQUANBANHANH; ?></td>
+                                                    <td style="width: 23%"><?php echo $item->TRICHYEU; ?></td>
+                                                    <td><?php echo $item->NGUOILUU; ?></td>
+                                                    <td style="text-align: center"><?php echo QLVBDHCommon::MysqlDateToVnDate($item->NGAYLUU); ?></td>
+                                                    <td><?php echo $item->GHICHU; ?></td>
+                                                    <?php
+                                                        if($this->params->TYPE_LUUKT == 0){
+                                                            ?>
+                                                            <td style="width: 8%"><?php echo $item->TYPESAVE==1?'Lưu tham khảo':'Lưu chờ xử lý'; ?></td>
+                                                            <?php
+                                                        }
+                                                    ?>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }else if($dataGroup['ID_U'] == $key){
+                                            $i = 0;
+                                            foreach($value as $item) {
+                                                $item = (object)$item;
+                                                $i++;
+                                                ?>
+                                                <tr>
+                                                    <td style="text-align: center"><?php echo $i; ?></td>
+                                                    <td><?php echo $item->SOKYHIEU; ?></td>
+                                                    <td style="text-align: center"><?php echo QLVBDHCommon::MysqlDateToVnDate($item->NGAYBANHANH); ?></td>
+                                                    <td style="width: 17%"><?php echo $item->COQUANBANHANH; ?></td>
+                                                    <td style="width: 23%"><?php echo $item->TRICHYEU; ?></td>
+                                                    <td style="text-align: center"><?php echo QLVBDHCommon::MysqlDateToVnDate($item->NGAYLUU); ?></td>
+                                                    <td><?php echo $item->GHICHU; ?></td>
+                                                    <?php
+                                                        if($this->params->TYPE_LUUKT == 0){
+                                                            ?>
+                                                            <td style="width: 8%"><?php echo $item->TYPESAVE==1?'Lưu tham khảo':'Lưu chờ xử lý'; ?></td>
+                                                            <?php
+                                                        }
+                                                    ?>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                    <?php
+                                }
+                            ?>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,185 @@
+<form name=frm action="/dongbolencong/dongbo/list/type/<?=$this->type?>">
+<table>
+	<tr>
+		<td>Số ký hiệu</td>
+		<td><input type=text name=SOKYHIEU value="<?=$this->SOKYHIEU?>"></td>
+		<td>Tìm chính xác<input type=checkbox name=SOKYHIEU_FULL <?=$this->SOKYHIEU_FULL==1?"checked":""?> value=1></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><input type=submit value="Tìm kiếm"></td>
+		<td></td>
+	</tr>
+</table>
+<table class=adminlist<?=$this->type!=1?"1":""?> style="width:100px;float:left;margin:0 0 0 0;height:27px">
+	<thead>
+		<tr>
+			<th><a href="/dongbolencong/dongbo/list/type/1?a=<?=time()?>"><font <?=$this->type==1?"color=red":""?>>Chưa đồng bộ</font></a></th>
+		</tr>
+	</thead>
+</table>
+<table class=adminlist<?=$this->type!=2?"1":""?> style="width:100px;float:left;margin:0 0 0 0;height:27px">
+	<thead>
+		<tr>
+			<th><a href="/dongbolencong/dongbo/list/type/2?a=<?=time()?>"><font <?=$this->type==2?"color=red":""?>>Đã đồng bộ</font></a></th>
+		</tr>
+	</thead>
+</table>
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th colspan="5">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/dongbolencong/dongbo/list/type/<?=$this->type?>';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+		<tr>
+			<th nowrap>#</th>
+			<th nowrap>Số ký hiệu</th>
+			<th nowrap>Ngày ban hành</th>
+			<th width=100%>Trích yếu</th>
+			<th nowrap>Hành động</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="5">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/dongbolencong/dongbo/list/type/<?=$this->type?>';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+$stt=1;
+foreach($this->data as $item){
+?>
+		<tr>
+			<td nowrap align=right><?=$stt?></td>
+			<td nowrap><?=htmlspecialchars($item["SOKYHIEU"])?></td>
+			<td nowrap><?=QLVBDHCommon::MySQLDateToVNDate($item["NGAYBANHANH"])?></td>
+			<td width=100%><?=htmlspecialchars($item["TRICHYEU"])?></td>
+			<td nowrap>
+	<?php
+		if($this->type==1){
+	?>
+				<a href="#" onclick="DongBo(<?=$item["ID_VBDI"]?>);return false;";>Đồng bộ</a>
+	<?php
+		}else{
+	?>
+				<a href="#" onclick="ThuHoi(<?=$item["ID_VB_PORTAL"]?>);return false;";>Thu hồi</a>
+	<?php
+		}
+	?>
+			</td>
+		</tr>
+<?php
+	$stt++;
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<script>
+function DongBo(id){
+	$.ajax({
+		url: '/dongbolencong/dongbo/dongbo/id_vbdi/'+id,
+		type: 'POST',
+		cache: false,
+		dataType: 'json',
+		processData: false, // Don't process the files
+		contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+		success: function(data, textStatus, jqXHR)
+		{
+			if(typeof data.msg === 'undefined')
+			{
+				if(data.id>0){
+					alert("Đồng bộ thành công");
+					document.frm.submit();
+				}else{
+					alert("Đồng bộ không thành công");
+				}
+			}
+			else
+			{
+				alert('ERRORS: ' + data.msg);
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown)
+		{
+			console.log('ERRORS: ' + textStatus);
+		}
+	});
+}
+function ThuHoi(id){
+	$.ajax({
+		url: '/dongbolencong/dongbo/thuhoi/id_vb_portal/'+id,
+		type: 'POST',
+		cache: false,
+		dataType: 'json',
+		processData: false, // Don't process the files
+		contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+		success: function(data, textStatus, jqXHR)
+		{
+			if(typeof data.msg === 'undefined')
+			{
+				if(data.id>0){
+					alert("Thu hồi thành công");
+					document.frm.submit();
+				}else{
+					alert("Thu hồi không thành công");
+				}
+			}
+			else
+			{
+				alert('ERRORS: ' + data.msg);
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown)
+		{
+			console.log('ERRORS: ' + textStatus);
+		}
+	});
+}
+</script>

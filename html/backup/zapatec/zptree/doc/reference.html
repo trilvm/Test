@@ -1,0 +1,370 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Zapatec DHTML (AJAX) Tree Manual</title><link rel="stylesheet" href="themes/print.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="#id2410434" title="Zapatec DHTML (AJAX) Tree Manual"><link rel="next" href="#General_information" title="Chapter 1. General information"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id2410434"></a>Zapatec DHTML (AJAX) Tree Manual</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="#General_information">1. General information</a></span></dt><dd><dl><dt><span class="sect1"><a href="#Features">1. Features</a></span></dt><dd><dl><dt><span class="sect2"><a href="#id2468911">1.1. Easy to Use HTML or JSON or XML Markup to Create the DHTML Tree </a></span></dt><dt><span class="sect2"><a href="#id2468935">1.2. Search Engine Friendly</a></span></dt><dt><span class="sect2"><a href="#id2468948">1.3. Include HTML Markup in Your Tree</a></span></dt><dt><span class="sect2"><a href="#id2468960">1.4. Supported on a Wide Variety of Browsers</a></span></dt><dt><span class="sect2"><a href="#id2468973">1.5. Use the Wizard to Setup and Check Features</a></span></dt><dt><span class="sect2"><a href="#id2468991">1.6. Ability to Define which Node would be Collapsed or Expanded after Tree was Created</a></span></dt><dt><span class="sect2"><a href="#id2469006">1.7. Programmatically Control the DHTML Tree</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="#Installation">2.  Installation procedures</a></span></dt><dd><dl><dt><span class="sect1"><a href="#Download">1. Download Zapatec DHTML Tree</a></span></dt><dt><span class="sect1"><a href="#Unpack">2. Unpack zptree.zip on your computer</a></span></dt></dl></dd><dt><span class="chapter"><a href="#Startup">3. Quick Startup</a></span></dt><dd><dl><dt><span class="sect1"><a href="#Insert_Headers">1. Insert the headers</a></span></dt><dd><dl><dt><span class="sect2"><a href="#id2469173">1.1. Path Warning</a></span></dt></dl></dd><dt><span class="sect1"><a href="#Upgrade_Warning">2. Upgrade Warning</a></span></dt></dl></dd><dt><span class="chapter"><a href="#Create">4. Create the Tree</a></span></dt><dt><span class="chapter"><a href="#Tree_Structure">5. Typical AJAX Tree Structure</a></span></dt><dt><span class="chapter"><a href="#Properties">6.  Properties</a></span></dt><dd><dl><dt><span class="sect1"><a href="#tree">1. tree</a></span></dt><dt><span class="sect1"><a href="#parent">2. parent</a></span></dt><dt><span class="sect1"><a href="#hiliteSelectedNode">3. hiliteSelectedNode</a></span></dt><dt><span class="sect1"><a href="#highlightSelectedNode">4. highlightSelectedNode</a></span></dt><dt><span class="sect1"><a href="#selectMultiple">5. selectMultiple</a></span></dt><dt><span class="sect1"><a href="#deselectSelected">6. deselectSelected</a></span></dt><dt><span class="sect1"><a href="#defaultIcons">7. defaultIcons</a></span></dt><dt><span class="sect1"><a href="#compact">8. compact</a></span></dt><dt><span class="sect1"><a href="#dynamic">9. dynamic</a></span></dt><dt><span class="sect1"><a href="#initLevel">10. initLevel</a></span></dt><dt><span class="sect1"><a href="#saveState">11. saveState</a></span></dt><dt><span class="sect1"><a href="#saveId">12. saveId</a></span></dt><dt><span class="sect1"><a href="#expandOnIconClick">13. expandOnIconClick</a></span></dt><dt><span class="sect1"><a href="#expandOnIconDblclick">14. expandOnIconDblclick</a></span></dt><dt><span class="sect1"><a href="#expandOnLabel">15. expandOnLabel</a></span></dt><dt><span class="sect1"><a href="#expandOnLabelClick">16. expandOnLabelClick</a></span></dt><dt><span class="sect1"><a href="#expandOnLabelDblclick">17. expandOnLabelDblclick</a></span></dt><dt><span class="sect1"><a href="#labelDblClick">18. labelDblClick</a></span></dt><dt><span class="sect1"><a href="#expandOnSignClick">19. expandOnSignClick</a></span></dt><dt><span class="sect1"><a href="#expandOnSignDblclick">20. expandOnSignDblclick</a></span></dt><dt><span class="sect1"><a href="#selectOnSignClick">21. selectOnSignClick</a></span></dt><dt><span class="sect1"><a href="#selectOnSignDblclick">22. selectOnSignDblclick</a></span></dt><dt><span class="sect1"><a href="#selectOnIconClick">23. selectOnIconClick</a></span></dt><dt><span class="sect1"><a href="#selectOnIconDblclick">24. selectOnIconDblclick</a></span></dt><dt><span class="sect1"><a href="#selectOnLabelClick">25. selectOnLabelClick</a></span></dt><dt><span class="sect1"><a href="#selectOnLabelDblclick">26. selectOnLabelDblclick </a></span></dt><dt><span class="sect1"><a href="#prevCompatible">27. prevCompatible</a></span></dt><dt><span class="sect1"><a href="#quick">28. quick</a></span></dt><dt><span class="sect1"><a href="#eventListeners">29. eventListeners</a></span></dt><dt><span class="sect1"><a href="#createWholeDOM">30. createWholeDOM</a></span></dt><dt><span class="sect1"><a href="#putCheckboxes">31. putCheckboxes</a></span></dt><dt><span class="sect1"><a href="#dependantCheckboxes">32. dependantCheckboxes</a></span></dt><dt><span class="sect1"><a href="#putBackReferences">33. putBackReferences</a></span></dt><dt><span class="sect1"><a href="#jsonLoadCallback">34. jsonLoadCallback</a></span></dt><dt><span class="sect1"><a href="#keyboardNavigation">35. keyboardNavigation</a></span></dt><dt><span class="sect1"><a href="#deselectOnLeave">36. deselectOnLeave</a></span></dt><dt><span class="sect1"><a href="#selectable">37. selectable</a></span></dt><dt><span class="sect1"><a href="#editable">38. editable</a></span></dt><dt><span class="sect1"><a href="#editOnClick">39. editOnClick</a></span></dt><dt><span class="sect1"><a href="#editOnDbclick">40. editOnDbclick</a></span></dt><dt><span class="sect1"><a href="#editAsText">41. editAsText</a></span></dt><dt><span class="sect1"><a href="#id2470461">42. disableContextMenu</a></span></dt></dl></dd><dt><span class="chapter"><a href="#Tree_API">7. Tree API</a></span></dt><dd><dl><dt><span class="sect1"><a href="#getState">1. getState()</a></span></dt><dt><span class="sect1"><a href="#reconfigure">2. reconfigure()</a></span></dt><dt><span class="sect1"><a href="#find">3. find()</a></span></dt><dt><span class="sect1"><a href="#findAll">4. findAll()</a></span></dt><dt><span class="sect1"><a href="#toggleAll">5. toggleAll()</a></span></dt><dt><span class="sect1"><a href="#toggleItem">6. toggleItem()</a></span></dt><dt><span class="sect1"><a href="#getNode">7. getNode()</a></span></dt><dt><span class="sect1"><a href="#sync">8. sync()</a></span></dt><dt><span class="sect1"><a href="#appendChild">9. appendChild()</a></span></dt><dt><span class="sect1"><a href="#insertBefore">10. insertBefore()</a></span></dt><dt><span class="sect1"><a href="#insertAfter">11. insertAfter()</a></span></dt><dt><span class="sect1"><a href="#removeChild">12. removeChild()</a></span></dt><dt><span class="sect1"><a href="#collapseAll">13. collapseAll()</a></span></dt><dt><span class="sect1"><a href="#collapseToLevel">14. collapseToLevel()</a></span></dt><dt><span class="sect1"><a href="#expandAll">15. expandAll()</a></span></dt><dt><span class="sect1"><a href="#expandToLevel">16. expandToLevel()</a></span></dt><dt><span class="sect1"><a href="#makeNode">17. makeNode()</a></span></dt><dt><span class="sect1"><a href="#onItemSelect">18. onItemSelect()</a></span></dt></dl></dd><dt><span class="chapter"><a href="#Events">8. Events</a></span></dt><dd><dl><dt><span class="sect1"><a href="#beforeCreate">1. beforeCreate</a></span></dt><dt><span class="sect1"><a href="#afterCreate">2. afterCreate</a></span></dt><dt><span class="sect1"><a href="#iconClick">3. iconClick</a></span></dt><dt><span class="sect1"><a href="#iconDblclick">4. iconDblclick</a></span></dt><dt><span class="sect1"><a href="#id2471028">5. iconRightClick</a></span></dt><dt><span class="sect1"><a href="#signClick">6. signClick</a></span></dt><dt><span class="sect1"><a href="#signDblclick">7. signDblclick</a></span></dt><dt><span class="sect1"><a href="#labelClick">8. labelClick</a></span></dt><dt><span class="sect1"><a href="#labelDblclick">9. labelDblclick</a></span></dt><dt><span class="sect1"><a href="#id2471090">10. labelRightClick</a></span></dt><dt><span class="sect1"><a href="#select">11. select</a></span></dt><dt><span class="sect1"><a href="#deselect">12. deselect</a></span></dt><dt><span class="sect1"><a href="#collapse">13. collapse</a></span></dt><dt><span class="sect1"><a href="#collapseBranch">14. collapseBranch</a></span></dt><dt><span class="sect1"><a href="#expand">15. expand</a></span></dt><dt><span class="sect1"><a href="#expandBranch">16. expandBranch</a></span></dt><dt><span class="sect1"><a href="#toggle">17. toggle</a></span></dt><dt><span class="sect1"><a href="#keypressed">18. keypressed</a></span></dt><dt><span class="sect1"><a href="#leave">19. leave</a></span></dt><dt><span class="sect1"><a href="#rename">20. rename</a></span></dt></dl></dd><dt><span class="chapter"><a href="#NOM">9. Node Object Methods</a></span></dt><dd><dl><dt><span class="sect1"><a href="#node#getState">1. getState()</a></span></dt><dt><span class="sect1"><a href="#node#hasSubtree">2. hasSubtree()</a></span></dt><dt><span class="sect1"><a href="#node#select">3. select()</a></span></dt><dt><span class="sect1"><a href="#node#deselect">4. deselect()</a></span></dt><dt><span class="sect1"><a href="#node#collapse">5. collapse()</a></span></dt><dt><span class="sect1"><a href="#node#collapseBranch">6. collapseBranch()</a></span></dt><dt><span class="sect1"><a href="#node#expand">7. expand()</a></span></dt><dt><span class="sect1"><a href="#node#expandBranch">8. expandBranch()</a></span></dt><dt><span class="sect1"><a href="#node#toggle">9. toggle()</a></span></dt><dt><span class="sect1"><a href="#node#expandHere">10. expandHere()</a></span></dt><dt><span class="sect1"><a href="#node#sync">11. sync()</a></span></dt><dt><span class="sect1"><a href="#node#destroy">12. destroy(fast)</a></span></dt><dt><span class="sect1"><a href="#node#appendChild">13. appendChild(newChild, atStart)</a></span></dt><dt><span class="sect1"><a href="#node#insertBefore">14. insertBefore(newChild)</a></span></dt><dt><span class="sect1"><a href="#node#insertAfter">15. insertAfter(newChild)</a></span></dt><dt><span class="sect1"><a href="#node#rename">16. rename (newLabel)</a></span></dt></dl></dd><dt><span class="chapter"><a href="#Input_Data">10. Input data formats</a></span></dt><dd><dl><dt><span class="sect1"><a href="#JSON">1. JSON</a></span></dt><dt><span class="sect1"><a href="#HTML">2. HTML</a></span></dt><dt><span class="sect1"><a href="#XML">3. XML</a></span></dt></dl></dd><dt><span class="chapter"><a href="#Advanced_Usage">11. Advanced usage</a></span></dt><dd><dl><dt><span class="sect1"><a href="#quick_option">1. What does «<span class="property">quick</span>» option do</a></span></dt><dt><span class="sect1"><a href="#Dynamic_Branches">2. Dynamic branches</a></span></dt><dt><span class="sect1"><a href="#working_with_events">3. Working with Events</a></span></dt></dl></dd></dl></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="General_information"></a>Chapter 1. General information</h2></div></div></div><p>The Zapatec DHTML Tree is an easy, attractive and versatile way
+to display information. You can use the DHTML tree as a menu, a site
+map, or a way to display your data. It provides Windows Explorer like
+interface and simplifies the interaction with document. Our DHTML
+Tree works in many different browsers, but if visitors use older
+browsers, they will still be able to see and use the underlying HTML
+code.</p><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Features"></a>1. Features</h2></div></div></div><p>The Zapatec DHTML Tree is available under commercial and "lite"
+licenses. If you use the lite license you need to include a link to
+<a href="zapatec.com/website/main/products/prod3" target="_top">http://www.zapatec.com/website/main/products/prod3/</a> 
+</p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2468911"></a>1.1. Easy to Use HTML or JSON or XML Markup to Create the DHTML Tree </h3></div></div></div><p>Unlike most other DHTML trees, you can build the Zapatec DHTML
+Tree using HTML (JSON, XML), not Javascript. You don't need to learn
+any new functions or worry about making Javascript syntax errors. You
+can construct the DHTML Tree just as you would nested HTML lists
+using &lt;ul&gt; and &lt;li&gt; tags. Same simplicity is achieved
+when using XML or JSON formats to define internal tree structure and
+attributes. 
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2468935"></a>1.2. Search Engine Friendly</h3></div></div></div><p>Since the DHTML Tree can be created using HTML, search engines can
+follow the links, which they can't do if the tree is built in
+Javascript. 
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2468948"></a>1.3. Include HTML Markup in Your Tree</h3></div></div></div><p>Since the DHTML Tree can be created using HTML, you can use most
+standard HTML markup into your tree. 
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2468960"></a>1.4. Supported on a Wide Variety of Browsers</h3></div></div></div><p>The DHTML Tree's code has been tested on Internet Explorer 6.0+,
+Opera 9.0+, Safari 2.0+, and Firefox 1.0+. 
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2468973"></a>1.5. Use the Wizard to Setup and Check Features</h3></div></div></div><p>Use the Zapatec DHTML Tree Wizard to create a DHTML Tree with the
+exact features you want. When you are done, click generate, then copy 
+and paste the generated code into your web page.</p><p>You can also use the Wizard to try out different configuration
+options and see how they affect your tree. 
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2468991"></a>1.6. Ability to Define which Node would be Collapsed or Expanded after Tree was Created</h3></div></div></div><p>You can easily define certain nodes as expanded or collapsed by
+setting the class for the node to "expanded" or
+"collapsed".
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2469006"></a>1.7. Programmatically Control the DHTML Tree</h3></div></div></div><p>Rich set of Tree API allows to control the behavior and state of
+the tree by your script. You can collapse/expand branches,
+dynamically add/remove nodes, search through nodes labels, toggle
+branches, open Tree to the given level, etc.</p><p>Also you can use wide variety of event listeners to write custom
+event handlers and you can add needed functionality to your tree that
+way too.</p><p>Other useful feature &#8211; use Node object methods to provide
+more flexibility to your code. 
+</p></div></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Installation"></a>Chapter 2.  Installation procedures</h2></div></div></div><p>To ensure proper functioning of our Widget you should carefully
+follow the installation procedures.</p><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Download"></a>1. Download Zapatec DHTML Tree</h2></div></div></div><p>The DHTML Tree files are bundled in a zip file. Click the download
+link in the Tree section of Zapatec&#8217;s web site, and follow the
+instructions to download the file.</p><p>Save the file (<span class="bold"><strong>zptree.zip</strong></span>) in your website&#8217;s root
+folder on your computer or server.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Unpack"></a>2. Unpack zptree.zip on your computer</h2></div></div></div><div class="orderedlist"><ol type="1"><li><p>On your computer, go to the folder where you saved the file
+ <span class="bold"><strong>zptree.zip</strong></span>. 
+ </p></li><li><p><span class="bold"><strong>zptree.zip</strong></span> contains a folder called zapatec
+      that
+ holds all of the files you will need to create Zapatec tree. 
+ </p></li><li><p>Open or double-click <span class="bold"><strong>zptree.zip</strong></span> to unpack it.</p></li></ol></div></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Startup"></a>Chapter 3. Quick Startup</h2></div></div></div><p>Make sure you have downloaded and unpacked Tree files. If you
+haven't done it yet &#8211; refer to the  <span class="bold"><strong>
+        <a href="#Installation" title="Chapter 2.  Installation procedures">Installation procedures</a>
+      </strong></span> section for instructions.</p><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Insert_Headers"></a>1. Insert the headers</h2></div></div></div><p>In your web editor (Dreamweaver, UltraEdit, etc.), open the web
+page where you want the tree placed. Insert your cursor before the
+ending &lt;/head&gt; tag. Paste the following  script
+paths before the ending &lt;/head&gt; tag:</p><pre class="programlisting">&lt;!-- Javascript Zapatec utilities file --&gt;    
+&lt;script type="text/javascript" src="utils/zapatec.js"&gt;&lt;/script&gt;  
+&lt;!-- Javascript file to support Tree --&gt;
+&lt;script type="text/javascript" src="zptree/src/tree.js"&gt;&lt;/script&gt;</pre><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2469173"></a>1.1. Path Warning</h3></div></div></div><p>Warning: this works only if you page located at the same directory
+where you unpacked  your <span class="bold"><strong>zptree.zip</strong></span>
+on the same level where <em class="citetitle">utils</em>  and <em class="citetitle">zptree</em>  folders are
+located. Otherwise you will have to adjust paths according to the
+actual location of these two folders.</p><p>Please do not intend to change the
+logical sturcture of <span class="bold"><strong>zptree.zip</strong></span>, move it's content into
+different folders or insert them into one another.</p></div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Upgrade_Warning"></a>2. Upgrade Warning</h2></div></div></div><p>Version 2007-1 has a lot of changes. There are some major issues:</p><div class="itemizedlist"><ul type="disc"><li><p>option <span class="property">dynamic</span> does nothing now. Use
+ <span class="property">quick</span> option instead.</p></li><li><p><span class="property">expandOnLabel</span> renamed to <span class="property">expandOnLabelClick.</span></p></li><li><p><span class="property">labelDblClick</span> renamed to <span class="property">expandOnLabelDblclick</span>.</p></li><li><p>Use <span class="property">source</span> option instead of <span class="property">tree</span>.
+ It gets source data from  &lt;UL&gt; HTML element, but not deletes
+ it.</p></li><li><p>Notice that <code class="methodname">appendChild()</code> signature has been changed. Read
+ <a href="#Tree_API" title="Chapter 7. Tree API">Tree API</a> section of this manual. Also, remember that if
+ <span class="property">prevCompatible</span> is true &#8211; then signature is
+ the same as in 2.1.</p></li><li><p>If <span class="property">prevCompatible</span> is true, then each
+ node's content will be inserted inside a &lt;span&gt; tag:  &lt;span
+ class=«label»&gt;..&lt;/span&gt;.</p></li><li><p>If <span class="property">prevCompatible</span> is  true, then procedure
+ of extracting icons from source will be: first image &#8211;
+ expandedIcon, second &#8211; collapsedIcon. If it is false, image
+ for expandedIcon should have className «expandedIcon»,
+ collapsedIcon - «collapsedIcon», fetchingIcon -
+ «fetchingIcon». For node without subnodes -
+ «elementIcon». 
+ </p></li><li><p>Nodes <span class="bold"><strong>don't</strong></span> have these properties any more:
+ __msh_item, __msh_level etc. Refer to <a href="#NOM" title="Chapter 9. Node Object Methods">Zapatec.Tree.Node API</a> section
+ for details.</p></li><li><p>Now TD elements, which contain node label and have subtrees
+ have className <span class="bold"><strong>menutitle</strong></span>, those, that don't have subtrees:
+ <span class="bold"><strong>submenu</strong></span> className. Now you don't have to insert inside node
+ label span elements with the same CSS class names.</p></li><li><p>Themes from 2007-1 are not compatible with previous versions of
+ Tree.</p></li><li><p>Themes techno, softblue, test and xpbarblue deleted from 2007-1.</p></li><li><p>If  any of these: <span class="bold"><strong>«zpLoadJSON»</strong></span>,
+ <span class="bold"><strong>«zpLoadHTML»</strong></span>, <span class="bold"><strong>«zpLoadXML»</strong></span> set
+ for a node &#8211; then automatically it  will be displayed with 
+ +/- sign.</p></li></ul></div></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Create"></a>Chapter 4. Create the Tree</h2></div></div></div><p>The common way to create a DHTML tree is to place the following
+code at the end of &lt;body&gt; section of your page. It should look
+something like that.</p><pre class="programlisting">&lt;script type="text/javascript"&gt; 
+    var tree = new Zapatec.Tree({
+        tree: "tree",
+        expandOnLabelClick: true,
+        highlightSelectedNode: true,
+        initLevel: 3
+    });
+&lt;/script&gt;</pre><p>Placing the code at the end of the page ensures that tree is going
+to be initialized only after whole page was loaded. It's a good
+practice do that in your document.</p><p>As you see each configuration property (on this example: <span class="property">tree</span>, <span class="property">expandOnLabelClick</span>, <span class="property">initLevel</span>, etc.) has it's definition listed after
+«:» and is separated from the next property definition
+with «,» the last property on the list shouldn't have «,»
+at the end. 
+</p><p>Please refer to the <a href="#Properties" title="Chapter 6.  Properties">Properties</a> chapter for further explanation.</p></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Tree_Structure"></a>Chapter 5. Typical AJAX Tree Structure</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="330"><tr style="height: 329px"><td><img src="tree-structure.png" width="330"></td></tr></table></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Properties"></a>Chapter 6.  Properties</h2></div></div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tree"></a>1. tree</h2></div></div></div><p>Deprecated.</p><p>ID of the element to be replaced by the Tree. 
+</p><p>Use <span class="property">
+          <span class="property">source</span>
+        </span> option instead.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="parent"></a>2. parent</h2></div></div></div><p>If given &#8211; tree will be added to this element.</p><p>Accepts element ID or link as a property value.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="hiliteSelectedNode"></a>3. hiliteSelectedNode</h2></div></div></div><p>Deprecated.</p><p>Use <a href="#highlightSelectedNode" title="4. highlightSelectedNode">
+          <span class="property">highlightSelectedNode</span>
+        </a> instead.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="highlightSelectedNode"></a>4. highlightSelectedNode</h2></div></div></div><p>Default value: true</p><p>Boolean value that tells whether to highlight selected
+node.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selectMultiple"></a>5. selectMultiple</h2></div></div></div><p>Default value: false</p><p>If true - clicking on unselected node won't unselect currently
+selected nodes.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="deselectSelected"></a>6. deselectSelected</h2></div></div></div><p>Default value: false</p><p>If true - then clicking on already selected node deselects it.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="defaultIcons"></a>7. defaultIcons</h2></div></div></div><p>If given &#8211; icon will appear next to the sign, right before the label (see picture under <a href="#Tree_Structure" title="Chapter 5. Typical AJAX Tree Structure">Typical AJAX Tree Structure</a>).</p><p>This property takes CSS class name. 
+</p><p>For example:</p><p> If you set:</p><pre class="programlisting">  defaultIcons : «customIcon»</pre><p> then you can specify the following CSS rules for the Tree:</p><p>  .tree-item-expanded .customIcon - this style will be applied to expanded branch</p><p>  .tree-item-collapsed .customIcon - this style will be applied to collapsed branch</p><p>  .tree-item .customIcon - this style will be applied to node without branch</p><p>See <a href="../demo/icons.html" target="_top">«Adding Icons»</a> demo for details.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="compact"></a>8. compact</h2></div></div></div><p>Default value: false</p><p>If true &#8211; only one
+branch can be expanded at a time.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="dynamic"></a>9. dynamic</h2></div></div></div><p>Deprecated.</p><p>Does nothing today. Use <a href="#quick" title="28. quick">
+          <span class="property">quick</span>
+        </a> option instead</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="initLevel"></a>10. initLevel</h2></div></div></div><p>Default value: 1</p><p>Integer value that specifies to which level tree will be expanded after create.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="saveState"></a>11. saveState</h2></div></div></div><p>Default value: false</p><p>If true - tree will store ID of currently selected node into cookie. After page reloads tree will be opened to that node.</p><p>See also: <a href="#saveId" title="12. saveId">
+          <span class="property">saveId</span>
+        </a></p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="saveId"></a>12. saveId</h2></div></div></div><p>Accepts name of the cookie where currently selected node ID is being saved (valid only if <a href="#saveState" title="11. saveState">
+          <span class="property">saveState</span>
+        </a> is set to true).</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandOnIconClick"></a>13. expandOnIconClick</h2></div></div></div><p>Default value: true</p><p>Determines if branch is to be expanded on icon click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandOnIconDblclick"></a>14. expandOnIconDblclick</h2></div></div></div><p>Default value: false</p><p>Determines if branch is to be expanded on icon double click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandOnLabel"></a>15. expandOnLabel</h2></div></div></div><p>Deprecated.</p><p>Use <a href="#expandOnLabelClick" title="16. expandOnLabelClick">
+          <span class="property">expandOnLabelClick</span>
+        </a> instead.</p><p>Preserved for backward compatibility with 2.1.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandOnLabelClick"></a>16. expandOnLabelClick</h2></div></div></div><p>Default value: false</p><p>Determines if branch is to be expanded on label click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandOnLabelDblclick"></a>17. expandOnLabelDblclick</h2></div></div></div><p>Default value: false</p><p>Determines if branch is to be expanded on label double click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="labelDblClick"></a>18. labelDblClick</h2></div></div></div><p>Deprecated. Use <a href="#expandOnLabelDblclick" title="17. expandOnLabelDblclick">
+          <span class="property">expandOnLabelDblclick</span>
+        </a> instead.</p><p>Preserved for backward compatibility with 2.1.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandOnSignClick"></a>19. expandOnSignClick</h2></div></div></div><p>Default value: true</p><p>Determines if branch is to
+be expanded on +/- sign click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandOnSignDblclick"></a>20. expandOnSignDblclick</h2></div></div></div><p>Default value: false</p><p>Determines if branch is to
+be expanded on +/- sign double click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selectOnSignClick"></a>21. selectOnSignClick</h2></div></div></div><p>Default value: true</p><p>Determines if branch is to
+be selected on +/- sign click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selectOnSignDblclick"></a>22. selectOnSignDblclick</h2></div></div></div><p>Default value: true</p><p>Determines if branch is to
+be selected on +/- sign double click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selectOnIconClick"></a>23. selectOnIconClick</h2></div></div></div><p>Default value: true</p><p>Determines if branch is to
+be selected on icon click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selectOnIconDblclick"></a>24. selectOnIconDblclick</h2></div></div></div><p>Default value: true</p><p>Determines if branch is to
+be selected on icon double click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selectOnLabelClick"></a>25. selectOnLabelClick</h2></div></div></div><p>Default value: true</p><p>Determines if branch is to
+be selected on label click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selectOnLabelDblclick"></a>26. selectOnLabelDblclick </h2></div></div></div><p>Default value: true</p><p>Determines if branch is to
+be selected on label double click.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="prevCompatible"></a>27. prevCompatible</h2></div></div></div><p>Default value:false</p><p>If true &#8211;
+compatibility with 2.1 is turned on. See <a href="#Upgrade_Warning" title="2. Upgrade Warning">Upgrade Warning</a>  for
+details.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quick"></a>28. quick</h2></div></div></div><p>Default value: false</p><p>If true - allows
+operation only with nodes that are created at the moment. 
+</p><p>See <a href="../demo/large.html" target="_top">«Very large tree»</a> demo
+and <a href="#Advanced_Usage" title="Chapter 11. Advanced usage">Advanced Usage</a> chapter  for details. </p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="eventListeners"></a>29. eventListeners</h2></div></div></div><p>You can specify the array of  event listeners and functions that will be called for events specified.</p><p>For more information about available events see <a href="#Events" title="Chapter 8. Events">Events</a> chapter.</p><p>For example of usage see <a href="#working_with_events" title="3. Working with Events">Working with Events</a> section under <a href="#Advanced_Usage" title="Chapter 11. Advanced usage">Advanced Usage</a> chapter.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="createWholeDOM"></a>30. createWholeDOM</h2></div></div></div><p>Default value: false</p><p>If true then whole DOM tree will be
+created from source (including nodes that are not visible yet).</p><p>Set it to true if you intend to use
+document.getElementById() for accessing tree nodes.</p><p>This option can influence the speed of
+tree creation, use it only if you need it, do not apply it to very
+large trees because it overrides <a href="#quick" title="28. quick">
+          <span class="property">quick</span>
+        </a> property: if
+<span class="property">createWholeDOM</span> is true, then 
+          <a href="#quick" title="28. quick">
+          <span class="property">quick</span>
+        </a>
+is false.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="putCheckboxes"></a>31. putCheckboxes</h2></div></div></div><p>Default value: false</p><p>If true - then checkboxes will be added for each node</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="dependantCheckboxes"></a>32. dependantCheckboxes</h2></div></div></div><p>Default value: true</p><p>This option specifies if child nodes checkboxes are to be changed when parent checkbox is changed. Also if set to true and all child checkboxes are checked - parent checkbox will become checked as well.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="putBackReferences"></a>33. putBackReferences</h2></div></div></div><p>Default value: false</p><p>If true - TD element with content will
+have property zpTreeNode which will be reference to Zapatec.Tree.Node
+instance</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jsonLoadCallback"></a>34. jsonLoadCallback</h2></div></div></div><p>Deprecated.</p><p>You can specify the function that will convert JSON object to Zapatec.Tree format.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="keyboardNavigation"></a>35. keyboardNavigation</h2></div></div></div><p>Default value: false</p><p>If true - activates keyboard navigation for the tree. Use arrow keys and ENTER/SPACE.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="deselectOnLeave"></a>36. deselectOnLeave</h2></div></div></div><p>Default value: false, but when keyboard navigation is true, then it defaults to true as well.</p><p>Deselects currently active node when leaving tree (clicking somewhere on the page outside tree or pressing ESC button).</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="selectable"></a>37. selectable</h2></div></div></div><p>Default value: false</p><p>If true  - tree label can be selected by mouse.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="editable"></a>38. editable</h2></div></div></div><p>Default value: false</p><p>If true - tree nodes can be renamed inline.</p><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>You should include this line of code in your HEAD section to do that.</p><pre class="programlisting">&lt;script type='text/javascript' src='utils/edit_inline.js'&gt;
+&lt;/script&gt;</pre></div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="editOnClick"></a>39. editOnClick</h2></div></div></div><p>Default value: false</p><p>If true - tree node can be renamed when clicking on node. </p><p>While editing you can move between nodes using Tab and Shift-Tab.</p><p>Works only when <a href="#editable" title="38. editable">
+          <span class="property">editable</span>
+        </a> is set to true.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="editOnDbclick"></a>40. editOnDbclick</h2></div></div></div><p>Default value: true</p><p>If false - tree node cann't be renamed when double clicking on node. </p><p>While editing you can move between nodes using Tab and Shift-Tab.</p><p>Works only when <a href="#editable" title="38. editable">
+          <span class="property">editable</span>
+        </a> is set to true.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="editAsText"></a>41. editAsText</h2></div></div></div><p>Default value: true</p><p>If false - you can use HTML tags in node's name, otherwise it's not allowed. </p><p>While editing you can move between nodes using Tab and Shift-Tab.</p><p>Works only when <a href="#editable" title="38. editable">
+          <span class="property">editable</span>
+        </a> is set to true.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id2470461"></a>42. disableContextMenu</h2></div></div></div><p>Default value: false</p><p>If trure - disables standard browser context menu while clicking on tree labels and icons.</p></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Tree_API"></a>Chapter 7. Tree API</h2></div></div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="getState"></a>1. getState()</h2></div></div></div><p>Returns array of JSON objects that represents arrays of nodes  of the tree. From the top most to the bottom. See <a href="#JSON" title="1. JSON">JSON</a> section for description of this format.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="reconfigure"></a>2. reconfigure()</h2></div></div></div><p>arguments: array of properties to be reconfigured.</p><p>Reconfigures the tree with new config options after it was
+initialized. Specify only those properties that you change.</p><p>See it working under «Change themes»  in <a href="../demo/basic.html" target="_top">«Basic features»</a>
+demo.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="find"></a>3. find()</h2></div></div></div><p>arguments: function</p><p>Returns the first Zapatec.Tree.Node instance where given function
+returns true. Or null if nothing was found.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="findAll"></a>4. findAll()</h2></div></div></div><p>arguments: function</p><p>Returns the array of Zapatec.Tree.Node instances where given
+function returns true. Or an empty array if nothing was found.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="toggleAll"></a>5. toggleAll()</h2></div></div></div><p>Toggles all nodes in a tree.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="toggleItem"></a>6. toggleItem()</h2></div></div></div><p>arguments (nodeId, state)</p><div class="itemizedlist"><ul type="disc"><li><p>nodeId &#8211; <span class="type">string</span> ID of the node</p></li><li><p>state &#8211; <span class="type">boolean</span> If true node is to be expanded, if
+ false &#8211; collapsed, if null &#8211; toggled.</p></li></ul></div><p>Expands/collapses/toggles specific item.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="getNode"></a>7. getNode()</h2></div></div></div><p>arguments: id of the node.</p><p>Returns the Zapatec.Tree.Node instance found or null if nothing
+was found.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sync"></a>8. sync()</h2></div></div></div><p>arguments: id of the element</p><p>Synchronize tree to given node. Tree will be expanded to that node
+and that node will be selected.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="appendChild"></a>9. appendChild()</h2></div></div></div><p>arguments: (newChild, parent, atStart)</p><div class="itemizedlist"><ul type="disc"><li><p>newChild <span class="type">object</span> reference to an
+ HTML element created of type LI or JSON object with data.</p></li><li><p>parent <span class="type">object</span> ID of parent node where new child will be
+ added. If null - add to top level.</p></li><li><p>atStart <span class="type">boolean</span> optional. If true then the child is going
+ to be added at the start of the parent.</p></li></ul></div><p>Append a child to the start or end of the given parent. 
+</p><p>If <span class="property">prevCompatible</span> set to true &#8211; newChild and parent switch
+places in method signature.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="insertBefore"></a>10. insertBefore()</h2></div></div></div><p>arguments: (newChild, refChild)</p><div class="itemizedlist"><ul type="disc"><li><p>newChild <span class="type">object</span> New child node
+ to be inserted into the tree. HTML element or JSON object.</p></li><li><p>refChild <span class="type">object</span> ID of the child node before which newly
+ created node will be inserted.</p></li></ul></div><p>Inserts new child before some node.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="insertAfter"></a>11. insertAfter()</h2></div></div></div><p>arguments: (newChild, refChild)</p><div class="itemizedlist"><ul type="disc"><li><p>newChild <span class="type">object</span> New child node
+ to be inserted into the tree. HTML element or JSON object.</p></li><li><p>refChild <span class="type">object</span> ID of the child node which the new child
+ node will be inserted after newly created node</p></li></ul></div><p>Inserts new child after some node.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="removeChild"></a>12. removeChild()</h2></div></div></div><p>arguments: (oldChild)</p><div class="itemizedlist"><ul type="disc"><li><p>oldChild <span class="type">object</span> ID of node.</p></li></ul></div><p>Remove child in the tree.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="collapseAll"></a>13. collapseAll()</h2></div></div></div><p>Collapses all items in the tree.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="collapseToLevel"></a>14. collapseToLevel()</h2></div></div></div><p>arguments: (level)</p><div class="itemizedlist"><ul type="disc"><li><p>level <span class="type">int</span> level to collapse.</p></li></ul></div><p>Collapses tree to the given level.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandAll"></a>15. expandAll()</h2></div></div></div><p>Expands all items in the tree.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandToLevel"></a>16. expandToLevel()</h2></div></div></div><p>arguments: (level)</p><div class="itemizedlist"><ul type="disc"><li><p>level <span class="type">int</span> level to expand.</p></li></ul></div><p>Expands tree to the given level.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="makeNode"></a>17. makeNode()</h2></div></div></div><p>Deprecated.</p><p>arguments: ID of the node</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="onItemSelect"></a>18. onItemSelect()</h2></div></div></div><p>Deprecated. Use <a href="#eventListeners" title="29. eventListeners">
+          <span class="property">eventListeners</span>
+        </a>.</p></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Events"></a>Chapter 8. Events</h2></div></div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="beforeCreate"></a>1. beforeCreate</h2></div></div></div><p>Is fired before node is being created.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="afterCreate"></a>2. afterCreate</h2></div></div></div><p>Is fired after node was created.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="iconClick"></a>3. iconClick</h2></div></div></div><p>Is fired when icon is clicked.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="iconDblclick"></a>4. iconDblclick</h2></div></div></div><p>Is fired when icon is double clicked.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id2471028"></a>5. iconRightClick</h2></div></div></div><p>Is fired when icon is right clicked.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="signClick"></a>6. signClick</h2></div></div></div><p>Is fired when +/- sign is clicked.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="signDblclick"></a>7. signDblclick</h2></div></div></div><p>Is fired when +/- sign is double clicked.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="labelClick"></a>8. labelClick</h2></div></div></div><p>Is fired when label is clicked.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="labelDblclick"></a>9. labelDblclick</h2></div></div></div><p>Is fired when label is double clicked.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id2471090"></a>10. labelRightClick</h2></div></div></div><p>Is fired when label is right clicked.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="select"></a>11. select</h2></div></div></div><p>Is fired when node is selected.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="deselect"></a>12. deselect</h2></div></div></div><p>Is fired when node is being deselected. Called only for the
+already selected nodes.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="collapse"></a>13. collapse</h2></div></div></div><p>Is fired when branch is being collapsed. Called only if node has
+children.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="collapseBranch"></a>14. collapseBranch</h2></div></div></div><p>Is fired when branch and all it's child branches are being
+collapsed. Called only if node has children.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expand"></a>15. expand</h2></div></div></div><p>Is fired when node is expanded. Is not fired if node is not yet
+created or has no subtrees.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="expandBranch"></a>16. expandBranch</h2></div></div></div><p>Is fired when node and all it's child branches are expanded. Is
+not fired when node has no subtrees.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="toggle"></a>17. toggle</h2></div></div></div><p>Is fired when branch at this node is toggled.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="keypressed"></a>18. keypressed</h2></div></div></div><p>Is fired when any key is pressed while "<span class="property">keyboardNavigation"</span> is set to true and tree is active and it has selected node. In the event listener signature you may provide two arguments that are being fired together with event. First is a character code of the character  pressed. Second is a character that was pressed.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="leave"></a>19. leave</h2></div></div></div><p>Is fired when pressing ESC or clicking outside the tree. In both cases tree should be active.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="rename"></a>20. rename</h2></div></div></div><p>Is fired when Tree Node is being renamed. Passes two argumnets. First of them is the old Node name, second is the new one.</p></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="NOM"></a>Chapter 9. Node Object Methods</h2></div></div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#getState"></a>1. getState()</h2></div></div></div><p>Returns JSON that represents current state of the node and all of
+it subnodes. From the current node to the bottom most child. See <a href="#JSON" title="1. JSON">JSON</a> section for description of this format.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#hasSubtree"></a>2. hasSubtree()</h2></div></div></div><p>Determines if this node has subtree. Returns true if node has
+subtree, false - in the other case.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#select"></a>3. select()</h2></div></div></div><p>Selects this node.  
+</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#deselect"></a>4. deselect()</h2></div></div></div><p>Deselects this node.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#collapse"></a>5. collapse()</h2></div></div></div><p>Collapses branch at this node. Branches at child nodes will not
+be collapsed.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#collapseBranch"></a>6. collapseBranch()</h2></div></div></div><p>Collapses branch at this node. Branches at child nodes will be collapsed.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#expand"></a>7. expand()</h2></div></div></div><p>Expands branch at this node. Branches at child nodes will not be expanded.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#expandBranch"></a>8. expandBranch()</h2></div></div></div><p>Expands branch at this node. Branches at child nodes will be expanded.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#toggle"></a>9. toggle()</h2></div></div></div><p>Toggles branch at this node.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#expandHere"></a>10. expandHere()</h2></div></div></div><p>Expands all parent nodes for this node.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#sync"></a>11. sync()</h2></div></div></div><p>Expands all parent nodes for this node and selects this node.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#destroy"></a>12. destroy(fast)</h2></div></div></div><p>Destroys this node.</p><p><em class="parameter"><code>fast </code></em><span class="type">boolean</span> If true - dependent DOM elements will not be removed.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#appendChild"></a>13. appendChild(newChild, atStart)</h2></div></div></div><p>Appends child at the end or at the start of this node branch. 
+</p><p><em class="parameter"><code>newChild</code></em> <span class="type">Object</span> JSON array with data. If this is &lt;LI&gt; 
+node - it will be converted to JSON using
+Zapatec.Tree.Utils.convertLi2Json.</p><p><em class="parameter"><code>atStart</code></em> <span class="type">boolean</span> If true - node will be added at the start of the
+branch. Otherwise - at the end.</p><p>Returns reference to newly created Zapatec.Tree.Node instance</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#insertBefore"></a>14. insertBefore(newChild)</h2></div></div></div><p>Appends new node before current node.</p><p><em class="parameter"><code>newChild</code></em> <span class="type">Object</span> JSON array with data. If this is &lt;LI&gt; 
+node - it will be converted to JSON using
+Zapatec.Tree.Utils.convertLi2Json.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#insertAfter"></a>15. insertAfter(newChild)</h2></div></div></div><p>Appends new node after current node.</p><p><em class="parameter"><code>newChild</code></em> <span class="type">Object</span> JSON array with data. If this is &lt;LI&gt; 
+node - it will be converted to JSON using
+Zapatec.Tree.Utils.convertLi2Json.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="node#rename"></a>16. rename (newLabel)</h2></div></div></div><p>Appends new label to the current node</p><p><em class="parameter"><code>newLabel</code></em> <span class="type">String</span> new name to be appended.</p></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Input_Data"></a>Chapter 10. Input data formats</h2></div></div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="JSON"></a>1. JSON</h2></div></div></div><p>Use this format to optimize performance.</p><div class="itemizedlist"><ul type="disc"><li><p>label: [<span class="type">string</span>], - node label. It will be clickable. This is
+ required property.</p></li><li><p>isExpanded: [<span class="type">boolean</span>, optional], - if this branch is to be
+ shown expanded. Default value =  false.</p></li><li><p>isSelected: [<span class="type">boolean</span>, optional], - if this node is to be
+ selected. Default value = false.</p></li><li><p>isChecked [<span class="type">boolean</span>, optional], - used with <a href="#putCheckboxes" title="31. putCheckboxes">
+              <span class="property">putCheckboxes</span>
+            </a>. If set to true  - checkbox will appear as already checked. Default value = false.</p></li><li><p>expandedIcon: [<span class="type">string</span>, optional], - string with IMG tag. This
+ image will be shown when  branch is expanded. This option will be
+ ignored if "children" section is null.</p></li><li><p>collapsedIcon: [<span class="type">string</span>, optional], - string with IMG tag.
+ This image will be shown when  branch is collapsed. This option will
+ be ignored if "children" section is null.</p></li><li><p>fetchingIcon: [<span class="type">string</span>, optional], - string with IMG tag. This
+ image will be shown when  branch is fetching its content. This
+ option will be ignored if "children" section is null.</p></li><li><p>elementIcon: [<span class="type">string</span>, optional], - string with IMG tag. This
+ image will be shown for single  node (without children).</p></li><li><p>loadAlways: [boolean, optional], - if true - subchildren of this node will be fetched every time you expand it. Also this node should be dynamic, so if it has some static (predefined) child nodes - they will be ignored.</p></li><li><p>source: [<span class="type">string</span>, optional], - if given - on expand tree will
+ fetch content from given source. If  "children" section is
+ null - it will be put to empty array.</p></li><li><p>sourceType: [<span class="type">string</span>, optional], - type of source that will be
+ fetched. See Zapatec.Widget  documentation for examples.</p></li><li><p>attributes: {attributeName: atrtibuteValue [<span class="type">string</span>,
+ optional], - this value will be added to TD  element that contains
+ node content.},</p></li><li><p>children: [ array of child nodes.  If null - no +/- sign will be
+ displayed. Elements here must have the  same structure as main
+ nodes]</p></li></ul></div><p>Example:</p><pre class="programlisting">{
+    "children": [
+        {"label": "subchild1"},
+        {"label": "subchild2"},
+        {"label": "subchild3 with subtree",
+         "isExpanded" : true,
+         "expandedIcon" : "somegif.gif",
+            "children": [
+               {"label" : "subsubchild1"},
+               {"label" : "subsubchild2"},
+               {"label" : "subsubchild3"},
+               {"label" : "subsubchild4"}
+            ]
+        },
+        {"label": "recursive branch",
+         "sourceType": "json/url",
+          "source": "json_branch.txt"
+        }
+    ]
+}</pre><p>See <a href="../demo/load_data.html" target="_top">Dynamically load data from server demo</a>.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="HTML"></a>2. HTML</h2></div></div></div><p>Use &lt;ul&gt; and &lt;li&gt; tags to create data structure for
+the Tree.</p><p>Example:</p><pre class="programlisting">&lt;ul id="tree"&gt;
+    &lt;li&gt;this text will be treated as node label&lt;/li&gt;
+    &lt;li&gt;....&lt;/li&gt;
+    &lt;li&gt;this is the branch, it has +/- sign and it is expandable.
+        &lt;ul&gt;
+            &lt;li&gt;this text will be treated as subnode label&lt;/li&gt;
+       &lt;/ul&gt;
+    &lt;/li&gt;
+   &lt;li class="zpLoadHTML=html_branch.txt zpLoadAlways=true"&gt;Dynamic branch fetched from external file every time you expand it&lt;/li&gt;
+   &lt;li class="expanded"&gt;Initially expanded node
+   &lt;ul&gt;
+            &lt;li&gt;subnode label of initially expanded node&lt;/li&gt;
+   &lt;/ul&gt;
+   &lt;/li&gt;
+   &lt;li class="collapsed"&gt;Initially collapsed node
+   &lt;ul&gt;
+            &lt;li&gt;subnode label of initially collapsed node&lt;/li&gt;
+   &lt;/ul&gt;
+   &lt;/li&gt;
+   &lt;li&gt;&lt;img src="book-closed.gif" class="collapsedIcon" width="16" height="16" alt="Collapsed" /&gt;Predifined icon for collapsed state
+   &lt;ul&gt;
+   &lt;/ul&gt;
+   &lt;/li&gt;
+&lt;/ul&gt;</pre><p>See <a href="../demo/load_data.html" target="_top">Dynamically load data from server demo</a>.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="XML"></a>3. XML</h2></div></div></div><p>Use &lt;list&gt; and &lt;item&gt; tags to specify data for the
+Tree and each node of it. You can insert &lt;list&gt; inside &lt;item&gt;
+at any depth and vise versa. So &lt;list&gt; is the root element, it
+can have &lt;item&gt; elements and &lt;item&gt; can have several
+&lt;list&gt; elements and so on. Also each item has its properties
+and attributes. See JSON format description for further information.</p><p>Basic structure looks like this:</p><p>&lt;list&gt;</p><p>  &lt;item</p><div class="itemizedlist"><ul type="disc"><li><p>isExpanded="true|false" 
+ </p></li><li><p>isSelected="true|false" 
+ </p></li><li><p>expandedIcon=""</p></li><li><p>collapsedIcon="" 
+ </p></li><li><p>fetchingIcon="" 
+ </p></li><li><p>elementIcon="" 
+ </p></li><li><p>source="" 
+ </p></li><li><p>sourceType="" 
+ </p></li><li><p>loadAlways="true|false" 
+ </p></li></ul></div><p>   &gt;</p><p>  &lt;attribute name="attributeName" &gt; 
+attributeValue  &lt;/attribute&gt; 
+</p><p>  &lt;label&gt;node label&lt;/label&gt; // node label. It will be
+clickable. Required.</p><p>  &lt;list&gt;&lt;/list&gt; //Specify your child nodes (if any)
+here.</p><p>   &lt;/item&gt;</p><p>  &lt;list&gt;</p><p>Example:</p><pre class="programlisting">&lt;list&gt;
+    &lt;item&gt;
+        &lt;attribute name="name"&gt;subchild1&lt;/attribute&gt;
+        &lt;attribute name="class"&gt;someClass&lt;/attribute&gt;
+        &lt;attribute name="id"&gt;subchild1&lt;/attribute&gt;
+        &lt;label&gt;my first node&lt;/label&gt;
+    &lt;/item&gt;
+    &lt;item&gt;
+        &lt;label&gt;my second node&lt;/label&gt;
+    &lt;/item&gt;
+    &lt;item isExpanded="true"&gt;
+        &lt;label&gt;my third node, it has subtree&lt;/label&gt;
+        &lt;list&gt;
+            &lt;item&gt;
+                &lt;label&gt;my first node in subtree&lt;/label&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+                &lt;label&gt;my second node in subtree&lt;/label&gt;
+            &lt;/item&gt;
+            &lt;item sourceType="xml/url" source="my_xml_source.xml"&gt;
+                &lt;label&gt;source fetched externaly&lt;/label&gt;
+            &lt;/item&gt;
+       &lt;/list&gt;
+&lt;/list&gt;</pre><p>See <a href="../demo/load_data.html" target="_top">Dynamically load data from server demo</a>.</p></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="Advanced_Usage"></a>Chapter 11. Advanced usage</h2></div></div></div><div class="itemizedlist"><ul type="disc"><li><p>To build your tree
+ faster &#8211; use <a href="#JSON" title="1. JSON">JSON</a> input format. 
+ </p></li><li><p>When your JSON node has an empty <span class="property">children</span> array - it will be displayed with +/- sign, but on expand - it will show no subnodes at all. Same thing is when you have empty &lt;ul&gt;&lt;/ul&gt; block when creating tree from HTML.</p></li><li><p><code class="methodname">document.getElementById()</code>
+ is  not  able to find node in DOM tree if parent node hasn't been
+ expanded yet (so this node becomes visible). Use <code class="methodname">getNode()</code> instead. But
+ if you still have to use <code class="methodname">document.getElementById()</code> - set
+ <a href="#createWholeDOM" title="30. createWholeDOM">
+            <span class="property">createWholeDOM</span>
+          </a>  property to true. It will work fine then.</p></li><li><p><code class="methodname">expandAll()</code> will
+ expand only existing branches. Nodes that are being created while
+ expanding dynamic branches will be expanded only if their <span class="property">isExpanded</span>
+ attribute set to true.</p></li><li><p><code class="methodname">expandToLevel(level)</code>
+ will expand the tree to the given level, even if new nodes were
+ dynamically added to the branch. It will expand those new nodes as
+ well (if they are at the given level or below).</p></li><li><p><code class="methodname">getNode()</code> returns ID
+ of the created elements only. It doesn't work if the dynamically
+ added element is not loaded yet.</p></li><li><p>If dynamic branch
+ cannot fetch its content from server (for example: Error 500) &#8211;
+ it will be expanded but its content will not be loaded. Next time
+ you expand this branch &#8211; it will try to load its content once
+ again.</p></li><li><p>Pay attention how do
+ you use <code class="methodname">expandAll()</code> and<code class="methodname"> expandToLevel(level)</code> in combine with dynamic
+ branches. Each time they fetch content from the server they create
+ separate requests. For large trees you can cause denial of service
+ since server may not be able to process numerous requests.</p></li><li><p>Each Node object has
+ <span class="property">children</span> property. This property holds array of references to the
+ children Zapatec.Tree.Node instances. If node has no children nodes &#8211;
+ <span class="property">children</span> property equals null.</p></li><li><p><span class="property">config.parentNode</span>
+ property is reference to the parent Zapatec.Tree.Node instance. 
+ </p></li><li><p>If <span class="property">Zapatec.Tree.Node#config.isRootNode</span> is      true &#8211; this means that this node is a root node for the
+ tree. It is <span class="bold"><strong>virtual</strong></span> node &#8211; you can not expand,
+ collapse, sync or toggle it. It holds top level nodes of your tree.</p></li><li><p>If you're building
+ your tree from JSON and you think you may use <code class="methodname">getNode()</code> or
+ <code class="methodname">toggleItem()</code> &#8211; then it is good practice to specify the ID of
+ the node using <span class="bold"><strong>&#8220;<span class="property">id</span>&#8221; </strong></span>attribute in <span class="bold"><strong>&#8220;attributes&#8221;</strong></span>
+ array. 
+ </p></li><li><p><a href="#putBackReferences" title="33. putBackReferences">
+            <span class="property">putBackReferences</span>
+          </a>
+ option allows you to use
+ <code class="methodname">document.getElementById("your_id").zpTreeNode</code> to get
+ reference to the Tree Node instance. The same thing you can do with
+ <code class="methodname">treeObj.getNode(&#8220;your_id&#8221;)</code>. Be aware that this option
+ slows down the tree building process. Use only if needed.</p></li></ul></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quick_option"></a>1. What does «<span class="property">quick</span>» option do</h2></div></div></div><p><span class="property">Quick</span> option is intended to speed up building of a very large
+Tree. When <span class="bold"><strong>true</strong></span> during the building only visible nodes are
+being built. This means that only expanded nodes and their children are
+being created. By default only root nodes are created (and therefore
+visible) but you can change that by setting <span class="bold"><strong>
+          <span class="property">isExpanded</span>
+        </strong></span> option
+to true. 
+</p><p>All the child nodes of collapsed parent nodes are not visible(and
+therefore created). They will be created when parent node is being
+expanded. 
+</p><p>If <span class="property">quick</span> option is true - and branch has both dynamic and static content child nodes are shown when all data for branch gets loaded from server. Otherwise - predefined nodes (defined statically) will be shown first and other nodes will be displayed when they are loaded.
+</p><p>The advantage of this approach is that you can build very large
+trees with many subtrees and they can be built extremely fast. But
+remember, some tree manipulations that require all child nodes in the
+given tree (or some branch of it) will be <span class="bold"><strong>unavailable</strong></span> since
+actually these child nodes may not be created (displayed) yet. 
+</p><p>See <a href="../demo/large.html" target="_top">«Very large tree» demo</a> for illustration of this
+approach.</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="Dynamic_Branches"></a>2. Dynamic branches</h2></div></div></div><p>You can specify
+<span class="bold"><strong>class="zpLoadJSON=json_branch.txt" </strong></span>for
+&lt;LI&gt; - then the content for this node is fetched from specified
+file and it should be in specified format. In case you have your content for the  tree in JSON - use <span class="bold"><strong>
+          <span class="property">source</span>
+        </strong></span> and <span class="bold"><strong>
+          <span class="property">sourceType</span>
+        </strong></span> options. For XML use <span class="bold"><strong>&lt;item source=".." sourceType=".."&gt;. </strong></span>See load_data.html in Demo
+folder. </p><p>Also you can use
+<span class="bold"><strong>zpLoadHTML</strong></span> (for HTML data formats ) and <span class="bold"><strong>zpLoadXML</strong></span> (for
+XML data formats).</p></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="working_with_events"></a>3. Working with Events</h2></div></div></div><p>You can customize the behavior of your tree by assigning functions to events using eventListeners property. Each event will trigger it's appropriate function. The syntax is the following:</p><pre class="programlisting">&lt;script type="text/javascript"&gt; 
+    var tree = new Zapatec.Tree({
+        ...
+        eventListeners: {
+            'select': myFunc1,
+            'deselect': myFunc2
+        },
+        ...
+    });
+&lt;/script&gt;</pre><p>Now each time the select event is fired - function myFunc1 will be executed. Same with deselect event and myFunc2. </p><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>Inside the function that is assigned to event listener, this = reference to Zapatec.Tree.Node instance which fired event.</p></div></div></div></div></body></html>

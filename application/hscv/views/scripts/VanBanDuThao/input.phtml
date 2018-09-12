@@ -1,0 +1,328 @@
+<?php/**
+      * @author trunglv
+      * @version 1.0
+      * Lop view the hien khung nhap lieu cho van ban du thao
+      */ ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<script src="/jquery/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+var jq1102 = jQuery.noConflict( true );
+</script>
+</head>
+<body style="background-color:transparent">
+<?php if($this->isnew == 1) {?>
+<form name=frmUpload enctype="multipart/form-data" action="/hscv/vanbanduthao/save" method="post" target="addVanBanDuThaoFrm<?php echo $this->idHSCV?>">
+	<input type="hidden" name="idHSCV" value=<?php echo $this->idHSCV?> >
+	<input type="hidden" name="isNoHSCV" value=<?php echo $this->isNoHSCV?> >
+	<input type="hidden" name="idPBDuthao" value=<?php echo $this->idPBDuthao?> >
+	<input type="hidden" name="isTemp" value=<?php echo 1//cho id tam?>>
+	<input type="hidden" name="year" value=<?php echo $this->year?>>
+	<input type="hidden" name="idOldFile" value=<?php echo $this->idOldFile?>>
+	<input type="hidden" name="type" value=2 >
+	<input type='hidden' name='checkSign' id="checkSign" value="0"/>
+	<input type="hidden" name="idDuthao" value=<?php echo $this->idDuthao?>>
+	<input type="hidden" name="version" value="1.0">
+	<input type="hidden" name="iddivParent" value=<?php echo $this->iddivParent ?> >
+	<input type="hidden" name="is_congviec" value=<?php echo $this->is_congviec ?> >
+	<input type="hidden" name="force" value=0 >
+<?php } ?>
+<table width="100%">
+	<tr>
+		<td nowrap class=key>Trích yếu VB dự thảo</td>
+		<td width="100%"><textarea cols=50 id=tenduthaoid name="duthao_tenvanbanduthao"><?php echo $this->tenduthao ?></textarea><span class="box_erro_area" id="ERRduthao_tenvanbanduthao"></td>
+	</tr>
+	<tr>
+		<td nowrap class=key>Loại văn bản</td>
+		<td width="100%">
+			<select id=ID_LVB name=ID_LVB>
+				<option value="0">--Chọn loại văn bản--</option>
+				<?php 
+				foreach($this->loaivb as $lvbitem){
+					if($lvbitem["ID_LVB"]==$this->idlvb){
+				?>
+					<option value="<?=$lvbitem["ID_LVB"]?>" selected><?=$lvbitem["NAME"]?></option>
+				<?php 
+					}else{
+				?>
+					<option value="<?=$lvbitem["ID_LVB"]?>"><?=$lvbitem["NAME"]?></option>
+				<?php
+					}
+				}
+				?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Độ khẩn
+		</td>
+		<td>
+			<select name=DOKHAN id=DOKHAN>
+				<option value=1 <?=$this->DOKHAN==1?"selected":""?>>Bình thường</option>
+				<option value=2 <?=$this->DOKHAN==2?"selected":""?>>Khẩn</option>
+				<option value=3 <?=$this->DOKHAN==3?"selected":""?>>Hoả tốc</option>
+			</select>
+		</td>
+	</tr>
+	<?php if($this->isnew == 1) {?>
+	<tr>
+		<td nowrap class=key>Tệp đính kèm</td>
+		<td width="100%"><input name="uploadedfile" type="file" onchange="<?php if($this->isnew == 0){ ?>
+	str='Tên văn bản dự thảo không được dài quá 1024 ký tự.';
+	strerr = validateInput('maxlen=1024',document.getElementById('tenduthaoid'),str);
+	if(!strerr){
+		document.getElementById('tenduthaoid').focus();
+		return false;
+	}
+	var oData = new Object();
+	oData.TENDUTHAO = Base64.encode(getValueById('tenduthaoid'));
+	//alert(oData.TENDUTHAO);
+	oData.ID_LVB = Base64.encode(getValueById('ID_LVB'));
+	//oData.DOKHAN = Base64.encode(getValueById('DOKHAN'));
+	//alert(oData.ID_LVB);
+	sendDataToServer(oData,'/hscv/vanbanduthao/save?isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&iddivParent=<?php echo $this->iddivParent ?>&year=<?php echo $this->year ?>&idDuthao=<?php echo $this->idDuthao ?>');
+	return false;
+
+<?php }else{ ?>
+checkFormDataAndSubmit();
+return false;
+<?php } ?>"/><span class="box_erro_area" id="ERRuploadedfile"></span></td>
+	</tr>
+	<script language="javascript" type="text/javascript" src="/js/vgca/base64.js"></script>
+<script language="javascript" type="text/javascript" src="/js/vgca/vgcaplugin.js"></script>
+<script type="text/javascript">
+            function SignCallBack(sender, rv) {
+                var received_msg = JSON.parse(rv);
+                            if(received_msg.Status == 0){
+								// alert(4)
+                                    document.getElementById("_signature").value = received_msg.Signature;
+                            }else{
+                                    alert("Ký số không thành công:" + received_msg.Status +":"+ received_msg.Error);
+                            }
+            }
+
+            function exc_sign_msg(sender) {
+                var s1 = Base64.encode(document.getElementById("_plain_text").value);
+                vgca_sign_msg(sender, s1, SignCallBack);
+            }
+
+            function VerifyCallBack(rv) {
+
+            }
+
+            function exc_verify_msg() {
+                var s1 = Base64.encode(document.getElementById("_plain_text").value);
+                var s2 = document.getElementById("_signature").value;
+
+                            var prms = {};
+                prms["Base64Content"] = s1;
+                prms["Signature"] = s2;
+
+                var json_prms = JSON.stringify(prms);
+
+                vgca_verify_msg(json_prms, VerifyCallBack);
+                return false;
+            }
+
+            function VerifyPDFCallBack(rv) {
+
+            }
+
+            function exc_verify_pdf(sessionid, filename) {
+                var prms = {};
+                prms["SessionId"] = sessionid;
+                prms["FileName"] = filename;
+
+                var json_prms = JSON.stringify(prms);
+				// alert(2)
+                vgca_verify_pdf(json_prms, VerifyPDFCallBack);
+				// alert(3)
+            }
+
+            function SignFileCallBack(rv) {
+                // alert(1)
+                var received_msg = JSON.parse(rv);
+            
+                if (received_msg.Status == 0) {
+                    document.frmUpload.checkSign.value = '1';
+                    document.frmUpload.submit();
+
+					// console.log(received_msg)
+                    
+                } else {
+                   // document.frmUpload.submit();
+                //console.log(received_msg);
+                    //document.getElementById("_signature").value = received_msg.Message;
+                }
+            }
+
+                    //metadata có kiểu List<KeyValue> 
+                    //KeyValue là class { string Key; string Value; }
+            function exc_sign_file(sessionid, filename, metadata) {
+                var prms = {};
+				var data = checkEmpty();
+				<?php $myAuth = Zend_Registry::get('auth');?>
+				var id_user = <?php echo $myAuth->getIdentity()->ID_U?>;
+				// console.log(data)	
+                prms["SessionId"] = sessionid;
+                prms["FileName"] = filename;
+                prms["MetaData"] = metadata;
+                prms["FileUploadHandler"] = '<?php echo  (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]";?>/chukyso/chukyso/saveduthao?idHSCV=<?php echo $this->idHSCV?>&isNoHSCV=<?php echo $this->isNoHSCV?>&idPBDuthao=<?php echo $this->idPBDuthao?>&isTemp=1value=<?php echo 1//cho id tam?>&year=<?php echo $this->year?>&idOldFile=<?php echo $this->idOldFile?>&type=2&idDuthao=<?php echo $this->idDuthao?>&version=1.0&iddivParent=<?php echo $this->iddivParent ?>&is_congviec=<?php echo $this->is_congviec ?>&force=0&duthao_tenvanbanduthao='+data.duthao_tenvanbanduthao+'&ID_LVB='+data.ID_LVB+'&DOKHAN='+data.DOKHAN+'&id_user='+id_user;
+                
+                var json_prms = JSON.stringify(prms);
+                // console.log(json_prms);
+              
+                vgca_sign_file(json_prms, SignFileCallBack);
+                // alert(vgca_sign_file);
+            }
+			function checkEmpty(){
+				var data = [];
+				var duthao_tenvanbanduthao = document.frmUpload.duthao_tenvanbanduthao.value;
+				var filekhongkemchuky = document.frmUpload.uploadedfile.value;
+				var DOKHAN = document.frmUpload.DOKHAN.value;
+				var ID_LVB = document.frmUpload.ID_LVB.value;
+				if(duthao_tenvanbanduthao==''){
+					duthao_tenvanbanduthao = Base64.encode('Dự thảo này chưa có tên!');
+				}else{
+					duthao_tenvanbanduthao = Base64.encode(duthao_tenvanbanduthao);
+				}	
+				//console.log(duthao_tenvanbanduthao)
+				 
+				data.duthao_tenvanbanduthao = duthao_tenvanbanduthao;
+				data.filekhongkemchuky = filekhongkemchuky;
+				data.DOKHAN = DOKHAN;
+				data.ID_LVB = ID_LVB;
+				return data;
+			}
+        </script>
+		
+	<tr>
+		<td nowrap class=key>Tệp đính kèm (Chữ kí số)</td>
+		<td width="100%">
+			<input type="button"  id="_SignOfflineFile"  onclick="exc_sign_file('', '', '');return false;" value="Chọn file ký số"/>
+			<input type='hidden' name='idFileCKS' id="idFileCKS" value="0"/>
+			<span id=filename></span>
+		</td>
+	</tr>
+	
+	
+	<?php
+		}
+	?>
+</table>
+<?php if($this->isnew == 1) {?>
+</form>
+<?php } ?>
+
+
+<a href="#" onclick="
+<?php if($this->isnew == 0){ ?>
+	//str='Tên văn bản dự thảo không được dài quá 128 ký tự.';
+	//strerr = validateInput('maxlen=128',document.getElementById('tenduthaoid'),str);
+	//if(!strerr){
+		//document.getElementById('tenduthaoid').focus();
+		//return false;
+	//}
+	var oData = new Object();
+	oData.TENDUTHAO = Base64.encode(getValueById('tenduthaoid'));
+	//alert(oData.TENDUTHAO);
+	oData.ID_LVB = Base64.encode(getValueById('ID_LVB'));
+	//oData.DOKHAN = Base64.encode(getValueById('DOKHAN'));
+	//alert(oData.ID_LVB);
+	sendDataToServer(oData,'/hscv/vanbanduthao/save?isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&iddivParent=<?php echo $this->iddivParent ?>&year=<?php echo $this->year ?>&idDuthao=<?php echo $this->idDuthao ?>');
+	return false;
+
+<?php }else{ ?>
+checkFormDataAndSubmit();
+return false;
+<?php } ?>
+"
+>[ Lưu ]</a>
+<?php if($this->isnew == 1) {?>
+<a href="javascript:;" onclick="window.parent.document.getElementById('addVanBanDuThaoFrm<?php echo $this->idHSCV?>').style.display='none';">[ Hủy ]</a>
+<?php }else{ ?>
+<a href="javascript:;" onclick="loadDiv('idcapnhatduthao<?php echo $this->idDuthao ?>','/hscv/vanbanduthao/input/',0);">
+[ Hủy ]</a>
+<?php } ?>
+
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+
+function checkTenDuthao(){
+	var str = "Bạn phải nhập tên văn bản dự thảo.";
+	var strerr = validateInput("required",document.frmUpload.duthao_tenvanbanduthao,str);
+	if(!strerr){
+		document.frmUpload.duthao_tenvanbanduthao.focus();
+		return false;
+	}
+	str="Tên văn bản dự thảo không được dài quá 1024 ký tự.";
+	strerr = validateInput("maxlen=1024",document.frmUpload.duthao_tenvanbanduthao,str);
+	if(!strerr){
+		document.frmUpload.duthao_tenvanbanduthao.focus();
+		return false;
+	}
+	return true;
+}
+function checkFormDataAndSubmit(filedinhkem=false){
+
+//	var str = "Bạn phải nhập tên văn bản dự thảo.";
+//	var strerr = validateInput("required",document.frmUpload.duthao_tenvanbanduthao,str);
+//	if(!strerr){
+//		document.frmUpload.duthao_tenvanbanduthao.focus();
+//		return false;
+//	}
+        var duthao = document.frmUpload.duthao_tenvanbanduthao.value;
+        if (duthao == "") {
+            document.frmUpload.duthao_tenvanbanduthao.innerHTML = "Dự thảo này chưa có tên!";
+        }
+	str="Tên văn bản dự thảo không được dài quá 1024 ký tự.";
+	strerr = validateInput("maxlen=1024",document.frmUpload.duthao_tenvanbanduthao,str);
+	if(!strerr){
+		document.frmUpload.duthao_tenvanbanduthao.focus();
+		return false;
+	}
+	str="Phải nhập file đính kèm cho phiên bản dự thảo đầu tiên";
+	var strerr = (validateInput("required",document.frmUpload.uploadedfile,str) || (document.frmUpload.idFileCKS.value != 0 && document.frmUpload.idFileCKS.value != ""));
+	if(!strerr){
+		document.frmUpload.uploadedfile.focus();
+		return false;
+	}
+	
+	document.frmUpload.submit();
+	return true;
+}
+
+function SaveButtonClick(){
+	
+}
+
+
+var iframeElement = window.parent.document.getElementById("addVanBanDuThaoFrm<?php echo $this->idHSCV?>");
+iframeElement.style.height = "" +(document.getElementById("lasttext").offsetTop+30)+ "px";
+iframeElement.width = "100%";
+
+if("<?=$this->tenduthao?>"==""){
+	var element =  parent.frm.NAME;
+	if (typeof(element) != 'undefined' && element != null)
+	{
+		if(parent.frm.NAME.value!=""){
+			document.frmUpload.duthao_tenvanbanduthao.value = parent.frm.NAME.value;
+		}
+	}
+}
+
+ 
+</script>

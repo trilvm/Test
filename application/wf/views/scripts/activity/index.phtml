@@ -1,0 +1,69 @@
+<?php
+$this->dojo()->enable();
+?>
+<form name=frm method="post" action="/wf/Activity/index">
+<table cellpadding="0" cellspacing="0" width="100%">
+	<thead>
+		<tr>
+			<td colspan=4 class="tableheader" align="right">
+				<select name=idp onchange="document.frm.submit();">
+<?php
+	foreach($this->process as $rowpr){
+					echo("<option value=".$rowpr->ID_P.">".$rowpr->NAME."</option>");
+	}
+?>
+				</select>
+				<script>
+					document.frm.idp.value = '<?php echo $this->parameter["idp"]; ?>';
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<td class="tableheader" nowrap>STT</td>
+			<td class="tableheader" width=100%>Tên</td>
+			<td class="tableheader" nowrap>Sử dụng</td>
+			<td class="tableheader" nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></td>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+foreach ($this->data as $row ){
+	$stt++;
+?>
+		<tr>
+			<td nowrap class="tableheader" align="right"><?php echo $stt ?></td>
+			<td width=100% class="datarow<?php echo $i; ?>">
+				<a href="/wf/Process/Input/id/<?php echo $row->ID_P ?>">
+				<?php echo htmlspecialchars($row->NAME) ?>
+				</a>
+			</td>
+			<td nowrap class="datarow<?php echo $i; ?>"><?php echo $row->ACTIVE==1?"Có":"Không" ?></td>
+			<td nowrap class="datarow<?php echo $i; ?>" align="center">
+				<input type=checkbox name=DEL[] value='<?php echo $row->ID_P ?>'>
+			</td>
+		</tr>
+<?php
+	$i = (-1+$i)*-1;
+}
+?>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tfoot>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<script>
+function DeleteButtonClick(){
+	if(confirm("<?php echo DELETEQUESTION; ?>")){
+		document.frm.action = "/wf/Activity/Delete";
+		document.frm.submit();
+	}
+}
+</script>

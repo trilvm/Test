@@ -1,0 +1,94 @@
+<form name="frmAddUser"  method="post">
+<fieldset>
+	<div style="text-align:right;width:100%">
+		Trường có dấu <font color="red">*</font> là bắt buộc nhập
+	</div>
+	<div align="center"><span class="box_erro_area"><?php echo $this->error; ?></span></div>
+	<div class="required">
+		<label id="lblTextIput">Tên Người sử dụng<font color="red">*</font></label>
+		<?php echo $this->form->getElement('USERNAME');?>
+    	<span class="box_erro_area">
+        	<?php 
+				echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('USERNAME'));
+            ?>
+        </span>
+	</div>
+    <div class="required">
+		<label id="lblTextIput">Mật khẩu <font color="red">*</font></label>
+		<?php echo $this->form->getElement('PASSWORD');?>
+    	<span class="box_erro_area">
+        	<?php 
+				echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('PASSWORD'));			
+            ?>
+        </span>
+	</div>
+    <div class="required">
+		<label id="lblTextIput">Nhập lại mật khẩu <font color="red">*</font></label>
+		<?php echo $this->form->getElement('RPASSWORD');?>
+    	<span class="box_erro_area">
+        	<?php 
+				echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('RPASSWORD'));		
+            ?>
+        </span>
+	</div>
+	 <div class="required">
+		<label id="lblTextIput">Nhân viên <font color="red">*</font></label>
+		<?php echo $this->form->getElement('ID_EMP');?>
+    	<span class="box_erro_area">
+        	<?php 
+				echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_EMP'));		
+            ?>
+        </span>
+	</div>
+    <div class="optional">
+		<label id="lblTextIput">Có hiệu lực</label>
+		<?php echo $this->form->getElement('ACTIVE');?>
+	</div>
+	<div class="optional">
+		<div id="content-pane" class="pane-sliders">
+            <div class="panel">
+                <h3 class="jpane-toggler title">
+                    <span><?php echo MSG11009007 ?></span>
+                </h3>
+                <div class="jpane-slider content">
+                    <ul>
+                        <?php
+                        $id_mod=0;
+                        foreach ($this->fk_users_actions as $rowua ){
+                            if((int)$rowua['id_mod']!=$id_mod)
+                            {
+                                if($id_mod != 0)
+                                {
+                                    echo "</ul></li>";        
+                                }        
+                                $id_mod = (int)$rowua['id_mod'];
+                                echo "<li>";
+                                echo "<div class=title>" . $rowua['MODULE_NAME'] . "</div>";
+                                echo "<ul>";
+                            }
+                            echo "<li>";
+                            echo "<input type=checkbox name=ACT_ID[] value=" . $rowua['id_act'] . ($rowua["isChecked"]>0?" checked":"") . ">";
+                            echo $rowua['ACTION_NAME'];
+                            echo "</li>";
+                        }
+                        ?>                                
+                    </ul>
+                </div>
+            </div>
+        </div>	
+	</div>
+</fieldset>
+<input type=hidden name="id" value=<?php echo $this->id?> >
+</form>
+
+<script>
+	function SaveButtonClick()
+	{
+		document.frmAddUser.submit();
+	}
+	function BackButtonClick()
+	{
+		document.frmAddUser.action = "/qtht/users/";
+		document.frmAddUser.submit();
+	}
+</script>

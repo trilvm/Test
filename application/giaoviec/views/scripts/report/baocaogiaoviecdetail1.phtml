@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src="/js/Json/json2.js"?>></script>
+<script type="text/javascript" src="/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel=Stylesheet href=stylesheet.css>
+</head>
+<body style="background-color:transparent">
+<form name="frmThongKe" target="_blank" id="frmThongKe" action="/giamsatgiaoviec/baocao/thongkedetailview" enctype="multipart/form-data" method="post">
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>STT</th>
+				<th width=30%>Văn bản</th>
+				<th width=40%>Trích yếu văn bản</th>
+				<th width=30%>Cơ quan thực hiện</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+				$stt=0;
+				foreach($this->dataReport as $itemreport){
+			?>
+			<tr>
+				<td nowrap align=right><?php echo ++$stt?></td>
+				<td width=30%><?php echo $itemreport->SOKYHIEU?> - <?php echo QLVBDHCommon::MysqlDateToVnDate($itemreport->NGAYBANHANH)?> - <?php echo $itemreport->OrganName?></td>
+				<td width=40%><?php echo $itemreport->TRICHYEU?></td>
+				<td width=30%><?php echo $itemreport->DONVINHAN?></td>
+			</tr>
+			<?php
+				}
+			?>
+		</body>
+		<tfoot>
+		</tfoot>
+	</table>
+</form>
+<p id="lasttext"></p>
+<script>
+    function resize() {
+        try {
+            var iframeElement = window.parent.document.getElementById('reportview');
+            iframeElement.style.height = "" + (document.getElementById("lasttext").offsetTop) + "px";
+            iframeElement.width = "100%";
+            setTimeout("resize()", 1000);
+        } catch (ex) {
+        }
+    }
+    resize();
+</script>
+</body>
+</html>

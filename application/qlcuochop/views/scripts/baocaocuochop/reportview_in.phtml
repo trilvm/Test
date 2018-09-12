@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>    
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+td{
+	border-color: black;
+}
+th{
+	border-color: black;
+}
+</style>
+</head>
+<body style="background-color:transparent">
+<?php require_once 'qlcuochop/models/quanlycuochopModel.php';?>
+<table  width=100% >
+<tr >
+  <td align=center ><b><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></b></td>
+
+  <td align=center><b>CỘNG HÒA XÃ HỘI CHỦ
+  NGHĨA VIỆT NAM</b></td>
+ </tr>
+ <tr >
+  <td align=center ><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+  <td align=center ><b>Ðộc lập - Tự do - Hạnh phúc</b></td>
+ </tr>
+ <tr >
+
+
+  <td ></td>
+  <td align=right><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+ </tr>
+
+
+</table>
+<p align=center><b>BÁO CÁO CUỘC HỌP</b></p>
+<p align=center><?php echo $this->thu;?> </p>
+
+<table border="1" style="border: 1px solid black; border-collapse: collapse;" width="100%">
+ <tbody>
+     <?php $stt=1;
+        $model = new quanlycuochopModel();
+        $num = count($this->data);
+        if($num==0){
+           echo "<tr><td colspan='7'>Chưa có cuộc họp nào</td></tr>";
+        }
+        else{
+            foreach($this->data as $item){
+                 $listCV = $model->getReportDataCV($item['ID_CUOCHOP']);
+                 $colcount = count($listCV)+2;
+                 ?>
+                    <tr>
+                        <td style="text-align: center" rowspan="<?=$colcount?>"><b><?=$stt?></td>
+                        <td colspan="4" valign=top style="background-color: #e2eff5"><b><?=$item["TEN"]?> - Ngày họp: <?=QLVBDHCommon::MysqlDateToVnDate($item["NGAY"])?></b></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="background-color: #e2eff5;text-align: left" nowrap="nowrap">Tên công việc</th>
+                        <th style="background-color: #e2eff5;text-align: left" nowrap="nowrap">Người thực hiện</th>
+                        <th style="background-color: #e2eff5;text-align: left" nowrap="nowrap">Kết quả</th>
+                    </tr>
+
+                       <?php
+                        foreach ($listCV as $row){
+                        ?>
+                        <tr>
+                            <td colspan="2">  - <?=$row['CONGVIEC']?></td>
+                            <td> <?=UsersModel::getEmloyeeNameByIdUser((int)$row['NGUOIXULY'])?></td>
+                            <td> <?php if($row['IS_FINISH']==1){
+                                            echo 'Đã hoàn thành';}
+                                       else { echo 'Chưa hoàn thành';}
+                                  }?>
+                            </td>
+                        </tr>
+                    <?  $stt++ ; }?>
+            <?php } ?>
+
+ </tbody>
+ <tfoot>
+ </tfoot>
+</table>
+
+<p id=lasttext></p>
+</body>
+<script>
+    print();
+</script>
+</html>
+

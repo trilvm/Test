@@ -1,0 +1,2210 @@
+<?php
+ require_once 'qtht/models/capcoquanModel.php'; ?>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_actb.js"></script>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_common.js"></script>
+<script language="javascript" type="text/javascript" src="/js/common.js"></script>
+<link rel="stylesheet" type="text/css" href="/chosen/chosen.custom.css" />
+<script src="/jquery/jquery-1.10.2.js"></script>
+<script src="/chosen/chosen.jquery.custom.js"></script>
+<script type="text/javascript">
+var jq1102 = jQuery.noConflict( true );
+</script>
+
+<?php 
+
+// foreach($this->listCoQuan as $item){
+	// echo $item['NAME'].'<br />';
+// }exit;
+//xu ly so di cho truong hop cap nhat\
+require_once 'qtht/models/sovanbanModel.php';
+require_once 'qtht/models/Vb_nguoikyModel.php';
+require_once 'qtht/models/UsersModel.php';
+require_once 'qtht/models/CoquanModel.php';
+require_once("hscv/models/chuyennoiboModel.php");
+
+$actid = ResourceUserModel::getActionByUrl('hscv','chuyennoibo','chuyennoiboinput');
+$is_cnb = ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0]);
+$data_cqnb = chuyennoiboModel::getDataCQNoibo();
+
+/* Xu ly du lieu cho so di*/
+$arr_col = Common_Sovanban::getColumNameGroup(2);
+$len_arr = count($arr_col);
+if($this->id > 0)
+{
+	$old_svb =  $this->data["ID_SVB"];
+	$old_lvb = $this->data["ID_LVB"];
+	$old_cq = $this->data["ID_CQ"];
+	$old_sodi = $this->data["SODI"];
+	$old_sodi_in = $this->data["SODI_IN"];
+	$aff_type  = 0;
+	$col_name = "";
+	foreach ($arr_col as $itcol){
+	switch ($itcol)
+	{
+		case 'ID_SVB':
+			$aff_type = $old_svb;
+			$col_name='ID_SVB';
+			break;
+		case 'ID_LVB':
+			$aff_type =$old_lvb;
+			$col_name='ID_LVB';
+			break;
+		default:
+			break; 
+	}
+}
+}
+
+/* Ket thuc xu ly du lieu cho so di*/
+
+/* File dinh kem */
+	$url = "";
+	$is_new = 0;
+	$type = 0;
+	$id_objf = $this->id;
+	if((int)$this->id==0){
+		$is_new = 1;
+		$type = -1;
+		if($this->id_pb_duthao){
+			$gen_temp = new gen_tempModel();
+			$new_object = $gen_temp->getIdTemp();
+			filedinhkemModel::copyFile(QLVBDHCommon::getYear(),$this->id_pb_duthao,$new_object,2,-1);
+			$id_objf = $new_object;
+			$is_new = 0;
+			$type = -1;
+		}
+	}else{
+		$is_new = 0;
+		$type = 5;
+	}
+	
+	$url ="'/hscv/file/index/enableDragAndDrop/1/?iddiv=idFileDinhKem&idObject=".$id_objf."&is_new=".$is_new."&year=".$this->year."&type=".$type."&pdf=1'" ;
+	//echo $url;
+/* Ket thuc file dinh kem */
+
+?>
+<script>
+	var customarray = new Array(<?php count($this->listCoQuan) ?>);
+	<?php 
+		$i = 0;
+		foreach($this->listCoQuan as $item){
+			echo "customarray[$i]= '".$item['NAME']."';" ;
+			$i++;
+		}
+?>
+var arr_cqltselect = new Array();
+var arr_cqltselect_temp = new Array();
+var arr_cqlthanxulyselect = new Array();
+var arr_cqlt = new Array();
+<?php 
+require_once("hscv/models/coquanlienthongModel.php");
+$data_cqlt = coquanlienthongModel::getDataCQLienThong();
+$stt = 0 ;foreach ($data_cqlt as $cqlt){ ?>		
+arr_cqlt[<?=$stt?>] =  new Array("<?=$cqlt['CODE']?>", "<?=$cqlt['NAME']?>","<?=(int)$cqlt['NHOM']?>","<?=$cqlt['CODE_PARENT']?>","<?=$cqlt['IS_DVTT']?>","<?=$cqlt['NAME_PARENT']?>");
+<?php $stt++; }
+if($this->data['CQLIENTHONG_DRAFT']!="" 
+&& $this->data['CQLIENTHONG_DRAFT']!=null
+&& count(json_decode($this->data['CQLIENTHONG_DRAFT']))>0){
+    $coquanlienthong=json_decode($this->data['CQLIENTHONG_DRAFT']);
+    foreach($coquanlienthong as $item){
+        foreach ($data_cqlt as $cqlt){
+            if(is_object($item)){
+                if($cqlt['CODE'] == $item->DONVI && $cqlt['NHOM'] !=4 ){
+                    $checkDVTT =false;
+                    $tenDVTT="";
+                    if($item->MADVTT !="" && $item->DONVI != $item->MADVTT){
+                        $tenDVTT= coquanlienthongModel::getNameLienThongByCode($item->MADVTT,$data_cqlt);
+                        $checkDVTT=true;
+                    }
+                ?>
+                    arr_cqltselect[arr_cqltselect.length] = new Array("<?php echo $item->DONVI ?>","<?=$cqlt['NAME']?><?=$tenDVTT!=""?" > ".$tenDVTT:""?>");
+                    arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array("<?=$checkDVTT?$item->MADVTT:$item->DONVI ?>");
+                    arr_cqlthanxulyselect[arr_cqlthanxulyselect.length] = new Array("<?php echo $item->DONVI ?>","<?=$item->MADVTT ?>");
+                <?php
+                }
+            }else{
+                if($cqlt['CODE'] == $item){
+                ?>
+                        arr_cqltselect[arr_cqltselect.length] = new Array("<?php echo $item ?>","<?=$cqlt['NAME']?>");
+                        arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array("<?php echo $item ?>");
+                        arr_cqlthanxulyselect[arr_cqlthanxulyselect.length] = new Array("<?php echo $item ?>","<?php echo $item ?>");
+                <?php
+                }
+            }
+        }
+    }
+}
+if(isset($this->chuyenDvNgoaiDaTa)){
+    foreach($this->chuyenDvNgoaiDaTa as $item){
+        foreach ($data_cqlt as $cqlt){
+            if($cqlt['CODE'] == $item['DONVI']){
+                $checkDVTT =false;
+                $tenDVTT="";
+                if($item['MADVTT'] !="" && $item['DONVI'] != $item['MADVTT']){
+                    $tenDVTT= coquanlienthongModel::getNameLienThongByCode($item['MADVTT'],$data_cqlt);
+                    $checkDVTT=true;
+                }
+            ?>
+                arr_cqltselect[arr_cqltselect.length] = new Array("<?php echo $item['DONVI'] ?>","<?=$cqlt['NAME']?><?=$tenDVTT!=""?" > ".$tenDVTT:""?>");
+                arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array("<?=$checkDVTT?$item['MADVTT']:$item['DONVI'] ?>");
+                arr_cqlthanxulyselect[arr_cqlthanxulyselect.length] = new Array("<?php echo $item['DONVI'] ?>","<?=$item['MADVTT']?>");
+            <?php
+            }
+        }
+    }
+} 
+?>
+</script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/validate.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/json/json_parse.js"></script>
+<form name=frm method="post" action="/vbdi/banhanh/save">
+<table width="100%"  onclick="if(at_container){ if(at_container.style.display!='none')at_Hide(false);}">
+	
+	<?php
+	$cqnhan = vbdenModel::GetDataCQN((int)$this->data->COQUANNHAN,true);
+	if($this->data["ID_CQ"]>0){
+		$datacoquan = rtrim($this->data["ID_CQ"],",");
+	}else{
+		$datacoquan = (int)$cqnhan[0]["ID_CQ"];
+	}
+
+	?>
+	<script>
+		var arr_CQs = new Array();
+		<?php foreach($cqnhan as $cq){?>
+			arr_CQs["<?=$cq["ID_CQ"]?>"] = "<?=$cq["NAME"]?>";
+		<?php }?>
+	</script>
+	
+	<?php if( count($cqnhan) > 1){?>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Cơ quan ban hành</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		
+		<td nowrap="nowrap" valign="top">
+			<!-- Co quan ban hanh -->
+                <select name="ID_CQ" onchange="changeCQNHAN();updateSKH();" id="ID_CQ" style="width:200px">
+				<?php foreach($cqnhan as $cq ){?>
+					<option value="<?=$cq["ID_CQ"]?>"><?=$cq["NAME"]?></option>
+				<?php } ?>
+			</select>
+            <input type=hidden name="ID_CQ_TEXT" id="ID_CQ_TEXT"/>	
+			<?php
+				/*$data_cq  = CoQuanModel::getData(2);
+				$id_cq = 0;
+				if($this->id == 0)
+					$id_cq = $data_cq[0]["ID_CQ"];
+				else 
+					$id_cq = $this->data["ID_CQ"];	
+				echo QLVBDHCommon::AutoComplete(
+				$data_cq,
+				"ID_CQ",
+				"NAME",
+				"ID_CQ",
+				"ID_CQ_TEXT",
+				true,
+				"width:200px",
+				"changeCQNHAN();",
+				$id_cq,
+				'');*/
+			?> 
+			<script>document.frm.ID_CQ.value='<?=$datacoquan?>';</script>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRID_CQ" name="alo"></span>
+		</td>
+	</tr>
+	<?php } else {?>
+	<input type=hidden name="ID_CQ" id="ID_CQ" value=<?=(int)$cqnhan[0]["ID_CQ"]?>>
+	<input type=hidden name="ID_CQ_TEXT" id="ID_CQ_TEXT" value=<?=(int)$cqnhan[0]["NAME"]?> ?>
+        <span class="box_erro_area" id="ERRID_CQ" ></span>
+	<?php }?>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Sổ văn bản</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- Sổ văn bản -->
+			<?php
+				$year = QLVBDHCommon::getYear();
+				$onok = "";
+				foreach($arr_col as $col)
+					if($col == 'ID_SVB')
+						$onok = "getSodi(document.frm.ID_SVB);";
+				echo QLVBDHCommon::AutoComplete(
+				SoVanBanModel::getSVBByUserCqDepSmart(1),
+				//vbdenModel::GetDataSVB((int)$this->data->ID_SVB),
+				"ID_SVB",
+				"NAME",
+				"ID_SVB",
+				"ID_SVB_TEXT",
+				true,
+				"width:200px",
+				"selectloaivb();$onok;",
+				(int)$this->data["ID_SVB"],
+				'');
+			?>
+			<div class="clr"></div>            
+			<span class="box_erro_area" id="ERRID_SVB"></span> 			
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue"><?php echo "Loại văn bản" ?></font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- Loại văn bản -->
+			<?php
+				$onok = "";
+				foreach($arr_col as $col)
+					if($col == 'ID_LVB')
+						$onok = "getSodi(document.frm.ID_LVB);";
+				echo QLVBDHCommon::AutoComplete(
+				vbdenModel::GetDataLVB((int)$this->data->ID_LVB),
+				"ID_LVB",
+				"NAME",
+				"ID_LVB",
+				"ID_LVB_TEXT",
+				true,
+				"width:200px",
+				"$onok;updateSKH();",
+				(int)$this->data["ID_LVB"],
+				'');
+			?>
+			<div class="clr"></div>            
+			<span class="box_erro_area" id="ERRID_LVB"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Số ký hiệu</font>
+			<font color="Red" size="3">*</font>	
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- Số ký hiệu -->
+			<input type=text size="30" class=inputbox name="SOKYHIEU" id="SOKYHIEU" value="<?=$this->data["SOKYHIEU"]?>"  style="width:200px">
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRSOKYHIEU"></span>		
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Số đi</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- Số đi -->
+			<input type=text class=inputbox size="4" name="SODI" id="SODI" 
+			value="<?php if($this->id>0) echo $old_sodi?>">
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRSODI"></span>	
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Ngày ban hành</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- Ngay ban hanh -->
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["NGAYBANHANH"]),"NGAYBANHANH","NGAYBANHANH") ?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGAYBANHANH"></span>	
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		<td nowrap="nowrap" valign="top" <?=$this->SAOY==1?"style = 'visibility:hidden'":""?>>
+			<font color="Blue">Người soạn</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top" <?=$this->SAOY==1?"style = 'visibility:hidden'":""?>>
+			
+			<?php
+				echo QLVBDHCommon::AutoComplete(
+				UsersModel::getAllNameAndId(1),
+				"ID_U",
+				"NAME",
+				"NGUOISOAN",
+				"NGUOISOAN_TEXT",
+				true,
+				"width:200px",
+				"addChuyenDeBiet(3);updateSKH(document.frm.ID_LVB.value,document.frm.NGUOISOAN.value,document.frm.ID_CQ.value);",
+				(int)$this->data["NGUOISOAN"],
+				'');
+			?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGUOISOAN"></span>	
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Người ký</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- Nguoi ky-->
+			
+			<?php
+				echo QLVBDHCommon::AutoComplete(
+				Vb_nguoikyModel::getData(0),
+				"ID_U",
+				"NAME",
+				"NGUOIKY",
+				"NGUOIKY_TEXT",
+				true,
+				"width:200px",
+				"addChuyenDeBiet(1)",
+				(int)$this->data["NGUOIKY"],
+				'');
+			?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGUOIKY"></span>	
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		<td nowrap="nowrap" valign="top" <?=$this->SAOY==1?"style = 'visibility:hidden'":""?>>
+			<font color="Blue">Người trình</font>
+		</td>
+		<td nowrap="nowrap" valign="top" <?=$this->SAOY==1?"style = 'visibility:hidden'":""?>>
+			<!-- Nguoi tao == nguoi trinh-->
+			<?php
+				echo QLVBDHCommon::AutoComplete(
+				UsersModel::getAllNameAndId(1),
+				"ID_U",
+				"NAME",
+				"NGUOITAO",
+				"NGUOITAO_TEXT",
+				true,
+				"width:200px",
+				"addChuyenDeBiet(2)",
+				(int)$this->data["NGUOITAO"],
+				'');
+			?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGUOITAO"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Trích yếu</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top" colspan="4">
+			<!-- Trich yeu -->
+			<TEXTAREA NAME="TRICHYEU" ROWS="2" style="width:99%;"><?=$this->data["TRICHYEU"]?></TEXTAREA>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRTRICHYEU"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+<!--
+	<tr>
+		<td><font color=blue>Gửi văn bản lên cổng</td>
+		<td><input title='Gửi văn bản lên cổng thông tin điện tử thành phố Đà Nẵng' type=checkbox name=congthongtin_import id=congthongtin_import OnClick="soap_request();"></input></td>
+	</tr>
+	<tr>
+		<td><font color=blue>Gửi file đính kèm lên cổng</td>
+		<td><input title='Đính kèm file lên cổng thông tin điện tử thành phố Đà Nẵng' type=checkbox name=congthongtin_attach id=congthongtin_attach OnClick="soap_request_attach();"></input></td>
+	<tr/>
+-->
+<script>
+	var arrCoQuan = new Array(<?=(int)count($this->listCoQuan)?>);
+<?php
+	$i=0;
+	foreach($this->listCoQuan as $item){
+		echo "var arrSub = new Array(2);";
+		echo 'arrSub["NAME"] = "'.$item["NAME"].'";';
+		echo 'arrSub["CAPCQ"]= "'.$item["CAPCQ"].'";';
+		echo 'arrSub["ISSYSTEMCQ"]= "'.$item["ISSYSTEMCQ"].'";';
+		echo 'arrCoQuan['.$i.']= arrSub;';
+		$i++;
+	}
+	
+?>
+</script>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Nơi nhận</font>
+			
+		</td>
+		<td nowrap="nowrap" valign="top" colspan="4">
+			<!-- Trich yeu -->
+			<TEXTAREA NAME="NOIDEN" id="NOIDEN" ROWS="3" style="width:99%;"><?=htmlspecialchars($this->data["NOIDEN"])?></TEXTAREA>
+			<script> var obj = actb(document.frm.NOIDEN,customarray);</script>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNOIDEN"></span>
+			<select name="filterCapCQ" value="" onchange="changeFilterCapCQ();">
+			<option value="" id="defaultOptionCq">---Chọn cấp cơ quan để lọc---</option>
+			<?php 
+				echo capcoquanModel::toComboName(array());
+			?>   
+			</select>
+			<input type="checkbox" name="isCQNoiBo" onclick="changeFilterCapCQ()" style="display:none"/> 
+			<input type="checkbox" name="isCQBenNgoai" onclick="changeFilterCapCQ()" style="display:none" />
+			
+			<div style="width:99%;height:235px;overflow-y: scroll;display:none;" id="selectMultiCQ">
+				<div style="float:left;height:210px;margin-bottom : 5px;;" id="selectMultiCQ1">
+				
+				</div>
+				<div style="float:left;height:210px;margin-bottom : 5px;" id="selectMultiCQ2">
+				
+				</div>
+				<div style="float:left;height:210px;margin-bottom : 5px;" id="selectMultiCQ3">
+				
+				</div>
+				<div style="float:left;height:210px;margin-bottom : 5px;" id="selectMultiCQ4">
+				
+				</div>
+			</div>
+			<div id="selectMultiCQButton" style="display:none">
+				<input type="button" value="Hủy" onclick="document.getElementById('selectMultiCQ').style.display = 'none';document.getElementById('selectMultiCQButton').style.display = 'none';document.getElementById('defaultOptionCq').selected = true;" />
+				<input type="button" onclick="selectCQNhan(0)" value="Chọn" />
+				<input type="button" onclick="selectCQNhan(1)" value="Chọn và ẩn" />
+			</div>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<?php if($this->isluuthumuc==1){ ?>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Lưu thư mục</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top" colspan="4">
+			<?php if($this->isluuthumuc==1){
+				?>
+			<select name=THUMUC>
+				<option value=0>--Chọn thư mục lưu trữ--</option>
+			<?php
+				foreach($this->thumuc as $row){
+			?>
+					<option value="<?=$row['ID_THUMUC']?>"><?=str_repeat("--",$row['LEVEL']).htmlspecialchars($row['NAME'])?></option>
+			<?php
+				}
+			?>
+				</select>
+			<?php
+			}
+			?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRTHUMUC"></span>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<?php } ?>
+
+	<tr>
+	 <td>
+		<font color="Blue"> Văn bản nội bộ </font>
+	 </td>
+	 <td>
+		<input type="checkbox"  name="noibo" value="1" <?php echo $this->is_noibo==1?"checked":"" ?> >
+	 </td>	
+	</tr>
+        <?php //if(count($this->datacongviec->data[0]) > 0 ) { ?>
+<!--         <tr>
+	 <td>
+		<font color="Blue"> Báo cáo định kỳ </font>
+	 </td>
+	 <td>
+		<input type="checkbox"  name="IS_DINHKY" value="1" <?php //echo $this->IS_DINHKY==1?"checked":"" ?> >
+	 </td>	
+	</tr>-->
+        <?php //} ?>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">File đính kèm</font>
+		</td>
+		<!-- File dinh kem -->
+		<td nowrap="nowrap" valign="top" colspan="4" id="idFileDinhKem"></td>
+                
+		<script>
+			loadDivFromUrl('idFileDinhKem',<?echo $url ?>,0);
+		</script> 
+
+		<td width="100%"></td>
+	</tr>
+	
+	
+	
+	
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Chuyển để biết</font>
+		</td>
+		<!-- Chuyen de biet -->
+		<td nowrap="nowrap" valign="top" colspan="2">
+			<?php echo QLVBDHCommon::writeMultiSelectDepartmentUser('DEP_NGUOIGUI','NGUOIGUI')?>
+		</td>
+		<td>
+			<input type=button class="input_button" onclick="InsertIntoArr();" value=">" style="width:30px;" align=right"> 
+			<br>
+			<input type=button class="input_button" onclick="InsertAllIntoArr();" value=">>" style="width:30px;" align=right">
+			
+		</td>
+		
+		<td width="100%">
+		<div id="listuser"></div>
+		</td>
+	</tr>
+	<?php 
+		require_once("hscv/models/chuyennoiboModel.php");
+		$data_cqnb = chuyennoiboModel::getDataCQNoibo();
+	?>
+	<tr style="<?= ($is_cnb && count($data_cqnb) > 1) ? '' : 'display: none'?>">
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Chuyển đơn vị nội bộ</font>
+		</td>
+		<td>
+			
+			<select name=CQNOIBO id=CQNOIBO multiple ondblclick="insertArrayCqnb();" style="width:428px" >
+				
+				
+			</select>
+		</td>
+		<td> <input type=button class="input_button" onclick="insertArrayCqnb();" value=">" style="width:30px;">  
+		<br><br>
+		<input type=button class="input_button" onclick="insertAllArrayCqnb();" value=">>" style="width:30px;" >
+		</td>
+		<td>
+			<td valign="top" width=100%><div id="listcqnoibo"></div></td>
+		</td>
+		
+	</tr>	
+	<tr style="<?= count($data_cqlt) > 0 ? '' : 'display: none'?>">
+		
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Chuyển cơ quan trong tỉnh</font>
+		</td>
+		<td>
+			<select name="nhom_CQLIENTHONG" id="nhom_CQLIENTHONG" style="width:428px" onchange="
+                            fillcomboCqlt('CQLIENTHONGPARENT',arr_cqlt,arr_cqltselect_temp,1);
+                            fillcomboCqlt('CQLIENTHONG',arr_cqlt,arr_cqltselect_temp);
+                        ">
+                            <option value="-1">-- Chọn cấp cơ quan --</option>
+                            <option value="1">Tỉnh thành, Sở, Ban, Ngành</option>							
+                            <option value="2">Quận/Huyện</option>							
+                            <option value="3">Phường/xã</option>
+                            <option value="4">Cơ quan VPCP</option>
+                        </select>
+                        </br>	
+			<select name=CQLIENTHONGPARENT id=CQLIENTHONGPARENT style="width:428px" onchange="
+                            fillcomboCqlt('CQLIENTHONG',arr_cqlt,arr_cqltselect_temp);" >                        
+			</select>
+                        </br>	
+			<select name=CQLIENTHONG id=CQLIENTHONG multiple style="width:428px" >
+			</select>
+		</td>
+		<td> <input type=button class="input_button" onclick="insertArrayCqlt();" value=">" style="width:30px;">  
+		<br><br>
+		<input type=button class="input_button" onclick="insertAllArrayCqlt();" value=">>" style="width:30px;" >
+		</td>
+		<td>
+			<td valign="top" width=100%><div id="listcqlienthong"></div></td>
+		</td>
+		
+	</tr>
+	<tr>
+		
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Ghi chú</font>
+		</td>
+		<td>
+			<TEXTAREA NAME="GHICHU" ROWS="2" style="width:99%;"><?=$this->data["GHICHU"]?></TEXTAREA>
+		</td>
+		<td> 
+		</td>
+		<td>			
+		</td>
+		
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Số bản</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- so ban -->
+			<input type=text class=inputbox name=SOBAN value="<?=$this->data["SOBAN"]==""?1:$this->data["SOBAN"]?>" size='3'>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRSOBAN"></span>	
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Độ mật</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- Do mat -->
+			<select name="DOMAT" id="DOMAT" class="inputbox" >
+            	<option value="0"><?php echo '[Chọn độ mật]' ?></option>
+            	<option value="1"><?php echo 'Bình thường' ?></option>
+            	<option value="2"><?php echo 'Mật' ?></option>
+            	<option value="3"><?php echo 'Tối mật' ?></option>
+            	<option value="4"><?php echo 'Tuyệt mật' ?></option>                                
+             </select>
+			<div class="clr"></div>
+			<script>document.frm.DOMAT.value=<?=$this->data["DOMAT"]?></script>
+			<span class="box_erro_area" id="ERRDOMAT"></span> 
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Số tờ</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<input type=text class=inputbox name=SOTO value="<?=$this->data["SOTO"]==""?1:$this->data["SOTO"]?>" size=3>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRSOTO"></span>	
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Độ khẩn</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<select name="DOKHAN" id="DOKHAN" class="inputbox"  >
+            	<option value="0"><?php echo '[Chọn độ khẩn]' ?></option>
+            	<option value="1"><?php echo 'Bình thường' ?></option>
+            	<option value="2"><?php echo 'Khẩn' ?></option>
+            	<option value="3"><?php echo 'Hỏa tốc' ?></option>                                
+            </select>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRDOKHAN"></span>  
+			<script>document.frm.DOKHAN.value=<?=$this->data["DOKHAN"]?></script>
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Lĩnh vực văn bản</font>
+		</td>
+		<td nowrap="nowrap" valign="top">
+			<select name="ID_LVVB" id="ID_LVVB" onchange="alerttt(this)">
+           	<option value='0'> -- Chọn lĩnh vực văn bản --</option>
+            	<?php             	
+			    $count = count($this->datalvvb);
+				for($i = 0 ; $i<$count  ;$i++){
+					echo '<option value='.$this->datalvvb[$i]["ID_LVVB"].'>'.htmlspecialchars(str_repeat("--",$this->datalvvb[$i]["LEVEL"]-1).$this->datalvvb[$i]["NAME"]). '</option>';
+				}
+            	?>
+		 </select> 
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		<td nowrap="nowrap" valign="top">
+			
+		</td>
+		<td nowrap="nowrap" valign="top">
+			
+		
+		</td>
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">Sao chép</font>
+                </td>
+			<td nowrap="nowrap" valign="top">
+				<input type="checkbox" name="isCopy" />
+			</td>
+			<td width=20 nowrap="nowrap"></td>
+			<td nowrap="nowrap" valign="top">
+				
+			</td>
+			<td nowrap="nowrap" valign="top">
+				
+			
+			</td>
+			<td width="100%"></td>
+			</td>
+	</tr>
+</table>
+
+<input type=hidden name="MASOLIENTHONGCHA" value=<?=$this->maSoLienThong?>>
+<input type=hidden name="MADLCLIENTHONGCHA" value=<?=$this->maDLCLienThong?>>
+<input type=hidden name="MASOLIENTHONG" value=<?=$this->data["MASOLIENTHONG"]?>>
+<input type=hidden name="idhscv" value=<?php echo $this->idhscv;?>>
+<input type=hidden name="idduthao" value=<?php echo $this->idduthao;?>>
+<input type=hidden name=macongviec value="<?=$this->macongviec; ?>">
+<input type=hidden name=ID_VBLTCP value="<?=$this->ID_VBLTCP; ?>">
+<input type=hidden name="id" value=<?php echo $this->id;?>>
+<input type=hidden name="SODI_IN" value=<?php echo (int)$this->data["SODI_IN"];?>>
+<input type=hidden name="SOKYHIEU_IN" value=<?php echo (int)$this->data["SOKYHIEU_IN"];?>>
+<input type=hidden name="luuLienThong" value=0>
+</form>
+<script>
+jq1102('#CQLIENTHONG').chosen({
+    placeholder_text_multiple:" ",
+    no_results_text:"Không tìm thấy kết quả"
+}); 
+function soap_request(){
+ 
+//truyen id van ban di vao
+
+
+var submitAjax = new AjaxEngine(); 
+var xmlhttp=submitAjax.createXMLHttp();
+    xmlhttp.onreadystatechange=function(){
+        if (xmlhttp.readyState==4&&xmlhttp.status==200){
+			alert(xmlhttp.responseText);
+			if(xmlhttp.responseText==-1)
+			{
+				alert("Sai mã loại văn bản");
+			}
+			if(xmlhttp.responseText==-2)
+			{
+				alert("Sai mã lĩnh vực văn bản");
+			}
+        }
+    }
+    xmlhttp.open("POST", "/vbdi/banhanh/callimport",true); //them param id_vbdi
+    xmlhttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+    xmlhttp.send(null);
+}
+
+function soap_request_attach()
+{
+
+var submitAjax = new AjaxEngine(); 
+var xmlhttp=submitAjax.createXMLHttp();
+    xmlhttp.onreadystatechange=function(){
+        if (xmlhttp.readyState==4&&xmlhttp.status==200){
+			alert(xmlhttp.responseText);
+			if(xmlhttp.responseText==false)
+			{
+				alert("Chèn file đính kèm không thành công");
+			}
+			if(xmlhttp.responseText==1)
+			{
+				alert("Đã chèn file đính kèm thành công");
+			}
+        }
+    }
+   xmlhttp.open("POST", "/vbdi/banhanh/callattach",true);
+    xmlhttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+    xmlhttp.send(null);
+
+}
+function changeCQNHAN(is_begin){
+	<?php if( count($cqnhan) == 1){?>
+	return;
+<?}?>
+	if (is_begin == 1){
+	}else{	
+		document.frm.ID_SVB.value = 0;
+		document.frm.ID_SVB_TEXT.value = "";
+	}
+	document.frm.ID_CQ_TEXT.value = arr_CQs[document.frm.ID_CQ.value] + "";
+	DATA_ID_SVB = new Array();
+	var submitAjax = new AjaxEngine(); 
+			var cqbh = document.frm.ID_CQ.value;
+			if(cqbh == "")
+				cqbh = 0;	
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("get", "/vbdi/banhanh/getsvbbycoquanbh?COQUANBH="+cqbh , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			
+			oXmlHttp.onreadystatechange = function () { 
+				
+			if (oXmlHttp.readyState == 4) { 
+				//alert(oXmlHttp.responseText);
+				if (oXmlHttp.status == 200) { 
+					var lnc = 0;
+					var id_svb = 0;
+					var name = "";
+					myData = json_parse(oXmlHttp.responseText, function (key, value) {
+						var is_valid = 0;
+						if(key =="ID_SVB"){
+							id_svb = value;
+							lnc ++;
+						}
+						if(key =="NAME"){
+							is_valid = 1;
+							name = value;
+							lnc ++;
+						}
+						if(lnc%2==0 && is_valid==1)
+							DATA_ID_SVB[DATA_ID_SVB.length]= new Array(id_svb,name);
+					}	
+					);
+				
+				
+            } else { 
+               
+            } 
+        } 
+       }; 
+   		
+		oXmlHttp.send(null);
+}
+changeCQNHAN(1);
+var arrSVB = Array();
+<?php 
+	foreach($this->svb as $item){
+?>
+		arrSVB[arrSVB.length] = Array('<?=$item->ID_SVB?>','<?=$item->ID_LVB?>');
+<?php
+	}
+?>
+var arrLVB = Array();
+<?php 
+	foreach($this->lvb as $item){
+?>
+		arrLVB[arrLVB.length] = Array('<?=$item->ID_LVB?>','<?=$item->KYHIEU?>');
+<?php
+	}
+?>
+var arrNS = Array();
+<?php 
+	foreach($this->ns as $item){
+?>
+		arrNS[arrNS.length] = Array('<?=$item['ID_U']?>','<?=$item['KYHIEU_PB']?>');
+<?php
+	}
+?>
+var arrCQ = Array();
+<?php 
+	foreach($this->cq as $item){
+?>
+		arrCQ[arrCQ.length] = Array('<?=$item['ID_CQ']?>','<?=$item['KYHIEU']?>','<?=$item['ID_SVB']?>','<?=$item['NAME']?>');
+<?php
+	}
+?>
+/**
+Xu ly cac nut Back , Save 
+*/
+function BackButtonClick()
+{	
+	window.location = "/vbdi/banhanh/list#vbdi<?=$this->id?>";
+}
+
+    function SaveButtonClick(){
+        document.frm.luuLienThong.value = "0";
+        SaveClick();
+    }
+    function SaveClick(){        
+	//validate tai client
+	var err = true;
+	err = err & validateInput("gt=0",document.frm.ID_SVB,"<?php echo MSG11001017?>");
+	err = err & validateInput("gt=0",document.frm.ID_LVB,"<?php echo MSG11001017?>");
+	err = err & validateInput("req",document.frm.SOKYHIEU,"<?php echo MSG11001014 ?>");    
+	err = err & validateInput("req",document.frm.SODI,"<?php echo MSG11001014 ?>");
+	err = err & validateInput("req",document.frm.NGAYBANHANH,"<?php echo MSG11001014 ?>");
+	err = err & validateInput("date",document.frm.NGAYBANHANH,"<?php echo MSG11001015 ?>");
+	err = err & validateInput("gt=0",document.frm.ID_CQ,"<?php echo MSG11001017?>");
+	err = err & validateInput("gt=0",document.frm.NGUOIKY,"<?php echo MSG11001017?>"); 	
+        err = err & validateInput("gt=0",document.frm.NGUOISOAN,"<?php echo MSG11001017?>"); 
+	err = err & validateInput("req",document.frm.TRICHYEU,"<?php echo MSG11001014 ?>");
+	<?php if($this->isluuthumuc==1){ ?>
+		err = err & validateInput("gt=0",document.frm.THUMUC,"Chưa chọn thư mục lưu trữ");
+	<?php } ?>
+	if(err == true)
+    {
+    	//Luu van ban di bang ajax
+    	var submitAjax = new AjaxEngine(); 
+		var oXmlHttp = submitAjax.createXMLHttp();
+		oXmlHttp.open("post", "/vbdi/banhanh/save" , true); 
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+		document.frm.SOKYHIEU_IN.value = getSokyhieuIn();
+        if(document.frm.SOKYHIEU_IN.value == -1)
+        	document.frm.SOKYHIEU_IN.value = "";
+		document.frm.SODI_IN.value = checkdinhdangsodi();
+		if(document.frm.SODI_IN.value == -1){
+			
+			document.getElementById('ERRSODI').innerHTML = "Số đi không hợp lệ";
+			return ;
+		}
+		var elems = document.getElementsByClassName("icon-SaveButton");
+        for (i = 0; i < elems.length; i++) {
+          elems[i].style.display = 'none';
+          elems[i].style.top = '100%';
+        }
+		var post = submitAjax.getDataFromFrm(document.frm);
+		oXmlHttp.onreadystatechange = function () { 
+		if (oXmlHttp.readyState == 4) {			
+			if (oXmlHttp.status == 200) { 
+				//alert(oXmlHttp.responseText); 
+				if(oXmlHttp.responseText == 1){  // id cua van ban di , doi thanh > 0
+					var is_capnhat = "<?=$this->id?>";
+					if(is_capnhat > 0){
+						alert("Đã cập nhật văn bản thành công.");
+						window.location = "/vbdi/banhanh/list#vbdi<?=$this->id?>";
+						return;
+					}
+                                                alert("Đã lưu văn bản thành công.");
+					if(document.frm.isCopy.checked == false){ 
+						document.frm.TRICHYEU.value = "";
+						document.frm.SOKYHIEU.value = "";
+						document.frm.NGAYBANHANH.value = "";
+						document.frm.NOIDEN.value = "";
+							
+						document.frm.NGUOITAO.value = 0;
+						document.frm.NGUOITAO_TEXT.value = "";
+						//document.frm.NGUOITAO_TEXT.value = "";
+						
+						document.frm.NGUOISOAN.value = 0;
+						document.frm.NGUOISOAN_TEXT.value = "";
+						
+						document.frm.NGUOIKY.value = 0;
+						document.frm.NGUOIKY_TEXT.value = "";
+						
+						document.frm.ID_SVB.value = 0;
+						document.frm.ID_SVB_TEXT.value = "";
+						
+						document.frm.ID_LVB.value = 0;
+						document.frm.ID_LVB_TEXT.value = "";
+						
+						document.frm.SOBAN.value = "1";
+						document.frm.SOTO.value = "1";
+						document.frm.DOMAT.value = "0";
+						document.frm.DOKHAN.value = "0";
+						document.frm.ID_LVVB.value = "0";
+						document.frm.noibo.checked = false;
+					}
+					document.frm.MASOLIENTHONGCHA.value = "0";
+                                        document.frm.MADLCLIENTHONGCHA.value = "0";  
+					document.frm.MASOLIENTHONG.value = "0";
+					document.frm.idhscv.value = "0";
+					document.frm.idduthao.value = "0";
+					document.frm.id.value = "0";
+
+					<?php if($is_cnb){ ?>
+					arr_cqselect = new Array();
+					arr_cqselect_temp = new Array();
+					ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+					fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+					<?php }?>
+					arr1 = new Array();
+					arr_user = new Array();
+					arr_user_temp = new Array();
+					ShowArr('listuser',arr1,arr_user);
+					FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+					loadDivFromUrl('idFileDinhKem',<?=$url?>,1);
+					getSodi(null);
+					//id van ban di, goi ham importDocument
+					if(document.frm.isCopy.checked == true){
+						addChuyenDeBiet(1);
+						addChuyenDeBiet(2);
+						addChuyenDeBiet(3);
+					}
+				}
+				else{
+					var elems = document.getElementsByClassName("icon-SaveButton");
+					for (i = 0; i < elems.length; i++) {
+					  elems[i].style.display = 'none';
+					  elems[i].style.top = '100%';
+					}
+					if(oXmlHttp.responseText == -2){ // doi thanh -2
+						//loi so di khong hop le
+						document.getElementById('ERRSODI').innerHTML = "Số đi không hợp lệ";
+					}
+                                        if(oXmlHttp.responseText == -99){ 
+						alert("Không có file đính kèm, không thể chuyển liên thông!");
+											return false;
+					}
+				}                                
+				var elems = document.getElementsByClassName("icon-SaveButton");
+				for (i = 0; i < elems.length; i++) {
+				  elems[i].style.display = '';
+				  elems[i].style.top = '100%';
+				}
+				
+	        } else { 
+				var elems = document.getElementsByClassName("icon-SaveButton");
+				for (i = 0; i < elems.length; i++) {
+				  elems[i].style.display = "";
+				  elems[i].style.top = '100%';
+				}
+        	} 
+    	} 
+   }; 
+   oXmlHttp.send(post);
+		
+}
+    	
+    		
+    
+}
+
+/* Cac ham xu ly khung chon chuyen de biet */
+//Ham xu ly chon nhieu nguoi dung cua nguyennd
+var arr_user = new Array();
+var arr1 = new Array();
+var arr_user_temp = new Array();
+<?php
+	
+	if(count($this->data_chuyendebiet)>0)
+	{
+		$i=0;
+		foreach ($this->data_chuyendebiet as $item )
+		{
+			$i++;
+?>
+		arr_user.push(new Array("<?php echo $item['DEP_NN']?>","<?php echo $item['NGUOINHAN']?>","<?php echo $item['EMPNN']?>","<? echo $item['EMPNC']?>"
+		,"<? echo $item['ID_VBDI_DLC']?>","1"
+		));
+		arr_user_temp.push( new Array("<?php echo $item['NGUOINHAN']?>"));
+<?php
+		}
+	}
+?>
+
+<?php 
+if($this->id_duthao){
+?>
+
+
+<?php
+	
+	if(count($this->cdb_macdinh)>0)
+	{
+		$i=0;
+		foreach ($this->cdb_macdinh as $item)
+		{
+			$i++;
+?>
+		arr_user.push(new Array("<?php echo $item['DEP_NN']?>","<?php echo $item['NGUOINHAN']?>","<?php echo $item['EMPNN']?>","<? echo $item['EMPNC']?>"
+		,"<? echo $item['ID_VBDI_DLC']?>","0"
+		));
+		
+		arr_user_temp.push( new Array("<?php echo $item['NGUOINHAN']?>"));
+<?php
+		}
+	}
+?>
+<?php 	
+}
+//if( $this->id > 0){ ?>
+
+ 
+arr1 = new Array();
+arr1[0] = new Array(100,'Tên');
+arr1[1] = new Array(0,'Xóa');
+var arr_header = new Array();
+arr_header[0] = new Array(100,'Tên CQ');
+arr_header[1] = new Array(0,'Xóa');
+
+ShowArr('listuser',arr1,arr_user);
+FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+
+<?php //}?>
+function InsertIntoArr()
+{
+	
+		var opt = document.frm.NGUOIGUI.options;
+		//alert('1');
+		for(var i=0;i<opt.length;i++){
+			if(opt[i].selected){
+				arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,opt[i].value,opt[i].text,'<?=$this->name_u?>');
+				arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+			}
+		}
+	    //arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+	    arr1[0] = new Array(100,'Tên');
+	    arr1[1] = new Array(0,'Xóa');
+	    ShowArr('listuser',arr1,arr_user,1);
+	    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	
+	/*var check = true;
+	for(i=0;i<arr_user.length;i++)
+    {
+    	if(document.frm.NGUOIGUI.value==arr_user[i][1])  
+    	{
+    	  check=false;
+    	}
+    	
+    }
+    if(check)
+    {
+    	arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+    	arr1[0] = new Array(100,'Tên');
+    }
+    ShowArr('listuser',arr1,arr_user);*/
+}
+function InsertAllIntoArr()
+{
+	
+		var opt = document.frm.NGUOIGUI.options;
+		//alert('1');
+		for(var i=0;i<opt.length;i++){
+			
+				arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,opt[i].value,opt[i].text,'<?=$this->name_u?>');
+				arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+			
+		}
+	    //arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+	    arr1[0] = new Array(100,'Tên');
+	    arr1[1] = new Array(0,'Xóa');
+	    ShowArr('listuser',arr1,arr_user,1);
+	    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	
+	
+}
+function DeleteFromArr(value)
+{
+    for(i=0;i<arr_user.length;i++)
+    {
+    	if(arr_user[i][1]==value)
+    	delete arr_user[i][1];    	
+    	
+    }
+    ShowArr('listuser',arr1,arr_user);    
+}
+
+/**
+ * Tạo lưới từ 2 mảng
+ * 
+ * @param String idDiv id div hoặc khung chứa lưới
+ * @param int Arr1 mảng chứa tên trường và độ rộng tính theo % của trường
+ * @param int Arr2 mảng chứa dữ liệu của các trường trên
+ * @return html code
+ */
+function ShowArr(idDiv,Arr1,Arr2){
+        var html;
+		
+        if(Arr2.length == 0){
+        	document.getElementById(idDiv).innerHTML = "";
+        	return;
+        }
+	    html = '<table class="adminlist1">';
+	    html += '<thead>';
+	    html += '<tr>';
+	    html += '<th nowrap>#</th>';
+	    
+	    html += '<th width=100% colspan=2>Người nhận</th>'
+	    html += '</tr>';
+	    html += '</thead>';
+	    html += '<tfoot><tr><th colspan=3 align=left>';
+	    html += '</th></tr></tfoot>';
+	    html += '<tbody>';
+	    	for(i=0;i<Arr2.length;i++){
+	    		html += '<tr>';
+	    		html += '<td nowrap align="right">' + (i + 1) + '</td>';
+	    		html += '<td width=100%>';
+	    		html += Arr2[i][2];
+	    		if(Arr2[i][5] == 1)
+	    			html += "<input type=hidden name=ID_OLD[] value="+Arr2[i][4]+">";
+	    		else 
+	    			html += "<input type=hidden name=ID_U[] value="+Arr2[i][1]+">";	
+	    		
+	    		html += '</td>';
+	    		
+	    		html += '<td nowrap>';
+	    		html += '<a href="javascript:;" onclick="arr_user_temp.splice('+i+',1);arr_user.splice('+i+',1);ShowArr(\'listuser\',arr1,arr_user);FastReload();return false;">Xóa</a>';
+	    		html += '</td>';
+	    		html += '</tr>';
+	        }
+	    	html += '</tbody>';
+	    	html += '</table>';
+	    //
+		    //alert(html);
+	    document.getElementById(idDiv).innerHTML = html;
+	}
+	function FastReload(){
+	    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	}
+
+	function addChuyenDeBiet(th){
+	//th 1: nguoi ky
+	//th 2: nguoi trinh
+		
+		var user_id =0;
+		var user_name = "";
+		if(th==1){
+			//nguoi ky
+			user_id = document.frm.NGUOIKY.value;
+			user_name = document.frm.NGUOIKY_TEXT.value;
+		}
+		if(th==2){
+			//nguoi ky
+			user_id = document.frm.NGUOITAO.value;
+			user_name = document.frm.NGUOITAO_TEXT.value;
+		}
+		if(th==3){
+			//nguoi soan
+			user_id = document.frm.NGUOISOAN.value;
+			user_name = document.frm.NGUOISOAN_TEXT.value;
+		}
+		if(user_id >0){
+			var ok=true;
+			for(var i=0;i<arr_user.length;i++){
+				if(arr_user[i][1]==user_id){
+					ok = false;
+					break;
+				}
+			}
+			if(ok){
+				arr_user.push(new Array(ARR_NGUOIGUI[user_id],user_id,user_name,"","","0"));
+				arr_user_temp.push( new Array(user_id));
+				ShowArr('listuser',arr1,arr_user);
+				FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+			}
+		}
+	}
+/* Ket thuc cac ham xu ly chon de biet */
+
+
+/* Cac ham kiem tra so ky hieu*/
+//begin trunglv
+function check_sokyhieu(msg)
+{
+	if(msg=='1')
+	{
+		document.getElementById('ERRSOKYHIEU').innerHTML ="Giá trị này đã tồn tại";
+	}
+	else if(msg=='2')
+	{
+		document.getElementById('ERRSOKYHIEU').innerHTML ="<font color='blue'>Số ký hiệu này hợp lệ</font>";
+	}
+	else  
+	if(msg=='3')
+	{
+		document.getElementById('ERRSOKYHIEU').innerHTML ="Lỗi server";
+	}
+	else  
+	if(msg=='0')
+	{
+		document.getElementById('ERRSOKYHIEU').innerHTML ="Vui lòng nhập số ký hiệu";
+	}	
+}
+
+/* ket thuc cac ham kiem tra so ky hieu*/
+
+/* Cac ham kiem tra so di*/
+//
+function checkFail(msg)
+{
+	alert('Kiểm tra dữ liệu gặp lỗi');
+}
+
+
+/**
+	Ham goi du lieu ve server de kiem tra so di co hop le hay khong
+*/
+function checkSodi(){
+	//var svb = document.getElementById("id_ID_SVB").value;
+	var cq = document.getElementById("id_ID_CQ").value;
+	var sodi = document.getElementById("id_SODI").value;
+	var err = validateInput("numeric",document.frm.SODI,"(Phải nhập số)");
+	if(err == false)
+		return;
+	if(trim(cq)<=0) return false;
+	var checkAjax = new AjaxEngine();     	
+	var url="/vbdi/banhanh/getsodi/type/1";
+	url=url+"/id_cq/"+document.getElementById("id_ID_CQ").value;		
+	url=url+"/id_svb/"+document.getElementById("id_ID_SVB").value;		
+	url=url+"/id_lvb/"+document.getElementById("id_ID_LVB").value;	
+	url=url+"/sodi/"+sodi;	
+	var type_request = "POST";
+	if(trim(sodi)!='')
+	{
+		sendRequestToServer(url,type_request,validate_sodi,checkFail);
+	} 
+	return false;
+}
+/**
+Sau khi server kiem tra so di va tra ve mot gia tri , ham nay se hien thi thong tin ra man hinh
+*/
+function validate_sodi(msg){
+	var sd = document.frm.SODI.value;
+	$err_field = document.getElementById("ERRSODI");
+	if(msg == -1){
+		$err_field.innerHTML = "Chưa xác định được";
+		return;
+	}
+		
+	$st_stt =  "Số đi tiếp theo là "+(msg+1)+" ";
+	if(sd < msg)
+		$err_field.innerHTML= "("+$st_stt+".Số đi không hợp lệ.)";
+	else
+		$err_field.innerHTML= "<font color='blue'>"+"("+$st_stt+".Số đi hợp lệ.)"+"</font>";
+		
+		
+}
+
+
+/**
+Ham lay so di tiep theo cua van ban sau khi chon so van  ban hay loai van ban tuy theo cau hinh cua he thong 
+*/
+getSodi(null);
+
+function getSodi(param){
+<?php 
+
+
+?>
+len = <?php echo $len_arr?>;
+var arr_col = new Array();
+var ln  = 0;
+
+<?php for($i=0;$i<$len_arr;$i++)
+		echo "arr_col[$i]='".$arr_col[$i]."';";	?>
+var ln2 = 0;
+
+if(len == 0)
+	ln = 1;
+for(i = 0 ; i< len ; i++)
+{
+	if(param!=null)
+	{
+		if(param.name != arr_col[i]){
+			ln2 = 1;
+			continue;
+		}
+		switch(arr_col[i]){
+			//
+			case 'ID_LVB':
+				if(document.frm.ID_LVB.value == 0)
+				{
+					ln = 1;
+					break;
+					
+				}
+			break;
+			case 'ID_SVB':
+				if(document.frm.ID_SVB.value == 0)
+				{
+					ln = 1;
+					break;
+					
+				}
+			break;
+			default:
+			break;
+		}
+	}
+}
+
+
+
+if(ln==0 && ln2==0){
+	var checkAjax = new AjaxEngine();     	
+	var url="/vbdi/banhanh/getsodi/type/2/id/<?php echo $this->id?>";
+	url=url+"/id_cq/"+document.getElementById("ID_CQ").value;		
+	url=url+"/id_svb/"+document.getElementById("ID_SVB").value;		
+	url=url+"/id_lvb/"+document.getElementById("ID_LVB").value;	
+	var type_request = "POST";
+	sendRequestToServer(url,type_request,updateSodi,checkFail);
+	
+}else{
+	if(param == null){
+		var checkAjax = new AjaxEngine();     	
+		var url="/vbdi/banhanh/getsodi/type/2/id/<?php echo $this->id ?>";
+		url=url+"/id_cq/"+document.getElementById("ID_CQ").value;		
+		url=url+"/id_svb/"+document.getElementById("ID_SVB").value;		
+		url=url+"/id_lvb/"+document.getElementById("ID_LVB").value;	
+		var type_request = "POST";
+		sendRequestToServer(url,type_request,updateSodi,checkFail);
+	}
+	
+}
+/**
+Ham cap nhat so di cua van ban khi nhan du lieu tu server
+*/
+
+function updateSodi(msg){
+	if(msg == -2)
+	{	
+		document.frm.SODI.value = '<?=$old_sodi?>';	
+		//updateSKH();
+		
+	}else{
+		document.frm.SODI.value = (msg+1);	
+		//alert(document.frm.SODI.value);
+		updateSKH(document.frm.ID_LVB.value,document.frm.NGUOISOAN.value,document.frm.ID_CQ.value);
+	}
+	
+	var fade = function (node) {
+	        var level = 1;
+	        var step = function (  ) {
+	            var hex = level.toString(16);
+	            node.style.backgroundColor = '#FFFF' + hex + hex;
+	            if (level < 15) {
+	                level += 1;
+	                setTimeout(step, 100);
+	            }
+	        };
+	        setTimeout(step, 100);
+	    };
+	    fade(document.frm.SODI);
+	
+	}
+	
+	
+}	
+
+/* ket thuc ham kiem tra so di*/
+
+function updateSKH(loaivb,nguoisoan,cq){
+	
+	loaivb =  document.frm.ID_LVB.value;
+	nguoisoan =  document.frm.NGUOISOAN.value;
+	cq =  document.frm.ID_CQ.value;
+	var kyhieuvb = "";
+	var kyhieuns = "";
+	var kyhieucq = "";
+	for(var i=0;i<arrLVB.length;i++){
+		if(arrLVB[i][0]==loaivb){
+			kyhieuvb = arrLVB[i][1];
+			break;
+		}
+	}
+	for(var i=0;i<arrNS.length;i++){
+		if(arrNS[i][0]==nguoisoan){
+			kyhieuns = arrNS[i][1];
+			break;
+		}
+	}
+	for(var i=0;i<arrCQ.length;i++){
+		
+		if(arrCQ[i][0]==cq){
+			kyhieucq = arrCQ[i][1];
+			
+			break;
+		}
+	}
+
+	
+	if(kyhieuvb=="CV"){
+		if(kyhieuns=='UBND'){
+			document.frm.SOKYHIEU.value = document.frm.SODI.value + "/" + kyhieucq;
+		}else{
+			document.frm.SOKYHIEU.value = document.frm.SODI.value + "/" + kyhieucq + "-" + kyhieuns;
+		}
+	}else{
+		document.frm.SOKYHIEU.value = document.frm.SODI.value + "/" + kyhieuvb + "-" + kyhieucq;
+	}
+}
+
+function selectloaivb(){
+    var idsvb = document.frm.ID_SVB.value;
+    //alert(idsvb);
+    //alert(arrSVB.length);
+    for(var i=0;i<arrSVB.length;i++){
+    	//DATA_ID_LVB
+    	//alert(arrSVB[i][0]);
+    	if(arrSVB[i][0]==idsvb){
+        	
+        	for(var j=0;j<DATA_ID_LVB.length;j++){
+            	if(DATA_ID_LVB[j][0]==arrSVB[i][1]){
+            		document.frm.ID_LVB_TEXT.value = DATA_ID_LVB[j][1];
+            		document.frm.ID_LVB.value = DATA_ID_LVB[j][0];
+            	}
+        	}
+			
+        	break;
+        	
+    	}
+    }
+    for(var i=0;i<arrCQ.length;i++){
+      //  alert(document.frm.ID_SVB.value);
+          if(arrCQ[i][2]==document.frm.ID_SVB.value)
+              {
+                document.frm.ID_CQ.value=arrCQ[i][0];
+                document.frm.ID_CQ_TEXT.value=arrCQ[i][3];
+              }
+        }
+    updateSKH(document.frm.ID_LVB.value,document.frm.NGUOISOAN.value,document.frm.ID_CQ.value);
+}
+
+function checkdinhdangsodi(){
+    	var sodi_text = document.frm.SODI.value;
+    	var sodi_in = "";
+    	
+    	for(var i = 0 ; i < sodi_text.length ;i++){
+    		c = sodi_text.charAt(i);
+    		
+    		if(isInteger(sodi_text.charAt(i))){
+    			//alert(i);
+    			sodi_in += c  ; 
+    		}
+    		else{
+    			break;
+    		}
+    	}
+    	
+    	if(i > 5 )
+    		return -1;
+    	if(i==0)
+    		return -1;
+    	//var endstr = substring(i,soden_text.length-1);
+    	
+    	return sodi_in;
+    	
+    }
+    
+     function getSokyhieuIn(){
+    	var sokyhieu_text = document.frm.SOKYHIEU.value;
+    	var sokyhieu_in = "";
+    	
+    	for(var i = 0 ; i < sokyhieu_text.length ;i++){
+    		c = sokyhieu_text.charAt(i);
+    		
+    		
+    		if(isInteger(sokyhieu_text.charAt(i))){
+    			//alert(i);
+    			sokyhieu_in += c  ; 
+    		}
+    		else{
+    			break;
+    		}
+    	}
+    	
+    	
+    	return sokyhieu_in;
+    }
+	function alerttt(obj)
+	{	 
+       arraylv= new Array();
+	   arr11= new Array();
+      if(obj.value >0)	      
+              {		   
+				<?php
+	
+	              if(count($this->linhvucdb)>0)
+	              {  
+		                $i=0;
+		              foreach ($this->linhvucdb as $item)
+		              {
+			              $i++;
+                          
+                ?>
+                  arraylv.push(new Array("<?php echo $item['ID_LVVB'] ?>","<?php echo $item['DEPNAME'] ?>","<?php echo $item['ID_U'] ?>","<?php echo $item['EMPU'] ?>"));   
+                <?php }} ?>
+				for(j=0;j<arraylv.length;j++){
+                     if(arraylv[j][0]==obj.value){
+					        for(k=0;k<arr_user.length;k++){
+					          if(arraylv[j][2] != arr_user[k][2] ){
+					        arr_user.push(new Array(arraylv[j][1],arraylv[j][2],arraylv[j][3],"0","0"));                 
+		                    arr_user_temp.push( new Array("arraylv[j][2]"));
+							//alert(arr_user);
+							ShowArr('listuser',arr11,arr_user);
+							break;
+							     }
+                              }
+					     }       
+				}
+              }
+	}
+     addChuyenDeBiet(3);
+	 function PressCtrlS(){
+    	SaveButtonClick();
+    }
+
+
+<?php if($is_cnb){ ?>
+			
+		function fillcomboCqnb(id_combo,arr,arr_exp){
+			var objdesc = document.getElementById(id_combo);
+			for (i = objdesc.length - 1; i>=0; i--) {
+				objdesc.removeChild(objdesc.options[i]);
+			}
+			for(var i=0;i<arr.length;i++){
+				var ln = 0;
+				for(var j= 0;j < arr_exp.length ; j++){
+					//alert(arr_exp[j]);
+					if(arr_exp[j] == arr[i][0] ){
+						ln =1;
+						
+						break;
+						
+					}
+				}
+				if(ln == 0 ){
+					var elOptNew = document.createElement('option');
+					elOptNew.text = arr[i][1];
+					elOptNew.value = arr[i][0];
+					try {
+					  objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+					}
+					catch(ex) {
+					  objdesc.add(elOptNew); // IE only
+					}
+				}
+			}
+			if(objdesc.length)
+				objdesc.style.display = 'block';
+			else
+				objdesc.style.display = 'none';
+			//objdesc.value = sel;
+		}
+                
+		var arr_cqselect = new Array();
+		var arr_cqselect_temp = new Array();
+
+		var arr_cqnb = new Array();
+		<?php $stt = 0 ;foreach ($data_cqnb as $cqnb){ ?>
+		
+		arr_cqnb[<?=$stt?>] =  new Array("<?=$cqnb['ID_CQ']?>", "<?=$cqnb['NAME']?>");
+		<?php $stt++; } ?>
+		
+		
+		fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		
+		function insertArrayCqnb(){
+			var opt = document.frm.CQNOIBO.options;
+			for(var i=0;i<opt.length;i++){
+				if(opt[i].selected){
+					arr_cqselect[arr_cqselect.length] = new Array(opt[i].value,opt[i].text);
+					arr_cqselect_temp[arr_cqselect_temp.length] = new Array(opt[i].value);
+					
+				}
+			}
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}
+
+		function insertAllArrayCqnb(){
+			var opt = document.frm.CQNOIBO.options;
+			for(var i=0;i<opt.length;i++){				
+				
+                            arr_cqselect[arr_cqselect.length] = new Array(opt[i].value,opt[i].text);
+                            arr_cqselect_temp[arr_cqselect_temp.length] = new Array(opt[i].value);
+                            				
+				
+			}
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}       
+		
+		function removeArrCqnoibo(i){			
+			arr_cqselect.splice(i,1);
+			arr_cqselect_temp.splice(i,1);
+			ShowArrCqnoibo("listcqnoibo",arr_header,arr_cqselect);
+			fillcomboCqnb("CQNOIBO",arr_cqnb,arr_cqselect_temp);
+		}
+        
+		function ShowArrCqnoibo(idDiv,Arr1,Arr2){
+			var html;
+			if(Arr2.length == 0){
+				html = '';
+			}else{
+					html = '<table class="adminlist" width=100%>';
+					html += '<thead>';
+					html += '<tr>';
+					html += '<th nowrap>#</td>';
+					for(i=0;i<Arr1.length;i++){
+						if(Arr1[i][0]==0){
+							html += '<th nowrap>' + Arr1[i][1] + '</td>';
+						}else{
+							html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+						}
+					}
+					html += '</tr>';
+					html += '</thead>';    
+					
+					html += '<tfoot><tr><th colspan=3 align=left>';
+					html += '</th></tr></tfoot>';
+					
+					html += '<tbody>';
+						for(i=0;i<Arr2.length;i++){
+							html += '<tr>';
+							html += '<td nowrap align="right">' + (i + 1) + '</td>';
+							html += '<td>';
+							html += Arr2[i][1];
+							html += "<input type=hidden name=ID_CQNGOAI[] value="+Arr2[i][0]+">";
+							html += '</td>';
+							html += '<td>';
+							html += '<a href="#" onclick="removeArrCqnoibo('+i+');return false;">Xóa</a>';
+							html += '</td>';
+							html += '</tr>';
+						}
+						html += '</tbody>';
+						html += '</table>';
+			}
+			document.getElementById(idDiv).innerHTML = html;
+		}
+  <?php } ?>    
+                
+                function fillcomboCqlt(id_combo,arr,arr_exp,showChooseName=0){
+			var objdesc = document.getElementById(id_combo);			
+			for (i = objdesc.length - 1; i>=0; i--) {
+				objdesc.removeChild(objdesc.options[i]);
+			}
+                        var nhomlienthongselected  = document.getElementById('nhom_CQLIENTHONG').value;                        
+                        var coquanparentselected = document.getElementById('CQLIENTHONGPARENT').value;
+                        var sorow=0;
+			for(var i=0;i<arr.length;i++){
+				var ln = 0;
+				for(var j= 0;j < arr_exp.length ; j++){
+                                    //alert(arr_exp[j]);
+                                    if(showChooseName !=1){
+					if(arr_exp[j] == arr[i][0] ){
+						ln =1;						
+						break;
+					}
+                                    }
+				}
+				if(ln == 0 ){
+                                    if(showChooseName ==1 && sorow == 0){
+                                        var elOptNew = document.createElement('option');
+					elOptNew.text = '--Chọn cơ quan--';
+					elOptNew.value = '';
+                                        elOptNew.setAttribute('is_dvtt', '0');
+                                        elOptNew.setAttribute('codeparent', '');
+                                        elOptNew.setAttribute('nameparent', '');
+                                        try {
+					  objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+					}
+					catch(ex) {
+					  objdesc.add(elOptNew); // IE only
+					}
+                                        sorow++;
+                                    }
+                                    if(nhomlienthongselected == arr[i][2]){
+                                        if(showChooseName ==1){
+                                            
+                                        }
+                                        if(coquanparentselected !="" && coquanparentselected == arr[i][3]){
+                                            var elOptNew = document.createElement('option');
+                                            elOptNew.text = arr[i][1];
+                                            elOptNew.value = arr[i][0];
+                                            elOptNew.setAttribute('is_dvtt', arr[i][4]);
+                                            elOptNew.setAttribute('codeparent',arr[i][3]);
+                                            elOptNew.setAttribute('nameparent', arr[i][5]);
+                                            console.log(elOptNew);
+                                            try {
+                                              objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+                                            }
+                                            catch(ex) {
+                                              objdesc.add(elOptNew); // IE only
+                                            }
+                                            sorow++;
+                                        }else if(coquanparentselected ==""){
+                                            var elOptNew = document.createElement('option');                                            
+                                            elOptNew.text = arr[i][1];
+                                            elOptNew.value = arr[i][0];
+                                            elOptNew.setAttribute('is_dvtt',arr[i][4]);
+                                            elOptNew.setAttribute('codeparent',arr[i][3]);                                            
+                                            elOptNew.setAttribute('nameparent', arr[i][5]);
+                                            try {
+                                              objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+                                            }
+                                            catch(ex) {
+                                              objdesc.add(elOptNew); // IE only
+                                            }
+                                            sorow++;
+                                        }
+                                    }else  if(nhomlienthongselected ==-1){
+                                        if(coquanparentselected !="" && coquanparentselected == arr[i][3]){
+                                            var elOptNew = document.createElement('option');
+                                            elOptNew.text = arr[i][1];
+                                            elOptNew.value = arr[i][0];
+                                            elOptNew.setAttribute('is_dvtt', arr[i][4]);
+                                            elOptNew.setAttribute('codeparent',arr[i][3]);
+                                            elOptNew.setAttribute('nameparent', arr[i][5]);
+                                            console.log(elOptNew);
+                                            try {
+                                              objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+                                            }
+                                            catch(ex) {
+                                              objdesc.add(elOptNew); // IE only
+                                            }
+                                            sorow++;
+                                        }else if(coquanparentselected ==""){
+                                            var elOptNew = document.createElement('option');                                            
+                                            elOptNew.text = arr[i][1];
+                                            elOptNew.value = arr[i][0];
+                                            elOptNew.setAttribute('is_dvtt',arr[i][4]);
+                                            elOptNew.setAttribute('codeparent',arr[i][3]);                                            
+                                            elOptNew.setAttribute('nameparent', arr[i][5]);
+                                            try {
+                                              objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+                                            }
+                                            catch(ex) {
+                                              objdesc.add(elOptNew); // IE only
+                                            }
+                                            sorow++;
+                                        }
+                                    }
+				}
+			}
+                        if(sorow==0){
+                            var elOptNew = document.createElement('option');
+                            elOptNew.text = "";
+                            elOptNew.value = "";
+                            elOptNew.setAttribute('is_dvtt', '0');
+                            elOptNew.setAttribute('codeparent', '');
+                            elOptNew.setAttribute('nameparent', '');
+                            try {
+                                objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+                            }
+                            catch(ex) {
+                                objdesc.add(elOptNew); // IE only
+                            }
+                        }
+			if(objdesc.length){
+                            //objdesc.style.display = 'block';
+                        }else{
+                            objdesc.style.display = 'none';
+                        }
+			//objdesc.value = sel;                        
+                        jq1102('#CQLIENTHONG').trigger("chosen:updated");
+                        jq1102("#CQLIENTHONG").trigger('chosen:open');
+                        jq1102("#CQLIENTHONG").trigger('chosen:close');
+		}
+		
+                function updateInfoCQLienThong(themmoi=0){
+                    var arr_cqlthanxulyselectTemp = new Array();
+                    for(i=0;i<arr_cqltselect.length;i++){
+                        var dvttVal;
+                        var dvttName='ID_DONVITRUCTHUOC_LIENTHONG'+i+'';
+                        var dvttEl=document.querySelector("input[name="+dvttName+"]");
+                        if(!dvttEl || typeof dvttEl =="undefined"){
+                            if(themmoi==1 && arr_cqlthanxulyselect[i][1]!=""){
+                                dvttVal= arr_cqlthanxulyselect[i][1];
+                            }else{
+                                dvttVal= arr_cqltselect[i][0];
+                            }
+                        }else{
+                            dvttVal = dvttEl.value;
+                        }
+                        arr_cqlthanxulyselectTemp[arr_cqlthanxulyselectTemp.length]=new Array(arr_cqltselect[i][0],dvttVal);
+                        
+                    }
+                    arr_cqlthanxulyselect = arr_cqlthanxulyselectTemp;
+                }
+		ShowArrCqLienThong("listcqlienthong",arr_header,arr_cqltselect);
+                fillcomboCqlt('CQLIENTHONGPARENT',arr_cqlt,arr_cqltselect_temp,1);
+		fillcomboCqlt("CQLIENTHONG",arr_cqlt,arr_cqltselect_temp);
+		
+                function insertArrayCqlt(){
+			var opt = document.frm.CQLIENTHONG.options;
+			for(var i=0;i<opt.length;i++){
+				if(opt[i].selected){
+					if(opt[i].getAttribute('is_dvtt')==1){                                            
+                                            arr_cqltselect[arr_cqltselect.length] = new Array(opt[i].getAttribute('codeparent'),opt[i].getAttribute('nameparent')+' > '+opt[i].text);
+                                            arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array(opt[i].value);
+                                            arr_cqlthanxulyselect[arr_cqlthanxulyselect.length] = new Array(opt[i].getAttribute('codeparent'),opt[i].value);
+                                        }else{
+                                            arr_cqltselect[arr_cqltselect.length] = new Array(opt[i].value,opt[i].text);
+                                            arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array(opt[i].value);
+                                            arr_cqlthanxulyselect[arr_cqlthanxulyselect.length] = new Array(opt[i].value,opt[i].value);
+                                        }
+                                        if(document.frm.NOIDEN.value){
+                                            document.frm.NOIDEN.value=document.frm.NOIDEN.value+ "; " + opt[i].text;
+					}else{
+                                            document.frm.NOIDEN.value=opt[i].text;
+					}
+					
+				}
+			}
+                        updateInfoCQLienThong(1);                        
+			ShowArrCqLienThong("listcqlienthong",arr_header,arr_cqltselect);
+			fillcomboCqlt("CQLIENTHONG",arr_cqlt,arr_cqltselect_temp);
+		}
+                function insertAllArrayCqlt(){
+		
+			var opt = document.frm.CQLIENTHONG.options;
+			for(var i=0;i<opt.length;i++){
+					if(opt[i].getAttribute('is_dvtt')==1){                                            
+                                            arr_cqltselect[arr_cqltselect.length] = new Array(opt[i].getAttribute('codeparent'),opt[i].getAttribute('nameparent')+' > '+opt[i].text);
+                                            arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array(opt[i].value);
+                                            arr_cqlthanxulyselect[arr_cqlthanxulyselect.length] = new Array(opt[i].getAttribute('codeparent'),opt[i].value);
+                                        }else{
+                                            arr_cqltselect[arr_cqltselect.length] = new Array(opt[i].value,opt[i].text);
+                                            arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array(opt[i].value);
+                                            arr_cqlthanxulyselect[arr_cqlthanxulyselect.length] = new Array(opt[i].value,opt[i].value);
+                                        }				
+			}
+                        updateInfoCQLienThong(1);
+			ShowArrCqLienThong("listcqlienthong",arr_header,arr_cqltselect);
+			fillcomboCqlt("CQLIENTHONG",arr_cqlt,arr_cqltselect_temp);
+		}
+
+                function removeArrCqLienThong(i){
+                        updateInfoCQLienThong();
+			arr_cqltselect.splice(i,1);
+                        arr_cqlthanxulyselect.splice(i,1);
+			arr_cqltselect_temp.splice(i,1);
+			ShowArrCqLienThong("listcqlienthong",arr_header,arr_cqltselect);
+			fillcomboCqlt("CQLIENTHONG",arr_cqlt,arr_cqltselect_temp);
+		}
+
+                function themDongArrCqLienThong(i,code,name){
+                        arr_cqltselect[arr_cqltselect.length] = new Array(code,name);
+                        arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array(code);
+                        updateInfoCQLienThong();
+                        ShowArrCqLienThong("listcqlienthong",arr_header,arr_cqltselect);
+                        fillcomboCqlt("CQLIENTHONG",arr_cqlt,arr_cqltselect_temp);
+                }
+                
+                function removeAllcqltselect(){
+                    updateInfoCQLienThong();
+                    arr_cqltselect= new Array();
+                    arr_cqltselect_temp= new Array();
+                    arr_cqlthanxulyselect= new Array();
+                    ShowArrCqLienThong("listcqlienthong",arr_header,arr_cqltselect);
+                    fillcomboCqlt("CQLIENTHONG",arr_cqlt,arr_cqltselect_temp);                    
+                }
+        
+		function ShowArrCqLienThong(idDiv,Arr1,Arr2){			
+			var html;
+			if(Arr2.length == 0){
+				html = "";
+			}else{
+					html = '<table class="adminlist" width=100%>';
+					html += '<thead>';
+					html += '<tr>';
+					html += '<th nowrap>#</td>';
+					for(i=0;i<Arr1.length;i++){
+						if(Arr1[i][0]==0){
+							html += '<th nowrap>' + Arr1[i][1] + '</td>';
+						}else{
+							html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+						}
+					}
+					html += '</tr>';
+                                        html += '<tr>';
+                                        html += '<th colspan="'+(Arr1.length +2)+'"><a href="javascript:void(0);" onclick="removeAllcqltselect();return false;">Xóa tất cả</a></th>';
+                                        html += '</tr>';
+					html += '</thead>';    
+					
+					html += '<tfoot><tr><th colspan=3 align=left>';
+					html += '</th></tr></tfoot>';
+					
+					html += '<tbody>';
+						for(i=0;i<Arr2.length;i++){
+                                                        var htmlselecttt="";
+                                                        //var sodvtructhuoc = 0 ;
+                                                        //jq1102.ajax({
+                                                        //    url: '/giamsatgiaoviec/giamsatgiaoviec/getdanhsachdonvinoibott/donvi/'+Arr2[i][0],
+                                                        //    async: false,
+                                                        //    type: 'post',
+                                                        //    cache: false,
+                                                        //    success: function(data) {
+                                                        //        var jsonObj = jq1102.parseJSON(data);
+                                                        //        sodvtructhuoc = jsonObj.length;
+                                                        //        if(jsonObj.length >0){
+                                                        //            htmlselecttt+="<select name='ID_DONVITRUCTHUOC_LIENTHONG"+i+"'>";
+                                                        //                htmlselecttt+="<option value='"+Arr2[i][0]+"'>--Chọn đơn vị trực thuộc--</option>";
+                                                        //                for (im = 0; im < jsonObj.length; im++) {
+                                                        //                    if(arr_cqlthanxulyselect[i][1] == jsonObj[im].MADONVI){
+                                                        //                        htmlselecttt+="<option value='"+jsonObj[im].MADONVI+"' selected>"+jsonObj[im].NAME+"</option>";
+                                                        //                    }else{
+                                                        //                        htmlselecttt+="<option value='"+jsonObj[im].MADONVI+"'>"+jsonObj[im].NAME+"</option>";
+                                                        //                    }
+                                                        //                }
+                                                        //            htmlselecttt+="</select>";
+                                                        //        }else{
+                                                        //            htmlselecttt+="<input type='hidden' name='ID_DONVITRUCTHUOC_LIENTHONG"+i+"' value='"+Arr2[i][0]+"'/>";
+                                                        //        }
+                                                        //    }
+                                                        //});
+                                                        if(arr_cqlthanxulyselect[i][1]!=Arr2[i][0]){
+                                                            htmlselecttt+="<input type='hidden' name='ID_DONVITRUCTHUOC_LIENTHONG"+i+"' value='"+arr_cqlthanxulyselect[i][1]+"'/>";
+                                                        }else{
+                                                            htmlselecttt+="<input type='hidden' name='ID_DONVITRUCTHUOC_LIENTHONG"+i+"' value='"+Arr2[i][0]+"'/>";
+                                                        }
+							html += '<tr>';
+							html += '<td nowrap align="right">' + (i + 1) + '</td>';
+							html += '<td>';
+							html += Arr2[i][1];
+                                                        html +='</br>';
+                                                        html += htmlselecttt;
+							html += "<input type=hidden name=ID_CQLIENTHONG["+i+"] class=ID_CQLIENTHONG value="+Arr2[i][0]+">";
+							html += '</td>';
+							html += '<td>';
+							html += '<a href="#" onclick="removeArrCqLienThong('+i+');return false;">Xóa</a>';
+                                                        //if(sodvtructhuoc>0){
+                                                        //html += '</br><a href="#" onclick="themDongArrCqLienThong('+i+',\''+Arr2[i][0]+'\',\''+Arr2[i][1]+'\');return false;">Thêm</a>';
+                                                        //}
+							html += '</td>';
+							html += '</tr>';
+						}
+						html += '</tbody>';
+						html += '</table>';
+			}
+			document.getElementById(idDiv).innerHTML = html;
+		}
+
+function ToggleUsers()
+{
+	obj=document.getElementById("BuildUsers");
+   	visible=(obj.style.display!="none")
+  	if (visible) 
+  	{
+  		obj.style.display="none";   
+	} 
+  	else 
+  	{
+  		obj.style.display="block";
+	}
+}
+
+function ToggleUsers_cc()
+{
+	obj=document.getElementById("BuildUsers_cc");
+   	visible=(obj.style.display!="none")
+  	if (visible) 
+  	{
+  		obj.style.display="none";   
+	} 
+  	else 
+  	{
+  		obj.style.display="block";
+	}
+}
+function changeFilterCapCQ(){
+	var value = document.frm.filterCapCQ.value;
+	if(value !=""){
+		document.getElementById('selectMultiCQ').style.display = "";
+		document.getElementById('selectMultiCQButton').style.display = "";
+	}else{		
+		document.getElementById('selectMultiCQ').style.display = "none";
+		document.getElementById('selectMultiCQButton').style.display = "none";
+	}
+	var divRoot = document.getElementById('selectMultiCQ1');
+	document.getElementById('selectMultiCQ2').innerHTML = "";
+	document.getElementById('selectMultiCQ3').innerHTML = "";
+	document.getElementById('selectMultiCQ4').innerHTML = "";
+	divRoot.innerHTML = "";
+	var stt = 0;
+	var sttDiv = 0;
+	var isCQNoiBo = document.frm.isCQNoiBo.checked;
+	var isCQBenNgoai = document.frm.isCQBenNgoai.checked;
+	var idSystemCQ = 0;
+	if(isCQNoiBo == true){
+		idSystemCQ = 1;
+	}
+	for(var i = 0 ; i <arrCoQuan.length ; i++ ){
+		if(arrCoQuan[i]['CAPCQ'] == value && arrCoQuan[i]['NAME'] != " "){
+			if((isCQNoiBo != isCQBenNgoai) && (isCQBenNgoai == arrCoQuan[i]['ISSYSTEMCQ'])){
+				continue;
+			}
+			
+			stt++;
+			sttDiv++;
+			
+			if(sttDiv == 11){
+				divRoot=document.getElementById('selectMultiCQ2');
+			}
+			if(sttDiv == 22){
+				divRoot=document.getElementById('selectMultiCQ3');
+			}
+			if(sttDiv == 33){
+				divRoot=document.getElementById('selectMultiCQ4');
+			}
+			var newPTag = document.createElement('p');
+			var newCheckBox = document.createElement('input');
+			var newSpanLabel = document.createElement('span');
+			if(stt == 1){
+				var newPTag = document.createElement('p');
+				var newCheckBox = document.createElement('input');
+				var newSpanLabel = document.createElement('span');
+				newSpanLabel.innerHTML = "<b>Chọn tất cả</b>";
+				newCheckBox.setAttribute('onclick','checkSelectCQ()');
+				newCheckBox.setAttribute('type','checkbox');
+				newPTag.appendChild(newCheckBox);
+				newPTag.appendChild(newSpanLabel);
+				divRoot.appendChild(newPTag);
+			}
+			var newPTag = document.createElement('p');
+			var newCheckBox = document.createElement('input');
+			var newSpanLabel = document.createElement('span');
+			newSpanLabel.innerHTML = arrCoQuan[i]['NAME'];
+			newCheckBox.setAttribute('class','checkBoxCoQuan');
+			newCheckBox.setAttribute('value',arrCoQuan[i]['NAME']);
+			newCheckBox.setAttribute('type','checkbox');
+			newPTag.appendChild(newCheckBox);
+			newPTag.appendChild(newSpanLabel);
+			divRoot.appendChild(newPTag);
+					
+		}
+	}
+	if(stt == 0){
+		var newPTag = document.createElement('p');
+		newPTag.innerHTML = "Không có cơ quan nào";
+		divRoot.appendChild(newPTag);
+	}
+	
+}
+
+function insertOptionCQ(){
+
+}
+
+function checkSelectCQ(){
+	var arrElement = document.getElementsByClassName('checkBoxCoQuan');
+	var st = true;;
+	if(arrElement[0].checked == true){
+		st = false;
+	}
+	for(var i = 0 ;i < arrElement.length;i++)
+	{
+		arrElement[i].checked = st;
+	}
+}
+function selectCQNhan(isAn){	
+	var arrElement = document.getElementsByClassName('checkBoxCoQuan');
+	var NOIDEN = document.getElementById('NOIDEN');
+	var value = NOIDEN.value;
+	for(var i = 0 ;i < arrElement.length;i++)
+	{
+		if(arrElement[i].checked == true)
+		{	
+			value += arrElement[i].value+",";
+		}
+	}
+	NOIDEN.value = value;
+	if(isAn == 1){
+		document.getElementById('defaultOptionCq').selected = true;
+		document.getElementById('selectMultiCQ').style.display = 'none';
+		document.getElementById('selectMultiCQButton').style.display = 'none';
+	}
+}
+
+function AutoReloadFileDinhKem(){
+
+		IdObjectTemp = document.frm.IdObjectTemp.value;
+		YearTemp = document.frm.YearTemp.value;
+		TypeTemp = document.frm.TypeTemp.value;
+		IdDivTemp = document.frm.IdDivTemp.value;
+		IsTempTemp = document.frm.IsTempTemp.value;
+		PDFTemp = document.frm.PDFTemp.value;
+		is_nogetcontentTemp = document.frm.is_nogetcontentTemp.value;
+		if(document.frm.isAddNewTemp.value=="0"){
+			var url="/hscv/File/delete/enableDragAndDrop/1/?type="+TypeTemp+"&year="+YearTemp+"&iddiv="+IdDivTemp+"&idObject="+IdObjectTemp+"&isTemp="+IsTempTemp+"&pdf="+PDFTemp+"&is_nogetcontent="+is_nogetcontentTemp+"";
+			sendDataObjectNameToServer("DELidfiledk"+IdObjectTemp+"[]",url,false,IdDivTemp);
+		}
+		setTimeout(AutoReloadFileDinhKem,10000);
+}
+setTimeout(AutoReloadFileDinhKem,10000);
+function SaveLienThongButtonClick(){
+    document.frm.luuLienThong.value = "1";
+    
+    var elem = document.getElementsByClassName("ID_CQLIENTHONG");
+    var namesLT = [];
+    for (var i = 0; i < elem.length; ++i) {
+        if (typeof elem[i].attributes.id !== "undfined") {
+           namesLT.push(elem[i].value);
+        }
+    }
+    var elem = document.getElementsByClassName("idFile");
+    var namesIdFile = [];
+    for (var i = 0; i < elem.length; ++i) {                        
+        if (typeof elem[i].attributes.id !== "undfined") {
+            namesIdFile.push(elem[i].value);
+        }
+    }
+    //var fileCKS=document.getElementById("outputdata").innerHTML;
+    if( parseInt(namesLT.length) >0){
+        if(parseInt(namesIdFile.length)>0 ){
+            SaveClick();
+        }else{
+            alert('Không có file đính kèm, không thể phát hành qua mạng!');
+        }
+    }else{
+        alert('Không thể chuyển qua mạng vui lòng chọn cơ quan để chuyển');
+    }
+}
+jq1102('.chosen-choices').bind('click',function(){
+    jq1102(this).find('input.default').focus();
+});
+</script>

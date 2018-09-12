@@ -1,0 +1,540 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body{
+	margin:0 auto;
+	padding:0;
+	line-height: 1.5em;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+}
+a {
+	color:#666;
+	text-decoration:none;
+}
+a:hover {
+	color:#137ad2;
+	text-decoration:underline;
+}
+
+#maincontainer{
+	width: 100%; /*Width of main container*/
+	margin: 0 auto; /*Center container on page*/
+}
+
+#topsection{
+	height: 94px; /*Height of top section*/
+	position:relative;
+	background:#1bcffe url(../images/mainbanner.png) no-repeat center;
+}
+#topsection h1 a {
+    display: block;
+    height: 94px;
+    margin: 0;
+    outline: medium none;
+    text-indent: -10000px;
+}
+#topsection .namlamviec {
+	position:absolute;
+	top:65px;
+	right:10px;
+	width:180px;
+	text-align:right;
+}
+#topsection .namlamviec label {
+	color:#fff;
+	font-weight:bold;
+}
+#topsection .namlamviec select {
+	height:24px;
+	padding-top:2px;
+	color:#333;
+}
+
+
+
+#contentwrapper{
+	width: 100%;
+	border-top:none;
+	background:url(../images/content-bg) repeat-x top;
+	padding:5px 0 0 0;
+}
+
+#contentcolumn{
+	padding:0 10px 30px 53px;
+	background:url(../images/content-bg-bottom.png) repeat-x bottom;
+	/*min-height:460px;*/
+}
+
+
+
+#footer{
+	clear: left;
+	color: #333;
+	text-align: right;
+	padding: 7px 20px 5px 0;
+	font-size:13px;
+	background:url(../images/login-bg.jpg) repeat-x;
+	border-top:1px solid #09b5ff;
+}
+#footer span {
+	background:url(../images/logo-unispace.jpg) no-repeat left;
+	padding:5px 0 5px 70px;
+}
+
+.jqueryslidemenu{
+font: normal 12px Arial, Helvetica, sans-serif;
+width: 100%;
+background:url(../images/topmenu-bg.png) repeat-x ;
+height:36px;
+cursor:default;
+}
+
+.jqueryslidemenu ul{
+margin: 0;
+padding: 0;
+list-style-type: none;
+cursor:default;
+}
+
+/*Top level list items*/
+.jqueryslidemenu ul li{
+position: relative;
+display: inline;
+float: left;
+margin-right:5px;
+margin-left:5px;
+margin-top:3px;
+z-index:99;
+font-weight:bold;
+cursor:default;
+white-space: nowrap;
+}
+
+/*Top level menu link items style*/
+.jqueryslidemenu ul li a{
+display: block;
+color: #333;
+padding: 8px 0px 8px 11px;
+text-decoration: none;
+cursor:default;
+}
+.jqueryslidemenu ul li a span{
+padding: 8px 11px 8px 0;
+cursor:default;
+}
+.jqueryslidemenu ul li.current a{
+display: block;
+background:url(../images/topmenu-left.png) no-repeat left ;
+color: #fff;
+padding: 8px 0 8px 11px;
+text-decoration: none;
+cursor:default;
+}
+.jqueryslidemenu ul li.current span{
+
+background:url(../images/topmenu-right.png) no-repeat right ;
+color: #fff;
+padding: 8px 11px 8px 0;
+cursor:default;
+}
+
+
+* html .jqueryslidemenu ul li a{ /*IE6 hack to get sub menu links to behave correctly*/
+display: inline-block;
+cursor:default;
+}
+
+.jqueryslidemenu ul li a:link, .jqueryslidemenu ul li a:visited{
+color: #666;
+cursor:default;
+}
+
+.jqueryslidemenu ul li a:hover{
+color: #fff;
+background:url(../images/topmenu-left.png) no-repeat left ;
+padding: 8px 0 8px 11px;
+cursor:default;
+}
+.jqueryslidemenu ul li a:hover span{
+
+background:url(../images/topmenu-right.png) no-repeat right ;
+color: #fff;
+padding: 8px 11px 8px 0px;
+margin:0;
+cursor:default;
+}
+ 
+/*1st sub level menu*/
+.jqueryslidemenu ul li ul{
+position: absolute;
+left: 0;
+display: block;
+visibility: hidden;
+white-space:nowrap;
+cursor:default;
+}
+
+/*Sub level menu list items (undo style from Top level List Items)*/
+.jqueryslidemenu ul li ul li{
+display: list-item;
+background:#cef2ff;
+margin:0;
+float:none;
+cursor:default;
+}
+
+/*All subsequent sub menu levels vertical offset after 1st level sub menu */
+.jqueryslidemenu ul li ul li ul{
+top: 0;
+cursor:default;
+}
+
+/* Sub level menu links style */
+.jqueryslidemenu ul li ul li:first-child a{
+border-top: 1px solid #9DE0F8 !important;
+cursor:default;
+}
+.jqueryslidemenu ul li ul li:last-child a{
+border-top: 1px solid #9DE0F8 !important;
+cursor:default;
+}
+.jqueryslidemenu ul li ul li a{
+font: normal 12px Arial, Helvetica, sans-serif;
+border:1px solid #9DE0F8;
+border-top: none;
+background:none !important;
+cursor:default;
+}
+.jqueryslidemenu ul li ul li a:hover span{ /*sub menus hover style*/
+background:none !important;
+color: #137ad2;
+cursor:default;
+}
+/* ######### CSS classes applied to down and right arrow images  ######### */
+
+.downarrowclass{
+position: absolute;
+top: 10px;
+right: 7px;
+}
+
+.rightarrowclass{
+position: absolute;
+top: 10px;
+right: 5px;
+}
+
+
+.user-control {
+	float:right;
+	margin-top:13px;
+	margin-right:10px;
+	white-space:nowrap;
+}
+a.user-admin {
+	background:url(../images/icon-admin.png) no-repeat left;
+	padding:4px 0 4px 22px;
+	color:#0099cc;
+	font-weight:bold;
+}
+
+
+#navigation {
+	background:url(../images/leftmenu-top.png) no-repeat right top;
+	position: fixed;
+    margin: 0px;
+    padding:7px 0px;
+    top: 10px;
+    left: 0px;
+    list-style: none;
+    z-index:9999;
+}
+#navigation .nav {
+}
+#navigation .nav .leftmenu {
+    position:relative;
+	background:url(../images/leftmenu-bottom.png) no-repeat right;
+}
+#navigation .nav .leftmenu .vbden {
+    position:fixed;
+	left:0;
+}
+#slidemenu {
+    top: 135px;
+    left: 0px;
+    position: absolute;
+	background:url(../images/leftmenu-top.png) no-repeat right top;
+	z-index:99;
+}
+#slidemenu li {
+    background:url(../images/leftmenu-bottom.png) no-repeat right bottom;
+    display: block;
+    margin: 5px 0 0;
+    width: 43px;
+}
+#slidemenu .menu-item {
+	background:url(../images/leftmenu-line.png) no-repeat right bottom;
+	padding-bottom:5px;
+	padding-top:3px;
+	float:left;
+	width:100%;
+	height:32px;
+	overflow:hidden;
+	cursor:pointer;
+}
+
+#slidemenu li img {
+    margin-right:10px;
+	float:left;
+}
+#slidemenu li span a {
+    color:#0c3d4d;
+	float:left;
+	padding-top:10px;
+}
+
+
+.thongbao {
+	background:url(../images/thongbao-bg.png) repeat-x;
+	border:1px solid #ccc;
+	padding:7px 0 7px 10px;
+	color:red;
+	font-weight:bold;
+	font-size:14px;
+}
+.thongbao span {
+	padding-left:190px;
+	color:#000;
+	padding-top:7px;
+	font-weight:normal;
+	width:100%;
+}
+.red {
+	color:#F00;
+}
+.home-table {
+	width:100%;
+	margin-top:10px;
+}
+.home-module {
+	width:100%;
+	margin-bottom:10px;
+	float:left;
+	margin-right:10px;
+	
+}
+
+.home-module-title a.chitiet  {
+ background:url(../images/arrow-chitiet.png) no-repeat left;
+ position:absolute;
+ top:3px;
+ right:5px;
+ padding-left:10px;
+ color:#137ad2;
+ cursor:pointer;
+ cursor:hand;
+}
+
+.home-module-title {
+    background: url("../images/home-tab-left.png") no-repeat scroll left center transparent;
+    border-bottom: 1px solid #A6E5FF;
+    height: 20px;
+    padding: 0 0 3px 9px;
+    position: relative;
+ }
+.home-module-title span {
+    background: url("../images/home-tab-right.png") no-repeat scroll right top transparent;
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 23px 0 5px;
+    width: 210px;
+}
+
+table.home-grid {
+	border-collapse:collapse;
+	margin:0;
+	padding:0;
+	border-bottom: 1px solid #c6c6c6;
+	border-left: 1px solid #c6c6c6;
+}
+table.home-grid tr th{
+	background:#e6e6e6;
+	border-top: 1px solid #c6c6c6;
+	border-right: 1px solid #c6c6c6;
+	padding:5px;
+	text-align:center;
+}
+table.home-grid tr td {
+    margin: 0;
+	border-right: 1px solid #c6c6c6;
+	border-top: 1px solid #c6c6c6;
+    padding: 2px 3px 3px 4px;
+	color:#333 !important;
+}
+table.home-grid tr td  a{
+	color:#0b55c4 !important
+
+}
+table.home-calendar {
+	border-collapse:collapse;
+	margin:0;
+	padding:0;
+	border-bottom: 1px solid #c6c6c6;
+	border-left: 1px solid #c6c6c6;
+}
+table.home-calendar tr.sang {
+    
+	color:#333 !important;
+	background:#fff;
+}
+table.home-calendar tr.chieu {
+    margin: 0;
+	border-right: 1px solid #c6c6c6;
+	border-top: 1px solid #c6c6c6;
+    padding: 2px 3px 3px 4px;
+	color:#333 !important;
+	background:#fffdd4;
+}
+table.home-calendar tr td{
+    margin: 0;
+	border-right: 1px solid #c6c6c6;
+	border-top: 1px solid #c6c6c6;
+    padding: 2px 3px 3px 4px;
+	color:#333 !important;
+}
+table.home-calendar tr td  a{
+	color:#0b55c4 !important
+
+}
+
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+  
+.jqmWindow {
+    display: none;
+    position: fixed;
+    top: 17%;
+    left: 50%;
+    margin-left: -300px;
+    width: 600px;
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid black;
+    
+}
+
+.jqmOverlay { background-color: #000; }
+* html .jqmWindow {
+     position: absolute;
+     top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');
+}
+
+
+.hscv_table {
+	border:1px solid #09b5ff;
+	padding:10px 0;
+	position:relative;
+	padding-left:10px;
+	padding-right:10px;
+        height: 100%;
+        
+}
+.hscv_table h3 {
+	color:#0ca1e3;
+	font-size:16px;
+	font-weight:normal;
+	text-transform:uppercase;
+	border-bottom:1px dotted #ccc;
+	padding-bottom:8px;
+	text-indent:10px;
+	margin-left:-10px;
+	margin-bottom:10px;
+	font-weight:bold;
+}
+.hscv_table .hscv_left {
+	width:18%;
+	float:left;
+}
+.hscv_table .hscv_right {
+	width:80%;
+	float:right;
+	border-left:1px solid #ccc;
+	min-height:565px;
+}
+
+
+.toolbar_list {
+	float:right;
+	position:absolute;
+	top:5px;
+	right:0;
+}
+.toolbar_list ul {
+	margin:0;
+	padding:0;
+}
+.toolbar_list li {
+	color: #666666;
+    float: left;
+	display:inline;
+    list-style: none outside none;
+    padding: 3px 10px 3px 26px;
+	border-right:1px solid #ccc;
+	margin-left:10px;
+}
+.toolbar_list li:last-child {
+	border:none;
+}
+
+.thongbaotitle {
+	background:url(../images/thongbaotieude.png) repeat-x left top !important;
+	height:27px;
+	font-weight:bold;
+	padding-left:5px;
+	padding-right:5px;
+}
+.thongbaocontent {
+	padding:5px;
+}
+.thongbaoheader {
+	background:url(../images/thongbaoheader.png) repeat-x left top !important;
+	height:27px;
+	font-weight:bold;
+	padding-left:5px;
+	padding-right:5px;
+	color:red;
+}
+.thongbaoinfo {
+	background:url(../images/thongbaoinfo.png) repeat-x left top !important;
+	height:24px;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+.limit{
+white-space:nowrap;
+}

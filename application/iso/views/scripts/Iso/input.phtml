@@ -1,0 +1,64 @@
+<form name=frm action="/iso/iso/save" method="post" enctype="multipart/form-data">
+<table>
+	<tr>
+		<td><font color="Blue">Phiên bản</font><font color="Red" size="3">*</font></td>
+		<td><input type=text name=YEAR size="20" value="<?=htmlspecialchars($this->year)?>"></td>
+		<td class="box_erro_area" id=ERRYEAR></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">Tên tài liệu</font><font color="Red" size="3">*</font></td>
+		<td><input type=text name=NAME size="64" value="<?=htmlspecialchars($this->data->NAME)?>"></td>
+		<td class="box_erro_area" id=ERRNAME></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">Mã hiệu</font></td>
+		<td><input type=text name=MAHIEU size="20" value="<?=htmlspecialchars($this->data->MAHIEU)?>"></td>
+		<td class="box_erro_area" id=ERRMAHIEU></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">Ghi chú</font></td>
+		<td><input type=text name=GHICHU size="64" value="<?=htmlspecialchars($this->data->GHICHU)?>"></td>
+		<td class="box_erro_area" id=ERRGHICHU></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">File tài liệu</font></td>
+		<td><input type=file name="uploadedfile" size="64"></td>
+	</tr>
+	<tr>
+		<td><font color="Blue">Tài liệu cha</font><font color="Red" size="3">*</font></td>
+		<td>
+			<?php
+				$itemparent = array();
+				QLVBDHCommon::GetTreeNoChildWithWhere(&$itemparent,"ISO_ITEM","ID_ITEM","ID_ITEM_PARENT",1,1,$this->data->ID_ITEM,"YEAR='".$this->year."'");
+			?>
+			<select name="ID_ITEM_PARENT">
+				<option value="1">Thư mục gốc</option>
+			<?php foreach($itemparent as $item){ ?>
+				<option value="<?=$item["ID_ITEM"]?>"><?=str_repeat("---",$item["LEVEL"]).$item["NAME"]?></option>
+			<?php } ?>
+			</select>
+		</td>
+		<td class="box_erro_area" id=ERRID_ITEM_PARENT></td>
+	</tr>
+</table>
+<input type=hidden name=ID_ITEM value="<?=$this->data->ID_ITEM?>">
+<script>document.frm.ID_ITEM_PARENT.value="<?=$this->data->ID_ITEM_PARENT?>";</script>
+</form>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+                err = err & validateInput("req",document.frm.YEAR,"Phiên bản không được rỗng.");
+                err = err & err==true?validateInput("numeric",document.frm.YEAR,"Phiên bản phải là chữ số"):false;
+		err = err & validateInput("req",document.frm.NAME,"Tên tài liệu không được rỗng.");
+		err = err & err==true?validateInput("maxlen=512",document.frm.NAME,"Tên tài liệu không được quá 512 ký tự"):false;
+		err = err & validateInput("maxlen=128",document.frm.MAHIEU,"Mã hiệu không được quá 128 ký tự");
+		err = err & validateInput("req",document.frm.ID_ITEM_PARENT,"Tài liệu cha không được rỗng");
+		if(err==true){
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+		document.frm.action = "/iso/iso/list/YEAR1/<?=$this->year?>";
+		document.frm.submit();
+	}
+</script>

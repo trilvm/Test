@@ -1,0 +1,503 @@
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<form name="frmTraodoi" action="" method="POST">
+    <div class="hscv_left">			
+			<div class="urbangreymenu">
+				<div class="headerbar">Thư mục tin</div>
+					<ul>
+						<li><a style="<?php echo ("inbox"==$this->class && $this->filter_object==0?"background:#d6f3fc;":"background:#fff;") ?><?=($this->cntsubinbox>0? " font-weight:bold":"")?>" href="#" onclick="document.frmTraodoi.filter_object.value='';viewInbox(); return false;"><span <?php echo ($this->unread>0?"style='border-bottom-width:1px; font-weight: bold; '":"") ?>>
+						<img style="padding-right:5px;" id=inboximage
+						src = "/images/j_arrow.png" onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('inboxlist').style.display==''){
+							document.getElementById('inboxlist').style.display='none';
+							document.getElementById('inboximage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('inboxlist').style.display='';
+							document.getElementById('inboximage').src='/images/j_arrow_down.png';
+						}
+						return false;
+						"> Tin đến <?php echo ($this->unread>0?" (".$this->unread.")":"") ?></span></a>
+							<ul id="inboxlist" style="display:none">
+								<?php
+									foreach($this->chudedatainbox as $itemchude){
+										//if($itemchude["C"]>0){
+								?>
+								<li style="background:#fff">
+									<a 
+									style="padding-left:30px;<?php echo ("inbox"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='inbox';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span><?=$itemchude["ten_chude"].($itemchude["C"]>0?" (".$itemchude["C"].")":"")?></span>
+									</a>
+								</li>
+								<?php
+										//}
+									}
+								?>
+							</ul>
+						</li>
+						<li><a style="<?php echo ("sentitems"==$this->class && $this->filter_object==0?"background:#d6f3fc":"background:#fff") ?>" href="#"  onclick="document.frmTraodoi.filter_object.value='';viewSentItems(); return false;"><span><img style="padding-right:5px;"  id=sentitemsimage src = "/images/j_arrow.png"
+						onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('sentitemslist').style.display==''){
+							document.getElementById('sentitemslist').style.display='none';
+							document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('sentitemslist').style.display='';
+							document.getElementById('sentitemsimage').src='/images/j_arrow_down.png';
+						}
+						"> Tin đã gửi</span></a>
+							<ul id=sentitemslist style="display:none">
+								<?php
+									foreach($this->chudedatasent as $itemchude){
+										//if($itemchude["C"]>0){
+								?>
+								<li style="background:#fff">
+									<a style="padding-left:30px;<?php echo ("sentitems"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='sentitems';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span <?php echo ("sentitems"==$this->class && $itemchude["id_chude"]==$this->filter_object?"style='border-bottom-width:1px; '":"") ?>><?=$itemchude["ten_chude"].""?></span>
+									</a>
+								</li>
+								<?php
+										//}
+									}
+								?>
+							</ul>
+						</li>
+						<li><a style="<?php echo ("draft"==$this->class && $this->filter_object==0?"background:#d6f3fc":"background:#fff") ?>" href="#"  onclick="document.frmTraodoi.filter_object.value='';viewDraft(); return false;"><span><img style="padding-right:5px;display:none"  id=draftimage src = "/images/j_arrow.png"
+						onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('draftlist').style.display==''){
+							document.getElementById('draftlist').style.display='none';
+							document.getElementById('draftimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('draftlist').style.display='';
+							document.getElementById('draftimage').src='/images/j_arrow_down.png';
+						}
+						"> Tin nháp</span> <?=$this->drafts>0?"(".$this->drafts.")":""?></a>
+							<ul id=draftlist style="display:none">
+								<?php
+									foreach($this->chudedatadraft as $itemchude){
+										if(false){
+								?>
+								<li style="background:#fff">
+									<a style="padding-left:30px;<?php echo ("draft"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='draft';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span <?php echo ("draft"==$this->class && $itemchude["id_chude"]==$this->filter_object?"style='border-bottom-width:1px; font-weight: bold; '":"") ?>><?=$itemchude["ten_chude"]." (".$itemchude["C"].")"?></span>
+									</a>
+								</li>
+								<?php
+										}
+									}
+								?>
+							</ul>
+						</li>
+					</ul>
+					<script>
+					document.getElementById('inboxlist').style.display='none';
+					document.getElementById('inboximage').src='/images/j_arrow.png';
+					document.getElementById('sentitemslist').style.display='none';
+					document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+					document.getElementById('draftlist').style.display='none';
+					document.getElementById('draftimage').src='/images/j_arrow.png';
+				<?php
+					if($this->filter_object>0){
+						switch($this->class){
+							case "inbox":
+				?>
+						if(document.getElementById('inboxlist').style.display==''){
+							document.getElementById('inboxlist').style.display='none';
+							document.getElementById('inboximage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('inboxlist').style.display='';
+							document.getElementById('inboximage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+							case "sentitems":
+				?>
+						if(document.getElementById('sentitemslist').style.display==''){
+							document.getElementById('sentitemslist').style.display='none';
+							document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('sentitemslist').style.display='';
+							document.getElementById('sentitemsimage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+							case "draft":
+				?>
+						if(document.getElementById('draftlist').style.display==''){
+							document.getElementById('draftlist').style.display='none';
+							document.getElementById('draftimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('draftlist').style.display='';
+							document.getElementById('draftimage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+						}
+					}else{
+						if($this->class=='inbox'){
+				?>
+					
+					document.getElementById('inboxlist').style.display='';
+					document.getElementById('inboximage').src='/images/j_arrow_down.png';
+				<?php
+						}
+					}
+				?>
+				</script>
+			</div>	
+    </div>
+    <div class="hscv_right" style="padding-left: 10px;float:left;">
+			<div class="traodoi_search_tb">
+				<div style="float:left;width:100%;height:20px;">
+					<div style="float:left">
+						<input type="text" name="search" id="search" value="<?php echo $this->search ?>" class="text_area" onchange="document.frmTraodoi.submit();" style="width:250px;"/>
+						&nbsp;
+						
+					</div>
+					<div style="float:left">
+					<input  type="button" onclick="document.frmTraodoi.submit();" style="background: url(/images/hscv-input-bg.png) repeat-x;" name="send" value="Tìm kiếm" title="Tìm kiếm">
+					</div>
+					<div style="float:right">
+					</div>
+				</div>				
+			</div>
+			<div style="padding-top:5px;">	   
+				<table width="100%" summary="List of messages" class="adminlist" id="inbox">
+					
+					<caption style="display:none"><em>&nbsp;</em></caption>
+				
+					<thead>
+					<tr>
+						<th align=center width="15"><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></th>
+					   	<th><b>TT</b></th>
+						<th>Gửi từ</th>
+						<th width="50%">Tiêu đề</th>												
+						<th>Ngày gửi</th>						
+					</thead>
+					<tfoot>
+						<tr>
+							<td colspan="7">
+									<div class="pagination">
+										<div class="limit">Hiển thị #
+											<select name="limit" id="limit" class="inputbox" size="1" onchange="document.frmTraodoi.submit();" style="width:60px;">
+												<option value="5">5</option>
+												<option value="10">10</option>
+												<option value="15">15</option>
+												<option value="20">20</option>
+												<option value="25">25</option>
+												<option value="30">30</option>
+												<option value="35">35</option>
+												<option value="40">40</option>
+												<option value="50">50</option>
+												<option value="100">100</option>
+												<script>
+													document.frmTraodoi.limit.value='<?php echo $this->limit ?>';
+												</script>
+											</select>
+										</div>
+										<div  style="float:right;"><?php echo $this->showPage; ?></div>
+									</div>
+							</td>
+						</tr>
+					</tfoot>
+					<tbody id="body"></tbody>					
+					<tbody> 
+					<?php
+                                                if (count($this->data) == 0){
+                                                    echo "<tr><td colspan=5>Chưa có trao đổi nào.</td></tr>";
+                                                }
+						$i=0;
+						$top_id=0;
+						foreach ($this->data as $row )
+						{
+							$i++;							
+							$class="";	
+							if($top_id < $row['id_nhan'] )	$top_id=$row['id_nhan'];
+							$class="class='row'";							
+							if($row['danhan']!=null && $row['danhan']==0) $class="class='row3'";
+							
+					?>
+					
+					<tr <?php echo $class; ?>>
+							<td width="20"><input type=checkbox name=DEL[] value='<?php echo $row['id_thongtin'] ?>'></td>
+							<td><?php if($row['danhan']=="1") echo "<font color=#333>Đã đọc</font>"; 
+									  else if ($row['danhan']=="0") echo "<font color=red><b>Chưa đọc</b></font>";
+									  else echo $i;
+								?></td>
+							<td title=""><a href="#" onclick="ItemClick('<?php  echo $row['id_thongtin'] ?>');return false;" title="<?php echo $row['tieude'] ?>"><?php echo $row['nguoitao'] ?>  </a><i>(<?php echo $row['username'] ?>)</i></td>
+							<td><a href="#"  onclick="ItemClick('<?php  echo $row['id_thongtin'] ?>');return false;" title="<?php echo $row['tieude'] ?>"><?php echo $row['tieude'] ?></a></td>
+							<td >&nbsp;<?php echo $row['ngaytao']?></td>	
+							<input type="hidden" name="receive[]" value="<?php echo $row['id_nhan'] ?>">						
+					</tr>
+					<?php 
+						}
+					?>					
+					</tbody>
+				</table>
+				</div>		 		
+		 		<div style="float:left;width:100%;height:30px;">
+					<div style="float:left;height:30px" >
+						<input type="button" onclick="DeleteButtonClick()" class="inputbutton" style="background: url(/images/hscv-input-bg.png) repeat-x;" name="top_bpress_delete" value ="Xóa" title="Xóa (các) thư đã chọn" >
+						<select name="danhan" id="danhan" style="width:140px">
+							<option value=" ">--Chọn hành động--</option>
+							<option value="0" <?php echo $this->danhan=="0"?"selected":"" ?>>Đánh dấu chưa đọc</option>
+							<option value="1" <?php echo $this->danhan=="1"?"selected":"" ?>>Đánh dấu đã đọc</option>
+						</select>	
+						<input type="button"  name="filterButton" value="Thực hiện"  style="background: url(/images/hscv-input-bg.png) repeat-x;" onclick="UpdateStatus(document.getElementById('danhan').value)" title=""/>		  							  
+					</div>
+					<div style="float:right">
+						  <b>Lọc tin:&nbsp;</b>
+						  <select name="filterBySelect" id="filterBySelect" style="width:120px" >
+						  <option  value="">Tất cả tin</option>
+						  <option value="0" <?php echo $this->filterRead=="0"?"selected":"" ?>>Tin chưa đọc</option>
+						  <option value="1" <?php echo $this->filterRead=="1"?"selected":"" ?>>Tin đã đọc</option>
+						  </select>
+						  <input type="button"  name="filterButton" value="Thực hiện"  style="background: url(/images/hscv-input-bg.png) repeat-x;" onclick="document.frmTraodoi.submit();" title=""/>								  									  
+					 </div>           	
+				</div>
+    </div>
+<div id="div_hidden"></div>
+<input type="hidden" name="comeFrom" value="listForm">
+<input type="hidden" name="view" value="">
+<input type="hidden" name="pos" value="<?php echo $this->pos; ?>">
+<input type="hidden" name="danhan" value="">
+<input type="hidden" name="top_id" id="top_id" value="<?php echo $top_id; ?>">
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+<input type="hidden" name="filter_object" value="<?=$this->filter_object?>">
+</form>
+<script>
+function viewDraft()
+{
+	document.frmTraodoi.view.value="draft";
+	document.frmTraodoi.submit();	
+}
+function viewInbox()
+{
+	document.frmTraodoi.view.value="inbox";
+	document.frmTraodoi.submit();	
+}
+function viewSentItems()
+{
+	document.frmTraodoi.view.value="sentitems";
+	document.frmTraodoi.submit();	
+}
+
+function CreateNewMessage()
+{
+	document.location.href = "/traodoi/traodoi/input";
+	
+}
+function RefreshMessage()
+{
+	document.frmTraodoi.submit();		
+}
+function BackButtonClick()
+{
+	document.frmTraodoi.action = "/traodoi/chude/";
+	document.frmTraodoi.submit();
+}
+function SaveButtonClick(){
+	
+	var err = true;
+	err = err & validateInput("req",document.frmTraodoi.ten_chude,"Trường này phải nhập liệu");
+    err = err & err==true?validateInput("maxlen=50",document.frmTraodoi.ten_chude,"Dữ liệu quá dài"):false;                   
+    if(err==true)
+    {
+        document.frmTraodoi.submit();
+    }	
+}
+function Compose()
+{
+	document.frmTraodoi.action = "/traodoi/traodoi/input";
+	document.frmTraodoi.submit();
+}
+function Refresh()
+{
+	document.frmTraodoi.action = "/traodoi/traodoi/";
+	document.frmTraodoi.submit();
+}
+function ItemClick(id)
+{
+	var pos=document.frmTraodoi.pos.value;
+	if(pos=="inbox")
+	{
+		document.frmTraodoi.action = "/traodoi/traodoi/viewinbox/id/"+id;
+		document.frmTraodoi.submit();
+	}
+	else if(pos=="sentitems")
+	{
+		document.frmTraodoi.action = "/traodoi/traodoi/viewsentitems/id/"+id;
+		document.frmTraodoi.submit();
+	}
+	else
+	{
+		document.frmTraodoi.action = "/traodoi/traodoi/input/id/"+id;
+		document.frmTraodoi.submit();
+	}
+}
+function DeleteButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","Chọn ít nhất một tin để xóa !");
+	if(mess){
+		if(confirm("Bạn muốn xóa tin này ?")){
+			document.frmTraodoi.action = "/traodoi/traodoi/delete";
+			document.frmTraodoi.submit();
+		}
+	}else{
+		alert("Chọn ít nhất một tin để xoá.");
+	}
+}
+function UpdateStatus(value)
+{
+	document.frmTraodoi.danhan.value=value;	
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","Chọn ít nhất một tin.");
+	if(value!="")
+	{
+		if(mess)
+		{
+			
+				document.frmTraodoi.action = "/traodoi/traodoi/update/danhan/"+value;
+				document.frmTraodoi.danhan.value=" ";
+				document.frmTraodoi.submit();		
+		}
+		else
+		{
+			alert("Chọn ít nhất một tin để cập nhật");	
+			document.frmTraodoi.danhan.value=" ";		
+		}
+	}
+}
+//call function 5second
+var page;
+<?php
+		if($this->page==0)
+		{
+?>
+
+setpage(); 
+<?php }?>
+function pageincrement()
+{
+	page = page+1;
+	if(page>5)
+	{
+		page=1;
+	} 
+	setpage();
+} 
+function setpage()
+{
+	setTimeout("pageincrement()", 10000);
+	checkIncome();	
+}
+
+function checkIncome()
+{
+	var checkAjax = new AjaxEngine();     	
+	var objreceive = document.getElementsByName("receive[]");
+	var top_id=document.getElementById("top_id").value;	
+	var filter_object=document.getElementById("filter_object").value;
+	var stringid="";
+	for(var r=0;r < objreceive.length;r++)
+	{
+	  stringid =stringid + objreceive[r].value+",";		  
+	}
+	var url="/traodoi/traodoi/income";
+	if(top_id > 0) url=url+"/topid/"+top_id;
+	if(filter_object > 0) url=url+"/filter_object/"+filter_object;	
+	url=url+"/stringid/"+stringid;		
+	var type_request = "POST";
+	sendRequestToServerWithMessage(url,type_request,updateIncome,updateFail);	 
+	return false;
+}
+function updateIncome(msg)
+{
+	var response = eval("(" + msg + ")");	
+	var tbody = document.getElementById("inbox").getElementsByTagName("tbody")[0];	
+	var filterBySelect=document.getElementById('filterBySelect').value;
+	
+	var unreadNumber=document.getElementById("unreadNumber");	
+	var divhidden=document.getElementById("div_hidden");
+	var addtr="";
+	var browser=navigator.appName;
+	var b_version=navigator.appVersion;
+	var version=parseFloat(b_version);	
+	if(filterBySelect!="1" && "<?php echo $this->search; ?>"=="")
+	{
+		if(browser=="Microsoft Internet Explorer") 
+		{
+			if(response.messages.message.length >1 )
+			unreadNumber.innerHTML=response.messages.message.length+parseInt(unreadNumber.innerHTML)-1;
+		}
+		else
+		{
+			if(response.messages.message.length>0)
+			{
+				unreadNumber.innerHTML=response.messages.message.length+parseInt(unreadNumber.innerHTML);
+			}
+		}
+		for(i=0;i < response.messages.message.length; i++) 
+		{
+			
+			if(response.messages.message[i].id_thongtin!=undefined)
+			{
+				if(browser!="Microsoft Internet Explorer")
+				{
+					var row = document.createElement("TR"); 
+					row.setAttribute('class', 'row3');				
+					tbody.appendChild(row);	
+					row.innerHTML= '<td width="20"><input type=checkbox name=DEL[] value='+response.messages.message[i].id_thongtin+'></td>'
+					+ '<td><font color=red><b>Chưa đọc</b></font></td>'
+					+ '<td><a href="#" onclick=\'ItemClick("'+response.messages.message[i].id_thongtin+'");return false;\'>'+response.messages.message[i].realname+'  </a><i>('+response.messages.message[i].username+')</i></td>'
+					+ '<td><a href="#"  onclick=\'ItemClick("'+response.messages.message[i].id_thongtin+'");return false;\'>'+response.messages.message[i].tieude+'</a></td>'
+					+ '<td >&nbsp;'+response.messages.message[i].ngaytao+'</td>'
+					+ '<input type="hidden" name="receive[]" value="'+response.messages.message[i].id_nhan+'">';		
+				}
+				else
+				{
+					var row = document.createElement("TR");
+					row.setAttribute('class', 'row3');				
+				    var td1 = document.createElement("TD");			    
+				    var checkbox_td1 = document.createElement('input');
+					checkbox_td1.type = 'checkbox';
+					checkbox_td1.name = 'DEL[]';
+					checkbox_td1.defaultChecked = false
+					checkbox_td1.value = response.messages.message[i].id_thongtin;
+					td1.appendChild(checkbox_td1);			
+		
+				    var td3 = document.createElement("TD");
+				    td3.appendChild(document.createTextNode('Chưa đọc'));
+				    
+				    var td4 = document.createElement("TD");
+				    var link_td4=document.createElement("<a>");
+				    link_td4.innerHTML=response.messages.message[i].realname+'  </a><i>('+response.messages.message[i].username+')</i>';
+				    link_td4.href="#";
+				    var onclick=document.createElement("onclick");
+				    onclick.value="ItemClick('"+response.messages.message[i].id_thongtin+"');return false;"
+				    //onclick=ItemClick('"+response.messages.message[i].id_thongtin+"');return false;";
+				    link_td4.appendChild(onclick);
+				    td4.appendChild(link_td4);
+				    
+		            var td5 = document.createElement("TD");
+				    td5.appendChild(document.createTextNode(response.messages.message[i].tieude));
+				    
+		            var td6 = document.createElement("TD");
+				    td6.appendChild(document.createTextNode('  '+response.messages.message[i].ngaytao));
+				    
+				    divhidden.innerHTML=divhidden.innerHTML +'<input type="hidden" name="receive[]" value="'+response.messages.message[i].id_nhan+'">';
+				    row.appendChild(td1);
+				    row.appendChild(td3);
+				    row.appendChild(td4);
+				    row.appendChild(td5);
+				    row.appendChild(td6);			    
+				    tbody.appendChild(row);			    
+				}
+			}
+		}
+	}
+}
+</script>

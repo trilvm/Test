@@ -1,0 +1,108 @@
+
+<b>NGÀY CẬP NHẬT:</b>  <?= display($this->ngaycapnhat)?>
+<form name="frm" action="#" method="post">
+        <?php
+        if (count($this->data) == 0) {
+            echo '<tr><td colspan=3>Không có file nào</td><tr>';
+        }
+        ?>
+        <table class=adminlist>
+            <thead>
+                <tr>    
+                        <th nowrap="nowrap">STT</th>
+                     <!--   <th nowrap="nowrap"><input type=checkbox name=CHECKALL onclick="SelectAll(this,'DEL')"></th> -->
+			<th width="50%">TÊN/LOẠI TÀI LIỆU</th>
+			<th nowrap="nowrap"> FILE/FOLDER</th>
+                        <th nowrap="nowrap">KỊCH BẢN</th>
+                        <th nowrap="nowrap">TÌNH TRẠNG</th>
+                </tr> 
+            </thead>
+            <tfoot>
+                <tr>
+                  <!--  <th colspan="<?= $this->lock == 0 ? 5 : 4 ?>"></th> -->
+                </tr>
+            </tfoot>
+            <tbody>
+                <?php              
+                $data = $this->data;               
+                $a = 0;
+                $stt=1;
+                foreach ($data as $array) { 
+                    $link = explode('\\', $array['PATH'].$array['FILE_NAME']);  
+                    $co = 1;
+                    $b='';
+                    $path='';
+                        for ($i = 0; $i < count($link); $i++) { 
+                             if($i!=0) 
+                             {
+                                 $j=$i-1;
+                                 $path.= "$link[$j]/";
+                             }  
+                             
+                            if (($link[$i] != $tam[$i] && $co == 1) || ($co == 0) ) {
+                                ?>
+                                <tr style="height:15px">
+                                    <td nowrap="nowrap" style="height:15px"><?= $stt ?></td>
+                                   <!-- <td nowrap="nowrap" style="height:15px">
+                                    <?php  if($link[$i+1]==null) {?><input type=checkbox name=DEL[] value= <?= $array['MASO_FILE'];?>> <?php }?>
+                                    </td> -->
+                                    <td nowrap="nowrap" style="height:15px">
+                                    <?php if($link[$i+1]==null) { echo $b.'<b><font color=green>'.$link[$i]; } else {echo  $b.'<b><font color=#0B55C4>'.$link[$i].'</b>'; }?>                  
+                                    </td>
+                                    <td nowrap="nowrap" style="height:15px"><?php if($link[$i+1]==null) echo "<b><font color='green'>FILE</b>"; else echo "<font color='#0B55C4'>FOLDER" ;?></td>
+                                    <td nowrap="nowrap" style="height:15px">
+                                    <?php if($link[$i+1]==null) { 
+                                        if($array['KICH_BAN']==1) echo 'Sao chép';
+                                        else if($array['KICH_BAN']==2) echo 'Thay thế';
+                                        if($array['KICH_BAN']==3) echo 'Thực thi';
+    
+                                        } ?>                  
+                                    </td>  
+
+                                    <td nowrap="nowrap" style="height:15px">
+                                     <?php 
+                                     if($link[$i+1]==null) { 
+                                         if($array['IS_UPDATE']==1)  
+                                             echo '<b><font color=green>ĐÃ CẬP NHẬT</b>'; 
+                                         else if($array['IS_UPDATE']==0)
+                                             echo '<b><font color=red>CHƯA CẬP NHẬT</b>'; 
+                                         else 
+                                             echo '<b><font color=red>CẬP NHẬT KHÔNG THÀNH CÔNG</b>'; 
+                                    } 
+                                      ?>                      
+                                    </td>  
+                                </tr>
+                                <?php
+                                $co = 0;
+                                $stt++;
+                            }
+                             $b.='___';
+                             
+                        }           
+                 $tam = $link;   
+}
+?>
+            </tbody>
+        </table>    
+
+    <script>
+        function DeleteButtonClick(){
+            if(confirm("<?php echo 'Bạn có chắc chắn muốn xóa?' ?>")){
+                document.frm.action = "/version/version/theodoicapnhat/id_vers/<?= $this->id_ver ?>/id_donvi/<?=$this->id_donvi ?>";
+                document.frm.submit();
+            }
+        }
+      
+         function BackButtonClick(){
+                document.frm.action = "/version/version/list";
+                document.frm.submit();
+            }
+    </script>
+     <?php
+            function display($param) {
+                $arr=explode(" ", $param); 
+                $day=substr($arr[0], -2);
+                $month=substr($arr[0], 5, 2);
+                $year=substr($arr[0],0, 4);
+                return $day.'/'.$month.'/'.$year;
+            }

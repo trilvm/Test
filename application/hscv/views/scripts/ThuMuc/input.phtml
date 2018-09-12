@@ -1,0 +1,148 @@
+<form name=frm method="post" action="/hscv/thumuc/save" enctype="multipart/form-data" >
+<fieldset>
+	<div class="required">
+		<label>Thư mục(*)</label>
+		<input type=text class=inputbox name=NAME value="<?=$this->data->NAME?>" class="inputText" size="50" maxlength="100">
+    	<span class="box_erro_area" id="ERRNAME"></span>
+	</div>
+	<div class="required">
+		<label style="">Thư mục cha(*)</label>
+		<select name=ID_THUMUC_CHA>
+			<option value=1>Hồ sơ công việc</option>
+<?php
+	foreach($this->thumuc as $row){
+?>
+			<option value="<?=$row['ID_THUMUC']?>" <?=$this->data->ID_THUMUC_CHA==$row['ID_THUMUC']?"selected":""?>><?=str_repeat("--",$row['LEVEL']).htmlspecialchars($row['NAME'])?></option>
+<?php
+	}
+?>
+		</select>
+    	<span class="box_erro_area" id="ERRID_THUMUC_CHA"></span>
+	</div>
+    <div class="optional">
+		<label>(*) Bắt buộc nhập liệu.</label>
+	</div>
+</fieldset>
+<div class=clr></div>
+<fieldset style="width:30%;float:left">
+	<legend>Quyền truy cập - Phòng</legend>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>#</th>
+				<th nowrap>Phòng ban</th>
+				<th nowrap>xem</th>
+				<th nowrap>tạo mới</th>
+				<th nowrap>phân quyền</th>
+			</tr>
+		</thead>
+		<tfoot><tr><td colspan=5></td></tr></tfoot>
+		<tbody>
+<?php
+	$i=0;
+	$stt = 1;
+	foreach($this->dep as $rowd){
+?>
+			<tr class="row<?=$i?>">
+				<th nowrap><?=$stt;?></th>
+				<th nowrap><?=htmlspecialchars($rowd['NAME'])?></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_DEP_XEM[]" value="<?=$rowd['ID_DEP']?>" <?=$rowd['QUYENXEM']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_DEP_THEMMOI[]" value="<?=$rowd['ID_DEP']?>" <?=$rowd['QUYENTHEMMOI']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_DEP_PHANQUYEN[]" value="<?=$rowd['ID_DEP']?>" <?=$rowd['QUYENPHANQUYEN']==1?"checked":""?>></th>
+			</tr>
+<?php
+		$stt++;
+		$i = (-1+$i)*-1;
+	}
+?>
+		</tbody>
+	</table>
+</fieldset>
+<div class=clr></div>
+<fieldset style="width:30%;float:left">
+	<legend>Quyền truy cập - Nhóm</legend>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>#</th>
+				<th nowrap>Nhóm</th>
+				<th nowrap>xem</th>
+				<th nowrap>tạo mới</th>
+				<th nowrap>phân quyền</th>
+			</tr>
+		</thead>
+		<tfoot><tr><td colspan=5></td></tr></tfoot>
+		<tbody>
+<?php
+	$i=0;
+	$stt = 1;
+	foreach($this->group as $rowg){
+?>
+			<tr class="row<?=$i?>">
+				<th nowrap><?=$stt;?></th>
+				<th nowrap><?=htmlspecialchars($rowg['NAME'])?></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_GROUP_XEM[]" value="<?=$rowg['ID_G']?>" <?=$rowg['QUYENXEM']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_GROUP_THEMMOI[]" value="<?=$rowg['ID_G']?>" <?=$rowg['QUYENTHEMMOI']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_GROUP_PHANQUYEN[]" value="<?=$rowg['ID_G']?>" <?=$rowg['QUYENPHANQUYEN']==1?"checked":""?>></th>
+			</tr>
+<?php
+		$stt++;
+		$i = (-1+$i)*-1;
+	}
+?>
+		</tbody>
+	</table>
+</fieldset>
+<div class=clr></div>
+<fieldset style="width:30%;float:left">
+	<legend>Quyền truy cập - Nhân viên</legend>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>#</th>
+				<th nowrap>Nhân viên</th>
+				<th nowrap>xem</th>
+				<th nowrap>tạo mới</th>
+				<th nowrap>phân quyền</th>
+			</tr>
+		</thead>
+		<tfoot><tr><td colspan=5></td></tr></tfoot>
+		<tbody>
+<?php
+	$i=0;
+	$stt = 1;
+	foreach($this->user as $rowu){
+?>
+			<tr class="row<?=$i?>">
+				<th nowrap><?=$stt;?></th>
+				<th nowrap><?=htmlspecialchars($rowu['NAME'])?></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_USER_XEM[]" value="<?=$rowu['ID_U']?>" <?=$rowu['QUYENXEM']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_USER_THEMMOI[]" value="<?=$rowu['ID_U']?>" <?=$rowu['QUYENTHEMMOI']==1?"checked":""?>></th>
+				<th nowrap align="center"><input type=checkbox name="SEL_USER_PHANQUYEN[]" value="<?=$rowu['ID_U']?>" <?=$rowu['QUYENPHANQUYEN']==1?"checked":""?>></th>
+			</tr>
+<?php
+		$stt++;
+		$i = (-1+$i)*-1;
+	}
+?>
+		</tbody>
+	</table>
+</fieldset>
+<input type=hidden name=ID_THUMUC value="<?php echo $this->data->ID_THUMUC; ?>">
+<input type=hidden name=ISCOQUAN value="<?php echo $this->ISCOQUAN; ?>">
+</form>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+		err = err & validateInput("req",document.frm.NAME,"Tên thư mục không được rỗng.");
+		err = err & err==true?validateInput("maxlen=50",document.frm.NAME,"Tên thư mục không được quá 50 ký tự."):false;
+		err = err & validateInput("req",document.frm.ID_THUMUC_CHA,"Thư mục cha không được rỗng.");
+		if(err==true){
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+		document.frm.action = "/hscv/thumuc";
+		document.frm.submit();
+	}
+</script>

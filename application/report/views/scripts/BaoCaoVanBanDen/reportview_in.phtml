@@ -1,0 +1,191 @@
+<?php require_once 'qtht/models/LoaiVanBanModel.php';?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <style>
+  td{
+   border-color: black;
+ }
+ th{
+   border-color: black;
+ }
+</style>
+
+</head>
+<body style="background-color:transparent">
+  <table  width=100% >
+    <tr >
+      <td align=center ><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></td>
+
+      <td align=center>CỘNG HÒA XÃ HỘI CHỦ
+      NGHĨA VIỆT NAM</td>
+    </tr>
+    <tr >
+      <td align=center ><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+      <td align=center >Ðộc lập - Tự do - Hạnh phúc</td>
+    </tr>
+    <tr >
+
+
+      <td ></td>
+      <td align=right><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+    </tr>
+
+
+  </table>
+  <p align=center><b>BÁO CÁO VĂN BẢN ĐẾN</b> </br>
+    <?php 
+    if(count($this->id_lvbs) > 0) { 
+     $lvb = htmlspecialchars(LoaiVanBanModel::getArrNameById($this->id_lvbs));
+     ?>
+     Loại Văn Bản: <?= $this->id_lvbs > 0 ? $lvb : 'Tất cả các loại';?><br />
+   <?php } ?>
+
+   <?php echo $this->thu;?> năm <?=QLVBDHCommon::getYear()?></p>
+
+   <table border="1" style="border: 1px solid black; border-collapse: collapse;">
+     <thead>
+      <tr>
+       <th nowrap rowspan=2>STT</th>
+       <th nowrap rowspan=2>Ký Hiệu VB</th>
+       <th nowrap rowspan=2>Trích yếu VB</th>
+       <th  rowspan=2>Loại VB</th>
+       <th  rowspan=2 align="center">Cơ quan ban hành</th>
+       <th  rowspan=2 >Ngày ban hành</th>
+       <th  rowspan=2 >Ngày đến</th>
+       <th  rowspan=2 >Kết quả xử lý</th>
+       <th  rowspan=2 >Gửi liên thông</th>
+       <th  rowspan=2 >Có file đính kèm</th>
+       <th  rowspan=2 >Dòng luân chuyển</th>
+       <th  rowspan=2 >Người lưu kết thúc</th>
+       <th  rowspan=2 >Hình thức lưu</th>
+       <th  rowspan=2 >Trạng Thái</th>
+       <th  rowspan=2 >Số Văn Bản</th>
+       <th  rowspan=2 >Ghi chú</th>
+       <!-- <th  rowspan=2>Ghi chú</th> -->
+     </tr>
+
+   </thead>
+   <tbody>
+    <?php require_once 'qtht/models/LoaiVanBanModel.php';
+    require_once 'qtht/models/CoquanModel.php'; 
+    require_once 'qtht/models/DepartmentsModel.php';
+    require_once 'qtht/models/UsersModel.php';
+    ?>
+    <?php $nguoixuly ; $phongban; $stt=1; 
+    $num = count($this->data); $ten= VanbandenreportModel::getNguoiXuly();
+
+    foreach($this->data as $row){ 
+
+     ?>
+
+     <tr>
+      <td align="center" ><?=$stt?></td>
+      <td width="5%" align="center" ><?=$row["SOKYHIEU"]?></td>
+      <td width="10%" align="center" ><?= ($row["TRICHYEU"]) ?></td>
+      <td width="5%" align="center"> <?php echo LoaiVanBanModel::getArrNameById($row["ID_LVB"]) ?></td>
+      <td width="7%"  valign=top ><?php echo $row["COQUANBANHANH_TEXT"] ?></td>
+      <td width="4%"  align="center" ><?php echo QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></td>
+      <td  align="center" ><?php echo QLVBDHCommon::MysqlDateToVnDate($row["NGAYDEN"]) ?></td>
+      <td  align="center"  ><?= $row['SOKYHIEU_VBDI'] ?></td>
+      <?php  {?>
+       <td width="5%" align="center"  ><?php if ($row['IS_LIENTHONG'] ==1) {
+        echo "Có";
+      }
+      else echo "Không"; ?></td>
+    <?php } ?>
+    <td  width="5%" align="center"  ><?php if(!empty($row['TEP_DINHKEM'])){echo "Có";}else{echo "Không";} ?></td>
+	<!--<td nowrap valign=top rowspan=<?php echo $d ?>><?php echo LoaiVanBanModel::getArrNameById($row["ID_LVB"]) ?></td>
+    <td nowrap valign=top rowspan=<?php echo $d ?>><?php echo UsersModel::getEmloyeeNameByIdUser($row["NGUOITAO"]) ?></td>-->
+    <!--	<td nowrap ><i><?php echo $row["SOBAN"] ?></i></td>-->  
+    <?php {?>
+      <td width="12%">
+        <i><?php 
+        if($row["IS_KHONGXULY"] == 1)
+         echo "Văn bản không xử lý";
+       else{ 	
+        $xl= WFEngine::GetProcessLogByObjectId((int)$row['ID_HSCV']);
+        $rowsend = $xl[0]['EMPNCNAME'];
+        for($j=0;$j<count($xl);$j++){
+          if($j==10){
+            $rowsend .="<br/>" ;
+            $rowsend .=" <br> " ;
+            $rowsend .= $xl[$j]['EMPNCNAME'];
+
+          }else{
+            if($rowsend != $xl[$j]['EMPNNNAME'])
+            {
+                                    //var_dump($xl[$j]);
+                                    //exit;
+              $rowsend .=" <br> " ;
+              if($xl[$j]["ID_U_EXECUTE"]>0 && $xl[$j]["ID_U_EXECUTE"]!=$xl[$j]["ID_U_NC"]){
+                $rowsend .= "(". $xl[$j]["EMPEXNAME"]." chuyển giúp) <br>" ;
+              }
+              if($xl[$j]['NAME'] == "Chuyển xử lý")
+                $rowsend .= "<font color=blue>";
+              $rowsend .= $xl[$j]['EMPNNNAME']."<br/>";
+
+              if($xl[$j]['NAME'] == "Chuyển xử lý" )
+                $rowsend .= "</font>";
+              $rowsend .= "[".$xl[$j]['NAME']." &ndash; ".date('d/m/Y', strtotime($xl[$j]['DATESEND']))."]";
+            }
+          }
+        }
+        $rowsend .=" <br> " ;
+            //$rowsend .= $xl[$j-1]['EMPNNNAME'];
+
+        ?>
+        <i> <?					
+        echo $rowsend;
+        ?></i> 
+
+        <?php
+
+      } 
+      ?>
+
+    </i></td>
+
+  <?php } ?>
+  <td width="7%" align="center"  ><?php 
+  echo UsersModel::getEmloyeeNameByIdUser($row['NGUOILUUKETTHUC']);
+  ?></td>
+  <?php {?>
+   <td  align="center"  ><?php if ($row['THEODOI']==0)
+   echo 'Lưu Kết Thúc';
+   if ($row['THEODOI']==1)
+     echo 'Lưu Tham Khảo';
+   ?></td>
+ <?php } ?>
+ <?php {?>
+   <td width="5%" nowrap align="center" ><?php
+        if ( $row['NGAYHETHAN'] !='' && (int)$row['HANXULYTOANBO']>0 && $row['IS_FINISH']==0 ){
+          echo QLVBDHCommon::trehantostr(QLVBDHCommon::countdateswitch(strtotime($row["NGAYHETHAN"]),null));
+        }elseif($row['IS_FINISH']==1) {
+          if($row['TRE']>0){
+            echo "<font color=red> <i>Đã xử lý xong - Trễ hạn</i></font>";
+          }else if($row['TRE']==0){
+            echo "<font color=blue> <i>Đã xử lý xong - Đúng hạn</i></font>";
+          }else{
+            echo "<font color=blue> <i>Đã xử lý xong - Sớm hạn</i></font>";
+          }
+        }
+
+  ?></td>
+<?php }?>
+<td  width="8%" valign=top   ><?php echo LoaiVanBanModel::getArrNameSVBById($row["ID_SVB"]) ?></td>
+<td  nowrap valign=top rowspan  ><?= $row["GHICHU"] ?></td>
+</tr>
+
+
+<?php  	
+
+$stt++ ; } ?>
+</tbody>
+
+</table>
+</body>
+<script>print();</script>
+</html>

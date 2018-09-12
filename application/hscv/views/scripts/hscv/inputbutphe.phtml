@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name="frm" method=post action="/hscv/hscv/savebutphe">
+<fieldset>
+<legend style="color:#0066CC;">
+	<?=$this->code=="send"?MSG11001001:MSG11001002?>
+</legend>
+
+	<div class="required clearfix">
+		<label>Người chuyển</label>
+		<?=$this->processinfo["EMPNKNAME"]?>
+		<span id="ERRUSERNK"></span>
+	</div>
+</fieldset>
+<fieldset>
+<legend>Người nhận</legend>
+<?php
+	echo WFEngine::FormSend($this->wf_id_t);
+	//var_dump (WFEngine::FormSend($this->wf_id_t));
+?>
+</fieldset>
+<input type=button name=SEND value="Bút phê" onclick="SaveButtonClick();" class="butphe"/>
+<input type=hidden name=id value="<?=$this->ID_HSCV?>"/>
+<input type=hidden name=wf_id_t value="<?=$this->wf_id_t?>"/>
+<input type=hidden name=year value="<?=$this->year?>"/>
+<input type=hidden name=nguoibutphe value="<?=$this->nguoibutphe?>" />
+<p id=lasttext></p>
+</form>
+</body>
+</html>
+<script>
+function SaveButtonClick(){
+	document.frm.submit();
+}
+function resize(){
+	var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+	iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+	iframeElement.width = "100%";
+} 
+resize();
+</script>

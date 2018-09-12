@@ -1,0 +1,69 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl ?>/styles/general.css" />
+<div style="overflow: scroll; min-height: 150px;border: 1px silver solid; ">
+<form name="frm1" action="">
+    <table class="adminlist1" style="font-size: 12px;">
+    <tr>
+        <td width='28%'>
+            Thư mục HSCV điện tử:
+        </td>
+        <td>
+            <select name="thumuc" id="thumuc" onchange='
+                document.frm1.action = "/taphscv/taphscv/chuyen/idtaphoso/<?=$this->idtaphoso?>/idvb/<?=$this->idvb?>";
+                document.frm1.submit();'>
+                    <option value='0'> -- Chọn thư mục hscv điện tử --</option>
+            <?php
+                $count = count($this->thumuc);
+                    for($i = 0 ; $i<$count  ;$i++){ ?>
+                            <option value='<?=$this->thumuc[$i]["ID_THUMUC"]?>' <?=$this->idthumuc==$this->thumuc[$i]["ID_THUMUC"]?'selected':''?>>
+                                <?=htmlspecialchars(str_repeat("--",$this->thumuc[$i]["LEVEL"]-1).$this->thumuc[$i]["NAME"])?>
+                            </option>;
+                   <?php }
+            ?>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+<table class="adminlist1" style="font-size: 12px;">
+    <thead bgcolor="#f0f0f0">
+        <tr>
+            <th width="7%">STT</th>
+            <th>Tên HSCV điện tử</th>
+        </tr>
+    </thead>
+    <tfoot>
+    </tfoot>
+    <tbody>
+        <?php
+        if (count($this->data) == 0)
+           echo "<tr><td colspan='2'>Không thấy hồ sơ công việc điện tử nào.</td></tr>";
+        else {
+        $stt = 1;
+        foreach ($this->data as $item) {?>
+        <tr>
+            <td style="text-align: center;"><?=$stt?></td>
+            <td>
+                <a onclick='
+                    var answer = confirm("Bạn chắc chắn muốn chuyển văn bản vào tập hồ sơ này ?")
+                    if (answer){
+                        document.frm1.action = "/taphscv/taphscv/chuyen/is_save/1/idthscv_c/<?=$item['ID_TAPHOSO']?>/idvb/<?=$this->idvb?>";
+                        document.frm1.submit();
+                    }
+                    else{
+
+                    }' href="#">
+                    <?=$item['TEN']?>
+                </a>
+            </td>
+        </tr>
+        <?php 
+        $stt++;
+        }}?>
+    </tbody>
+</table>
+        </td>
+</tr>
+</table>
+</form>
+    </div>

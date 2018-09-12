@@ -1,0 +1,184 @@
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse_state.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<script> 
+
+</script>
+
+<form name=frm method=post>
+<table>
+		<tr>
+			<td align="left" width="100%">
+				Lọc:
+				<input type="text" name="search" id="search" value="<?php echo htmlspecialchars($this->search); ?>" class="text_area" onchange="document.frm.page.value=1;document.frm.submit();" />
+				<button onclick="document.frm.submit();">Tìm</button>
+				<button onclick="document.getElementById('search').value='';document.frm.submit();">Làm lại</button>
+			</td>
+			<td nowrap="nowrap">
+				<select name="filter_object" id="filter_object" class="inputbox" size="1" onchange="document.frm.submit();">
+					<option value=0 <?php if($this->filter_object == 0) echo "selected"?> >--Loại công việc--</option>
+					<option value="VBD" <?php if($this->filter_object == "VBD") echo "selected"?> >Văn bản đến</option>
+					<option value="VBSOANTHAO" <?php if($this->filter_object == "VBSOANTHAO") echo "selected"?> >Công việc</option>
+				</select>
+			</td>
+		</tr>
+</table>
+<table class=adminlist>
+<thead>
+	<tr>
+			<th colspan="4">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/vbdi/danhsachvanbanbanhanh/';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	<tr>
+		<th nowrap>#</th>
+		<th width=100% colspan=2>Tên dự thảo</th>
+		
+	</tr>
+</thead>
+<tfoot>
+		<tr>
+			<th colspan="4">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/vbdi/danhsachvanbanbanhanh/';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+<tbody>
+<?php 
+$stt = 1 ;
+foreach ($this->data as $item) {
+	$lastpt = WFEngine::GetCurrentTransitionInfoByIdHscv($item['ID_HSCV']);
+	$pb = BanHanhVanBanModel::GetLastPhienBan($item["ID_DUTHAO"]);
+?>
+	<tr>
+		<td nowrap valign="top">
+		<?php echo $stt ?><br/>
+		</td>
+		<td width=100%>
+		<?php if($item['ALIAS'] == "VBD"){?>
+		<img src='/images/icon_vbden.jpg'>
+		<?php }?>
+		<?php if($item['ALIAS'] == "VBSOANTHAO"){?>
+		<img src='/images/icon_soanthaovb.jpg'>
+		<?php }else if($item['ALIAS'] == "MOTCUA"){?>
+		<img src='/images/icon_motcua.jpg'>
+		<?php }?>
+		<b><?php echo $item['TENDUTHAO']." (Người chuyển: ".$lastpt['EMPNCNAME'].")"?></b>
+		<div style="cursor:pointer;"><a href="/hscv/File/download?year=&maso=<?=$pb[0]['MASO']?>"><b>Văn bản dự thảo</b></a></div>
+		<br>
+		
+		<div id="groupcontent<?=$item["ID_DUTHAO"]?>">
+		</div>
+		
+		<script>
+			var url = '/vbdi/danhsachvanbanbanhanh/detail?idDuthao=<?=$item["ID_DUTHAO"]?>&loaiCV=<?=$item["ALIAS"]?>';
+			loadDivFromUrl("groupcontent"+'<?=$item["ID_DUTHAO"]?>',url+'',1);</script>
+		</td>
+		<td nowrap valign="top">
+		<?php if($item['TRANGTHAI'] ==2 ){?>
+		Đã ban hành
+		<?php }else{?>
+		<b><a href="/vbdi/banhanh/input/idduthao/<?=$item['ID_DUTHAO']?>/year/<?=$this->year?>">Ban hành</a></b>
+		<?php }?>
+		<br/>
+		<a href="#" onclick="deleteDuThao(<?=$item["ID_DUTHAO"]?>);return false;"><b>Xóa</b></a>
+		</td>
+	</tr>
+<?php $stt++;} ?>
+</tbody>
+<tfoot>
+		
+	</tfoot>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<script type="text/javascript">
+function SwapDiv(id,url,tab){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		if(document.getElementById("groupcontent"+id).style.display==""){
+			document.getElementById("groupcontent"+id).style.display="none";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+		}
+	}
+	
+	function deleteDuThao(id){
+		if(confirm("Bạn muốn xóa dự thảo ra khỏi danh sách không?")){
+			
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("get", "/vbdi/danhsachvanbanbanhanh/delete?id="+id , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			oXmlHttp.onreadystatechange = function () { 
+			if (oXmlHttp.readyState == 4) { 
+				if (oXmlHttp.status == 200) { 
+					//alert(oXmlHttp.responseText);
+					if(oXmlHttp.responseText == 1){
+						//alert('Dự thảo đã được xóa ra khỏi danh sách');
+						window.location.reload();
+					}else{
+						alert('Không thể xóa dự thảo ra khỏi danh sách');
+					}
+				}
+			}
+			};
+			oXmlHttp.send(null);
+		}
+	}
+
+
+</script>

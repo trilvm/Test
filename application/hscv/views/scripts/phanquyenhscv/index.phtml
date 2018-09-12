@@ -1,0 +1,153 @@
+<?php
+$this->dojo()->enable();
+?>
+<form name=frm method=post action="/hscv/phanquyenhscv/save">
+<fieldset>
+<legend>Nhóm</legend>
+<table class="adminlist">
+    <thead>
+        <tr>
+            <th width="99%" class=tableheader>Tên</th>
+            <th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_G_CHINHSUA") ?></th>
+            <th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_G_TRUYXUAT") ?></th>
+        </tr>
+    </thead>
+    <tfoot>        
+    </tfoot>
+    <tbody>
+<?php
+    $endpos = count($this->Groups);
+    for($i=0;$i<$endpos;$i++){
+        $j = 1 - $j;
+        $classname = "datarow$j";
+?>
+    <tr>
+<?php
+    if($i<count($this->Groups)){
+?>
+        <td width="99%" class="<?php echo $classname; ?>"><?php echo htmlspecialchars($this->Groups[$i]["NAME"]); ?></td>
+
+        <td nowrap class=tableheader>
+            <input type=checkbox name=ID_G_CHINHSUA[] value="<?php echo $this->Groups[$i]["ID_G"] ?>" <?php echo ($this->Groups[$i]["CHINHSUA"]!=0)?"checked":"" ?>>
+        </td>
+        <td nowrap class=tableheader>
+            <input type=checkbox name=ID_G_TRUYXUAT[] value="<?php echo $this->Groups[$i]["ID_G"] ?>" <?php echo ($this->Groups[$i]["TRUYXUAT"]!=0)?"checked":"" ?>>
+        </td>
+<?php
+    }else{
+?>
+        <td width="99%" class="<?php echo $classname; ?>">&nbsp;</td>
+        <td nowrap class=tableheader>&nbsp;</td>
+<?php
+    }
+?>
+    </tr>
+<?php
+    }
+?>
+    </tbody>
+</table>
+</fieldset>
+<fieldset>
+<legend>Phòng ban</legend>
+<table class="adminlist">
+    <thead>
+        <tr>            
+            <th width="99%" class=tableheader>Tên</th>
+            <th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_DEP_CHINHSUA") ?></th>
+            <th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_DEP_TRUYXUAT") ?></th>
+        </tr>
+    </thead>
+    <tfoot>        
+    </tfoot>
+    <tbody>
+<?php
+    $endpos = count($this->Departments);
+    for($i=0;$i<$endpos;$i++){
+        $j = 1 - $j;
+        $classname = "datarow$j";
+?>
+    <tr>
+<?php
+    if($i<count($this->Departments)){
+?>
+        <td width="99%" class="<?php echo $classname; ?>"><?php echo htmlspecialchars($this->Departments[$i]["NAME"]); ?></td>
+        <td nowrap class=tableheader>
+            <input type=checkbox name=ID_DEP_CHINHSUA[] value="<?php echo $this->Departments[$i]["ID_DEP"] ?>" <?php echo ($this->Departments[$i]["CHINHSUA"]!=0)?"checked":"" ?>>
+        </td>
+        <td nowrap class=tableheader>
+            <input type=checkbox name=ID_DEP_TRUYXUAT[] value="<?php echo $this->Departments[$i]["ID_DEP"] ?>" <?php echo ($this->Departments[$i]["TRUYXUAT"]!=0)?"checked":"" ?>>
+        </td>
+<?php
+    }else{
+?>
+        <td width="99%" class="<?php echo $classname; ?>">&nbsp;</td>
+        <td nowrap class=tableheader>&nbsp;</td>
+<?php
+    }
+?>
+    </tr>
+<?php
+    }
+?>
+    </tbody>
+</table>
+</fieldset>
+<fieldset>
+<legend>Người dùng</legend>
+<table class="adminlist">
+    <thead>
+        <tr>
+            <th width="99%" class=tableheader>Tên</th>
+            <th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_U_CHINHSUA") ?></th>
+            <th nowrap class=tableheader><?php echo QLVBDHButton::EnableCheckAll("ID_U_TRUYXUAT") ?></th>
+        </tr>
+    </thead>
+    <tfoot>
+    </tfoot>
+    <tbody>
+<?php
+    $endpos = count($this->Users);
+    for($i=0;$i<$endpos;$i++){
+        $j = 1 - $j;
+        $classname = "datarow$j";
+?>
+    <tr>
+<?php
+    if($i<count($this->Users)){
+?>
+        <td width="99%" class="<?php echo $classname; ?>"><?php echo htmlspecialchars($this->Users[$i]["NAME"]); ?></td>
+        <td nowrap class=tableheader>
+            <input type=checkbox name=ID_U_CHINHSUA[] value="<?php echo $this->Users[$i]["ID_U"] ?>" <?php echo ($this->Users[$i]["CHINHSUA"]!=0)?"checked":"" ?>>
+        </td>
+        <td nowrap class=tableheader>
+            <input type=checkbox name=ID_U_TRUYXUAT[] value="<?php echo $this->Users[$i]["ID_U"] ?>" <?php echo ($this->Users[$i]["TRUYXUAT"]!=0)?"checked":"" ?>>
+        </td>
+<?php
+    }else{
+?>
+        <td width="99%" class="<?php echo $classname; ?>">&nbsp;</td>
+        <td nowrap class=tableheader>&nbsp;</td>
+<?php
+    }
+?>
+    </tr>
+<?php
+    }
+?>
+    </tbody>
+</table>
+</fieldset>
+<input type=hidden name=id value="<?php echo $this->id_hscv ?>">
+</form>
+<script>
+    function SaveButtonClick(){
+        if(confirm("<?php echo MSG11001001 ?>")){
+            document.frm.submit();
+        }
+    }
+    function BackButtonClick(){
+        document.frm.action = "/hscv/ThuMuc";
+        document.frm.submit();
+    }
+</script>

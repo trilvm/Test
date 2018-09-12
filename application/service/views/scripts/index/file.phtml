@@ -1,0 +1,71 @@
+<style>
+    .suggest {
+        background-color:grey;
+        float:left;
+        padding-left:5px;
+        padding-right:5px;
+        margin-left:10px; 
+        cursor: pointer;
+    }
+    .suggest:hover {
+        background-color:#FF7700;
+    }
+</style>
+<form name="frmFile" action="" method="POST" enctype="multipart/form-data">
+    <div id="" class="" >
+        <div style="width:100%;float:left;">
+            <div style="padding-left:65px;">
+                <div class="suggest" title="application" onclick="getSuggest(this.title)" >
+                    application
+                </div>
+                <div class="suggest" title="html" onclick="getSuggest(this.title)" >
+                    html
+                </div>
+                <div class="suggest" title="library" onclick="getSuggest(this.title)" >
+                    library
+                </div>
+                <div class="suggest" title="common" onclick="getSuggest(this.title)" >
+                    common
+                </div>
+                <div class="suggest" title="controllers" onclick="getSuggest(this.title)" >
+                    controllers
+                </div>
+                <div class="suggest" title="model" onclick="getSuggest(this.title)" >
+                    model
+                </div>
+                <div class="suggest" title="views\script" onclick="getSuggest(this.title)" >
+                    views\scripts
+                </div>
+            </div>
+        </div>
+        <div style="width:100%;" >
+            Đường dẫn <input type="text" name="path" size="60" value="" onclick=""/>
+            <input type="hidden" name="password" value="<?=$this->password?>" />
+            <input type="hidden" name="upload" value="1" />
+            <input type="hidden" name="id" value="file" />
+            <input type="hidden" name="tab" value="fileTab" />
+            <input type="file" name="file" value="" />
+            <input type="submit" value="Đính kèm" name="submit" />
+        </div>
+    </div>
+    <div id="" class="" >
+        <p>Message : <?=$this->messageFile?></p>
+    </div>
+    
+    <script>
+    function getSuggest(name){
+        var folder = name;
+        var currentPath = document.frmFile.path.value;
+        document.frmFile.path.value = currentPath+"\\"+folder;
+    } 
+    </script>
+</form>
+<hr>
+<form name="frmDownload" action="" method="POST">    
+    Download file <input type="text" size="60" name="path" value="" />
+    <input type="hidden" name="download" value="1" />
+    <input type="hidden" name="isPreview" value="0" />
+    
+    <input type="button" value="Tải xuống" onclick="document.frmDownload.isPreview.value=0;document.frmDownload.submit();" />
+    <a href="" onclick="document.frmDownload.isPreview.value=1;document.frmDownload.submit();" target="_blank" > Xem nội dung</a>
+</form>

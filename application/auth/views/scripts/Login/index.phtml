@@ -1,0 +1,33 @@
+<?php
+if($this->code=="mini"){
+}else{
+?>
+
+                    	<form action="/" method="post" name="login" id="form-login" style="clear: both;" autocomplete="off">
+                            <p id="tendangnhap">
+                                <label for="tendangnhap">Tên đăng nhập</label>
+                                <input type="text" size="15" class="inputbox" id="username" name="username">
+                            </p>
+                        
+                            <p id="matkhau">
+                                <label for="modlgn_passwd">Mật khẩu</label>
+                                <input type="password" size="15" class="inputbox" id="modlgn_passwd" name="password">
+                            </p>
+                            <p style="clear: both;" id="year">
+                                <label for="year">Năm làm việc</label>
+                                <?php
+									$year = new qtht_year();
+									echo $year->ToCombo("currentyear","class=inputbox");
+								?>
+                            </p>
+                            <p style="clear:both;">
+                            	<input type="submit" name="dangnhap" class="login-btn" value="Đăng nhập" />
+                            </p>
+                            
+                            <div class="clr"></div>
+                    	</form>
+						<script>document.login.username.focus();</script>
+						
+<?php
+}
+?>

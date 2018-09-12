@@ -1,0 +1,26 @@
+<table border=1>
+  <tr>
+    <th>Tên file</th>
+    <th>Kiểu file</th>
+    <th>Người đính kèm</th>
+    <th>Ngày tạo</th>
+    <th></th>
+  </tr>
+<?php 
+foreach ($this->data as $item){
+?>
+	<input type="text" name="idFile" value=<?php echo $item->ID_DK ?>>
+	<tr>
+    <td><?php echo $item->FILENAME  ?></td>
+    <td><?php echo $item->MIME ?></td>
+    <td><?php echo $item->USER ?></td>
+    <td><?php echo $item->TIME_UPDATE ?></td>
+    <td><a href="#" onclick='document.tfdelete.location="/hscv/File/delete?year=<?php $this->year?>&maso=<?php echo $item->MASO ?>&idObject=<?php echo $item->ID_OBJECT ?>&isTemp=<?php if($item == -1) echo 1 ?>";'>Xóa</a>   
+    <a href="/hscv/File/download?year=<?php $this->year?>&maso=<?php echo $item->MASO ?>">Tải về</a></td>
+
+  </tr>
+<?php }?>
+</table>
+<a href="#" onclick="document.getElementById('tftemp').style.display=''"> Them moi </a>
+<iframe id="tftemp" name="tftemp" src="/hscv/File/input?year=<?php echo $this->year?>&idObject=<?php echo $this->idObject?>&isTemp=<?php echo $this->isTemp?>" style="display:none" onload="" ></iframe>
+<iframe id="tfdelete" name="tfdelete" style="display:none" ></iframe>

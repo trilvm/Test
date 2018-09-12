@@ -1,0 +1,274 @@
+<?php
+	require_once 'wf/models/TransitionPoolModel.php';
+	require_once 'wf/models/TransitionModel.php';
+	$tp = new TransitionPoolModel();
+	$tp->_id_c = $this->id_c;
+	$tpdata = $tp->SelectAll();
+
+	$t = new TransitionModel();
+	$t->_id_p = $this->id_p;
+	$tdata = $t->SelectAll();
+?>
+<html>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="/svg/jsplumb.css">
+	<link rel="stylesheet" href="/svg/demo.css">
+	<script src="/svg/jquery-1.9.0-min.js"></script>
+	<script src="/svg/jquery-ui-1.9.2.min.js"></script>
+	<script src="/svg/jquery.ui.touch-punch-0.2.2.min.js"></script>
+
+	<script src="/svg/jquery.jsPlumb-1.6.4-min.js"></script>
+	
+	<body scroll=no>
+		<div id="main">
+            <div class="demo statemachine-demo" id="statemachine-demo">
+				<?php
+					foreach($this->activity as $activityitem){
+				?>
+                <div 
+					class="w" 
+					id="A_<?=$activityitem["ID_A"]?>" style="top:<?=$activityitem["POS_Y"]?>px;left:<?=$activityitem["POS_X"]?>px;<?=$activityitem["ISFIRST"]>0?"border-radius:30px !important;border:4px solid black !important":""?>"
+				>
+					<?=$activityitem["ISFIRST"]>0?"":$activityitem["NAME"]?>
+					<div class="ep" style="display:none"></div>
+				</div>
+				<?php
+						if($activityitem["ISLAST"]>=1){
+				?>
+				<div 
+					class="w" 
+					id="A_<?=$activityitem["ID_A"]?>_0" style="top:<?=$activityitem["POS_Y"]?>px;left:<?=$activityitem["POS_X"]+230?>px;border-radius:30px !important;border:4px solid red !important;background-color: black;"
+				>
+					<div class="ep" style="display:none">
+					</div>
+				</div>
+				<?php
+						}
+					}
+				?>
+            </div>
+			<div style="position:fixed;left:10px;bottom:10px;"><i>Click chọn vào các hành động (đường mũi tên) để cập nhật. Sau khi hoàn tất bấm nút Cập nhật SĐLC phía trên</i>
+</div>
+        </div>
+		<div id="detail">
+			<table>
+				<tr>
+					<td nowrap>
+						<b>Trạng thái bắt đầu</b>
+					</td>
+					<td>
+						
+					</td>
+					<td id=ABNAME>
+						
+					</td>
+				</tr>
+				<tr>
+					<td nowrap>
+						<b>Trạng thái kết thúc</b>
+					</td>
+					<td>
+						
+					</td>
+					<td id=AENAME>
+						
+					</td>
+				</tr>
+				<tr>
+					<td nowrap>
+						<b>Hành động</b>
+					</td>
+					<td>
+						
+					</td>
+					<td>
+						<select name=ID_TP id=ID_TP>
+						<?=TransitionPoolModel::ToCombo($tpdata,0)?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap>
+						<b>Tên hiển thị</b>
+					</td>
+					<td>
+						
+					</td>
+					<td>
+						<input name=NAME id=NAME>
+					</td>
+				</tr>
+				<tr>
+					<td nowrap>
+						<b>Hạn xử lý</b>
+					</td>
+					<td>
+						
+					</td>
+					<td>
+						<input name=HANXULY id=HANXULY size=3 maxlength=4> ngày
+					</td>
+				</tr>
+				<tr>
+					<td nowrap>
+						<b>Kết thúc tính hạn tại</b>
+					</td>
+					<td>
+						
+					</td>
+					<td>
+						<select name=END_AT id=END_AT>
+							<option value=0>Tại bước tiếp theo</option>
+							<?=TransitionModel::ToComboEnd($tdata)?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td>
+						<input type=button value="Lưu" onclick="saveDetail();hideDetail();">
+						<input type=button value="Đóng" onclick="hideDetail();">
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+	<script>
+	
+		jsPlumb.ready(function() {
+
+		// setup some defaults for jsPlumb.
+		var instance = jsPlumb.getInstance({
+			Endpoint : ["Dot", {radius:2}],
+			HoverPaintStyle : {strokeStyle:"red", lineWidth:1 },
+			ConnectionOverlays : [
+				[ "Arrow", {
+					location:1,
+					id:"arrow",
+					length:14,
+					foldback:0.8
+				} ],
+				//[ "Label", { label:"Tạo liên kết", id:"label", cssClass:"aLabel" }]
+			],
+			Container:"statemachine-demo"
+		});
+
+		var windows = jsPlumb.getSelector(".statemachine-demo .w");
+		instance.draggable(windows);
+		windows.draggable({
+			grid: [ 20, 20 ],
+			stack: "#statemachine-demo div",
+			stop: function() {
+				var ida = this.id.split("_");
+				if(ida.length==2){
+					//this.offset({ top: 10, left: 30 });
+					$.ajax({
+					  url: "/wf/transition/updatepos/ida/"+ida[1]+"/x/"+this.offsetLeft+"/y/"+this.offsetTop+""
+					}).done(function() {
+					  
+					});
+				}
+			}
+		});
+
+		instance.bind("click", function(c) {
+			//return;
+			//instance.detach(c);
+			//alert(c.id);
+			currentConnection = c;
+			$("#detail").hide();
+			var idt = c.id.split("_");
+			if(idt[0]=="T"){
+				$("#ABNAME").html($("#ABNAME_" + currentConnection.id+" option:selected",parent.document).text());
+				$("#AENAME").html($("#AENAME_" + currentConnection.id+" option:selected",parent.document).text());
+				$("#ID_TP").val($("#ID_TP_" + currentConnection.id,parent.document).val());
+				$("#NAME").val($("#NAME_" + currentConnection.id,parent.document).val());
+				$("#HANXULY").val($("#HANXULY_" + currentConnection.id,parent.document).val());
+				$("#END_AT").val($("#END_AT_" + currentConnection.id,parent.document).val());
+				$("#detail").show(500);
+			}else{
+				
+			}
+		});
+
+		instance.bind("connection", function(info) {
+			//info.connection.getOverlay("label").setLabel("Liên kết");
+		});
+
+		instance.doWhileSuspended(function() {
+			var isFilterSupported = instance.isDragFilterSupported();
+			if (isFilterSupported) {
+				instance.makeSource(windows, {
+					filter:".ep",
+					anchor:"Continuous",
+					connector:[ "StateMachine", { curviness:20 } ],
+					connectorStyle:{ strokeStyle:"#5c96bc", lineWidth:2, outlineColor:"transparent", outlineWidth:4 },
+					maxConnections:15,
+					onMaxConnections:function(info, e) {
+						alert("Maximum connections (" + info.maxConnections + ") reached");
+					}
+				});
+			}
+			else {
+				var eps = jsPlumb.getSelector(".ep");
+				for (var i = 0; i < eps.length; i++) {
+					var e = eps[i], p = e.parentNode;
+					instance.makeSource(e, {
+						parent:p,
+						anchor:"Continuous",
+						connector:[ "StateMachine", { curviness:20 } ],
+						connectorStyle:{ strokeStyle:"#5c96bc",lineWidth:2, outlineColor:"transparent", outlineWidth:4 },
+						maxConnections:15,
+						onMaxConnections:function(info, e) {
+							alert("Maximum connections (" + info.maxConnections + ") reached");
+						}
+					});
+				}
+			}
+		});
+
+		instance.makeTarget(windows, {
+			dropOptions:{ hoverClass:"dragHover" },
+			anchor:"Continuous",
+			allowLoopback:true,
+			anchor:"Continuous"
+		});
+
+
+		<?php
+			$endconnect = array();
+			foreach($this->transition as $transitionitem){
+		?>
+		var c = instance.connect({ source:"A_<?=$transitionitem["ID_A_BEGIN"]?>", target:"A_<?=$transitionitem["ID_A_END"]?>",label:"<?=$transitionitem["NAME"]."<br><i>".$transitionitem["HANXULY"]." ngày</i>"?>" });
+		c.id = "T_"+<?=$transitionitem["ID_T"]?>;
+		<?php
+				if($transitionitem["ISLAST"]>=1 && !in_array("A_".$transitionitem["ID_A_END"],$endconnect)){
+		?>
+			instance.connect({ source:"A_<?=$transitionitem["ID_A_END"]?>", target:"A_<?=$transitionitem["ID_A_END"]?>_0",label:"Kết thúc" });
+		<?php
+					$endconnect[] = "A_".$transitionitem["ID_A_END"];
+				}
+			}
+		?>
+		//instance.connect({ source:"opened", target:"phone1",label:"Chuyển bút phê" });
+		//instance.connect({ source:"phone1", target:"inperson" });
+
+		jsPlumb.fire("jsPlumbDemoLoaded", instance);
+
+		
+
+	});
+	function hideDetail(){
+		$("#detail").hide(500);
+	}
+	function saveDetail(){
+		$("#ID_TP_" + currentConnection.id,parent.document).val($("#ID_TP").val());
+		$("#NAME_" + currentConnection.id,parent.document).val($("#NAME").val());
+		$("#HANXULY_" + currentConnection.id,parent.document).val($("#HANXULY").val());
+		$("#END_AT_" + currentConnection.id,parent.document).val($("#END_AT").val());
+		currentConnection.setLabel($("#NAME").val() + "<br><i>"+$("#HANXULY").val()+" ngày</i>");
+	}
+	var currentConnection;
+	</script>
+</html>

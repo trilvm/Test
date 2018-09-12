@@ -1,0 +1,218 @@
+<?php
+$config = Zend_Registry::get("config");
+$this->config = $config;
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Phiếu chuyển</title>
+<style>
+	* {
+		margin: 0 auto;
+		padding: 0;	
+	}
+	body {
+		font-family: "Times New Roman", Times, serif;
+		font-size: 16px;	
+	}
+	#wrapper {
+		padding: 10px 10px;
+		width: 900px;	
+	}
+	.row-1, .row-2, .row-3, .row-4, .row-5, .row-6, .row-7, .row-8 {
+		padding: 3px 0;	
+	}
+	.row-1 {
+		width: 100%;	
+	}
+	.clear {
+		clear: both;	
+	}
+	.row-1 .left, #row-1 .right {
+		display: inline-block;
+		width: 460px;
+	}
+	.row-1 .left {
+		float: left;	
+	}
+	.row-1 .right {
+		float: right;
+		margin-right: 30px;
+                
+	}
+	.row-4 .left1, .row-4 .right1{
+		font-size: 20px;
+		font-weight: bold;
+                
+                
+	}
+        .row-4 .right1, .row-4 .bot {
+            
+            text-align: center;
+        }
+        
+	.row-8, .row-9, .row-10, .row-11 {
+		width: 100%;	
+	}
+	.row-8 .left2, .row-8 .right2 {
+		float: left;
+		width: 440px;
+		border: 1px solid #000;
+	}
+	.row-9 .left3, .row-9 .right3, .row-10 .left5, .row-10 .right5 {
+		float: left;
+		width: 440px;
+		border: 1px solid #000;
+	}
+        .row-10 .left5, .row-10 .right5 {
+            height: 200px;
+        }
+</style>
+</head>
+
+<body>
+<div id="wrapper">
+	<div class="row-1">
+    	<div class="left">
+            <b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b>
+        </div><!--end left-->
+        <div class="right">
+        	<?=$this->config->sys_info->city?>,<?php echo display(date('Y-m-d'));?>   
+        </div><!--end right-->
+    </div><!--end row-1-->
+    <div class="clear"></div>
+    <div class="row-2">
+    	Họ và tên:<b> <?php echo $this->ten;?></b> 
+    </div><!--end row-2-->
+    <div class="row-3">
+    	Chức vụ: <b> <?php echo $this->chucvu;?></b> 
+    </div><!--end row-3-->
+    <div class="row-4">
+    	<div class="left1">
+        	<?php echo $this->dokhan;?> 
+        </div><!--end left1-->
+        <div class="right1">
+        	PHIẾU TRÌNH GIẢI QUYẾT CÔNG VIỆC
+        </div><!--end right1-->
+        <div class="bot">
+        	(Chỉ có giá trị trong văn phòng UBND tỉnh)
+        </div><!--end bot-->
+    </div><!--end row-4-->
+    <div class="row-5">
+ 		<strong>Kính gửi: ................................................................................................................................................................................ </strong>  
+    </div><!--end row-5-->
+    <div class="row-6">
+    	<strong>Vấn đề trình: ..........................................................................................................................................................................</strong>
+    </div><!--end row-6-->
+    <div class="row-7">
+    	<strong>Văn bản kèm theo: .................................................................................................................................................................</strong>
+    </div><!--end row-7-->
+    <div class="row-8">
+    	<div class="left2" style="padding: 3px 0; text-align: center;">
+        	<strong>Tóm tắt nội dung :
+                </strong>
+        </div><!--end left2-->
+        <div class="right2" style="padding: 3px 0; text-align: center;">
+        	<strong>Ý kiến của lãnh đạo văn phòng</strong>
+        </div>
+    </div><!--end row-8-->
+    <div class="clear"></div>
+    <div class="row-10">
+    	<div class="left5" style="padding: 3px 0">
+        	<?= $this->data[0]['TRICHYEU'] ?>
+     
+        </div><!--end left5-->
+        <div class="right5" style="padding: 3px 0">
+        	   <?php
+                           $data2=$this->sendprocess[0];
+                           foreach ($data2 as $value) { 
+                               if($value['USERNAME_NC']=='chanhvanphong' || $value['USERNAME_NC']=='phochanhvanphong')
+                               {
+                                   if($value['NAME']!= '') 
+                                   { 
+                                       echo $value['NAME'];
+                                   }
+                                   else echo 'Không có thông tin.';
+                               }
+                               
+                           }
+                        ?>
+               
+                          
+        </div>
+    </div><!--end row-10-->
+    <div class="clear"></div>
+    <div class="row-9">
+    	<div class="left3" style="padding: 3px 0; text-align: center;">
+			<strong>Ý kiến của chuyên viên sau khi thẩm tra: </strong>
+        </div><!--end left3-->
+        <div class="right3" style="padding: 3px 0; text-align: center;">
+        	<strong>Ý kiến của lãnh đạo UBND tỉnh</strong>
+        </div><!--end right3-->
+    </div><!--end row-9-->
+    <div class="clear"></div>
+     <div class="row-10">
+    	<div class="left5" style="padding: 3px 0">
+           
+        	 ..........................................................................................................
+        </br>..........................................................................................................</br>
+        ..........................................................................................................</br>
+        ..........................................................................................................</br>
+        ..........................................................................................................</br>
+        ..........................................................................................................</br>
+        ..........................................................................................................</br>
+        ..........................................................................................................</br>
+        ..........................................................................................................</br>
+        ..........................................................................................................</br>
+
+        </div><!--end left5-->
+         <div class="right5" style="padding: 3px 0">
+        	   <?php
+                           $data2=$this->sendprocess[0];
+                           foreach ($data2 as $value) { 
+                               if($value['USERNAME_NC']=='chutich' || $value['USERNAME_NC']=='phochutich')
+                               {
+                                   if($value['NAME']!= '') 
+                                   { 
+                                       echo $value['NAME'];
+                                   }
+                                   else echo 'Không có thông tin.';
+                               }
+                               
+                           }
+                        ?>
+               
+                          
+        </div>
+    </div><!--end row-11-->
+</div><!--end wrapper-->
+  <script>print()</script> 
+</body>
+      
+</html>
+
+<?php 
+    function display($param) {
+                $arr=explode("-", $param);  
+                $day=$arr[2];
+                $month=$arr[1];
+                $year=$arr[0];
+                return  ' Ngày <b>'.$day.'</b> tháng <b>'.$month.'</b>  năm <b>'.$year.'</b>';
+            }
+  function displayexpressday($param1,$param2) {
+                //Lấy ngày hiện tại
+    $param=explode(' ', $param1);
+    $ngaydau = $param[0];
+    $ngaythem= (int)$param2;       
+    //Cộng thêm 1 tháng        
+    $day = strtotime(date("Y-m-d", strtotime($ngaydau)) . " + 2 day"); 
+    $day = strftime("%Y-%m-%d",$day); 
+    $arr=explode("-", $day);  
+                $day=$arr[2]; 
+                $month=$arr[1]; 
+                $year=$arr[0]; 
+      return  ' Ngày <b>'.$day.'</b> tháng <b>'.$month.'</b>  năm <b>'.$year.'</b>';
+ 
+    }
+?>

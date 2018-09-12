@@ -1,0 +1,156 @@
+<?php
+$config = Zend_Registry::get("config");
+$this->config = $config;
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+    <title>Print</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;	
+		}
+		body {
+			font-family: "Times New Roman", Times, serif;
+			font-size: 14px;	
+		}
+		#wrapper {
+			width: 12.5in;	
+			max-height: 8.27in;
+			text-align: left;
+			line-height: 30px;
+			padding: 0.32in 0.2in 0.39in 0.2in;
+		}
+		
+		.col-left{
+			width: 5.7in;
+			float: left;	
+                        padding: 0 0.2in;
+                        border-bottom: 1px solid #000;
+		}
+		.border {
+			float: left;
+			width: 1px;
+                        height: 323px;
+			max-height: 8.27in;
+			background-color: #000;
+		}
+		.row-1 {
+			width: 180px;	
+			text-align: center;
+			font-weight: bold;
+		}
+		.row-2 {
+			margin-top: -10px;
+			padding-left: 60px;
+		}	
+		.row-4 {
+			text-align: center;
+			font-weight: bold;	
+		}
+		.row-6 {
+			text-align: right;
+			font-weight: bold;	
+		}
+		.row-9 {
+			text-align: right;	
+		}
+		.row-10 {
+			text-align: right;
+			font-weight: bold;
+                        padding-right: 50px;
+		}
+	</style>
+</head>
+<body>
+    <div id="wrapper">
+        <?php foreach($this->datas as $data) { ?>
+        <div class="col-left">
+            <div class="row-1">
+                <?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?>
+            </div><!--end row-1-->
+            <div class="row-2">
+            -------------
+            </div><!--end row-2-->
+            <div class="row-3">
+                Số: <?php echo $data['SODEN'];?> 
+                XL-VP: <?php echo $data['SOKYHIEU'];?>,
+                Văn bản của UBND <?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?> ban hành.
+                <i><?php echo display($data['NGAYBANHANH']);?></i>
+            </div><!--end row-3-->
+            <div class="row-4">
+                PHIẾU CHUYỂN CÔNG VĂN
+            </div><!--end row-4-->
+            <div class="row-5">
+                1. Ý kiến đề xuất của Lãnh đạo Văn phòng: 
+                <?php
+                    if($data['USERNAME_NC']=='chanhvanphong' || $data['USERNAME_NC']=='CHANHVANPHONG')
+                    {
+                        if($data['NAME']!= '') 
+                            echo $data['NAME'];
+                        else 
+                            echo 'Không có thông tin.';
+                    }
+                ?>
+            </div><!--end row-5-->
+            <div class="row-6">
+                CHÁNH VĂN PHÒNG 
+            </div><!--end row-6-->
+            <div class="row-7">
+                2.Ý kiến chỉ đạo của Lãnh đạo văn phòng ủy ban:  
+                <i><?php
+                    if($data['USERNAME_NC']=='chutich' || $data['USERNAME_NC']=='CHUTICH')
+                    {
+                        if($data['NAME']!= '') 
+                            echo $data['NAME'];
+                        else 
+                            echo 'Không có thông tin.';
+                    }
+                ?></i>
+            </div><!--end row-7-->
+            <div class="row-8">
+                3.  Thời gian hoàn thành:
+                <i>
+                <?php 
+                    echo displayexpressday($data['DATESEND'], $data['HANXULY'])  
+                ?>
+                </i>
+            </div><!--end row-8-->
+            <div class="row-9">
+                <?php echo display(date('Y-m-d'));?>
+            </div><!--end row-9-->
+            <div class="row-10">
+                CHỦ TỊCH
+            </div><!--end row-10-->
+        </div><!--end col-left-->
+        <div class="border"></div>
+        <?php } ?>
+    </div><!--end wrapper-->
+</body>
+</html>
+<?php 
+    function display($param) {
+                $arr=explode("-", $param);  
+                $day=$arr[2];
+                $month=$arr[1];
+                $year=$arr[0];
+                return  ' Ngày <b>'.$day.'</b> tháng <b>'.$month.'</b>  năm <b>'.$year.'</b>';
+            }
+  function displayexpressday($param1,$param2) {
+                //Lấy ngày hiện tại
+    $param=explode(' ', $param1);
+    $ngaydau = $param[0];
+    $ngaythem= (int)$param2;       
+    //Cộng thêm 1 tháng        
+    $day = strtotime(date("Y-m-d", strtotime($ngaydau)) . " + 2 day"); 
+    $day = strftime("%Y-%m-%d",$day); 
+    $arr=explode("-", $day);  
+                $day=$arr[2]; 
+                $month=$arr[1]; 
+                $year=$arr[0]; 
+      return  ' Ngày <b>'.$day.'</b> tháng <b>'.$month.'</b>  năm <b>'.$year.'</b>';
+ 
+    }
+?>

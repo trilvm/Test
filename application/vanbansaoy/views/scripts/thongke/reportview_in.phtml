@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style>
+td{
+	border-color: black;
+}
+th{
+	border-color: black;
+}
+</style>
+
+</head>
+<body style="background-color:transparent">
+<table  width=100% >
+<tr >
+  <td align=center ><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></td>
+
+  <td align=center>CỘNG HÒA XÃ HỘI CHỦ
+  NGHĨA VIỆT NAM</td>
+ </tr>
+ <tr >
+  <td align=center ><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+  <td align=center style="text-decoration:underline">Ðộc lập - Tự do - Hạnh phúc</td>
+ </tr>
+ <tr > 
+  <td ></td>
+  <td align=right style="font-style:italic">
+<?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?>
+</td>
+ </tr>
+
+ 
+</table>
+<p align=center><b>THỐNG KÊ VĂN BẢN SAO Y </b> <br/>
+<?php echo $this->thu;?></p>
+
+<table border="1" style="border: 1px solid black; border-collapse: collapse;">
+ <thead>
+ 	<tr>
+	     <th nowrap >Stt</th>		
+ 		<th nowrap>Số ký hiệu văn bản sao y</th>
+		<th nowrap >Trích yếu</th>
+ 		<th >Người đề nghị</th>
+ 		<th nowrap>Ngày tạo</th>
+ 		<th >Tình trạng</th>
+ 	</tr>
+ </thead>
+ <tbody>
+ <?php  require_once 'vanbansaoy/models/tkvanbansaoyModel.php';
+ $stt=1; foreach($this->data as $item){?>
+	
+	<tr>
+    <td nowrap valign=top  width="5%"><?=$stt?></td>	
+ 	<td nowrap valign=top  width="20%"><?echo $item['KYHIEUVANBANSAOY'];?></td>
+ 	<td nowrap valign=top  width="20%"><?echo $item['TRICHYEU'];?></td>
+	<td valign=top width="20%"><?if($item['NGUOIDENGHI']!=""){ echo tkvanbansaoyModel::getName($item['NGUOIDENGHI']);}?></td>
+ 	<td nowrap valign=top  width="20%"><?php echo QLVBDHCommon::MysqlDateToVnDate($item["NGAYTAO"]) ?></td>
+ 	<td nowrap valign=top align="right"  width="20%"><?php if($item["ISFINISHED"]==1) echo "Đã phê duyệt";
+            else echo "Chưa phê duyệt";?></td>
+	</tr>
+	<?php $stt++;}?>
+ </tbody>
+</table>
+</body>
+<script>print();</script>
+</html>

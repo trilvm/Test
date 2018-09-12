@@ -1,0 +1,225 @@
+<?php 
+
+$stt = 0;
+foreach ($this->sendprocess as $sendprocess ){ ?>
+<table class=adminlist1>
+	<thead>
+		<tr>
+			<th colspan="8"><?php 
+			$str_name = "<b><u>Tên hồ sơ:</u></b> ".$sendprocess[0]["HSCV_NAME"];
+			if(!is_null($sendprocess[0]["EXTRA"])) $str_name .=" --- ".$sendprocess[0]["EXTRA"];
+			echo $str_name;
+			?>
+			</th>
+		</tr>
+		<tr>
+			<th>#</th>
+			<th nowrap="nowrap">Ngày chuyển</th>
+			<th nowrap="nowrap">Người chuyển</th>
+			<th nowrap="nowrap">Người/phòng/nhóm nhận</th>
+			<th width=100%>Nội dung chuyển</th>
+			<th nowrap="nowrap">Hạn XL</th>
+			<th nowrap="nowrap">Trễ</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr><th colspan="7"></th></tr>
+	</tfoot>
+	<tbody>
+<?php
+	$stt=0;
+	$i=0;
+	for($j=0;$j<count($sendprocess);$j++){
+		$rowsend = $sendprocess[$j];
+		$stt++;
+		$content = trim($rowsend["NOIDUNG"]);
+		if($content!=""){
+			$span = "rowspan=2";
+		}else{
+			$span="";
+		}
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td <?=$span?>><?php echo $stt; ?></td>
+			<td nowrap="nowrap" <?=$span?>>
+				<?=date("d/m/Y",strtotime($rowsend["DATESEND"]))?><br>
+				<?=date("H:i:s",strtotime($rowsend["DATESEND"]))?>
+			</td>
+			<td nowrap="nowrap"><?=$rowsend["EMPNCNAME"]?>
+			<?php
+				if($rowsend["ID_U_EXECUTE"]>0 && $rowsend["ID_U_EXECUTE"]!=$rowsend["ID_U_NC"]){
+			?>
+			<br>(<?=$rowsend["EMPEXNAME"]?> chuyển giúp)
+			<?php
+				}
+			?>
+			</td>
+			<td nowrap="nowrap"><?=$rowsend["DEPNAME"].$rowsend["GROUPNAME"].$rowsend["EMPNNNAME"]?>&nbsp;
+			<?php if($rowsend["IS_THEODOI"]==1  && $j==count($sendprocess)-1){
+			?>
+			<br> <font color=red>(Đã lưu theo dõi)</font>
+			<?php 
+			}?>
+			</td>
+			<td width=100%><?=nl2br(htmlspecialchars($rowsend["NAME"]))?>&nbsp;</td>
+			<td nowrap="nowrap"><?=QLVBDHCommon::createTextHanXuLy($rowsend["HANXULY"])?>&nbsp;</td>
+			<td nowrap="nowrap"><?=$rowsend["TRE"]>0?"Trễ ".(floor($rowsend["TRE"]/8)>0?floor($rowsend["TRE"]/8)." ngày ":"").($rowsend["TRE"]%8)." giờ":""?>&nbsp;</td>
+		</tr>
+		<?php if($content!=""){?>
+		<tr class="row<?php echo $i; ?>">
+			<td colspan="5"><b>Ý kiến:</b> <?=nl2br(htmlspecialchars($rowsend["NOIDUNG"]))?>&nbsp;</td>
+		</tr>
+		<?php } ?>
+<?php
+		$i = -1*($i-1);
+	}
+?>
+	</tbody>
+</table>
+
+
+<?php $stt++;}?>
+<table class=admintable1 width="100%">
+	<tbody>
+		<?php
+		if($this->idobject>0){
+		?>
+		<tr>
+			<td class=key nowrap="nowrap">
+				Chuyển để biết
+			</td>
+			<td width="100%">
+				<?php
+					$currentnc = 0;
+					$currentnd = "";
+					foreach($this->way as $way){
+						if($way['ISPHOIHOP']==0){
+							if($way['NGUOICHUYEN']!=$currentnc || $way['GHICHU']!=$currentnd){
+								if($currentnd!=""){
+									echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+								}
+								echo $currentnc!=0?"<br>":"";
+								echo "<b>".date("d/m/Y H:i:s",strtotime($way["NGAYCHUYEN"]))."</b>: ";
+								echo $way["EMPNC"];
+								echo " <img src='/images/j_arrow.png'>";
+								$currentnc = $way['NGUOICHUYEN'];
+							}
+							$currentnd = $way['GHICHU'];
+							echo $way['EMPNN'].", ";
+						}
+					}
+					if($currentnd!=""){
+						echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+					}
+				?>
+			</td>
+		</tr>
+		<tr>
+		<td nowrap>
+			Chuyển phối hợp
+		</td>
+		<td>
+			<?php
+					$currentnc = 0;
+					$currentnd = "";
+					foreach($this->way as $way){
+						if($way['ISPHOIHOP']==1){
+							if($way['NGUOICHUYEN']!=$currentnc || $way['GHICHU']!=$currentnd){
+								if($currentnd!=""){
+									echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+								}
+								echo $currentnc!=0?"<br>":"";
+								echo "<b>".date("d/m/Y H:i:s",strtotime($way["NGAYCHUYEN"]))."</b>: ";
+								echo $way["EMPNC"];
+								echo " <img src='/images/j_arrow.png'>";
+								$currentnc = $way['NGUOICHUYEN'];
+							}
+							$currentnd = $way['GHICHU'];
+							echo $way['EMPNN'].", ";
+						}
+					}
+					if($currentnd!=""){
+						echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+					}
+			?>
+		</td>
+		</tr>
+		<tr>
+			<td>
+				
+			</td>
+			<td>
+				<a href="javascript:;" onclick="
+					document.getElementById('iframesend<?=$this->ID_HSCV?>').style.display='';
+					document.getElementById('iframesend<?=$this->ID_HSCV?>').setAttribute('src','/hscv/hscv/send/idvbd/<?=$this->idobject?>/id/<?=$this->ID_HSCV?>/type/1/year/<?=$this->year?>/code/<?=$this->code?>');
+				">Chuyển tiếp</a>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>                                 
+		<tr>
+			<th colspan="2"  style="background: #fff;">
+				<iframe style="overflow-x:visible;display:none" height=0 id=iframesend<?=$this->ID_HSCV?> allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src=""></iframe>
+			</th>
+		</tr>
+	</tfoot>
+	<?php
+		}
+	?>
+	
+	
+</table>
+
+
+<table class=admintable1 width="100%">
+	<tbody>
+		<?php
+			if($this->idobject>0){
+		?>
+		<tr>
+			<td class=key nowrap="nowrap">
+				Chuyển đơn vị nội bộ
+			</td>
+			<td width="100%">
+				<?php
+					$currentnc = 0;
+					$currentnd = "";
+					foreach($this->lcnoibo as $way){
+						
+							echo "<b>".date("d/m/Y H:i:s",strtotime($way["NGAYGUI"]))."</b>: ";
+							echo $way["NAMENC"];
+							echo " <img src='/images/j_arrow.png'>";
+							$currentnc = $way['NGUOICHUYEN'];
+					
+						$currentnd = $way['NOIDUNG'];
+						echo $way['NAMEDEPN']."<br>";
+					}
+					if($currentnd!=""){
+						echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+					}
+				?>
+			</td>
+		</tr>
+		<?php
+			}
+			if($this->idobject>0){
+		?>
+		
+		<?php
+			}
+		?>
+	</tbody>
+	<?php
+		if($this->idobject>0){
+	?>
+	<tfoot>
+		<tr>
+			<th colspan="2" style="background: #fff;">
+				<iframe style="overflow-x:visible;display:none" height=0 id=iframesend<?=$this->ID_HSCV?> allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src=""></iframe>
+			</th>
+		</tr>
+	</tfoot>
+	<?php
+		}
+	?>
+</table>

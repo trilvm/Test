@@ -1,0 +1,59 @@
+<form name="frm"  method="post" action="">
+    <table class="adminlist">
+        <thead>
+            <tr>
+                <th nowrap style="text-align: center;width:30px">STT</th>
+		<th nowrap style="text-align: center;width:30px">
+                    <input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')">
+                </th>
+                <th>Tên địa điểm họp</th>
+                
+            </tr>
+        </thead>
+
+        <?php
+        $stt = 1;
+        foreach ($this->data as $item) {
+        ?>
+        <tr class="row<?=$i?>">
+                <td style="text-align: center">
+                      <?= $stt ?>
+                </td>
+                <td style="text-align: center">
+                  <input name="DEL[]" type="checkbox" value="<?php echo $item['ID_DIADIEM'].'~'.$item['TEN'] ?>">
+                </td>
+            <td>
+                <a href="#" onClick="ItemClick(<?php echo $item['ID_DIADIEM'] ?>)"><?= $item['TEN'] ?>
+                </a>
+            </td>
+            
+        </tr>
+        <?php $i = (-1+$i)*-1;$stt++;
+        } ?>
+    </table>
+
+</form>
+
+<script>
+    function AddNewButtonClick(){
+        window.location = '/qlcuochop/DMdiadiem/input';
+    }
+    function ItemClick(id)
+    {
+         document.frm.action = "/qlcuochop/DMdiadiem/input/id/"+id;
+         document.frm.submit();
+    }
+
+    function DeleteButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","Chọn ít nhất một mục để xoá.");
+	if(mess){
+		if(confirm("<?php echo 'Bạn muốn xóa mục này!'; ?>")){
+			document.frm.action = "/qlcuochop/DMdiadiem/delete";
+			document.frm.submit();
+		}
+	}else{
+		alert("Chọn ít nhất một mục để xoá.");
+	}
+}
+</script>

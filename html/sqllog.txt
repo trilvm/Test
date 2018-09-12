@@ -1,0 +1,133 @@
+INSERT INTO `gen_filedinhkem_2018` (`FOLDER`, `MASO`, `FILENAME`, `USER`, `NAM`, `THANG`, `CONTENT`, `TYPE`, `ID_OBJECT`, `MIME`, `TIME_UPDATE`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)~0.610996007919
+
+		 	SELECT
+		 		unc.ID_U as ID_U_NC,
+		 		unn.ID_U as ID_U_NN,
+				unc.USERNAME as USERNAME_NC,
+				unn.USERNAME as USERNAME_NN,
+				pl.ID_U_EXECUTE,
+		 		concat(empnc.FIRSTNAME,' ',empnc.LASTNAME) as EMPNCNAME,
+				concat(empnn.FIRSTNAME,' ',empnn.LASTNAME) as EMPNNNAME,
+				concat(empex.FIRSTNAME,' ',empex.LASTNAME) as EMPEXNAME,
+				g.NAME as GROUPNAME,
+				dep.NAME as DEPNAME,
+				tr.NAME,
+				pl.DATESEND,
+				pl.HANXULY,
+				pl.TRE,
+				pl.NOIDUNG,
+				hscv.`NAME` as HSCV_NAME,
+				hscv.`EXTRA`,
+				hscv.IS_THEODOI,
+				hscv.IS_CHOXULY,
+				pl.ID_PL,
+				cd.NAME as CHUCDANH
+		 	FROM
+		 		WF_PROCESSLOGS_2018 pl
+		 		inner join HSCV_HOSOCONGVIEC_2018 hscv on pl.ID_PI = hscv.ID_PI
+		 		inner join QTHT_USERS unc on unc.ID_U = pl.ID_U_SEND
+				inner join QTHT_EMPLOYEES empnc on unc.ID_EMP = empnc.ID_EMP
+				left join QTHT_USERS unn on unn.ID_U = pl.ID_U_RECEIVE
+				left join QTHT_EMPLOYEES empnn on unn.ID_EMP = empnn.ID_EMP
+				left join QTHT_GROUPS g on g.ID_G = pl.ID_G_RECEIVE
+				left join QTHT_DEPARTMENTS dep on dep.ID_DEP = pl.ID_DEP_RECEIVE
+				left join QTHT_USERS uex on uex.ID_U = pl.ID_U_EXECUTE
+				left join QTHT_EMPLOYEES empex on uex.ID_EMP = empex.ID_EMP
+				inner join WF_TRANSITIONS tr on tr.ID_T = pl.ID_T
+				inner join WF_TRANSITIONPOOLS tp on tr.ID_TP = tp.ID_TP
+				left join qtht_chucdanh cd ON cd.ID_CD = empnn.ID_CD
+			WHERE
+				hscv.ID_HSCV = ?
+			ORDER BY ID_PL
+			LIMIT 1,999
+		 ~0.636285066605
+UPDATE `GEN_MESSAGE_2017` SET `STATUS` = ? WHERE (ID_U_RECEIVE = 59)~0.671465873718
+INSERT INTO `gen_filedinhkem_2017` (`FOLDER`, `MASO`, `FILENAME`, `USER`, `NAM`, `THANG`, `CONTENT`, `TYPE`, `ID_OBJECT`, `MIME`, `TIME_UPDATE`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)~1.75711107254
+INSERT INTO `gen_filedinhkem_2017` (`FOLDER`, `MASO`, `FILENAME`, `USER`, `NAM`, `THANG`, `CONTENT`, `TYPE`, `ID_OBJECT`, `MIME`, `TIME_UPDATE`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)~0.717138051987
+INSERT INTO `GEN_MESSAGE_2017` (`ID_U_SEND`, `ID_U_RECEIVE`, `NOIDUNG`, `LINK`, `DATE_SEND`) VALUES (?, ?, ?, ?, ?)~0.560819864273
+
+		SELECT vb.ID_VBD, TRICHYEU, SOKYHIEU, NGAYBANHANH
+		FROM vbd_vanbanden_2017 vb
+		INNER JOIN vbd_dongluanchuyen_2017 lc on lc.ID_VBD=vb.ID_VBD
+		WHERE
+			lc.NGUOINHAN = ? AND lc.DA_XEM=0
+		GROUP BY vb.ID_VBD
+		LIMIT 0,3
+		~1.26065707207
+
+		select count(*) as DEM from 
+		`hscv_duthao_2017` duthao 
+		inner join `hscv_hosocongviec_2017` hscv on duthao.`ID_HSCV` = hscv.`ID_HSCV`
+		inner join `hscv_loaihosocongviec` loai on loai.`ID_LOAIHSCV` = hscv.`ID_LOAIHSCV` 
+		inner join WF_PROCESSES pr on loai.MASOQUYTRINH = pr.ALIAS
+		inner join WF_CLASSES cl on pr.ID_C = cl.ID_C
+		inner join WF_PROCESSITEMS_2017 prs on prs.ID_O = hscv.ID_HSCV
+		inner join (select ID_PI,ID_U_RECEIVE from (select ID_PL,ID_PI,ID_U_RECEIVE
+		from WF_PROCESSLOGS_2017
+		
+			inner join qtht_users u on ID_U_RECEIVE = u.ID_U
+			inner join qtht_employees emp on emp.ID_EMP = u.ID_EMP
+			where emp.ID_DEP=21
+			
+		order by ID_PL desc) pl
+		group by ID_PI
+		) pl on prs.ID_PI = pl.ID_PI
+		where 1=1   and TRANGTHAI = 1 ORDER BY TRANGTHAI  ~0.87161397934
+
+			SELECT
+				count(*) as CNT
+			FROM
+				hscv_hosocongviec_2017 hscv
+				inner join wf_processitems_2017 wfitem on hscv.ID_PI = wfitem.ID_PI
+				
+			WHERE
+				(1=1) and IS_THEODOI<>1   and ( hscv.IS_CHOXULY = 0 OR hscv.IS_CHOXULY is NULL )  and hscv.ID_THUMUC = ? and (wfitem.ID_U = ? or wfitem.ID_DEP = ? or wfitem.ID_G in (6,7,10)) AND (EXISTS(SELECT * FROM HSCV_DUTHAO_2017 duthao WHERE duthao.ID_HSCV = hscv.ID_HSCV))
+			GROUP BY
+				hscv.ID_HSCV
+		~0.55636382103
+
+			SELECT
+				count(*) as CNT
+			FROM
+				hscv_hosocongviec_2017 hscv
+				inner join 
+				(SELECT ID_U_SEND as ID_U, ID_A_BEGIN as ID_A,pl.ID_PI,DATESEND as LASTCHANGE,pl.ID_P,t.CNTPL
+					FROM
+					wf_processlogs_2017 pl
+					INNER JOIN (SELECT ID_PL as ID_PL,count(ID_PL) as CNTPL FROM wf_processlogs_2017 WHERE ID_U_SEND = ? GROUP BY ID_PI) t on t.ID_PL = pl.ID_PL
+				WHERE
+					ID_U_SEND = ?
+				)
+			 wfitem on hscv.ID_PI = wfitem.ID_PI
+				
+			WHERE
+				(1=1)
+			GROUP BY
+				hscv.ID_HSCV
+		~4.49369692802
+
+			SELECT
+				distinct hscv.*,wfitem.CNTPL
+				, class1.ALIAS,cv.IS_NOIBO
+			FROM
+				hscv_hosocongviec_2017 hscv
+				left join hscv_congviecsoanthao_2017 cv on cv.`ID_HSCV`=hscv.`ID_HSCV`
+				inner join 
+				(SELECT ID_U_SEND as ID_U, ID_A_BEGIN as ID_A,pl.ID_PI,DATESEND as LASTCHANGE,pl.ID_P,t.CNTPL
+					FROM
+					wf_processlogs_2017 pl
+					INNER JOIN (SELECT ID_PL as ID_PL,(SELECT COUNT(*) FROM wf_processlogs_2017 temp WHERE temp.ID_PI = temp1.ID_PI) as CNTPL FROM wf_processlogs_2017 temp1) t on t.ID_PL = pl.ID_PL
+				WHERE
+					ID_U_SEND = ?
+				)
+			 wfitem on hscv.ID_PI = wfitem.ID_PI
+				
+				inner join HSCV_LOAIHOSOCONGVIEC lhs on lhs.ID_LOAIHSCV = hscv.ID_LOAIHSCV
+				inner join WF_PROCESSES wfp1 on wfp1.ID_P = wfitem.ID_P
+				INNER JOIN WF_CLASSES class1 on class1.ID_C = wfp1.ID_C
+			WHERE
+				(1=1)
+				ORDER BY ID_HSCV desc
+				 LIMIT 0,10
+		~7.21921896935
+UPDATE `GEN_MESSAGE_2017` SET `STATUS` = ? WHERE (ID_U_RECEIVE = 29)~0.561774969101

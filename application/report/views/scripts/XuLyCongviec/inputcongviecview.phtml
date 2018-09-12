@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<?php require_once('qtht/models/DepartmentsModel.php');
+$data_departs = DepartmentsModel::getAll();
+?>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+    <?  $num = count($this->data);
+        $stillprocess = 0;
+        $finised = 0;
+        $late = 0;
+        $nonlate = 0;
+        foreach($this->data as $congviecitem){ 
+        if($congviecitem['IS_FINISH']==0){ $stillprocess++;					
+					$tre = QLVBDHCommon::getTreHan($congviecitem['DATESEND'],$congviecitem['HANXULY']);
+					if ($tre>0) {
+                                            $late++;
+                                        }
+                                        else if ($tre<0) {
+                                            $nonlate++;
+                                        }
+				}else{
+					$finised++;
+				}    
+         }                  
+         ?>
+<? if ($num>0) {?>    
+    <br>
+    <div style="color: blue; font-weight: bold">
+        SỐ LƯỢNG CÔNG VIỆC CÓ TRONG DANH SÁCH : <?=$num?> | ĐANG XỬ LÝ : <?=$stillprocess?> | TRỄ HẠN : <?=$late?> | CÒN HẠN : <?=$nonlate?> | ĐÃ KẾT THÚC : <?=$finised?>
+    </div>
+    <br>
+<? } ?>
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th nowrap>STT</th>
+			<th width=100%>Tên công việc</th>
+			<th nowrap>Ngày tạo</th>
+			<th nowrap>Người yêu cầu</th>
+			<th nowrap>Người xử lý</th>
+			<th nowrap>Hạn xử lý</th>
+			<th nowrap>Trạng thái</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+		foreach($this->data as $congviecitem){
+			$stt++;
+	?>
+		<tr>
+			<td nowrap><?=$stt?></td>
+			<td width=100%><?=htmlspecialchars($congviecitem['NAME'])?></td>
+			<td nowrap><?=QLVBDHCommon::MysqlDateToVnDate($congviecitem['NGAYTAO'])?></td>
+			<td nowrap><?=htmlspecialchars($congviecitem['NAMENGUOIYEUCAU'])?></td>
+			<td nowrap><?=htmlspecialchars($congviecitem['NAMENGUOIXULY'])?></td>
+			<td nowrap><?=QLVBDHCommon::createTextHanXuLy($congviecitem['HANXULY'])?></td>
+			<td nowrap><?php
+				if($congviecitem['IS_THEODOI']==1){
+					echo "Lưu tham khảo";
+				}else if($congviecitem['IS_FINISH']==0){
+					echo "Đang xử lý";
+					$tre = QLVBDHCommon::getTreHan($congviecitem['DATESEND'],$congviecitem['HANXULY']);
+					echo QLVBDHCommon::trehantostr($tre);
+				}else{
+					echo "Đã xử lý";
+				}
+			?></td>
+		</tr>
+	<?php
+		}
+	?>
+	</tbody>
+</table>
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%";
+</script>
+

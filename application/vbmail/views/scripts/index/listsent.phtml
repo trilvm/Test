@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/validate.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent" >
+<?php 
+$dataCQ = vbdenModel::GetDataCQ((int)$this->data->ID_CQ);
+?>
+<script>
+var rong ='';
+var arrCQ = new Array();
+<?php foreach($dataCQ as $cq){?>
+arrCQ["<?=$cq["ID_CQ"]?>"] = "<?=$cq["EMAIL"]?>";
+<?php }?>
+</script>
+<div style="position:absolute;display:none;" id="atAutoComplete"></div>
+
+
+<form name=frm onclick="if(at_container){ if(at_container.style.display!='none')at_Hide(false);}">
+<input type=hidden value="<?=$this->idvbdi?>" name='ID_VBDI'>
+
+<div id="id_input_contact" style="border:1px solid #ccc; width:600px;margin:2px;padding:2px 6px;white-space:nowrap;">
+<table>
+<thead>
+	<tr>
+		<td colspan="2"><b>Chọn cơ quan chuyển</b></td>
+	</tr>
+</thead>
+<tbody>
+<tr>
+		
+		<td>Cơ quan</td>
+		<td>
+		
+		<?php
+				$onc = " document.frm.EMAIL_CHOICE.value= (arrCQ[document.frm.ID_CQ.value]!=null )?arrCQ[document.frm.ID_CQ.value]:document.frm.EMAIL_CHOICE.value";
+				echo QLVBDHCommon::AutoComplete(
+				$dataCQ,
+				"ID_CQ",
+				"NAME",
+				"ID_CQ",
+				"COQUANBANHANH_TEXT",
+				false,
+				"width:200px",
+				"$onc",
+				(int)$this->data->ID_CQ,
+				'');
+			?>
+		</td>
+</tr>
+<tr>
+		<td>Email</td>
+		<td><input type=text name=EMAIL_CHOICE  ></td>
+</tr>
+<tr>
+		<td>
+		<input type=button value="Chọn" style="width:100px;background-color:#F0F0F0" onclick=" addRow();return false;">
+		
+
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="id_list_sent" style="border:1px solid #ccc; width:600px;margin:2px;padding:2px 6px;white-space:nowrap; display:none;background:#ECF5FF" >
+<table  id="table1">
+<thead>
+	
+	<tr>
+		<td><b>Cơ quan</b></td>
+		<td><b>Email</b></td>
+	</tr>
+</thead>
+
+<tfoot>
+<tr>
+		
+		<td colspan=2>
+		<input type=button value="Gửi văn bản" style="width:100px;background-color:#0066CC;border:1px solid #003399;color:#FFFFFF;" onclick="guiVb();return false;">
+		</td>
+		
+	</tr>
+</tfoot>
+
+<tbody>
+
+</tbody>
+</table>
+</div>
+</form>
+<b>Danh sách văn bản đã chuyển:</b>
+<table  class="adminlist1">
+	<thead>
+		<tr>
+			<th style="width:3%;">#</th>
+			<th>Cơ quan</th>
+			<!--<th>Đã chuyển</th> -->
+		</tr>
+	</thead>
+	<tbody>
+	<?php $stt=1;foreach($this->vbchuyens as $vb){?>
+	<tr>
+		<td nowrap><?=$stt?></td>
+		<td width=100%><?=$vb["CQ_NHAN"]. " ( <u>".$vb["EMAIL_NHAN"]."</u> ) "?>
+		<?php if($vb["DA_CHUYEN"] == 0){?>
+			<!--<br/> <font color=red>(chưa chuyển được)</font> -->
+		<?php }?>
+		</td>
+		
+		
+		<?php //if($vb["DA_CHUYEN"] == 1){?>
+			<!-- <img src='/images/header/icon-48-checkin.png' style="width:15px;height:15px"></img></td> -->
+		<?php //}else{?>
+			<!--<a href="#">chuyển lại</a> -->
+		<?php //}?>
+		
+	</tr>
+	<?php $stt++;}?>
+	</tbody>
+</table>
+<p id=lasttext></p>
+
+</body>
+</html>
+<script>
+var index_row = 0;
+var dem_row  = 0;
+function addRow(){
+	
+	
+	/*if(document.frm.COQUANBANHANH_TEXT.value == "" ){
+		alert('Bạn phải nhập tên cơ quan chuyển');
+		return ;
+	}
+	if(document.frm.EMAIL_CHOICE.value == ""){
+		alert('Bạn phải nhập địa chỉ email');
+		return ;
+	}*/
+	var row = document.createElement("TR"); 
+	row.setAttribute('id','row_'+index_row);
+	
+	var cell1 = document.createElement("TD");
+	
+	cell1.innerHTML = "<input name='COQUANCHUYEN[]'" + " value='"+document.frm.COQUANBANHANH_TEXT.value+"'>" ;
+	row.appendChild(cell1);
+	
+	var cell2 = document.createElement("TD");
+	
+	cell2.innerHTML = "<input name='EMAILCHUYEN[]'"+ " value='"+document.frm.EMAIL_CHOICE.value+"'>" ;
+	cell2.innerHTML += "<input type=hidden name='INDEX_ROW[]' value='"+index_row+"' >";
+	
+	row.appendChild(cell2);
+	
+	
+	var cell3 = document.createElement("TD");
+	cell3.innerHTML = "<a href='#' onclick='delRow("+index_row+");' >Xóa</a>" ;
+	row.appendChild(cell3);
+
+	var cell4 = document.createElement("TD");
+	cell4.innerHTML = "<span class=box_erro_area id='span_"+index_row+"' ></span>" ;
+	cell4.innerHTML += '<div id=load_wait_sent_' +index_row+ ' align="right" style="display:none;" ><img src="/images/loading.gif"> <font color="Blue">Đang gửi văn bản ...</font></div>';
+	cell4.innerHTML += '';
+	row.appendChild(cell4);
+
+	
+
+
+
+	var table = document.getElementById("index_row");
+	var tbody = document.getElementById("table1").tBodies[0];
+	tbody.appendChild(row);
+	index_row++;
+	dem_row ++;
+	document.frm.ID_CQ.value = 0;
+	document.frm.COQUANBANHANH_TEXT.value = "";
+	document.frm.EMAIL_CHOICE.value = "";
+	var id_list_sent = document.getElementById('id_list_sent');
+	id_list_sent.style.display ='';
+	checklistsent(0);
+	resizeMyframe();
+}
+
+function delRow(i){
+	
+	var table = document.getElementById("table1");
+	var tbody = document.getElementById("table1").tBodies[0];
+	var id_row = 'row_'+i;
+	var row = document.getElementById(id_row);
+	tbody.removeChild(row);
+	dem_row --;
+	//alert(i);
+}
+
+
+function checklistsent(is_sent){
+		
+		var email_chuyen = document.getElementsByName('EMAILCHUYEN[]');
+		var coquan_chuyen = document.getElementsByName('COQUANCHUYEN[]');
+		var index_row = document.getElementsByName('INDEX_ROW[]');
+		
+		var checkmail_ln = 0; 
+		var checkcoquan_ln = 0;
+		for(var i = 0 ; i < email_chuyen.length ;i++){
+			
+			var div_load = document.getElementById('load_wait_sent_'+index_row[i].value);
+			
+			var checkemail = validateEmail(email_chuyen[i].value);
+			var span_id = document.getElementById('span_'+index_row[i].value);
+			span_id.innerHTML = "";
+			
+			if(checkemail == false){
+				span_id.innerHTML  = 'địa chỉ mail không hợp lệ, ';
+				
+			}else{
+				
+				checkmail_ln = 1;
+			}
+			var checkcq = !(coquan_chuyen[i].value == "");
+			//alert(checkcq);
+			if(checkcq == false){
+				span_id.innerHTML  += ' không có cơ quan chuyển';
+				
+			}else{
+				checkcoquan_ln = 1;
+			}
+			
+			
+			var isrow_valid = checkcq && checkemail;
+			if(is_sent == 1){
+				if(isrow_valid == true)
+					div_load.style.display ='';
+				else
+					div_load.style.display ='none';
+			}	
+
+		}
+		
+		if(checkcoquan_ln == 1 && checkmail_ln == 1)
+			return true;
+		
+		return false;
+		/*
+		var checkcoquan_ln =0;
+
+		
+		for(var i = 0 ; i < coquan_chuyen.length ;i++){
+			var span_id = document.getElementById('span_'+index_row[i].value);
+			var div_load = document.getElementById('load_wait_sent_'+index_row[i].value);
+			if(coquan_chuyen[i].value == ""){
+				span_id.innerHTML  += ' không có cơ quan chuyển';
+				if(is_sent == 1){
+					div_load.style.display ='';
+				}
+			}else{
+				checkcoquan_ln = 1;
+				
+				if(is_sent == 1){
+					
+					div_load.style.display ='';
+				}
+
+			}
+		}
+		
+		
+		return false;*/
+
+}
+
+
+
+function guiVb(){
+		if(dem_row == 0){
+			alert("Bạn phải chọn ít nhất một cơ quan để chuyển !!!");
+		}
+		
+		if( checklistsent(1) == false )
+			return ;
+		
+		
+		
+		var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("post", "/vbmail/index/sendvb" , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			var post = submitAjax.getDataFromFrm(document.frm);
+			oXmlHttp.onreadystatechange = function () { 
+			if (oXmlHttp.readyState == 4) { 
+				alert(oXmlHttp.responseText);
+				if (oXmlHttp.status == 200) { 
+				if(oXmlHttp.responseText == 1){
+					
+					
+				}
+				else{
+					
+				}
+				
+            } else { 
+               
+            } 
+			window.location.reload();
+        } 
+       }; 
+   		
+		oXmlHttp.send(post);
+}
+resizeMyframe();
+
+function resizeMyframe(){
+var iframeElement = window.parent.document.getElementById("iframebutphe<?=$this->idvbdi?>");
+iframeElement.style.height = "" +(document.getElementById("lasttext").offsetTop)+ "px";
+iframeElement.width = "100%";
+}
+
+ 
+</script>

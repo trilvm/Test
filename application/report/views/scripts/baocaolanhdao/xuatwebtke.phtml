@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<table>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><?=$this->config->sys_info->yourcompany?></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b>CỘNG HÒA XÃ HỘI CHỦ  NGHĨA VIỆT NAM</b></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b>BỘ PHẬN TIẾP NHẬN VÀ TRẢ KẾT QUẢ</b></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><u>Độc lập – Tự do – Hạnh phúc</u></b></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="right" style="line-height: 16px"><i><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></i></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" colspan=3><B>THỐNG KÊ HỒ SƠ</B></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" colspan=3><I>Từ ngày <?=$this->fromdate?> đến ngày <?=$this->todate?> năm <?=QLVBDHCommon::getYear()?></I></td>
+	</tr>
+</table>
+<?php
+global $db;
+if(count($this->param['sel_lv'])>=0){
+?>
+<table border=1 style="border-color:black;border-width: 1px;border-style: solid;border-collapse:collapse">
+	<thead>
+		<tr>
+			<th style="border-color:black;">Lĩnh vực</th>
+			<th style="border-color:black;">Tiếp nhận</th>
+			<th style="border-color:black;">Đang xử lý</th>
+			<th style="border-color:black;">Đang xử lý (sắp trễ)</th>
+			<th style="border-color:black;">Đang xử lý (trễ)</th>
+			<th style="border-color:black;">Đã hoàn thành (trễ)</th>
+			<th style="border-color:black;">Đã hoàn thành (đúng hẹn)</th>
+			<th style="border-color:black;">Đã thụ lý</th>
+			<th style="border-color:black;">Đã hoàn thành (chờ công dân nhận)</th>
+			<th style="border-color:black;">Không thụ lý</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+
+if($this->param['sel_lv'][0]==0){
+	$r = $db->query("SELECT ID_LV_MC FROM MOTCUA_LINHVUC");
+	$row = $r->fetchAll();
+	$this->param['sel_lv'] = array();
+	foreach($row as $lv){
+		$this->param['sel_lv'][] = $lv['ID_LV_MC'];
+	}
+}
+
+foreach($this->param['sel_lv'] as $lv){
+	$r = $db->query("SELECT * FROM MOTCUA_LINHVUC WHERE ID_LV_MC = $lv");
+	$row = $r->fetch();
+?>
+		<tr>
+			<td style="border-color:black;">
+				<?=$row['NAME']?>
+			</td>
+			<td style="border-color:black;" nowrap>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(1,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+				
+			</td>
+			<td style="border-color:black;" nowrap>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(2,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+			</td>
+			<td style="border-color:black;" align=right>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(3,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+			</td>
+			<td style="border-color:black;" nowrap>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(4,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+			</td>
+			<td style="border-color:black;" nowrap>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(8,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+			</td>
+			<td style="border-color:black;" nowrap>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(9,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+			</td>
+			<td style="border-color:black;" nowrap>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(5,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+			</td>
+			<td style="border-color:black;" nowrap>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(7,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+			</td>
+			<td style="border-color:black;" nowrap>
+				<?php
+					$arrkq = TiepnhanhosomotcuaModel::CountHosoByLinhVuc(10,$lv,$this->xfromdate,$this->xtodate);
+				?>
+				<?php echo $arrkq[0]; ?>
+			</td>
+		</tr>
+<?php
+}
+?>
+	</tbody>
+</table>
+<table>
+	<tr>
+		<td width=100%></td>
+		<td nowrap align=center>Người lập</td>
+	</tr>
+	<tr>
+		<td width=100%></td>
+		<td nowrap>&nbsp;</td>
+	</tr>
+	<tr>
+		<td width=100%></td>
+		<td nowrap>&nbsp;</td>
+	</tr>
+	<tr>
+		<td width=100%></td>
+		<td nowrap align=center><B><?=$this->user->FULLNAME?></B></td>
+	</tr>
+</table>
+<?php
+}
+?>
+</body>
+</html>
+<script>
+print();
+</script>

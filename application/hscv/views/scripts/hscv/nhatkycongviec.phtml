@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="/js/common.js"></script>
+        <script src="/js/validate.js" type="text/javascript"></script>
+        <script src="/js/validate.js" type="text/javascript"></script>
+        <script type="text/javascript" src="/js/Json/Base64.js"></script>
+        <script type="text/javascript" src="/js/Json/json2.js"></script>
+        <script type="text/javascript" src="/js/Json/json_parse.js"></script>
+        <script type="text/javascript" src="/js/Json/json_parse_state.js"></script>
+        <script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+        <script type="text/javascript" src="/js/dlg_confirm.js"></script>
+        <link rel="stylesheet" type="text/css" href="/styles/general.css" />    
+    </head>
+    <body style="background-color:transparent">
+        <form name="frmnhatky" method=post action="/hscv/hscv/savenhatky">
+            <fieldset>
+                <legend style="color:#0066CC; font-size: 13.0pt"><b>Cập nhật trạng thái công việc</b></legend>
+                <!-- table hien thong tin ve ho so  -->
+                
+                <table style="table-layout: fixed; width: 100%"> 
+                 
+                    <tr>
+                       <td valign=top style="border:none;width:200px"> Trạng thái công việc</td>
+                       <td nowrap style="color: red; border: none;width: 950px">
+                           <?php
+                            if((int)$this->congviec->data[$this->count - 1]->TIENDO >=100){
+                            ?>
+                            <span style="color: blue"> Đã hoàn thành</span>
+                            <?php
+                            }else{
+                            ?>
+                            <span style="color: red"> Chưa hoàn thành</span>
+                            <?php
+                            }
+                            ?>
+                       </td> 
+                    </tr>
+                    <tr>
+                        <td valign=top style="border:none;"> Tiến độ công việc hiện tại</td>
+                        <td nowrap style="color: red; border: none;width: 950px">                          
+                            <input type=text id=tiendo<?=$this->id_hscv?>  style="width: 100px;color: red" name=tiendo value="<?=$this->congviec->data[$this->count - 1]->TIENDO ?>"> <span style="color: red">%</span>
+                            
+                        </td>
+                    </tr>
+                   <tr>
+                        <td valign=top style="border:none;"> Mô tả tiến độ hiện tại</td>
+                        <td nowrap style="color: red; border: none;width: 950px">
+                            <textarea id=motatiendo<?=$this->id_hscv?> name="motatiendo" style="width: 637px; height: 64px;"> <?=$this->congviec->data[$this->count - 1]->NOIDUNG ?></textarea>
+                        </td>
+                    </tr>
+					<!--
+                    <tr>
+                        <td valign=top style="border:none;"> Lý do trễ hạn</td>
+                        <td nowrap style="color: red; border: none;width: 950px">
+                            <textarea id=lydotrehan<?=$this->id_hscv?> name="lydotrehan" style="width: 637px; height: 64px;"> <?=$this->congviec->data[$this->count - 1]->LYDOTREHAN ?></textarea>
+                        </td>
+                    </tr>
+					-->
+                </table>
+                <!-- end table the hien thong tin ve ho so  -->
+				<input type="hidden" name="id_hscv" value="<?php echo $this->id_hscv ?>"/>           
+				<input type=button name=SEND value="Lưu" onclick="luunhatky(<?=$this->id_hscv?>)">
+                <table class=adminlist>
+                    <thead>
+                            <tr>
+                                    <th nowrap>#</th>
+                                    <th nowrap>Ngày cập nhật</th>
+                                    <th width=25%>Người cập nhật</th>
+                                    <th width=15%>Tiến độ</th>
+                                    <th width=35%>Mô tả tiến độ</th>
+                            </tr>
+                    </thead>
+                    <tfoot>
+                            <tr><td colspan=6></td></tr>
+                    </tfoot>
+                    <tbody>
+                        <?php
+                                $i=0;
+                                $stt = 1;
+                                foreach($this->congviec->data as $row){
+                        ?>
+                                        <tr class="row<?=$i?>">
+                                            <td nowrap><?=$stt?></td>
+                                            <td nowrap><?=date("d/m/Y",strtotime($row->NGAYCAPNHAT))?> - 
+                                            <?=date("H:i:s",strtotime($row->NGAYCAPNHAT))?></td>
+                                            <td nowrap><?=$row->NAME_NGUOIXL ?></td>
+                                            <td nowrap><?=$row->TIENDO ?>%</td>
+                                            <td nowrap><?=$row->NOIDUNG ?></td>
+                                        </tr>
+                        <?php
+                                        $stt++;
+                                        $i = (-1+$i)*-1;
+                                }
+                        ?>
+                    </tbody>
+                 </table>
+            </fieldset>
+            
+        </form>
+    </body>
+</html>

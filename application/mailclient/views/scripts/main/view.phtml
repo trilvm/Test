@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<title>Xem nội dung mail</title>
+</head>
+<body style="background-color:transparent;"
+<?php if($this->is_popup == 0){ ?>
+onclick="parent.document.getElementById('id_tooltip').style.display='none';parent.document.getElementById('id_tooltip_group').style.display='none'"
+<?php }?>
+>
+<div id="wait_compose" style="display:none;">
+<img src='/images/loading.gif'> <font color="Blue"><b>Xin chờ trong giây lát ...</b></font>
+</div>
+<form name=frm method=post action="/mailclient/main/compose/<?=$this->is_popup==1?"IS_POPUP/1":""?>">
+<input type="hidden" name="IS_REPLY" value="1"> 
+<input type="hidden" name="ID_MESSAGE_RE" value="<?=$this->id_em?>"> 
+	
+	
+	<table width=100%>
+	<tr>
+		<td colspan="3">
+		
+		<td>
+		<td valign="top" align="right" nowrap>
+<?php if($this->is_popup == 0){?>	
+		<div title="Mở cửa sổ mới" style="float:left;background-color:#B4CFEC ;border:1px solid #888888;cursor:pointer;margin:2px;
+		padding:2px 2px;position:relative;white-space:nowrap;width:20px;" 
+		onclick="doPopup();return false;">
+		<img src="/images/email/popup.jpg" width="20" height="20" ></img>
+		</div>
+<?php } ?>		
+		</td>
+		<td valign="top" align="right" nowrap>
+<?php if($this->is_popup == 0){?>	
+		<div title="Đóng lại" style="float:left;background-color:#B4CFEC ;border:1px solid #888888;cursor:pointer;margin:2px;
+		padding:2px 2px;position:relative;white-space:nowrap;width:20px;" 
+		onclick="doClose();return false;">
+		<img src="/images/email/close_view.jpg" width="20" height="20" ></img>
+		</div>
+<?php } ?>	
+		</td>
+	
+	</tr>
+	<tr>
+	<td valign="top" nowrap align=right>
+	
+		<div title="Phản hồi" style="background-color:#B4CFEC ;border:1px solid #888888;cursor:pointer;margin:2px;
+		padding:2px 2px;position:relative;white-space:nowrap;width:120px;" 
+		onclick="doReply(1);return false;">
+		<img src="/images/email/reply.jpg" width="20" height="20" ></img>
+		<b>Phản hồi</b>
+		</div> 
+	</td>
+	
+	<td valign="top" nowrap align=left>
+
+	<div title="Phản hồi tất cả" style="background-color:#B4CFEC ; border:1px solid #888888;cursor:pointer;margin:2px;
+	padding:2px 2px;position:relative;white-space:nowrap;width:120px;" 
+	onclick="doReply(2);return false;">
+	<img src="/images/email/reply_all.jpg" width="20" height="20"></img>
+	<b>Phản hồi tất cả</b>
+	</div> 
+
+	</td>
+	
+	<td valign="top" nowrap>
+
+	<div title="Chuyển tiếp" style="background-color:#B4CFEC ;border:1px solid #888888;cursor:pointer;margin:2px;
+	padding:2px 2px;position:relative;white-space:nowrap;width:120px;" 
+	onclick="doReply(3);return false;">
+	<img src="/images/email/forward.jpg" width="20" height="20"></img>
+	<b>Chuyển tiếp</b>
+	</div> 
+
+	</td>
+	<td width="100%"><td>
+	</tr>
+	
+	</table>
+	<div id="mail_view_info">
+		<table width="100%">
+			<tr>
+				<td nowrap valign="top" > <font color="blue"><b>Gửi từ:</b> </font></td>
+				<td width=100%><?=htmlspecialchars($this->email_messages->_addr_from);?></td>
+				<input type="hidden" name="ADDR_FROM_RE" value="<?=htmlspecialchars($this->email_messages->_addr_from)?>">
+
+			</tr>
+			<tr>
+				<td nowrap valign="top"><font color="blue"><b>Gửi đến:</b></font></td>
+				<td> <?=htmlspecialchars($this->email_messages->_addr_to)?></td>
+				
+
+			</tr>
+			<?php if($this->email_messages->_addr_cc !=""){?>
+			<tr>
+				<td nowrap valign="top"><font color="blue"><b>CC: </b></font></td>
+				<td><?=htmlspecialchars($this->email_messages->_addr_cc)?></td>
+				<input type="hidden" name="ADDR_CC_RE" value="<?=htmlspecialchars($this->email_messages->_addr_cc)?>">
+
+				
+			</tr>
+			<?php }?>
+			<tr>
+				<td nowrap valign="top"><font color="blue"><b>Tiêu đề:</b></font></td>
+				<td><b><i><?=htmlspecialchars($this->email_messages->_subject)?></i></b></td>
+				
+
+				
+			</tr>
+			
+			<?php 
+				$dem_dk = 0;
+				foreach ($this->arrparts as $part){
+					if($part->_is_attactment == 1)
+						$dem_dk ++;
+				}
+				if($dem_dk > 0){
+			?>
+			
+			<tr>
+				<td nowrap><font color="blue"><b>Đính kèm:</font></td>
+				<td><?php
+				foreach ($this->arrparts as $part){
+					if($part->_is_attactment == 1)
+						echo "<a href='/mailclient/emailengine/getattachment?id_part=$part->_id'>$part->_name</a>";
+				}
+				
+				?>
+				</td>
+
+			</tr>
+			<?php }?>
+			
+		</table>
+		 
+		<div align="right" >Ngày <?=htmlspecialchars(date("d/m/Y --- H:i",strtotime($this->email_messages->_time)))?></div>
+			
+										    
+			
+		
+	
+	</div>
+	
+	<iframe style= 'background-color:FFFFCC;border:1px dashed #330033 ;margin-left:0px;width:100%;height:400px;' ;allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src="/mailclient/main/viewcontentmsg/id/<?=$this->id?>"
+	<?php if($this->is_popup == 0){ ?>
+onclick="parent.parent.document.getElementById('id_tooltip').style.display='none';parent.parent.document.getElementById('id_tooltip_group').style.display='none'"
+<?php }?>
+	></iframe>
+
+	
+</form>
+<p id=lasttext></p>
+</body>
+
+<script>
+function doReply(type){
+	document.frm.IS_REPLY.value = type;
+	//window.moveTo(0,0);
+	//window.resizeTo(screen.width,screen.height);
+	//window.location = "/mailclient/main/compose/";
+	owait = document.getElementById("wait_compose");
+	owait.style.display = "block";
+	document.frm.submit();
+	
+}
+function doClose(){
+		//<?php if($this->is_popup == 0){ ?>
+		//?>
+			window.parent.document.getElementById('right_frame').src='/mailclient/main/maillist/idfolder/<?=$this->idfolder?>';
+		//<?php }else{?>
+		//	self.close();
+		//<?php }?>
+
+		
+}
+
+function doPopup(){
+	window.open("/mailclient/main/view/is_popup/1/id/<?=$this->id?>",
+				"windowviewmail<?=$this->id?>","status=0,toolbar=1,autoscroll,width=600,height=500");
+	window.parent.document.getElementById('right_frame').src='/mailclient/main/maillist/idfolder/<?=$this->idfolder?>';
+}
+
+var iframeElement = window.parent.document.getElementById('right_frame');
+		iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+		iframeElement.width = "100%";
+</script>
+</html>

@@ -1,0 +1,106 @@
+<div class="title-view">
+    <h4 style="font-size: 13pt; font-weight: bold; padding-bottom: 10px"><?php echo $this->datetxt ?></h4>
+</div>
+<table class="adminlist" width="100%">
+    <thead>
+        <tr>
+            <th style="text-align: center">#</th>
+            <th style="text-align: center">Số, ký hiệu VB</th>
+            <th style="text-align: center">Ngày ban hành</th>
+            <th style="text-align: center">Cơ quan ban hành</th>
+            <th style="text-align: center">Trích yếu</th>
+            <?php
+                if($this->params->thongke == 0){
+            ?>
+                <th style="text-align: center">Người lưu VB</th>
+            <?php
+                }
+            ?>
+            <th style="text-align: center">Ngày lưu VB</th>
+            <th style="text-align: center">Ghi chú</th>
+            <?php
+                if($this->params->TYPE_LUUKT == 0){
+            ?>
+                <th style="text-align: center">Hình thức</th>
+            <?php
+                }
+            ?>
+        </tr>
+    </thead>
+
+    <tbody>
+    <?php
+        foreach($this->dataGroup as $dataGroup){
+    ?>
+        <tr>
+            <td colspan="<?php echo $this->params->thongke==0?9:8 ?>">
+                <b>
+                <?php
+                    if($this->params->thongke == 0){
+                        echo $dataGroup['NAME'];
+                    }else{
+                        echo $dataGroup['FIRSTNAME']. ' '.$dataGroup['LASTNAME'];
+                    }
+                ?>
+                </b>
+            </td>
+        </tr>
+        <?php
+            foreach($this->data as $key => $value){
+                if($this->params->thongke == 0 && $dataGroup['ID_DEP'] == $key){
+                    $i = 0;
+                    foreach($value as $item) {
+                        $item = (object)$item;
+                        $i++;
+                    ?>
+                        <tr>
+                            <td style="text-align: center"><?php echo $i; ?></td>
+                            <td><?php echo $item->SOKYHIEU; ?></td>
+                            <td style="text-align: center"><?php echo QLVBDHCommon::MysqlDateToVnDate($item->NGAYBANHANH); ?></td>
+                            <td style="width: 17%"><?php echo $item->COQUANBANHANH; ?></td>
+                            <td style="width: 23%"><?php echo $item->TRICHYEU; ?></td>
+                            <td><?php echo $item->NGUOILUU; ?></td>
+                            <td style="text-align: center"><?php echo QLVBDHCommon::MysqlDateToVnDate($item->NGAYLUU); ?></td>
+                            <td><?php echo $item->GHICHU; ?></td>
+                            <?php
+                                if($this->params->TYPE_LUUKT == 0){
+                            ?>
+                                <td style="width: 8%"><?php echo $item->TYPESAVE==1?'Lưu tham khảo':'Lưu chờ xử lý'; ?></td>
+                            <?php
+                                }
+                            ?>
+                        </tr>
+                    <?php
+                    }
+                }else if($dataGroup['ID_U'] == $key){
+                    $i = 0;
+                    foreach($value as $item) {
+                        $item = (object)$item;
+                        $i++;
+                ?>
+                    <tr>
+                        <td style="text-align: center"><?php echo $i; ?></td>
+                        <td><?php echo $item->SOKYHIEU; ?></td>
+                        <td style="text-align: center"><?php echo QLVBDHCommon::MysqlDateToVnDate($item->NGAYBANHANH); ?></td>
+                        <td style="width: 17%"><?php echo $item->COQUANBANHANH; ?></td>
+                        <td style="width: 23%"><?php echo $item->TRICHYEU; ?></td>
+                        <td style="text-align: center"><?php echo QLVBDHCommon::MysqlDateToVnDate($item->NGAYLUU); ?></td>
+                        <td><?php echo $item->GHICHU; ?></td>
+                        <?php
+                            if($this->params->TYPE_LUUKT == 0){
+                            ?>
+                                <td style="width: 8%"><?php echo $item->TYPESAVE==1?'Lưu tham khảo':'Lưu chờ xử lý'; ?></td>
+                            <?php
+                            }
+                        ?>
+                    </tr>
+                <?php
+                    }
+                }
+            }
+        ?>
+    <?php
+        }
+    ?>
+    </tbody>
+</table>

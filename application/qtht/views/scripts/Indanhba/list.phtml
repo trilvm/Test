@@ -1,0 +1,181 @@
+<?=QLVBDHCommon::useDlgConfirm()?>
+
+<form name=frm method="post" action="/qtht/Indanhba/list">
+	<table width="50%">	
+               <tr>
+                    <td>Phòng ban</td>
+                    <td>
+                        <select name=ID_DEP onchange="document.frm.submit();">
+			<option value=0>** Tất cả phòng ban **</option>
+			<option value=1>** Người dùng mới tạo **</option>
+			<?=nguoidungModel::ToDepCombo($this->dep,$this->sel_dep) ?>
+			</select>
+                        
+                    </td>
+                </tr>
+              
+                <tr>
+                    <td>Nhóm người dùng</td> 
+                    <td>
+                        <select name=ID_GROUP onchange="document.frm.submit();">
+                        <option value=0>** Tất cả các nhóm **</option>     
+                        <?php
+                            
+                          foreach ($this->data_group as $value) {
+                             
+                              echo "<option value={$value['ID_G']}";
+                               if(($value['ID_G']) == ($this->group)) echo ' selected';  
+                              echo">{$value['NAME']}</option>" ;
+                          }
+                        ?>
+			</select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Sắp xếp theo tên người dùng</td>
+                    <td><select name="sapxep" onchange="document.frm.submit();">
+                        <option value="1" <?php if($this->sapxep==1) echo 'selected' ?>>Tăng dần</option>
+                        <option value="0" <?php if($this->sapxep==0) echo 'selected' ?>>Giảm dần</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Tìm kiếm theo tên người dùng</td>
+                    <td>
+                        <input type="text" name="search" style="width: 200px " id="search" value="<?php echo htmlspecialchars($this->search); ?>" class="text_area" onchange="document.frm.page.value=1;document.frm.submit();" />
+                        <input type="button" onclick="document.frm.submit();" value="Tìm" />
+                        <input type="button" onclick="document.frm.page.value=1;document.getElementById('search').value='';document.frm.submit();" value="Làm lại" />
+                    </td>
+                </tr>
+	</table>
+	<table class="adminlist">
+	<thead>
+		<tr>
+			<th nowrap style="text-align: center;">#</th>
+			<th nowrap style="text-align: center;"><input type=checkbox name=DELALL onclick="SelectAll(this,'IN')"></th>
+			<th width="15%">Tài khoản</th>
+			<th width="15%">Họ</th>
+			<th width="15%">Tên</th>
+			<th width="15%">Phòng ban</th>
+			<th width="15%">Nhóm</th>
+			<th width="15%">Thư điện tử-ĐT</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="8">
+					<div class="pagination">
+						<div class="limit">Hiển thị #
+							<select name="limit" id="limit" class="inputbox" size="1" onchange="document.frm.page.value = 1;document.frm.submit();" style="width:60px;">
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<script>
+									document.frm.limit.value='<?php echo $this->limit ?>';
+								</script>
+							</select>
+						</div>
+						<div style="float:right;"><?php echo $this->showPage;  ?></div>
+					</div>
+			</td>
+		</tr>
+	</tfoot>
+
+	<tbody>
+<?php
+$stt=0;
+$i=5;
+foreach ($this->data as $row ){
+	$stt++;
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td nowrap align="center"><?php echo $stt ?></td>
+			<td nowrap align="center">
+				<?php if($row['USERNAME']!="administrator"){?>
+				<input type=checkbox name=IN[] value='<?php echo $row['ID_EMP'] ?>'>
+				<?php } ?>
+			</td>
+			<td nowrap>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_U'] ?>);">
+				<?=$row['ISLEADER']==1?"<b>":""?><?php echo htmlspecialchars($row['USERNAME']) ?>
+				</a>
+			</td>
+			<td  nowrap>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_U'] ?>);">
+				<?php echo htmlspecialchars($row['FIRSTNAME']) ?>
+				</a>
+			</td>
+			<td nowrap>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_U'] ?>);">
+				<?php echo htmlspecialchars($row['LASTNAME']) ?>
+				</a>
+			</td>
+			<td  nowrap>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_U'] ?>);">
+				<?php echo htmlspecialchars($row['DEPNAME']) ?>
+				</a>
+			</td>
+			<td  nowrap>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_U'] ?>);">
+				<?php echo htmlspecialchars($row['GNAME']) ?>
+				</a>
+			</td>
+			<td  nowrap>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_U'] ?>);">
+				<?php echo htmlspecialchars($row['EMAIL']."--".$row['DIENTHOAI']) ?>
+				</a>
+			</td>
+		</tr>
+<?php
+    $i = (-1+$i)*-1;
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<script>
+function xuatdanhba(){
+	var mess = true;
+	mess = validateInput("selone_check","IN[]","<?=ERR11012001?>");
+	if(mess){
+		document.frm.action = "/qtht/Indanhba/In/EXCEL/1";
+		document.frm.submit();
+	}else{
+		alert("<?=ERR11012001?>");
+	}
+}
+function indanhba(){
+	var mess = true;
+	mess = validateInput("selone_check","IN[]","<?=ERR11012001?>");
+	if(mess){
+		document.frm.action = "/qtht/Indanhba/In";
+		document.frm.submit();
+	}else{
+		alert("<?=ERR11012001?>");
+	}
+}
+function BackButtonClick()
+{
+    document.frm.action = "/qtht/danhmucnguoidung/index";
+    document.frm.submit();
+}
+function AddNewButtonClick(){
+	document.frm.action = "/qtht/danhmucnguoidung/input";
+	document.frm.submit();
+}
+function ItemClick(id){
+	document.frm.action = "/qtht/Indanhba/list/id/"+id;
+	document.frm.submit();
+}
+</script>
+<script>
+    var ftext = document.getElementById('search');
+    ftext.focus();
+</script>

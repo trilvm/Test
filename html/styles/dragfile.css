@@ -1,0 +1,18 @@
+#filedrag
+{
+	display: none;
+	text-align: center;
+	color: rgb(139, 139, 139);;
+	cursor: default;
+	height:20px;
+	display:'block';
+}
+#filedrag.hover
+{
+	height:20px;
+	color: #f00;
+	border: 2px dashed blue;
+	border-radius: 7px;
+	background:#FFFCF2;
+	display:'block';
+}

@@ -1,0 +1,65 @@
+<?php
+	if($this->isCapnhat == 1)
+	{ 
+?>  
+	<a href="#" 
+    onclick='
+    var ln = 0;
+	var arr = document.getElementsByName("DELidfiledk<?php echo $this->idObject?>[]");
+	for(var i = 0 ; i < arr.length ;i++ ){
+		if(arr[i].checked == true){
+			ln = 1;
+		}
+	}
+	if(ln == 1){
+		if(confirm("<?php echo "Bạn có muốn xóa không"; ?>")){
+			var url="/hscv/File/delete?type=<?php echo $this->type ?>&year=<?php $this->year?>&iddiv=<?php echo $this->iddiv ?>&idObject=<?php echo $this->idObject?>&isTemp=<?php echo $this->isTemp ?>&from=attachment";
+   			sendDataObjectNameToServer("DELidfiledk<?php echo $this->idObject?>[]",url,false,"<?php echo $this->iddiv ?>");
+		}
+	}
+	else
+	{
+		alert("Bạn phải chọn ít nhất một dòng để xóa");
+	}
+    return false;
+    '
+    ><img src="/images/icon_del.gif" border="0"></a>  
+<?php 
+	}
+ ?>
+
+<?php if($this->isCapnhat == 1){ ?>
+<a href="#" onclick="document.getElementById('tftemp<?php echo $this->idObject?>').style.display='';
+	document.getElementById('tftemp<?php echo $this->idObject?>').src = 
+	'/hscv/File/input?type=<?php echo $this->type?>&year=<?php echo $this->year?>&idObject=<?php echo $this->idObject?>&iddiv=<?php echo $this->iddiv ?>&isTemp=<?php echo $this->isTemp?>&from=attachment';
+	return false;"><img src="/images/icon_add.gif" border="0" alt="Click để đính kèm tệp"></a><br>
+<?php } ?>
+<?php
+	$stt=0;
+	foreach ($this->data as $item)
+	{
+	$stt++;
+?>
+		
+			
+			<?php
+				if($this->isCapnhat == 1)
+				{ 
+			?>  
+			<input type="hidden" name="idFile[]" class="idFile" value=<?php echo $item->MASO ?>>
+			<input type=checkbox name='DELidfiledk<?php echo $this->idObject ?>[]' value='<?=$item->MASO?>'> 
+			<?php
+				}
+				else 
+				echo $stt.".";
+			?>
+			<a href="/hscv/File/download?year=<?php $this->year?>&maso=<?php echo $item->MASO ?>"><?php echo $item->FILENAME  ?></a> 
+			
+	
+<?php 
+	}
+?>
+<iframe style="overflow-x:visible;display:none;" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no  class='iframeinputfile' id="tftemp<?php echo $this->idObject?>" 
+name="tftemp<?php echo $this->idObject?>" 
+src="" >
+</iframe>

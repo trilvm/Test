@@ -1,0 +1,12 @@
+<?php 
+if($this->loaiCV == "VBD"){ ?>
+<font color="blue"><b>Văn bản đến</b></font>: 
+<?=$this->data['SOKYHIEU']?> -- <?=QLVBDHCommon::MysqlDateToVnDate($this->data['NGAYBANHANH']) ?> -- <?=$this->data['COQUANBANHANH_TEXT'] ?>
+<?php } if($this->loaiCV == "VBSOANTHAO") {?>
+<font color="blue"><b>Công việc</b></font>: 
+<?php } if($this->loaiCV == "MOTCUA"){?>
+<font color="blue"><b>Hồ sơ một cửa</b></font>: 
+<?php }?>
+
+<br/>
+<i><?php echo $this->data['TRICHYEU'] ?></i>

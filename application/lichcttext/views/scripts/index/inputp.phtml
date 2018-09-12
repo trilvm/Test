@@ -1,0 +1,83 @@
+<form name=frm method="post" action="/lichcttext/index/inputsavep">
+<table class=admintable>
+	<tr>
+		<td>
+			Nội dung làm việc<font color="red">*</font>
+		</td>
+		<td>
+			<textarea rows="3" cols="50" name=NOIDUNG></textarea>
+		</td>
+		<td class="box_erro_area" id="ERRNOIDUNG">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Địa điểm
+		</td>
+		<td>
+			<textarea rows="2" cols="50" name=DIADIEM></textarea>
+		</td>
+		<td class="box_erro_area" id="ERRDIADIEM">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Thành phần tham dự
+		</td>
+		<td>
+			<textarea rows="2" cols="50" name=THANHPHAN></textarea>
+		</td>
+		<td class="box_erro_area" id="ERRTHANHPHAN">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Buổi<font color="red">*</font>
+		</td>
+		<td>
+			<input type=checkbox value=1 name=BUOI[] checked="checked"> Sáng <input type=checkbox value=2 name=BUOI[] checked="checked"> Chiều <input type=checkbox value=3 name=BUOI[]> Tối 
+		</td>
+		<td class="box_erro_area" id="ERRBEBUOI">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Từ ngày<font color="red">*</font>
+		</td>
+		<td>
+			<?=QLVBDHCommon::calendarFull($this->BEGINDAY,"BEGINDAY","BEGINDAY")?>
+		</td>
+		<td class="box_erro_area" id="ERRBEGINDAY">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Đến ngày<font color="red">*</font>
+		</td>
+		<td>
+			<?=QLVBDHCommon::calendarFull($this->ENDDAY,"ENDDAY","ENDDAY")?>
+		</td>
+		<td class="box_erro_area" id="ERRENDDAY">
+		</td>
+	</tr>
+</table>
+</form>
+<script>
+	var issave = false;
+	function SaveButtonClick(){
+	var err = true;
+		err = err & validateInput("req",document.frm.NOIDUNG,"Bạn phải nhập nội dung làm việc");
+		err = err & err==true?validateInput("maxlen=512",document.frm.NOIDUNG,"Nội dung làm việc phải ít hơn 512 ký tự"):false;
+		err = err & validateInput("req",document.frm.BEGINDAY,"Bạn phải nhập ngày bắt đầu");
+		err = err & err==true?validateInput("date",document.frm.BEGINDAY,"Ngày bắt đầu không hợp lệ"):false;
+		err = err & validateInput("req",document.frm.ENDDAY,"Bạn phải nhập ngày kết thúc");
+		err = err & err==true?validateInput("date",document.frm.ENDDAY,"Ngày kết thúc không hợp lệ"):false;
+		if(err==true && issave==false){
+			issave=true;
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+        window.location.href = "/lichcttext/index/index";
+    }
+</script>

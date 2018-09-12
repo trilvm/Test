@@ -1,0 +1,139 @@
+<?php
+	
+?>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<form name=frm method=post>
+	<table width=100%>
+		<tr>
+			<td align="left" width="50%">
+				Lọc:
+				<input type="text" name="search" id="search" value="<?php echo htmlspecialchars($this->search) ?>" class="text_area" onchange="document.frm.page.value=1;document.frm.submit();" />
+				<button onclick="document.frm.submit();">Tìm</button>
+				<button onclick="document.frm.page.value=1;document.getElementById('search').value='';document.frm.submit();">Làm lại</button>
+			</td>
+			<td width="50%" align="right">
+				Từ ngày<?=QLVBDHCommon::calendar($this->fromdate,"fromdate","fromdate") ?>
+				Đến ngày<?=QLVBDHCommon::calendar($this->todate,"todate","todate") ?>
+				<select name="filter_object" id="filter_object" class="inputbox" size="1" onchange="document.frm.page.value=1;document.frm.submit();">
+					<option value=0>
+						--Tất cả--
+					</option>
+					<option value=1>
+						Login không hợp lệ
+					</option>
+					<option value=2>
+						Lỗi hệ thống
+					</option>
+					<option value=3>
+						Truy cập liên tục
+					</option>
+					<option value=4>
+						Người dùng nhiều máy
+					</option>
+				</select>
+				<script>
+					document.frm.filter_object.value = "<?=$this->filter_object?>";
+				</script>
+			</td>
+		</tr>
+	</table>
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>STT</th>
+				<th><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></th>
+				<th nowrap>IP</th>
+				<th nowrap>Tài khoản</th>
+				<th width=100%>Hành động</th>
+				<th nowrap>Ngày giờ</th>
+				<th width=100%>Lỗi</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<td colspan="7">
+					<div class="pagination">
+						<div class="limit">Hiển thị #
+							<select name="limit" id="limit" class="inputbox" size="1" onchange="document.frm.page.value = 1;document.frm.submit();" style="width:60px;">
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<script>
+									document.frm.limit.value='<?php echo $this->limit ?>';
+								</script>
+							</select>
+						</div>
+						<div style="float:right;"><?php echo $this->showPage; ?></div>
+					</div>
+				</td>
+			</tr>
+		</tfoot>
+		<tbody>
+		<?php
+$stt=0;
+$i=0;
+foreach ($this->data as $row ){
+	$stt++;
+?>
+			<tr class="row<?php echo $i; ?>">
+				<td nowrap align="right"><?php echo $stt ?></td>
+				<td nowrap align="center">
+					<input type=checkbox name=DEL[] value='<?php echo $row['ID_LOG'] ?>'>
+				</td>
+				<td nowrap>
+					<?php echo htmlspecialchars($row['IP']) ?>
+				</td>
+				<td nowrap>
+					<?php echo htmlspecialchars($row['EMP_NAME']) ?>
+				</td>
+				<td width=100%>
+					<?php echo htmlspecialchars($row['ACTION']) ?>
+				</td>
+				<td nowrap>
+					<?php echo htmlspecialchars($row['DATE']) ?>
+				</td>
+				<td width=100%>
+					<?php echo htmlspecialchars($row['ERROR']) ?>
+				</td>
+			</tr>
+<?php
+	$i = (-1+$i)*-1;
+}
+?>
+		</tbody>
+	</table>
+	<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+
+<script>
+	function DeleteButtonClick(){
+		var ln = 0;
+		var arr = document.getElementsByName('DEL[]');
+		for(var i = 0 ; i < arr.length ;i++ ){
+			if(arr[i].checked == true){
+				ln = 1;
+			}
+		}
+		if(ln == 1){
+			if(confirm("<?php echo "Bạn có muốn xóa không"; ?>")){
+				//document.URL=
+				document.frm.action="/auth/log/delete";
+				document.frm.method="post";
+				document.frm.submit();
+			}
+		}else{
+			alert("Bạn phải một dòng chọn để xóa");
+		}
+	}
+	
+	function DeleteAllButtonClick(){
+		document.frm.action="/auth/log/deleteall";
+		document.frm.method="post";
+		document.frm.submit();
+	}	
+</script>

@@ -1,0 +1,56 @@
+<form action="" enctype="multipart/form-data" name="frmAddEmployee"  method="<?php echo $this->form->getAttrib('method');?>">
+<fieldset>
+	<div style="text-align:right;width:100%">
+		Trường có dấu <font color="red">*</font> là bắt buộc nhập
+	</div>
+	<div class="required">
+		<label id="lblTextIput">Họ<font color="red">*</font></label>
+		<?php echo $this->form->getElement('FIRSTNAME');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('FIRSTNAME'));			
+            ?>
+        </span>
+	</div>
+    <div class="required">
+		<label id="lblTextIput">Tên <font color="red">*</font></label>
+		<?php echo $this->form->getElement('LASTNAME');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('BIRTHDATE'));			
+            ?>
+        </span>
+	</div>
+    <div class="required">
+		<label id="lblTextIput">Ngày sinh</label>
+		<?php echo $this->form->getElement('BIRTHDATE');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('LASTNAME'));			
+            ?>
+        </span>
+	</div>
+	<div class="optional">
+		<label for="ID_DEP_PARENT" id="lblTextIput">Danh sách phòng ban</label>
+		<?php echo $this->form->getElement('ID_DEP');?>
+        <span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_DEP'));			
+            ?>
+        </span>
+	</div>
+</fieldset>
+<input type=hidden name="id" value=<?php echo $this->ID_EMP?> >
+</form>
+
+<script>
+	function SaveButtonClick()
+	{
+		document.frmAddEmployee.submit();
+	}
+	function BackButtonClick()
+	{
+		document.frmAddEmployee.action = "/qtht/employees/";
+		document.frmAddEmployee.submit();
+	}
+</script>

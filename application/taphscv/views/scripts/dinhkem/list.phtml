@@ -1,0 +1,88 @@
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th nowrap="nowrap">#</th>
+			<th>Tên tệp đính kèm</th>
+                        <th>Trích yếu</th>
+			<th nowrap="nowrap">Tệp tin</th>
+			<th nowrap="nowrap"></th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr id="#trframe<?=$this->idtaphoso?>"><td colspan=5 style="background-color:#F3F3F3;">
+		<a href="#trframe<?=$this->idtaphoso?>" onClick="document.getElementById('iframesend<?=$this->idtaphoso?>').style.display='';
+		document.getElementById('iframesend<?=$this->idtaphoso?>').setAttribute('src','/taphscv/dinhkem/input/IdFrame/iframesend<?=$this->idtaphoso?>/idtaphoso/<?=$this->idtaphoso?>/iddinhkem/0');" >[Thêm mới]
+		</a>
+                <a href="#trframe<?=$this->idtaphoso?>" onClick="document.getElementById('iframesend<?=$this->idtaphoso?>').style.display='none';" >[Hủy]
+		</a>
+		</td></tr>
+	</tfoot>
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+foreach ($this->data as $row )
+	{
+	$stt++;
+?>
+		<tr class=row<?=$i?>>
+			<td nowrap="nowrap" style="height:15px"><?=$stt?></td>
+			<td style="height:15px">
+				<a href="#trframe<?=$row['ID_TAPHOSO']?>" onclick="
+								document.getElementById('iframesend<?=$row['ID_TAPHOSO']?>').style.display='';
+								document.getElementById('iframesend<?=$row['ID_TAPHOSO']?>').setAttribute('src','/taphscv/dinhkem/input/IdFrame/iframesend<?=$row['ID_TAPHOSO']?>/idtaphoso/<?=$row['ID_TAPHOSO']?>/iddinhkem/<?=$row["ID_DINHKEM"]?>');
+				"><?=$row["TEN"]?></a>
+				<input type="hidden" name="iddinhkem" value="<?=$row["ID_DINHKEM"]?>" />
+			</td>
+                        <td><?=$row["TRICHYEU"]?></td>
+			<td nowrap="nowrap" style="height:15px">
+			<?php
+				if ($row["FILENAME"] != "")
+				{ ?>
+				<a href="/taphscv/dinhkem/download/id/<?=$row["ID_DINHKEM"]?>"><?=$row["FILENAME"]?></a>
+				<?php }else {}?>
+			</td>
+			<td nowrap="nowrap" style="height:15px" colspan=2>
+				<a href="#" onClick="javascript:
+                                if(confirm('Bạn có muốn xóa tệp này không?')){
+                                        execfunction('taphscv','dinhkem','delete','iddinhkem/<?=$row['ID_DINHKEM']?>/idtaphoso/<?=$row['ID_TAPHOSO'] ?>');
+                                };
+                        " >[Xóa]</a>
+			</td>
+		</tr>
+<?php
+}
+?>
+
+	</tbody>
+</table>
+
+	<iframe style="overflow-x:visible;display:none; width:100%" height=0 width=100% id=iframesend<?=$this->idtaphoso?> allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src=""></iframe>
+
+<script>
+function AddNewButtonClick(){
+	window.location = "/taphscv/dinhkem/input";
+}
+function ItemClick(id){
+	document.frmVanban.action = "/taphscv/dinhkem/input/iddinhkem/"+id;
+	document.frmVanban.submit();
+}
+
+function SwapIframe(id,url){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+					document.getElementById("groupcontent"+id).style.display="none";
+					document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+					break;
+				}
+			}
+		}
+		if(document.getElementById('groupcontent'+id).style.display == ''){
+			document.getElementById('groupcontent'+id).style.display = 'none';
+		}else{
+			document.getElementById('groupcontent'+id).innerHTML = '<iframe style="overflow-x:visible" height=0 id=iframebutphe'+id+' allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src="'+url+'"></iframe>';
+			document.getElementById('groupcontent'+id).style.display = '';
+		}
+	}
+</script>﻿

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="/js/common.js"></script>
+        <script src="/js/validate.js" type="text/javascript"></script>
+        <script src="/js/validate.js" type="text/javascript"></script>
+        <script type="text/javascript" src="/js/Json/Base64.js"?>></script>
+        <script type="text/javascript" src="/js/Json/json2.js"?>></script>
+        <script type="text/javascript" src="/js/Json/json_parse.js"?>></script>
+        <script type="text/javascript" src="/js/Ajax/AjaxEngine.js"?>></script>
+        <link rel="stylesheet" type="text/css" href="/styles/general.css" />
+        <link rel=Stylesheet href=stylesheet.css>
+    </head>
+    <body style="background-color:transparent">
+        <form name="frmThongKe" target="_blank" id="frmThongKe" action="/giamsatgiaoviec/baocao/thongkedetailview" enctype="multipart/form-data" method="post">
+            <table class=adminlist>
+<!--                <tr>
+                    <td align=center style="font-weight:bold;border: none; font-size: 15px;">SỐ NHIỆM VỤ CỤ THỂ TRONG THÁNG  <?= (int) $this->month ?></td>
+                </tr>-->
+                <tr>
+                    <td align=center style="font-weight:bold;border: none;">Từ ngày <?= $this->fromdate ?> đến ngày <?= $this->todate ?></td>
+                </tr>
+
+            </table>
+
+            <table class=adminlist1>
+                <thead>
+                    <tr>
+                        <th rowspan=2>TT</th>
+                        <th rowspan="2">Cơ quan thực hiện nhiệm vụ</th>
+                        <th style="text-align:center" colspan=3>Nhiệm vụ được giao trong tháng</th>
+                        <th style="text-align:center" colspan=3>Đã thực hiện</th>
+                        <th style="text-align:center" colspan=2>Đang thực hiện</th>
+                        <th style="text-align:center" colspan=3>Chưa thực hiện</th>
+                    </tr>
+                    <tr>
+                        <th>Kết dư từ tháng trước</th>
+                        <th>Nhiệm vụ trong tháng</th>
+                        <th>Tổng nhiệm vụ giao</th>
+                        <th>Trước hạn</th>
+                        <th>Đúng hạn</th>
+                        <th>Quá hạn</th>
+                        <th>Trong hạn</th>
+                        <th>Quá hạn</th>
+                        <th>Trong hạn</th>
+                        <th>Quá hạn</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+
+
+
+                    <?php
+                    $stt = 0;
+                    foreach ($this->dataReport as $itemreport) {
+                        ?>
+                        <tr>
+                            <td align=center><?php echo ++$stt ?></td>
+                            <td><?php echo $itemreport->TENDONVI ?></td>
+
+
+                            <td align=center>
+                                <?php
+                                if ((int) $itemreport->CNTTHANGTRUOC > 0) {
+                                    ?>
+                                    <a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                                window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/10/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                                window.parent.document.frm.submit();
+                                                return false;"><?php echo $itemreport->CNTTHANGTRUOC ?></a>
+                                       <?php
+                                   } else
+                                       echo $itemreport->CNTTHANGTRUOC;
+                                   ?>
+
+                            </td>
+
+                            <td align=center><a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/2/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                window.parent.document.frm.submit();
+                                return false;"><?php echo $itemreport->CNTCONGVIEC ?></a></td>
+                            <td align=center><?php echo (int) $itemreport->CNTTHANGTRUOC + (int) $itemreport->CNTCONGVIEC ?></td>
+
+                            <td align=center>
+                                <?php
+                                if ((int) $itemreport->CNTXONGTRUOCHAN > 0) {
+                                    ?>
+                                    <a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                         window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/4/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                         window.parent.document.frm.submit();
+                                         return false;"><?php echo $itemreport->CNTXONGTRUOCHAN ?></a>
+                                       <?php
+                                   } else
+                                       echo $itemreport->CNTXONGTRUOCHAN;
+                                   ?>
+
+                            </td>
+
+                            <td align=center>
+                                <?php
+                                if ((int) $itemreport->CNTXONGDUNGHAN > 0) {
+                                    ?>
+                                    <a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                         window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/4/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                         window.parent.document.frm.submit();
+                                         return false;"><?php echo $itemreport->CNTXONGDUNGHAN ?></a>
+                                       <?php
+                                   } else
+                                       echo $itemreport->CNTXONGDUNGHAN;
+                                   ?>
+
+
+
+                            </td>
+
+
+                            <td align=center>
+                                <?php
+                                if ((int) $itemreport->CNTXONGTREHAN > 0) {
+                                    ?>
+                                    <a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                        window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/4/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                        window.parent.document.frm.submit();
+                                        return false;"><?php echo $itemreport->CNTXONGTREHAN ?></a>
+                                       <?php
+                                   } else
+                                       echo $itemreport->CNTXONGTREHAN;
+                                   ?>
+
+
+                            </td>
+
+
+                            <td align=center>
+                                <?php
+                                if ((int) $itemreport->CNTDANGTRIENKHAI > 0) {
+                                    ?>
+                                    <a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                        window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/8/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                        window.parent.document.frm.submit();
+                                        return false;"><?php echo $itemreport->CNTDANGTRIENKHAI ?></a>
+                                       <?php
+                                   } else
+                                       echo $itemreport->CNTDANGTRIENKHAI;
+                                   ?>
+
+                            </td>
+
+                            <td align=center>
+                                <?php
+                                if ((int) $itemreport->CNTDANGTRIENKHAITREHAN > 0) {
+                                    ?>
+                                    <a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                        window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/8/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                        window.parent.document.frm.submit();
+                                        return false;"><?php echo $itemreport->CNTDANGTRIENKHAITREHAN ?></a>
+                                       <?php
+                                   } else
+                                       echo $itemreport->CNTDANGTRIENKHAITREHAN;
+                                   ?>
+
+
+                            </td>
+
+
+                            <td align=center>
+                                <?php
+                                if ((int) $itemreport->CNTCHUATHUCHIEN > 0) {
+                                    ?>
+                                    <a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                        window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/9/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                        window.parent.document.frm.submit();
+                                        return false;"><?php echo $itemreport->CNTCHUATHUCHIEN ?></a>
+                                       <?php
+                                   } else
+                                       echo $itemreport->CNTCHUATHUCHIEN;
+                                   ?>
+
+
+                            </td>
+
+                            <td align=center>
+                                <?php
+                                if ((int) $itemreport->CNTCHUATHUCHIENTREHAN > 0) {
+                                    ?>
+                                    <a href="#" onclick="window.parent.document.frm.target = '_blank';
+                                        window.parent.document.frm.action = '/giaoviec/index/listdetail/REPORTTYPE/9/DONVINHAN/<?php echo $itemreport->DONVINHAN ?>';
+                                        window.parent.document.frm.submit();
+                                        return false;"><?php echo $itemreport->CNTCHUATHUCHIENTREHAN ?></a>
+                                       <?php
+                                   } else
+                                       echo $itemreport->CNTCHUATHUCHIENTREHAN;
+                                   ?>
+
+
+
+                            </td>
+
+                        </tr>
+                        <?php
+                    }
+                    ?>
+
+                    </body>
+                <tfoot>
+                </tfoot>
+            </table>
+        </form>
+        <p id="lasttext"></p>
+        <script>
+            function resize() {
+                try {
+                    var iframeElement = window.parent.document.getElementById('reportview');
+                    iframeElement.style.height = "" + (document.getElementById("lasttext").offsetTop) + "px";
+                    iframeElement.width = "100%";
+                    setTimeout("resize()", 1000);
+                } catch (ex) {
+                }
+            }
+            resize();
+        </script>
+    </body>
+</html>

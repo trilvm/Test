@@ -1,0 +1,176 @@
+<?php
+function createInputHanxuly($id, $name, $value, $onchange) {
+        $type = $value < 1 ? 8 : 1;
+        if ($type == 8) {
+            $cbType1 = "checked='true'";
+            $value = round($value * 8, 1);
+        } else {
+            $cbType2 = "checked ='true'";
+            $value = round($value, 1);
+        }
+        $html = "";
+        $html = "Gia hạn <input id='" . $id . "' type=text onkeypress='return isNumberKey(event)' name='temp_" . $name . "' size=3 maxlength=3 value='" . $value . "' onchange='document.getElementById(\"real_" . $id . "\").value=this.value/document.frm.type_real_" . $id . ".value;" . $onchange . "'>";
+        $html .= "<input style='display:none' type=text id='real_" . $id . "' name='" . $name . "' value='" . ($value / $type) . "'>";
+        $html .= "<input " . ($type == 1 ? "" : "") . " ".$cbType2." type=radio name='type_" . $id . "' id='type_1_" . $id . "' onclick=\"document.frm.type_real_" . $id . ".value=1;document.getElementById('real_" . $id . "').value=document.getElementById('" . $id . "').value/document.frm.type_real_" . $id . ".value;" . $onchange . "\" value=1>ngày ";
+        $html .= "<input " . ($type == 8 ? "" : "") . " ".$cbType1." type=radio name='type_" . $id . "' id='type_8_" . $id . "' onclick=\"document.frm.type_real_" . $id . ".value=8;document.getElementById('real_" . $id . "').value=document.getElementById('" . $id . "').value/document.frm.type_real_" . $id . ".value;" . $onchange . "\" value=8>giờ";
+        $html .= "<input style='display:none' type=text id='type_real_" . $id . "' name='type_real_" . $id . "' value='" . $type . "'>";
+        return $html;
+    }?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/Json/Base64.js"></script>
+<script type="text/javascript" src="/js/Json/json2.js"></script>
+<script type="text/javascript" src="/js/Json/json_parse.js"></script>
+<script type="text/javascript" src="/js/Json/json_parse_state.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/dlg_confirm.js"></script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<?php global $auth;?>
+<style>
+</style>
+</head>
+<body style="background-color:transparent">
+<form name="frm" method=post>
+<table class=adminlist1>
+	<thead>
+		<tr>			
+			<th nowrap="nowrap">Ngày chuyển</th>
+			<th nowrap="nowrap">Người chuyển</th>
+			<th nowrap="nowrap">Người/phòng/nhóm nhận</th>			
+			<th nowrap="nowrap">Hạn XL cũ</th>
+			<th nowrap="nowrap">Tiến độ</th>
+		</tr>
+	</thead>
+	<tfoot>            
+            <tr>
+                <th colspan="7" style="background:#f0f0f0 !important;">                    
+                </th>
+            </tr>            
+	</tfoot>
+	<tbody>
+<?php			
+	$j=count($this->sendprocess)-1;
+		$rowsend = $this->sendprocess[$j];
+//		var_dump(count($this->sendprocess));
+                // ??
+		$content = trim($rowsend["NOIDUNG"]);
+		if($content!="" || ($rowsend["IS_THEODOI"]==1 && $j==count($this->sendprocess)-1)){
+//			$span = "rowspan=2";
+		}else{
+			$span="";
+		}
+                // end ??
+?>
+		<tr class="row<?php echo $i; ?>">			
+			<td nowrap="nowrap" <?=$span?>>
+				<?=date("d/m/Y",strtotime($rowsend["DATESEND"]))?><br>
+				<?=date("H:i:s",strtotime($rowsend["DATESEND"]))?>
+			</td>
+			<td nowrap="nowrap"><?=$rowsend["EMPNCNAME"]?>&nbsp;</td>
+			<td nowrap="nowrap"><?=$rowsend["DEPNAME"].$rowsend["GROUPNAME"].$rowsend["EMPNNNAME"]?>&nbsp;
+
+			</td>
+			
+			<td nowrap="nowrap">
+				<span id="HANXULY_<?=$rowsend["ID_PL"]?>"><?=QLVBDHCommon::createTextHanXuLy($rowsend["HANXULY"])?></span>&nbsp;				
+			</td>
+			<td nowrap="nowrap">
+				<?php if( ( $rowsend["IS_CHOXULY"]!=1 && $rowsend["IS_THEODOI"]!=1 ) || $j!=count($this->sendprocess)-1){ ?>
+					<?=$rowsend["TRE"]>0?QLVBDHCommon::trehantostr($rowsend["TRE"],$rowsend["DATESEND"],$rowsend["HANXULY"]):""?>
+					<?php
+						if($rowsend["TRE"]=="" && $rowsend["HANXULY"]>0 && $rowsend["IS_THEODOI"]!=1){
+					?>
+						<?=QLVBDHCommon::trehantostr(QLVBDHCommon::getTreHan($rowsend["DATESEND"],$rowsend["HANXULY"]),$rowsend["DATESEND"],$rowsend["HANXULY"])?>
+					<?php
+						}
+					?>
+				<?php
+					}else{
+					if($rowsend["IS_CHOXULY"]==1){
+
+				?>
+					<font color=red>Chờ xử lý</font>
+
+				<?php
+					}else{
+				?>
+					<font color=red>Đã lưu theo dõi</font>
+				<?php }} ?>
+			</td>
+		</tr>
+            <tr>
+                <td><?php //echo $rowsend["ID_U_NC"].'='.Zend_Registry::get('auth')->getIdentity()->ID_U; ?></td>
+                <td></td>
+                <td></td>
+                <td><?php if($rowsend["HANXULY"]!=0 && $rowsend["TRE"]=="" && $rowsend["ID_U_NC"]==Zend_Registry::get('auth')->getIdentity()->ID_U){
+				?>				
+				<div id="GIAHAN_<?=$rowsend["ID_PL"]?>">
+					<?=createInputHanxuly("HANXULY1_".$rowsend["ID_PL"],"HANXULY_".$rowsend["ID_PL"],$rowsend["HANXULY"])?>
+					<input type=button value="Đồng ý" onclick="
+						updateghxl('hscv','giahanxuly','save','ID_PL/<?=$rowsend["ID_PL"]?>/ID/<?=$this->ID_HSCV?>/HANXULY/'+document.frm.HANXULY_<?=$rowsend["ID_PL"]?>.value);
+						document.getElementById('GIAHAN_<?=$rowsend["ID_PL"]?>').style.display='';
+						document.getElementById('HANXULY_<?=$rowsend["ID_PL"]?>').innerText=createTextHanXuLy(document.frm.HANXULY_<?=$rowsend["ID_PL"]?>.value);
+					">
+                                            <img id="image_load" style="display: none;" src="/images/loading.gif"></img>
+                                            <span id="re_ghxl"></span>
+				</div>                                
+				<?php
+				}
+				?></td>
+                <td></td>
+            </tr>
+		
+
+
+	</tbody>
+</table>
+<p id=lasttext1></p>
+</form>
+</body>
+</html>
+<script>
+function resize(){
+	try{
+	var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+	iframeElement.style.height = "" + document.getElementById("lasttext1").offsetTop + "px";
+	iframeElement.width = "100%";
+	setTimeout("resize()",1000);
+	}catch(ex){
+	}
+}
+
+setTimeout("resize()",10);
+
+function updateghxl(modulename,controllername,functionname,parameter){
+var img = document.getElementById('image_load');
+var re_dis = document.getElementById('re_ghxl');
+img.style.display = '';
+re_dis.innerHTML ='';
+var submitAjax = new AjaxEngine();
+var oXmlHttp = submitAjax.createXMLHttp();
+oXmlHttp.open("post", "/"+modulename+"/"+controllername+"/"+functionname+"/"+parameter,true);
+oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+var post = submitAjax.getDataFromFrm(document.frm);
+oXmlHttp.onreadystatechange = function () {
+if (oXmlHttp.readyState == 4) {
+if (oXmlHttp.status == 200) {
+//alert(oXmlHttp.responseText);
+if(oXmlHttp.responseText == 1){
+re_dis.innerHTML = "<font color='blue'><b>Gia hạn thành công !</b></font>";
+}else{
+re_dis.innerHTML = "<font color='red'><b>Lỗi</b></font>";
+}
+} else {
+}
+}
+img.style.display = "none";
+};
+oXmlHttp.send(post);
+}
+</script>

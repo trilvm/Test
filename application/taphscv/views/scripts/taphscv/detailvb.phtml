@@ -1,0 +1,220 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<?php
+require_once('qtht/models/LoaiVanBanModel.php');
+require_once('qtht/models/SoVanBanModel.php');
+require_once('qtht/models/LinhVucVanBanModel.php');
+require_once('qtht/models/CoQuanModel.php');
+require_once 'qtht/models/UsersModel.php';
+//var_dump($this->data);
+//var_dump($this->datadk);
+$domat = array("1"=>"Bình thường","2"=>"Mật","3"=>"Tối mật","4"=>"Tuyệt mật");
+$dokhan = array("1"=>"Bình thường","2"=>"Khẩn","3"=>"Hoả tốc");
+?>
+<?php
+if($this->loai==1){
+?>
+<table width=100% class=adminlist1>
+	<TBODY>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Sổ văn bản</TD><TD noWrap><?=$this->data['SVBNAME']?></TD>
+			<TD width=20 noWrap></TD>
+			<TD style="COLOR: blue" noWrap>Loại văn bản</TD><TD noWrap><?=$this->data['LVBNAME']?></TD>
+			<TD width="100%"></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Số ký hiệu</TD><TD noWrap><?=$this->data['SOKYHIEU']?></TD>
+			<TD width=20 noWrap></TD>
+			<TD style="COLOR: blue" noWrap>Số đến</TD><TD noWrap><?=$this->data['SODEN']?></TD>
+			<TD width="100%"></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Ngày ban hành</TD><TD noWrap><?=QLVBDHCommon::MysqlDateToVnDate($this->data['NGAYBANHANH'])?></TD>
+			<TD width=20 noWrap></TD>
+			<TD style="COLOR: blue" noWrap>Ngày đến</TD><TD noWrap><?=QLVBDHCommon::MysqlDateToVnDate($this->data['NGAYDEN'])?></TD>
+			<TD width="100%"></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Cơ quan</TD><TD><?=$this->data["CQNAME"]==""?$this->data['COQUANBANHANH_TEXT']:$this->data["CQNAME"]?></TD>
+			<TD width=20 noWrap></TD>
+			<TD style="COLOR: blue" noWrap>Người ký</TD><TD noWrap><?=$this->data['NGUOIKY']?></TD>
+			<TD width="100%"></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Mã số văn bản</TD><TD noWrap><?=$this->data['MASOVANBAN']?></TD>
+			<TD width=20 noWrap></TD>
+			<TD style="COLOR: blue" noWrap>Lĩnh vực văn bản</TD><TD noWrap><?=$this->data['LVVBNAME']?></TD>
+			<TD width="100%"></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Số tờ</TD><TD noWrap><?=$this->data['SOTO']?></TD>
+			<TD width=20 noWrap></TD>
+			<TD style="COLOR: blue" noWrap>Độ mật</TD><TD noWrap><?=$domat[$this->data['DOMAT']]?></TD>
+			<TD width="100%"></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Số bản</TD><TD noWrap><?=$this->data['SOBAN']?></TD>
+			<TD width=20 noWrap></TD>
+			<TD style="COLOR: blue" noWrap>Độ khẩn</TD><TD noWrap><?=$dokhan[$this->data['DOKHAN']]?></TD>
+			<TD width="100%"></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>File đính kèm</TD>
+			<TD noWrap colspan=3>
+				<?php
+					foreach($this->datadk as $itemdk){
+						echo "<a href='#' onclick=\"document.location.href='/taphscv/taphscv/download/loai/".$this->loai."/nam/".$this->nam."/maso/".$itemdk['MASO']."'\">".$itemdk['FILENAME']."</a>";
+					}
+				?>
+			</TD>
+                        <td></td>
+                        <td></td>
+		</TR>
+		<?php
+			if($this->data['IS_PHOBIEN']==1){
+		?>
+		<TR class=row1>
+			<TD style="COLOR: blue" colSpan=6 noWrap>Văn bản phổ biến</TD>
+		</TR>
+		<?php
+			}
+		?>
+	</TBODY>
+</table>
+<?php
+}else if($this->loai==2){
+?>
+<table width=100% class=adminlist1>
+	<tr class=row1>
+		<td class=row1 nowrap="nowrap" style="color:blue">Sổ văn bản</td>
+		<td class=row1 nowrap="nowrap"><?php echo SoVanBanModel::getNameById($this->data['ID_SVB']) ;?></td>
+		<td class=row1 nowrap="nowrap" width="20"></td>
+		<td class=row1 nowrap="nowrap" style="color:blue">Người trình</td>
+		<td class=row1 nowrap="nowrap"><?php echo UsersModel::getEmloyeeNameByIdUser((int)$this->data['NGUOITAO']);?></td>
+		<td class=row1 width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td class=row1 nowrap="nowrap" style="color:blue">Loại văn bản</td>
+		<td class=row1 nowrap="nowrap"><?php echo LoaiVanBanModel::getNameById($this->data['ID_LVB']) ;?></td>
+		<td class=row1 nowrap="nowrap" width="20"></td>
+		<td class=row1 nowrap="nowrap" style="color:blue">Người ký</td>
+		<td class=row1 nowrap="nowrap"><?php echo UsersModel::getEmloyeeNameByIdUser((int)$this->data['NGUOIKY']);?></td>
+		<td class=row1 width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td class=row1 nowrap="nowrap" style="color:blue">Số ký hiệu</td>
+		<td class=row1 nowrap="nowrap"><?=$this->data['SOKYHIEU']?></td>
+		<td class=row1 nowrap="nowrap" width="20"></td>
+		<td class=row1 nowrap="nowrap" style="color:blue">Người soạn</td>
+		<td class=row1 nowrap="nowrap"><?php echo UsersModel::getEmloyeeNameByIdUser((int)$this->data['NGUOISOAN']);?></td>
+		<td class=row1 width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td class=row1 nowrap="nowrap" style="color:blue">Ngày ban hành</td>
+		<td class=row1 nowrap="nowrap"><?php echo QLVBDHCommon::MysqlDateToVnDate($this->data['NGAYBANHANH']);?></td>
+		<td class=row1 nowrap="nowrap" width="20"></td>
+		<td class=row1 nowrap="nowrap" style="color:blue">Số bản</td>
+		<td class=row1 nowrap="nowrap"><?=$this->data['SOBAN']?></td>
+		<td class=row1 width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td class=row1 nowrap="nowrap" style="color:blue">Cơ quan ban hành</td>
+		<td class=row1 nowrap="nowrap"><?php  echo CoQuanModel::getNameById((int)$this->data['ID_CQ']);?></td>
+		<td class=row1 nowrap="nowrap" width="20"></td>
+		<td class=row1 nowrap="nowrap" style="color:blue">Số tờ</td>
+		<td class=row1 nowrap="nowrap"><?=$this->data['SOTO']?></td>
+		<td class=row1 width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td class=row1 nowrap="nowrap" style="color:blue">Số đi</td>
+		<td class=row1 nowrap="nowrap"><?=$this->data['SODI']==0?(int)$row['SOKYHIEU']:$this->data['SODI']?></td>
+		<td class=row1 nowrap="nowrap" width="20"></td>
+		<td class=row1 nowrap="nowrap" style="color:blue">Độ mật</td>
+		<td class=row1 nowrap="nowrap"><?php 
+		switch($this->data['DOMAT']){
+			case 0:
+				echo "Chưa nhập";
+				break;
+			case 1:
+				echo "bình thường";
+				break;
+			case 2:
+				echo "mật";
+				break;
+			case 3:
+				 echo "tuyệt mật";
+				break;
+			break;
+		}
+		?></td>
+		<td class=row1 width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td class=row1 nowrap="nowrap" style="color:blue">Lĩnh vực văn bản</td>
+		<td class=row1 nowrap="nowrap"><?php echo LinhVucVanBanModel::getNameById($this->data['ID_LVVB']);?></td>
+		<td class=row1 nowrap="nowrap" width="20"></td>
+		<td class=row1 nowrap="nowrap" style="color:blue">Độ khẩn</td>
+		<td class=row1 nowrap="nowrap"><?php 
+		switch($this->data['DOKHAN']){
+			case 0:
+				echo "Chưa nhập";
+				break;
+			case 1:
+				echo "bình thường";
+				break;
+			case 2:
+				echo "khẩn";
+				break;
+			case 3:
+				 echo "hỏa tốc";
+				 break;
+			break;
+		}
+		?></td>
+		<td class=row1 width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td class=row1 nowrap="nowrap" style="color:blue">Nơi nhận</td>
+		<td class=row1 nowrap="nowrap" colspan=5><?=$this->data['NOIDEN']?> </td>							
+	</tr>
+	<TR class=row1>
+			<TD style="COLOR: blue" noWrap>File đính kèm</TD>
+			<TD noWrap colspan=5>
+				<?php
+					foreach($this->datadk as $itemdk){
+						echo "<a href='#' onclick=\"document.location.href='/taphscv/taphscv/download/loai/".$this->loai."/nam/".$this->nam."/maso/".$itemdk['MASO']."'\">".$itemdk['FILENAME']."</a>";
+					}
+				?>
+			</TD>
+		</TR>
+</table>
+<?php
+}else if($this->loai==3){
+?>
+<table width=100% class=adminlist1>
+	<TBODY>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Số ký hiệu</TD><TD width=100%><?=$this->data['SOKYHIEU']?></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Ngày ban hành</TD><TD  width=100%><?=QLVBDHCommon::MysqlDateToVnDate($this->data['NGAYBANHANH'])?></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>Cơ quan</TD><TD  width=100%><?=$this->data['COQUANBANHANH']?></TD>
+		</TR>
+		<TR class=row1>
+			<TD style="COLOR: blue" noWrap>File đính kèm</TD>
+			<TD  width=100%>
+				<?php
+					foreach($this->datadk as $itemdk){
+                                            echo "<a href='#' onclick=\"document.location.href='/taphscv/taphscv/download/id_vb/".$this->idvb.
+                                                    "/loai/".$this->loai."/nam/".$this->nam."/maso/".$itemdk['FILECODE']."'\">".$itemdk['FILENAME'].
+                                                    "</a>";
+					}
+				?>
+			</TD>
+		</TR>
+	</TBODY>
+</table>
+<?php
+}
+?>

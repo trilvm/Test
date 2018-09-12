@@ -1,0 +1,105 @@
+<style type="text/css">
+table.adminlist1 thead th {
+    background: none repeat scroll 0 0 #F0F0F0;
+    border-color: -moz-use-text-color -moz-use-text-color #999999 #FFFFFF;
+    border-style: none none solid solid;
+    border-width: 1px 1px 1px 1px;
+    border: 1px solid #ccc;
+    color: #000000;
+    text-align: left;
+}
+table.adminlist1 tbody tr td {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: -moz-use-text-color -moz-use-text-color #999999 #FFFFFF;
+    border-style: none none solid solid;
+    border-width: 1px 1px 1px 1px;
+    border: 1px solid #ccc;
+    color: #000000;
+    text-align: left;
+}
+table.adminlist1 tfoot {
+    background: none repeat scroll 0 0 #F0F0F0;
+    border-color: -moz-use-text-color -moz-use-text-color #999999 #FFFFFF;
+    border-style: none none solid solid;
+    border-width: 1px 1px 1px 1px;
+    border: 1px solid #ccc;
+    color: #000000;
+    text-align: left;
+}
+</style>
+<table class=adminlist1>
+	<thead>
+		<tr>
+			<th nowrap>#</th>
+			<th width=100%>Tên phiếu trình - <a href="javascript:;" onclick="
+		document.getElementById('addPhieuTrinhFrm<?php echo $this->idhscv ?>').src='/hscv/quanlyphieutrinh/input/idhscv/<?=$this->idhscv?>/idu/<?= $this->id_u ?>/new/1';
+		document.getElementById('addPhieuTrinhFrm<?php echo $this->idhscv ?>').style.display='';
+"><img src="/images/icon_add.gif" border="0">Thêm mới</a></th>
+			<th nowrap>Người tạo</th>
+			<th nowrap>Hành động</th>
+		</tr>
+	</thead>
+	<tfoot>
+	<tr><th align="left" colspan=4><iframe style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no name="addPhieuTrinhFrm<?php echo $this->idhscv ?>" id="addPhieuTrinhFrm<?php echo $this->idhscv ?>" src="" width="100%"> </iframe></tr>
+</tfoot>
+	<tbody>
+<?php 
+ if(count($this->data)==0)
+ {
+?>
+		<tr>
+			<td colspan=4>Chưa có phiếu trình nào</td>
+		</tr>
+<?php
+}else{
+	$stt=1;
+	foreach ($this->data as $value) {
+?>
+		<tr>
+			<td nowrap><?=$stt?></td>
+			<td width=100%>
+				<a href="/hscv/File/download?year=&maso=<?=$value["MASO"]?>">
+					<?=$value["FILENAME"]?>
+				</a>
+			</td>
+			<td nowrap><?=$value["NGUOITAO"]?></td>
+			<td nowrap>
+			<?php
+				if($value["ID_U"]==$this->id_u){
+			?>
+			<a href="javascript:;" onclick="
+		document.getElementById('addPhieuTrinhFrm<?php echo $this->idhscv ?>').src='/hscv/quanlyphieutrinh/input/idhscv/<?=$this->idhscv?>/idpt/<?= $value['ID'] ?>';
+		document.getElementById('addPhieuTrinhFrm<?php echo $this->idhscv ?>').style.display='';
+">Cập nhật</a><br>
+			<a href="javascript:;" onclick="if(confirm('Bạn có muốn xóa không?')){
+				var oData = new Object();
+				sendDataObjectNameToServer('','/hscv/quanlyphieutrinh/deletept/delete/1/idpt/<?= $value['ID'] ?>/idhscv/<?= $this->idhscv ?>');
+			}">Xoá</a>
+			<?php
+				}	
+			?>
+			</td>
+		</tr>
+<?php
+		$stt++;
+	}
+}
+?>
+	</tbody>
+</table>
+
+<script>
+	function SwapDiv(id,url,tab){
+		loadDivFromUrl(id,url,1);
+
+	}
+        function Deletebutt()
+        {   
+            //displayConfirm(" Bạn có muốn xóa không?","","","/hscv/quanlyphieutrinh/inphieu/idhscv/'.$this->idhscv.'/idu/'.$this->id_u";
+            alert('aaaa');
+            if(confirm('Bạn có muốn xóa không')){
+                    
+			document.location.href = a;
+		}
+        }
+</script>

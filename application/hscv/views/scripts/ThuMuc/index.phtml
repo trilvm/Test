@@ -1,0 +1,93 @@
+<form name=frm method=post>
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th nowrap>#</th>
+			<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></th>
+			<th nowrap>Tên thư mục</th>
+			<th width=33%>Nhóm</th>
+			<th width=33%>Phòng</th>
+			<th width=33%>Nhân viên</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr><td colspan=4></td></tr>
+	</tfoot>
+	<tbody>
+<?php
+	$i=0;
+	$stt = 1;
+	foreach($this->data as $row){
+?>
+		<tr class="row<?=$i?>">
+			<td nowrap><?=$stt?></td>
+			<td nowrap><input type=checkbox name=DEL[] value='<?php echo $row['ID_THUMUC'] ?>'></td>
+			<td nowrap>
+				<a href="#" onclick = "ItemClick(<?=$row['ID_THUMUC']?>);">
+				<?=str_repeat("--",$row['LEVEL']-1).htmlspecialchars($row['NAME'])?>
+				</a>
+			</td>
+			<td width=33% valign="top">
+				
+<?php
+		$usertemp = ThuMucModel::GetGroup($row['ID_THUMUC']);
+		foreach($usertemp as $rowu){
+?>
+				<?=$rowu['NAME']?> (<?=$rowu['QUYENXEM']==1?"Xem - ":""?><?=$rowu['QUYENTHEMMOI']==1?"Thêm mới - ":""?><?=$rowu['QUYENPHANQUYEN']==1?"Phân quyền":""?>)<br>
+<?php
+		}
+?>
+			</td>
+			<td width=33% valign="top">
+				
+<?php
+		$usertemp = ThuMucModel::GetDep($row['ID_THUMUC']);
+		foreach($usertemp as $rowu){
+?>
+				<?=$rowu['NAME']?> (<?=$rowu['QUYENXEM']==1?"Xem - ":""?><?=$rowu['QUYENTHEMMOI']==1?"Thêm mới - ":""?><?=$rowu['QUYENPHANQUYEN']==1?"Phân quyền":""?>)<br>
+<?php
+		}
+?>
+			</td>
+			<td width=33% valign="top">
+				
+<?php
+		$usertemp = ThuMucModel::GetUser($row['ID_THUMUC']);
+		foreach($usertemp as $rowu){
+?>
+				<?=$rowu['NAME']?> (<?=$rowu['QUYENXEM']==1?"Xem - ":""?><?=$rowu['QUYENTHEMMOI']==1?"Thêm mới - ":""?><?=$rowu['QUYENPHANQUYEN']==1?"Phân quyền":""?>)<br>
+<?php
+		}
+?>
+			</td>
+		</tr>
+<?php
+		$stt++;
+		$i = (-1+$i)*-1;
+	}
+?>
+	</tbody>
+</table>
+</form>
+<script>
+function DeleteButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","Vui lòng chọn ít nhất một thư mục để xóa");
+	if(mess){
+		if(confirm("Bạn có muốn xóa thư mục được chọn không")){
+			document.frm.action = "/hscv/thumuc/Delete";
+			document.frm.submit();
+		}
+	}else{
+		alert("Vui lòng chọn ít nhất một thư mục để xóa");
+	}
+}
+function AddNewButtonClick(){
+	document.frm.action = "/hscv/thumuc/input";
+	document.frm.submit();
+}
+function ItemClick(id){
+	document.frm.action = "/hscv/thumuc/input/id/"+id;
+	document.frm.submit();
+}
+</script>

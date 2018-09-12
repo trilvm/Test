@@ -1,0 +1,1520 @@
+<?php 
+	require_once 'qtht/models/LoaiVanBanModel.php';
+	require_once 'qtht/models/LoaiVanBanModel.php';
+	require_once 'qtht/models/CoquanModel.php'; 
+	require_once 'qtht/models/DepartmentsModel.php';
+	require_once 'qtht/models/UsersModel.php';
+	if($this->xuat==1){
+?>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 12">
+<link rel=File-List href="tesst2_files/filelist.xml">
+<style id="hjhjj44555566_24271_Styles">
+<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\,";}
+.font524271
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font624271
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font724271
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font824271
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font924271
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font1024271
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font1124271
+	{color:windowtext;
+	font-size:14.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font1224271
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl1524271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6524271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6624271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6724271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6824271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6924271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7024271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7124271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7224271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:14.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7324271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7424271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl7524271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	background:silver;
+	mso-pattern:black none;
+	white-space:normal;}
+.xl7624271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	background:silver;
+	mso-pattern:black none;
+	white-space:normal;}
+.xl7724271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\@";
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl7824271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl7924271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\[$-1010000\]d\/m\/yyyy\;\@";
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl8024271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:left;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl8124271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8224271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8324271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8424271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:right;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8524271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:14.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8624271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:11.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8724271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+-->
+</style>
+</head>
+
+<body>
+<!--[if !excel]>&nbsp;&nbsp;<![endif]-->
+<!--The following information was generated by Microsoft Office Excel's Publish
+as Web Page wizard.-->
+<!--If the same item is republished from Excel, all information between the DIV
+tags will be replaced.-->
+<!----------------------------->
+<!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
+<!----------------------------->
+
+<div id="hjhjj44555566_24271" align=center x:publishsource="Excel">
+
+<table border=0 cellpadding=0 cellspacing=0 width=1295 class=xl6524271
+ style='border-collapse:collapse;table-layout:fixed;width:973pt'>
+ <col class=xl6524271 width=13 style='mso-width-source:userset;mso-width-alt:
+ 475;width:10pt'>
+ <col class=xl6524271 width=87 style='mso-width-source:userset;mso-width-alt:
+ 3181;width:65pt'>
+ <col class=xl6524271 width=97 style='mso-width-source:userset;mso-width-alt:
+ 3547;width:73pt'>
+ <col class=xl6524271 width=255 style='mso-width-source:userset;mso-width-alt:
+ 9325;width:191pt'>
+ <col class=xl6524271 width=136 style='mso-width-source:userset;mso-width-alt:
+ 4973;width:102pt'>
+ <col class=xl6524271 width=286 style='mso-width-source:userset;mso-width-alt:
+ 10459;width:215pt'>
+ <col class=xl6524271 width=154 style='mso-width-source:userset;mso-width-alt:
+ 5632;width:116pt'>
+ <col class=xl6524271 width=94 style='mso-width-source:userset;mso-width-alt:
+ 3437;width:71pt'>
+ <col class=xl6524271 width=121 style='mso-width-source:userset;mso-width-alt:
+ 4425;width:91pt'>
+ <col class=xl6524271 width=52 style='mso-width-source:userset;mso-width-alt:
+ 1901;width:39pt'>
+ <tr class=xl6624271 height=23 valign=bottom style='mso-height-source:userset;
+  height:17.25pt'>
+  <td height=23 class=xl6724271 width=13 style='height:17.25pt;width:10pt'></td>
+  <td colspan=3 class=xl8124271 align=center valign=middle width=439
+  style='width:329pt'><a name="RANGE!B1:I9"><font class="font624271"
+  face="Times New Roman" size="4"><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></font></a></td>
+  <td colspan=5 class=xl8124271 align=center valign=middle width=791
+  style='width:595pt'><font class="font624271" face="Times New Roman" size="4">CỘNG
+  HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</font></td>
+  <td class=xl6824271 width=52 style='width:39pt'></td>
+ </tr>
+ <tr class=xl6624271 height=23 valign=bottom style='mso-height-source:userset;
+  height:17.25pt'>
+  <td height=23 class=xl6924271 style='height:17.25pt'></td>
+  <td colspan=3 class=xl8224271 align=center valign=middle><font
+  class="font724271" face="Times New Roman" size="4"><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></font></td>
+  <td colspan=5 class=xl8324271 align=center valign=middle><font
+  class="font824271" face="Times New Roman" size="3"><b><u>Ðộc lập - tự do -
+  hạnh phúc</u></b></font></td>
+  <td class=xl7024271></td>
+ </tr>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td height=21 class=xl6524271 style='height:15.75pt'></td>
+  <td class=xl6524271></td>
+  <td class=xl7124271></td>
+  <td class=xl7124271></td>
+  <td colspan=5 class=xl8424271 align=right><font class="font1024271"
+  face="Times New Roman" size="3"><i><?=$this->config->sys_info->city?>,ngày<?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></i></font></td>
+  <td class=xl7124271></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl6524271 style='height:15.75pt'></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+ </tr>
+ <tr height=25 valign=bottom style='height:18.75pt'>
+  <td height=25 class=xl7224271 style='height:18.75pt'></td>
+  <td colspan=8 class=xl8524271 align=center><font class="font1124271"
+  face="Times New Roman" size="4"><b>DANH SÁCH ĐĂNG KÝ VĂN BẢN ĐI</b></font></td>
+  <td class=xl6524271></td>
+ </tr>
+   <?php 
+   require_once("hscv/models/coquanlienthongModel.php");
+$data_cqlt = coquanlienthongModel::getDataCQLienThong();
+	if(count($this->id_lvbs) > 0) 
+	{ 
+		$lvb = htmlspecialchars(LoaiVanBanModel::getArrNameById($this->id_lvbs));
+  ?>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td colspan=9 height=21 class=xl8624271 align=center style='height:15.75pt'><font
+  face="Times New Roman">Loại Văn Bản: <?= $this->id_lvbs > 0 ? $lvb : 'Tất cả các loại';?></font></td>
+  <td class=xl1524271></td>
+ </tr>
+ <?php } ?>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td height=21 class=xl7124271 style='height:15.75pt'></td>
+  <td colspan=8 class=xl8724271 align=center><font class="font1024271"
+  face="Times New Roman" size="3"><i><?php echo $this->thu;?> năm <?=date("Y")?></i></font></td>
+  <td class=xl6524271></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl6524271 style='height:15.75pt'></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+ </tr>
+ <tr class=xl7324271 height=52 valign=middle style='mso-height-source:userset;
+  height:39.0pt'>
+  <td height=52 class=xl7424271 width=13 style='height:39.0pt;width:10pt'></td>
+  <td class=xl7524271 bgcolor="#C0C0C0" align=center width=87 style='width:
+  65pt'><font class="font1224271" face="Times New Roman" size="3"><b>Số, ký
+  hiệu VB</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=97 style='width:
+  73pt'><font class="font1224271" face="Times New Roman" size="3"><b>Ngày tháng
+  văn bản</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=255
+  style='width:191pt'><font class="font1224271" face="Times New Roman" size="3"><b>Tên
+  loại và trích yếu nội dung VB</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=136
+  style='width:102pt'><font class="font1224271" face="Times New Roman" size="3"><b>Người
+  ký</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=286
+  style='width:215pt'><font class="font1224271" face="Times New Roman" size="3"><b>Nơi
+  nhận văn bản</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=154
+  style='width:116pt'><font class="font1224271" face="Times New Roman" size="3"><b>Đơn
+  vị, người nhận bản lưu</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=94 style='width:
+  71pt'><font class="font1224271" face="Times New Roman" size="3"><b>Số lượng
+  bản</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=121
+  style='width:91pt'><font class="font1224271" face="Times New Roman" size="3"><b>Ghi
+  chú</b></font></td>
+  <td class=xl7324271></td>
+ </tr>
+ <?php foreach($this->data as $row){ ?>
+ <tr height=63 valign=bottom style='height:47.25pt'>
+  <td height=63 class=xl7724271 width=13 style='height:47.25pt;width:10pt'><font
+  class="font524271" face="Times New Roman" size="3">&nbsp;</font></td>
+  <?php if(count($this->sokyhieu) >0) {?>
+  <td class=xl7824271 align=center valign=middle width=87 style='width:65pt'><font
+  class="font524271" face="Times New Roman" size="3"><?php echo $row["SOKYHIEU"]?></font></td>
+  <?php } ?>
+  <?php if(count($this->ngaybh) >0) {?>
+  <td class=xl7924271 align=center valign=middle width=97 style='width:73pt'><font
+  class="font524271" face="Times New Roman" size="3"><?=QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></font></td>
+  <?php } ?>
+  <?php if(count($this->trichyeund) >0) {?>
+  <td class=xl8024271 align=left valign=middle width=255 style='width:191pt'><font
+  class="font524271" face="Times New Roman" size="3"><?=$row["TRICHYEU"] ?><span style='mso-spacerun:yes'> </span></font></td>
+  <?php } ?>
+  <?php if(count($this->luuhoso) >0) {?>
+  <td class=xl7824271 align=center valign=middle width=136 style='width:102pt'><font
+  class="font524271" face="Times New Roman" size="3"><?=UsersModel::getEmloyeeNameByIdUser($row["NGUOIKY"]) ?></font></td>
+  <?php } ?>
+  <?php if(count($this->noinhan) >0) {?>
+  <td class=xl8024271 align=left valign=middle width=286 style='width:215pt'><font
+  class="font524271" face="Times New Roman" size="3"><?php echo nl2br($row["NOIDEN"]);
+echo "<br>";
+            echo VanbandireportModel::getDonViNoiBoFromVbandi($row["ID_VBDI"]);
+			
+			$coquanlienthong=json_decode($row['CQLIENTHONG_DRAFT']);
+            foreach($coquanlienthong as $item){
+                foreach ($data_cqlt as $cqlt){
+                     if($cqlt['CODE'] == $item){
+                         echo $cqlt['NAME'].'<br>';
+                     }
+                }
+                 
+            }
+  ?></font></td>
+  <?php } ?>
+  <?php if(count($this->nguoinbl) >0) {?>
+  <td class=xl8024271 align=left valign=middle width=154 style='width:116pt'><font
+  class="font524271" face="Times New Roman" size="3"><?php echo nl2br(UsersModel::getEmloyeeNameByIdUser($row["NGUOISOAN"]));?></font></td>
+  <?php } ?>
+  <?php if(count($this->soban) >0) {?>
+  <td class=xl7824271 align=center valign=middle width=94 style='width:71pt'><font
+  class="font524271" face="Times New Roman" size="3"><?php echo $row["SOBAN"] ?></font></td>
+  <?php } ?>
+  <td class=xl7824271 width=121 style='width:91pt'><font class="font524271"
+  face="Times New Roman" size="3"><?= $row['GHICHU']?></font></td>
+  <td class=xl6524271></td>
+ </tr>
+ <?php } ?>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=13 style='width:10pt'></td>
+  <td width=87 style='width:65pt'></td>
+  <td width=97 style='width:73pt'></td>
+  <td width=255 style='width:191pt'></td>
+  <td width=136 style='width:102pt'></td>
+  <td width=286 style='width:215pt'></td>
+  <td width=154 style='width:116pt'></td>
+  <td width=94 style='width:71pt'></td>
+  <td width=121 style='width:91pt'></td>
+  <td width=52 style='width:39pt'></td>
+ </tr>
+ <![endif]>
+</table>
+
+</div>
+
+
+<!----------------------------->
+<!--END OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD-->
+<!----------------------------->
+</body>
+
+</html>
+<?php } else { ?>
+	<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 12">
+<link rel=File-List href="tesst2_files/filelist.xml">
+<style id="hjhjj44555566_24271_Styles">
+<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\,";}
+.font524271
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font624271
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font724271
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font824271
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font924271
+	{color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font1024271
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font1124271
+	{color:windowtext;
+	font-size:14.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.font1224271
+	{color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl1524271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6524271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6624271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6724271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6824271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl6924271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7024271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7124271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7224271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:14.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7324271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl7424271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl7524271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	background:silver;
+	mso-pattern:black none;
+	white-space:normal;}
+.xl7624271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	background:silver;
+	mso-pattern:black none;
+	white-space:normal;}
+.xl7724271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\@";
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:none;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl7824271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl7924271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\[$-1010000\]d\/m\/yyyy\;\@";
+	text-align:center;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl8024271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:left;
+	vertical-align:middle;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:normal;}
+.xl8124271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8224271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:13.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8324271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:middle;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8424271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:right;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8524271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:14.0pt;
+	font-weight:700;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8624271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:11.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+.xl8724271
+	{padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:italic;
+	text-decoration:none;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:center;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;}
+-->
+</style>
+</head>
+
+<body>
+<!--[if !excel]>&nbsp;&nbsp;<![endif]-->
+<!--The following information was generated by Microsoft Office Excel's Publish
+as Web Page wizard.-->
+<!--If the same item is republished from Excel, all information between the DIV
+tags will be replaced.-->
+<!----------------------------->
+<!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
+<!----------------------------->
+
+<div id="hjhjj44555566_24271" align=center x:publishsource="Excel">
+
+<table border=0 cellpadding=0 cellspacing=0 width=1295 class=xl6524271
+ style='border-collapse:collapse;table-layout:fixed;width:973pt'>
+ <col class=xl6524271 width=13 style='mso-width-source:userset;mso-width-alt:
+ 475;width:10pt'>
+ <col class=xl6524271 width=87 style='mso-width-source:userset;mso-width-alt:
+ 3181;width:65pt'>
+ <col class=xl6524271 width=97 style='mso-width-source:userset;mso-width-alt:
+ 3547;width:73pt'>
+ <col class=xl6524271 width=255 style='mso-width-source:userset;mso-width-alt:
+ 9325;width:191pt'>
+ <col class=xl6524271 width=136 style='mso-width-source:userset;mso-width-alt:
+ 4973;width:102pt'>
+ <col class=xl6524271 width=286 style='mso-width-source:userset;mso-width-alt:
+ 10459;width:215pt'>
+ <col class=xl6524271 width=154 style='mso-width-source:userset;mso-width-alt:
+ 5632;width:116pt'>
+ <col class=xl6524271 width=94 style='mso-width-source:userset;mso-width-alt:
+ 3437;width:71pt'>
+ <col class=xl6524271 width=121 style='mso-width-source:userset;mso-width-alt:
+ 4425;width:91pt'>
+ <col class=xl6524271 width=52 style='mso-width-source:userset;mso-width-alt:
+ 1901;width:39pt'>
+ <tr class=xl6624271 height=23 valign=bottom style='mso-height-source:userset;
+  height:17.25pt'>
+  <td height=23 class=xl6724271 width=13 style='height:17.25pt;width:10pt'></td>
+  <td colspan=3 class=xl8124271 align=center valign=middle width=439
+  style='width:329pt'><a name="RANGE!B1:I9"><font class="font624271"
+  face="Times New Roman" size="4"><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></font></a></td>
+  <td colspan=5 class=xl8124271 align=center valign=middle width=791
+  style='width:595pt'><font class="font624271" face="Times New Roman" size="4">CỘNG
+  HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</font></td>
+  <td class=xl6824271 width=52 style='width:39pt'></td>
+ </tr>
+ <tr class=xl6624271 height=23 valign=bottom style='mso-height-source:userset;
+  height:17.25pt'>
+  <td height=23 class=xl6924271 style='height:17.25pt'></td>
+  <td colspan=3 class=xl8224271 align=center valign=middle><font
+  class="font724271" face="Times New Roman" size="4"><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></font></td>
+  <td colspan=5 class=xl8324271 align=center valign=middle><font
+  class="font824271" face="Times New Roman" size="3"><b><u>Ðộc lập - tự do -
+  hạnh phúc</u></b></font></td>
+  <td class=xl7024271></td>
+ </tr>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td height=21 class=xl6524271 style='height:15.75pt'></td>
+  <td class=xl6524271></td>
+  <td class=xl7124271></td>
+  <td class=xl7124271></td>
+  <td colspan=5 class=xl8424271 align=right><font class="font1024271"
+  face="Times New Roman" size="3"><i><?=$this->config->sys_info->city?>,ngày<?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></i></font></td>
+  <td class=xl7124271></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl6524271 style='height:15.75pt'></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+ </tr>
+ <tr height=25 valign=bottom style='height:18.75pt'>
+  <td height=25 class=xl7224271 style='height:18.75pt'></td>
+  <td colspan=8 class=xl8524271 align=center><font class="font1124271"
+  face="Times New Roman" size="4"><b>DANH SÁCH ĐĂNG KÝ VĂN BẢN ĐI</b></font></td>
+  <td class=xl6524271></td>
+ </tr>
+   <?php 
+   require_once("hscv/models/coquanlienthongModel.php");
+$data_cqlt = coquanlienthongModel::getDataCQLienThong();
+	if(count($this->id_lvbs) > 0) 
+	{ 
+		$lvb = htmlspecialchars(LoaiVanBanModel::getArrNameById($this->id_lvbs));
+  ?>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td colspan=9 height=21 class=xl8624271 align=center style='height:15.75pt'><font
+  face="Times New Roman">Loại Văn Bản: <?= $this->id_lvbs > 0 ? $lvb : 'Tất cả các loại';?></font></td>
+  <td class=xl1524271></td>
+ </tr>
+ <?php } ?>
+ <tr height=21 valign=bottom style='height:15.75pt'>
+  <td height=21 class=xl7124271 style='height:15.75pt'></td>
+  <td colspan=8 class=xl8724271 align=center><font class="font1024271"
+  face="Times New Roman" size="3"><i><?php echo $this->thu;?> năm <?=date("Y")?></i></font></td>
+  <td class=xl6524271></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 class=xl6524271 style='height:15.75pt'></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+  <td class=xl6524271></td>
+ </tr>
+ <tr class=xl7324271 height=52 valign=middle style='mso-height-source:userset;
+  height:39.0pt'>
+  <td height=52 class=xl7424271 width=13 style='height:39.0pt;width:10pt'></td>
+  <td class=xl7524271 bgcolor="#C0C0C0" align=center width=87 style='width:
+  65pt'><font class="font1224271" face="Times New Roman" size="3"><b>Số, ký
+  hiệu VB</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=97 style='width:
+  73pt'><font class="font1224271" face="Times New Roman" size="3"><b>Ngày tháng
+  văn bản</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=255
+  style='width:191pt'><font class="font1224271" face="Times New Roman" size="3"><b>Tên
+  loại và trích yếu nội dung VB</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=136
+  style='width:102pt'><font class="font1224271" face="Times New Roman" size="3"><b>Người
+  ký</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=286
+  style='width:215pt'><font class="font1224271" face="Times New Roman" size="3"><b>Nơi
+  nhận văn bản</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=154
+  style='width:116pt'><font class="font1224271" face="Times New Roman" size="3"><b>Đơn
+  vị, người nhận bản lưu</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=94 style='width:
+  71pt'><font class="font1224271" face="Times New Roman" size="3"><b>Số lượng
+  bản</b></font></td>
+  <td class=xl7624271 bgcolor="#C0C0C0" align=center width=121
+  style='width:91pt'><font class="font1224271" face="Times New Roman" size="3"><b>Ghi
+  chú</b></font></td>
+  <td class=xl7324271></td>
+ </tr>
+ <?php foreach($this->data as $row){ ?>
+ <tr height=63 valign=bottom style='height:47.25pt'>
+  <td height=63 class=xl7724271 width=13 style='height:47.25pt;width:10pt'><font
+  class="font524271" face="Times New Roman" size="3">&nbsp;</font></td>
+  <?php if(count($this->sokyhieu) >0) {?>
+  <td class=xl7824271 align=center valign=middle width=87 style='width:65pt'><font
+  class="font524271" face="Times New Roman" size="3"><?php echo $row["SOKYHIEU"]?></font></td>
+  <?php } ?>
+  <?php if(count($this->ngaybh) >0) {?>
+  <td class=xl7924271 align=center valign=middle width=97 style='width:73pt'><font
+  class="font524271" face="Times New Roman" size="3"><?=QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></font></td>
+  <?php } ?>
+  <?php if(count($this->trichyeund) >0) {?>
+  <td class=xl8024271 align=left valign=middle width=255 style='width:191pt'><font
+  class="font524271" face="Times New Roman" size="3"><?=$row["TRICHYEU"] ?><span style='mso-spacerun:yes'> </span></font></td>
+  <?php } ?>
+  <?php if(count($this->luuhoso) >0) {?>
+  <td class=xl7824271 align=center valign=middle width=136 style='width:102pt'><font
+  class="font524271" face="Times New Roman" size="3"><?=UsersModel::getEmloyeeNameByIdUser($row["NGUOIKY"]) ?></font></td>
+  <?php } ?>
+  <?php if(count($this->noinhan) >0) {?>
+  <td class=xl8024271 align=left valign=middle width=286 style='width:215pt'><font
+  class="font524271" face="Times New Roman" size="3"><?php echo nl2br($row["NOIDEN"]);
+	echo "<br>";
+    echo VanbandireportModel::getDonViNoiBoFromVbandi($row["ID_VBDI"]);
+	$coquanlienthong=json_decode($row['CQLIENTHONG_DRAFT']);
+            foreach($coquanlienthong as $item){
+                foreach ($data_cqlt as $cqlt){
+                     if($cqlt['CODE'] == $item){
+                         echo $cqlt['NAME'].'<br>';
+                     }
+                }
+                 
+            }
+
+  ?></font></td>
+  <?php } ?>
+  <?php if(count($this->nguoinbl) >0) {?>
+  <td class=xl8024271 align=left valign=middle width=154 style='width:116pt'><font
+  class="font524271" face="Times New Roman" size="3"><?php echo nl2br(UsersModel::getEmloyeeNameByIdUser($row["NGUOISOAN"]));?></font></td>
+  <?php } ?>
+  <?php if(count($this->soban) >0) {?>
+  <td class=xl7824271 align=center valign=middle width=94 style='width:71pt'><font
+  class="font524271" face="Times New Roman" size="3"><?php echo $row["SOBAN"] ?></font></td>
+  <?php } ?>
+  <td class=xl7824271 width=121 style='width:91pt'><font class="font524271"
+  face="Times New Roman" size="3"><?= $row['GHICHU']?></font></td>
+  <td class=xl6524271></td>
+ </tr>
+ <?php } ?>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=13 style='width:10pt'></td>
+  <td width=87 style='width:65pt'></td>
+  <td width=97 style='width:73pt'></td>
+  <td width=255 style='width:191pt'></td>
+  <td width=136 style='width:102pt'></td>
+  <td width=286 style='width:215pt'></td>
+  <td width=154 style='width:116pt'></td>
+  <td width=94 style='width:71pt'></td>
+  <td width=121 style='width:91pt'></td>
+  <td width=52 style='width:39pt'></td>
+ </tr>
+ <![endif]>
+</table>
+
+</div>
+
+
+<!----------------------------->
+<!--END OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD-->
+<!----------------------------->
+</body>
+
+</html>
+<?php } ?>

@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/common.js"></script>
+        <script src="/js/validate.js" type="text/javascript"></script>
+        <script type="text/javascript" src=<?php echo $this->baseUrl() . "/js/Json/Base64.js" ?>></script>
+        <script type="text/javascript" src=<?php echo $this->baseUrl() . "/js/Json/json2.js" ?>></script>
+        <script type="text/javascript" src=<?php echo $this->baseUrl() . "/js/Json/json_parse.js" ?>></script>
+        <script type="text/javascript" src=<?php echo $this->baseUrl() . "/js/Ajax/AjaxEngine.js" ?>></script>
+        <link rel="stylesheet" type="text/css" href="/styles/general.css" />
+    </head>
+    <body style="background-color:transparent">
+        <form name="frmTraoDoi" method=post action="/traodoicongviec/traodoicongviec/save" enctype="multipart/form-data">
+            <fieldset>
+                <legend style="color:#0066CC; font-size: 13.0pt"><b>Trạng thái công việc</b></legend>
+                <!-- table hien thong tin ve ho so  -->
+                <table style="table-layout: fixed; width: 100%"> 
+                    <tr>
+                       <td valign=top style="border:none;width:200px"> Trạng thái công việc</td>
+                       <td nowrap style="color: red; border: none;width: 950px">
+                           <?php
+                            if((int)$this->data['TIENDO_GIAOVIEC'] >=100){
+                            ?>
+                            <span style="color: blue"> Đã hoàn thành</span>
+                            <?php
+                            }else{
+                            ?>
+                            <span style="color: red"> Chưa hoàn thành</span>
+                            <?php
+                            }
+                            ?>
+                       </td> 
+                    </tr>
+                    <tr><td style="border:none;"></td></tr>
+                    <tr>
+                        <td valign=top style="border:none;"> Tiến độ công việc</td>
+                        <td nowrap style="color: red; border: none;width: 950px">                          
+                            <input type=text  style="width: 100px;color: red" name=tiendo value="<?=(float)$this->data['TIENDO_GIAOVIEC'] ?>"> <span style="color: red">%</span>
+                            
+                        </td>
+                    </tr>
+                    <tr><td style="border:none;"></td></tr>
+                   
+                   <tr>
+                        <td valign=top style="border:none;"> Mô tả tiến độ</td>
+                        <td nowrap style="color: red; border: none;width: 950px">
+                            <textarea name="motatiendo" style="width: 637px; height: 64px;"> <?=$this->data['MOTATIENDO']?></textarea>
+                        </td>
+                    </tr> 
+                    
+                    <tr><td style="border:none;"></td></tr> 
+                </table>
+                <!-- end table the hien thong tin ve ho so  -->
+            </fieldset>
+            <input type="hidden" name="id_hscv" value="<?php echo $this->id_hscv ?>"/>           
+            <input type=button name=SEND value="Lưu" onclick="document.frmTraoDoi.submit()" class="traodoicongviec" id="SEND">
+           
+        </form>
+        </script>
+    </body>
+</html>

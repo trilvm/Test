@@ -1,0 +1,299 @@
+<link rel="stylesheet" type="text/css" href="/popupmini/popupmini.css" />
+<script src="/jquery/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+    var jq1102 = jQuery.noConflict(true);
+</script>
+<form name=frm method=post action='/giaoviec/index/listnhan' onsubmit="document.frm.page.value = 1;document.frm.action = '/giaoviec/index/listnhan';return true;">
+<div style="width: 50%;float:left">
+    <table>
+        <div>
+        <label><b>Ngày giao nhiệm vụ:</b></label>
+        <?= QLVBDHCommon::calendarFull($this->fromdate, "fromdate", "fromdate") ?>
+        >>
+        <?= QLVBDHCommon::calendarFull($this->todate, "todate", "todate") ?>
+
+    </div>
+    <div class=clr></div>
+    <div>
+        <div>
+            <?php
+            $year = QLVBDHCommon::getYear();
+            $d = strtotime($year . "-3-1");
+            $d = $d - 86400;
+            $str_cuoi2 = date('d/m', $d);
+            ?>            
+			<label><b>Tháng:</b></label>
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1/<?php echo $year ?>', '31/1/<?php echo $year ?>')">1
+
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/2/<?php echo $year ?>', '<?php echo $str_cuoi2 ?>/<?php echo $year ?>')" >2
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/3/<?php echo $year ?>', '31/3/<?php echo $year ?>')">3
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/4/<?php echo $year ?>', '30/4/<?php echo $year ?>')" >4
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/5/<?php echo $year ?>', '31/5/<?php echo $year ?>')">5
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/6/<?php echo $year ?>', '30/6/<?php echo $year ?>')">6
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7/<?php echo $year ?>', '31/7/<?php echo $year ?>')" >7
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/8/<?php echo $year ?>', '31/8/<?php echo $year ?>')" >8
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/9/<?php echo $year ?>', '30/9/<?php echo $year ?>')">9
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10/<?php echo $year ?>', '31/10/<?php echo $year ?>')">10
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/11/<?php echo $year ?>', '30/11/<?php echo $year ?>')">11
+            <input type="radio" name='sel_timedis'onclick="setvalueDateD('1/12/<?php echo $year ?>', '31/12/<?php echo $year ?>')">12
+        </div>
+        <div class=clr></div>
+        <div>
+            <label><b>Quí:</b></label>
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1/<?php echo $year ?>', '31/3/<?php echo $year ?>')">I
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/4/<?php echo $year ?>', '30/6/<?php echo $year ?>')">II
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/7/<?php echo $year ?>', '30/9/<?php echo $year ?>')">III
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/10/<?php echo $year ?>', '31/12/<?php echo $year ?>')">IV
+        </div>
+        <div class=clr></div>
+        <div>
+            <label><b>6 tháng đầu năm:</b></label>
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1/<?php echo $year ?>', '30/6/<?php echo $year ?>')">
+        </div>
+		<div class=clr></div>
+        <div>
+            <label><b>6 tháng cuối năm:</b></label>
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/7/<?php echo $year ?>', '31/12/<?php echo $year ?>')">
+        </div>
+		<div class=clr></div>
+        <div>
+            <label><b>Năm:</b></label>
+            <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1/<?php echo $year ?>', '31/12/<?php echo $year ?>')">
+        </div>
+
+    </div>
+    
+    <div class=clr></div>
+    <div>
+        <br/>
+        <input type=submit value="Hiển thị">
+    </div>    
+    </table>
+</div>
+
+ 
+<div style="width: 50%;float:right;font-weight: bold;">
+    <?php
+        $nhiemvudagiaotrongthang = 0;
+        $nhiemvuketduthangtruoc = 0;
+        $nhiemvudagiaohoanthanh = 0;
+        $nhiemvudangthuchien = 0;
+        $nhiemvutruochan = 0;
+        $nhiemvudunghan = 0;
+        $nhiemvuquahan = 0;
+        foreach($this->dataReport as $key=>$value){
+            $nhiemvudagiaotrongthang+= $value->CNTCONGVIEC;
+            $nhiemvudagiaohoanthanh+= $value->CNTDAHOANTHANH;
+            $nhiemvudangthuchien+= $value->CNTDANGTRIENKHAI+$value->CNTDANGTRIENKHAITREHAN;
+            $nhiemvutruochan+= $value->CNTDANGTRIENKHAI;
+            $nhiemvuquahan+= $value->CNTDANGTRIENKHAITREHAN;
+        }
+        
+    ?>
+    <table>
+        <tr>
+            <td style=" color: #0ca1e3;font-size: 14px"> TÌNH TRẠNG XỬ LÝ NHIỆM VỤ THÁNG <?= $this->month?></td>
+        </tr>
+        <tr>
+            <td style="padding:5px;">Tổng số nhiệm vụ đã được giao trong tháng: <font color="#3399ff"><?=$nhiemvudagiaotrongthang?></font></td>
+        </tr>
+		<!--
+        <tr>
+            <td style="padding:5px;">Tổng số nhiệm vụ kết dư tháng trước: 0 tỷ lệ 0%</td>
+        </tr>
+		-->
+        <tr>
+            <td style="padding:5px;">Tổng số số nhiệm vụ đã hoàn thành: <font color="#3399ff"><?=$nhiemvudagiaohoanthanh?></font> đạt tỷ lệ <?=(int)($nhiemvudagiaohoanthanh/(int)$nhiemvudagiaotrongthang*100)?>%</td>
+        </tr>
+        <tr>
+            <td style="padding:5px;">Tổng số số nhiệm vụ đang thực hiện: <font color="#3399ff"><?=$nhiemvudangthuchien?></font> đạt tỷ lệ <?=(int)($nhiemvudangthuchien/(int)$nhiemvudagiaotrongthang*100)?>%</td>
+        </tr>
+        <tr>
+            <td style="padding:5px 5px 5px 25px;">-Tổng số nhiệm vụ trước hạn: <font color="#3399ff"><?=$nhiemvutruochan?></font> đạt tỷ lệ <?=(int)($nhiemvutruochan/(int)$nhiemvudangthuchien*100)?>%</td>
+        </tr>
+       
+        <tr>
+            <td style="padding:5px 5px 5px 25px;">-Tổng số nhiệm vụ chậm, quá hạn: <font color="#f00"><?=$nhiemvuquahan?></font> đạt tỷ lệ <?=(int)($nhiemvuquahan/(int)$nhiemvudangthuchien*100)?>%</td>
+        </tr>
+    </table>
+</div>
+    <table class=adminlist>
+        <tr>
+            <td align=center style="font-weight:bold;border: none; font-size: 15px;">SỐ NHIỆM VỤ CỤ THỂ TRONG THÁNG </td>
+        </tr>
+          <tr>
+            <td align=center style="font-weight:bold;border: none;">Từ ngày <?= $this->fromdate  ?> đến ngày <?= $this->todate  ?></td>
+        </tr>
+        
+    </table>
+      
+<table class=adminlist1>
+    <thead>
+            <tr>
+                    <th rowspan="2">Đơn vị giao</th>
+                    <th style="text-align:center" colspan=1>Nhiệm vụ được giao trong tháng</th>
+                    <th style="text-align:center" colspan=3>Đã hoàn thành</th>
+                    <th style="text-align:center" colspan=2>Chưa hoàn thành</th>
+            </tr>
+            <tr>
+               <!-- <th>Kết dư từ tháng trước</th> -->
+                <th style="text-align:center">Nhiệm vụ trong tháng</th>
+                <!-- <th>Tổng nhiệm vụ giao</th> -->
+                <th style="text-align:center">Trước hạn</th>
+                <th style="text-align:center">Đúng hạn</th>
+                <th style="text-align:center">Quá hạn</th>
+                <th style="text-align:center">Trong hạn</th>
+                <th style="text-align:center">Quá hạn</th>
+            </tr>
+           
+    </thead>
+    <tbody>
+        
+        
+        
+        
+            <?php
+                    $stt=0;
+                    foreach($this->dataReport as $itemreport){
+            ?>
+            <tr>
+                    <td><?php echo $itemreport->TENDONVI?></td>
+                    
+                     <td align=center>
+                        <?php
+                        if((int)$itemreport->CNTCONGVIEC > 0){
+                         ?>
+                         <a href="#" onclick="window.parent.document.frm.target = 'reportview';
+                            window.parent.document.frm.action = '/giaoviec/index/listnhandetail/REPORTTYPE/11/DONVINHAN/<?php echo $itemreport->DONVINHAN?>';
+                            window.parent.document.frm.submit();
+                            window.parent.document.frm.action = '/giaoviec/index/listnhan';
+                            window.parent.document.frm.target = '_self';
+                            return false;"><?php echo $itemreport->CNTCONGVIEC?></a>
+                        <?php
+                        }else if($itemreport->CNTCONGVIEC == null){
+                            echo '0';
+                        }else 
+                             echo $itemreport->CNTCONGVIEC;
+                        ?>
+                        
+                        </td>
+                    <td align=center>
+                        <?php
+                        if((int)$itemreport->CNTXONGTRUOCHAN > 0){
+                         ?>
+                         <a href="#" onclick="window.parent.document.frm.target = 'reportview';
+                            window.parent.document.frm.action = '/giaoviec/index/listnhandetail/REPORTTYPE/12/DONVINHAN/<?php echo $itemreport->DONVINHAN?>';
+                            window.parent.document.frm.submit();
+                            window.parent.document.frm.action = '/giaoviec/index/listnhan';
+                            window.parent.document.frm.target = '_self';
+                            return false;"><?php echo $itemreport->CNTXONGTRUOCHAN?></a>
+                        <?php
+                        }else if($itemreport->CNTXONGTRUOCHAN == null){
+                            echo '0';
+                        }else 
+                             echo $itemreport->CNTXONGTRUOCHAN;
+                        ?>
+                        
+                        </td>
+                    
+                    <td align=center>
+                        <?php
+                        if((int)$itemreport->CNTXONGDUNGHAN > 0){
+                         ?>
+                         <a href="#" onclick="window.parent.document.frm.target = 'reportview';
+                            window.parent.document.frm.action = '/giaoviec/index/listnhandetail/REPORTTYPE/13/DONVINHAN/<?php echo $itemreport->DONVINHAN?>';
+                            window.parent.document.frm.submit();
+                            window.parent.document.frm.action = '/giaoviec/index/listnhan';
+                            window.parent.document.frm.target = '_self';
+                            return false;"><?php echo $itemreport->CNTXONGDUNGHAN?></a>
+                        <?php
+                        }else if($itemreport->CNTXONGDUNGHAN == null){
+                            echo '0';
+                        }else 
+                             echo $itemreport->CNTXONGDUNGHAN;
+                        ?>
+                        
+                        
+                        
+                       </td>
+                    
+                    
+                    <td align=center>
+                        <?php
+                        if((int)$itemreport->CNTXONGTREHAN > 0){
+                         ?>
+                        <a href="#" onclick="window.parent.document.frm.target = 'reportview';
+                            window.parent.document.frm.action = '/giaoviec/index/listnhandetail/REPORTTYPE/14/DONVINHAN/<?php echo $itemreport->DONVINHAN?>';
+                            window.parent.document.frm.submit();
+                            window.parent.document.frm.action = '/giaoviec/index/listnhan';
+                            window.parent.document.frm.target = '_self';
+                            return false;"><?php echo $itemreport->CNTXONGTREHAN?></a>
+                        <?php
+                        }else if($itemreport->CNTXONGTREHAN == null){
+                            echo '0';
+                        }else 
+                             echo $itemreport->CNTXONGTREHAN;
+                        ?>
+                        
+                        
+                        </td>
+                    
+                    
+                    <td align=center>
+                         <?php
+                        if((int)$itemreport->CNTDANGTRIENKHAI > 0){
+                         ?>
+                        <a href="#" onclick="window.parent.document.frm.target = 'reportview';
+                            window.parent.document.frm.action = '/giaoviec/index/listnhandetail/REPORTTYPE/15/DONVINHAN/<?php echo $itemreport->DONVINHAN?>';
+                            window.parent.document.frm.submit();
+                            window.parent.document.frm.action = '/giaoviec/index/listnhan';
+                            window.parent.document.frm.target = '_self';
+                            return false;"><?php echo $itemreport->CNTDANGTRIENKHAI?></a>
+                        <?php
+                        }else if($itemreport->CNTDANGTRIENKHAI == null){
+                            echo '0';
+                        }else 
+                             echo $itemreport->CNTDANGTRIENKHAI;
+                        ?>
+                        
+                       </td>
+                    
+                    <td align=center>
+                         <?php
+                        if((int)$itemreport->CNTDANGTRIENKHAITREHAN > 0){
+                         ?>
+                        <a href="#" onclick="window.parent.document.frm.target = 'reportview';
+                            window.parent.document.frm.action = '/giaoviec/index/listnhandetail/REPORTTYPE/16/DONVINHAN/<?php echo $itemreport->DONVINHAN?>';
+                            window.parent.document.frm.submit();
+                            window.parent.document.frm.action = '/giaoviec/index/listnhan';
+                            window.parent.document.frm.target = '_self';
+                            return false;"><?php echo $itemreport->CNTDANGTRIENKHAITREHAN?></a>
+                        <?php
+                        }else if($itemreport->CNTDANGTRIENKHAITREHAN == null){
+                            echo '0';
+                        }else 
+                             echo $itemreport->CNTDANGTRIENKHAITREHAN;
+                        ?>
+                        
+                        
+                    </td>
+                    
+            </tr>
+            <?php
+              }
+            ?>
+         
+  
+    </body>
+    <tfoot>
+    </tfoot>
+</table>
+
+</form>
+
+<script>
+function setvalueDateD(value_from, value_to) {
+	document.frm.fromdate.value = value_from;
+	document.frm.todate.value = value_to;
+} 
+</script>

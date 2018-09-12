@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name=frm method="post" action="/hscv/hscv/savechuyenlaivtbp?id=<?=$this->id?>"  >
+<fieldset>
+<legend>Chuyển lại hồ sơ</legend>
+<?php
+$lastlc = WFEngine::GetCurrentTransitionInfoByIdHscv($this->id);
+//$usernhan = WFEngine::GetAccessUserFromTransitionNoGroup($lastlc["ID_T"]);
+?>
+<?php
+	echo WFEngine::FormSend($lastlc["ID_T"],true);		
+?>
+<a href="#" onclick="document.frm.submit();return false;">[ Lưu ]</a>
+</fieldset>
+</form>
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+function hideFrame(){
+		var iframeElement = parent.document.getElementById('iframebutphe<?=$this->id?>');
+		iframeElement.style.height = 0;
+}
+
+function resize(){
+		var iframeElement = parent.document.getElementById('iframebutphe<?=$this->id?>');
+		iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+		iframeElement.width = "100%";
+}
+resize();
+</script>

@@ -1,0 +1,81 @@
+<div>
+<font color=blue>Năm làm việc gần nhất là:</font><font color=red><?=" ".$this->nam_cuoi." "?></font><font color=blue>, tạo mới năm làm việc cho</font>: <font color=red ><?=" ".($this->nam_cuoi+1)?></font>
+<br><br>
+</div>
+
+<form name=frm action="/qtht/config/taomoinammoisave" method=post>
+<font color=blue size=3>
+Sổ văn bản mới cho năm <?=" ".($this->nam_cuoi+1)." "?>
+</font>
+<table class=adminlist>
+	
+	<thead>
+		<tr>
+			<td>#</td>
+			<td>Tên sổ</td>
+			<td>Loại sổ văn bản</td>
+		</tr>
+	</thead>
+	<tbody id=bdyatt_ds>
+	<?php $stt=1;foreach($this->data_sovb as $svb_it){?>
+	
+	<tr id="tr_ds<?=$stt?>" > 
+		<td><?=$stt?></td>
+		<td><input type=text name=NAME[]  value="<?=preg_replace('/\d{4}|\d{2}/',$this->nam_cuoi+1,$svb_it['NAME'])?>"></td>
+			<td nowrap>
+	<?php $type = $svb_it["TYPE"]; 
+	
+	switch($type)
+	{
+		case 0:
+			echo "Chưa Xác Định";
+			break;
+		case 1:
+			echo "Văn Bản Đến";
+			break;
+		case 2:
+			echo "Văn Bản Đi";
+			break;
+		case 3: 
+			echo "Hồ sơ một cửa";
+			break;
+		default:
+			echo "Không biết";
+			break;
+	}
+	?>
+	 
+	</td>
+
+	
+	<td>
+		<a href="#" onclick="delRowDs('<?=$stt?>');return false;">Xóa</a>
+	</td>
+	<input  type=hidden name="ID_SVB[]"  value="<?=$svb_it["ID_SVB"]?>">
+	</tr>
+	
+	
+
+	<?php $stt++;}?>
+	</tbody>
+</table>
+
+<table>
+	
+</table>
+<input  type=hidden name="YEAR"  value="<?=$this->nam_cuoi+1?>">
+<input class="input_button" onclick="if(confirm('Bạn có muốn thực hiện tạo năm làm việc mới không?')){document.frm.submit();}" type=button value="Thực hiện">
+<input class="input_button" onclick="window.location.reload();" type=button value="Làm lại">
+</form>
+<script>
+function delRowDs(idr){
+		try{
+				var bdyatt = document.getElementById("bdyatt_ds");
+				var id_row = 'tr_ds'+idr;
+				var row = document.getElementById(id_row);
+				bdyatt.removeChild(row);
+		}catch(e){
+		}
+}
+
+</script>

@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form  name=frmUpload1 enctype="multipart/form-data" action="/hscv/phienbanfile/save" method="post">
+	<input type="hidden" name="MAX_FILE_SIZE" value="100000000" />	
+	<input style="width:100%" name="uploadedfile" type="file" onchange="document.frmUpload1.submit(); return false;" />
+	<input type="hidden" name="idHSCV" value=<?php echo $this->idHSCV?> >
+	<input type="hidden" name="idObject" value=<?php echo $this->idPBDuthao?> >
+	<input type="hidden" name="idPBDuthao" value=<?php echo $this->idPBDuthao?> >
+	<input type="hidden" name="isTemp" value=<?php if($this->is_new==0) echo 0 ; if($this->is_new==1) echo 1; //cho id tam?>>
+	<input type="hidden" name="year" value=<?php echo $this->year?>>
+	<input type="hidden" name="idOldFile" value=<?php echo $this->idOldFile?>>
+	<input type="hidden" name="type" value=2 >
+	<input type="hidden" name="idDuthao" value=<?php echo $this->idDuthao?>>
+</form> 
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+
+function checkFormDataAndSubmit(){
+	
+	document.frmUpload1.submit();
+	return true;
+}
+
+function SaveButtonClick(){
+	
+}
+<?php if($this->is_new==1){ ?>
+var iframeElement = window.parent.document.getElementById('PBDuThao_ThemMoiDiv_file<?php echo $this->idPBDuthao?>');
+iframeElement.style.height = "30px";
+iframeElement.width = "100%"; 
+<?php }else{ ?>
+var iframeElement = window.parent.document.getElementById('PBDuThao_CapNhatFrame<?php echo $this->idPBDuthao ?>');
+iframeElement.style.height = "30px";
+iframeElement.width = "100%"; 
+<?php } ?>
+
+</script>

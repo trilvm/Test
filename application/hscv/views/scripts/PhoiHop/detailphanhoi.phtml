@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<table  style="width:100%; border:1px solid #ccc;">
+<thead>
+<th align="center"  width="30px"></th>
+<th align="left" width="20px">#</th>
+<th align="left" >Nội dung phản hồi</th>
+<th align="left" width="200px">Ngày ghi</th>
+<th align="left" width="200px" >Người ghi</th>
+
+</thead>
+<tbody>
+<?php
+	$i=0;
+	$stt=1;
+	if(count($this->data)>0){
+		foreach($this->data as $row){
+			
+?>
+<tr>
+			<td align="center"></td>
+			<td align="left"><?=$stt?></td>
+			<td align="left"><?=nl2br(htmlspecialchars($row['NOIDUNG']))?></td>
+			<td align="left"><?=QLVBDHCommon::MysqlDateToVnDate($row['NGAY_PH'])?></td>			
+			<td align="left"><?=$row['EMPNAME']?></td>			
+</tr>      
+<?php
+		$i = (-1+$i)*-1;
+		$stt++;
+		}
+	}else{
+?>
+		<tr >
+			<td colspan="4">
+				Chưa có phản hồi nào
+			</td>
+		</tr>
+<?php
+	}
+?>
+
+</tbody>  
+</table>
+<input type=hidden name=idphoihop value="<?=$this->idphoihop?>">
+<input type=hidden name=idhscv value="<?=$this->idhscv?>">
+
+</body>
+</html>

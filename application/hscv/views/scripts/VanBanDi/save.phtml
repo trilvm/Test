@@ -1,0 +1,203 @@
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/prototype.js"></script>
+<form name="<?php echo $this->form->getName()?>"  action="<?php echo $this->form->getAction()?>" method="<?php echo $this->form->getMethod()?>">
+<table border=0  width=90% align="center" title="" cellpadding="5" cellspacing="2">
+<tr>
+	<td colspan="3" align="right"> Trường có dấu <font color="red">*</font> là bắt buộc nhập</td>
+</tr>
+<?php
+	if($this->tenduthao!=null)
+	{
+ ?>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Tên dự thảo</label></td>
+	<td width=40%><?php echo $this->tenduthao;?></td>
+	<td width="40%" align="left"></td>
+</tr>
+<?php }?>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Loại văn bản <font color="red">*</font></label></td>
+	<td width=40%><?php echo $this->form->getElement('ID_LVB');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_LVB'));			
+	?>
+	</div>
+	</td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Cơ quan  <font color="red">*</font></label></td>
+	<td width=40%><?php echo $this->form->getElement('ID_CQ');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_CQ'));			
+	?>
+	</div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Lĩnh vực văn bản  <font color="red">*</font></label></td>
+	<td width=40%><?php echo $this->form->getElement('ID_LVVB');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_LVVB'));			
+	?>
+	</div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Sổ văn bản  <font color="red">*</font></label></td>
+	<td width=40%><?php echo $this->form->getElement('ID_SVB');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_SVB'));			
+	?></div></td>
+</tr>
+
+<tr>
+	<td width=20%> <label id="lblTextIput"> Người tạo  <font color="red">*</font></label></td>
+	<td width=40%>
+	<?=QLVBDHCommon::writeSelectDepartment("ID_DEP_TAO","NGUOITAO")?> 
+	<?php echo $this->form->getElement('NGUOITAO');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('NGUOITAO'));			
+	?>
+	</div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Người ký <font color="red">*</font></label></td>
+	<td width=40%>
+	<?=QLVBDHCommon::writeSelectDepartment("ID_DEP_KY","NGUOIKY")?>
+	<?php echo $this->form->getElement('NGUOIKY');?></td>
+	<td width="40%" align="left">
+	<div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('NGUOIKY'));			
+	?>
+	</div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Cơ quan ban hành  <font color="red">*</font></label></td>
+	<td width=40%><?php echo $this->form->getElement('COQUANBANHANH_TEXT');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('COQUANBANHANH_TEXT'));			
+	?></div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Số ký hiệu <font color="red">*</font></label></td>
+	<td width=40%><?php echo $this->form->getElement('SOKYHIEU');?> 
+	<input name="Check" type="button" value="Kiểm tra"  onClick="callAjax(document.getElementById('id_SOKYHIEU').value)" /> 
+	<font color="red" id="alert_text"></font> </td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('SOKYHIEU'));			
+	?></div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Ngày ban hành <font color="red">*</font></label></td>
+	<td width=40%><? echo QLVBDHCommon::calendar($this->ngaybanhanh,"NGAYBANHANH","NGAYBANHANH") ?></td>
+	<td width="40%" align="left"><div id="inputerror"></div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Trích yếu</td>
+	<td width=40%></td>
+	<td width="40%" align="left"><div id="inputerror"></div></td>
+</tr>
+<tr>
+	<td colspan="3">
+<?php
+
+$sBasePath = $this->dirFCK .'/fckeditor/';
+$oFCKeditor = new FCKeditor('TRICHYEU') ;
+
+$oFCKeditor->BasePath = $sBasePath;
+$oFCKeditor->Config['SkinPath'] = $sBasePath . 'editor/skins/' . htmlspecialchars('office2003') . '/' ;
+$oFCKeditor->Value = $this->trichyeu;
+$oFCKeditor->Width = '80%';
+$oFCKeditor->Height = 400;
+$oFCKeditor->ToolbarSet = 'Default';
+$oFCKeditor->Create();
+
+?>
+	</td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Số bản</td>
+	<td width=40%><?php echo $this->form->getElement('SOBAN');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('SOBAN'));			
+	?>
+	</div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Số Tờ</td>
+	<td width=40%><?php echo $this->form->getElement('SOTO');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('SOTO'));			
+	?>
+	</div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Độ mật  </td>
+	<td width=40%><?php echo $this->form->getElement('DOMAT');?></td>
+	<td width="40%" align="left"><div id="inputerror"></div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Độ Khẩn  </td>
+	<td width=40%><?php echo $this->form->getElement('DOKHAN');?></td>
+	<td width="40%" align="left"><div id="inputerror"></div></td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Nơi đến</label></td>
+	<td width=40%><?php echo $this->form->getElement('NOIDEN');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	</div></td>
+</tr>
+<tr>
+	<td colspan="3">
+	<fieldset>
+	<div id="idFileDinhKem"></div>
+	<?php Common_FileDinhKem::InsertFileDinhKem("groupcontent".$row["ID_HSCV"],$row["ID_HSCV"],0,$this->year,$this->ID_LOAIHSCV); ?>
+	</fieldset>
+	</td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Chuyển để biết </td>
+	<td width=40%></td>
+	<td width="40%" align="left"><div id="inputerror">
+	</div>
+ 	</td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+</tr>
+</table>
+<input type=hidden name="idhscv" value=<?php echo $this->idhscv;?>>
+<input type=hidden name="idduthao" value=<?php echo $this->duthao;?>>
+</form>
+<script>
+function SaveButtonClick()
+{
+	document.<?php echo $this->form->getName()?>.submit();
+}
+function BackButtonClick()
+{
+	document.<?php echo $this->form->getName()?>.action = "/vbdi/banhanh/";
+	document.<?php echo $this->form->getName()?>.submit();
+}
+//handle the Ajax response ...
+function handleResponse(transport)
+{
+    $('alert_text').innerHTML = transport.responseText;
+}
+
+//creates a prototype Ajax object, sends a request, and registers the callback function 'handleResponse'
+function callAjax(s) 
+{
+    var myAjax = new Ajax.Request('/vbdi/banhanh/check-Sokyhieu', 
+                                   {method: 'get', parameters: {sokyhieu: s}, 
+                                   onComplete: handleResponse});
+}
+</script>

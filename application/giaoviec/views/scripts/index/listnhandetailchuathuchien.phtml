@@ -1,0 +1,48 @@
+	<table class=adminlist1>
+		<thead>
+			<tr>
+				<th nowrap rowspan=2>STT</th>
+				<th rowspan=2>Văn bản</th>
+				<th rowspan=2>Trích yếu văn bản</th>
+				<th rowspan=2>Cơ quan thực hiện nhiệm vụ</th>
+				<th rowspan=2>Nhiệm vụ</th>
+                                <th rowspan=2>Hạn xử lý</th>
+				<th colspan=2 style="text-align: center;">Chưa thực hiện</th>
+			</tr>
+			<tr>
+				
+                                <th>Trong hạn</th>
+                                <th>Quá hạn</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+				$stt=0;
+				foreach($this->dataReport as $itemreport){
+			?>  
+			<tr>
+				<td nowrap align=right><?php echo ++$stt?></td>
+				<td><?php echo $itemreport->SOKYHIEU?> - <?php echo QLVBDHCommon::MysqlDateToVnDate($itemreport->NGAYBANHANH)?> - <?php echo $itemreport->DONVIGIAO?></td>
+				<td><?php echo $itemreport->TRICHYEU?></td>
+				<td><?php echo $itemreport->DONVINHAN?></td>
+				<td><?php echo $itemreport->TENCONGVIEC?></td>
+                                <td><?php if($itemreport->TRANGTHAI == 3) {
+                                            echo  date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH));
+                                        }else{
+                                           echo    date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH)).'<br>'.QLVBDHCommon::getTreHanNgay($itemreport->NGAYDUKIENHOANTHANH) ;
+
+                                        }
+                                     
+                                    ?>
+                                </td>
+                                <td align=center><?php echo $itemreport->CNTCHUATHUCHIENTRONGHAN?></td>
+                                <td align=center><?php echo $itemreport->CNTCHUATHUCHIENTREHAN?></td>
+			</tr>
+			<?php
+				}
+			?>
+                          
+		</body>
+		<tfoot>
+		</tfoot>
+	</table>

@@ -1,0 +1,88 @@
+<script type="text/javascript" src="/js/dlg_confirm.js"></script>
+<form method="post" action="/taphscv/taphscv/savehsyeucau" name="frm">
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap="nowrap">STT</th>
+				<th width="100%" colspan="2">Nội dung</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<td></td>
+			<td></td>
+			<td nowrap="nowrap"></td>
+		</tfoot>
+		<tbody>
+			<?php 
+				$stt = 1;
+				foreach($this->data as $data) { 
+			?>
+			<tr>
+				<?php 
+					$isPhanQuyen = $this->ThumucModel->CheckPhanQuyenPermissionByUser($this->object, $data['ID_TAPHOSO']);
+					$isCapNhat = $this->ThumucModel->CheckUpdatePermissionByUser($this->object, $data['ID_TAPHOSO']);
+					$isXem = $this->ThumucModel->CheckQuyenXemPermissionByUser($this->object, $data['ID_TAPHOSO']);
+					$isVanThuLuuTru = hosocongviecModel::isVanthuLuutru($this->object->_id_u);
+				?>
+				<td nowrap="nowrap"><?= $stt;?></td>
+				<td width="100%"><?= $data['TEN'];?></td>
+				<td nowrap="nowrap">
+					<?php 
+						if($data['YEUCAU'] == 1) { 
+							if($isVanThuLuuTru == TRUE) {
+					?>
+						<div><a href="#" onclick="DongHS(<?=$data['ID_TAPHOSO']?>,'<?=$data['TEN']?>')">Đồng ý đóng</a></div>
+						<div><a href="#" onclick="HuyHS(<?=$data['ID_TAPHOSO']?>,'<?=$data['TEN']?>')">Không đồng ý</a></div>
+					<?php } else { 
+						if($isPhanQuyen > 0 && $isCapNhat > 0) {
+					?>
+						<div><a href="#" onclick="DongHS(<?=$data['ID_TAPHOSO']?>,'<?=$data['TEN']?>')">Đồng ý đóng</a></div>
+						<div><a href="#" onclick="HuyHS(<?=$data['ID_TAPHOSO']?>,'<?=$data['TEN']?>')">Không đồng ý</a></div>
+					<?php } } } ?>
+				</td>
+			</tr>
+			<?php 
+				$stt++;} 
+			?>
+		</tbody>
+	</table>
+	<!--show confirm-->
+	<div id="confirm_dlg" style="position:fixed;">
+		<div>
+			<p id=content_confirm>Content you want the user to see goes here.</p>
+			<input type="button" class=input_button style="width:50px;background-color:white" name=YES id=DLG_YES_BUTTON value="Có" onclick='overlay("YES")' >
+			<input type="button" class=input_button style="width:50px;background-color:white" name=CANCEL id=DLG_CANCEL_BUTTON value="Không" onclick='overlay("CAMCEL")' >
+		</div>
+	</div>
+	<!--end show confirm-->
+	<input type="hidden" name="id" id="id" value="<?=$this->id;?>" />
+	<input type="hidden" name="yeucau" id="yeucau" value="<?=$this->yeucau;?>" />
+</form>
+<script>
+	function DongHS(id, name)
+	{
+		if(name != "")
+		{
+			var id_hs = document.getElementById('id');
+			var yeucau = document.getElementById('yeucau');
+			id_hs.value = id;
+			yeucau.value = 1;
+			var func_ok = "document.frm.submit();";
+			var func_cancel = "";
+			displayConfirm("Bạn có muốn đóng hồ sơ này không?","","",func_ok,func_cancel);
+		}
+	}
+	function HuyHS(id, name)
+	{
+		if(name != "")
+		{
+			var id_hs = document.getElementById('id');
+			var yeucau = document.getElementById('yeucau');
+			id_hs.value = id;
+			yeucau.value = 2;
+			var func_ok = "document.frm.submit();";
+			var func_cancel = "";
+			displayConfirm("Bạn có muốn hủy hồ sơ này không?","","",func_ok,func_cancel);
+		}
+	}
+</script>

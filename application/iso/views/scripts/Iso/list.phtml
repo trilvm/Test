@@ -1,0 +1,129 @@
+<form name=frm method=post action="/iso/iso/list">
+<?php
+	$level = array(
+		"1"=>array("","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX")
+	);
+?>
+<table class=adminlist>
+	<thead>
+		<tr>
+			<td colspan=5 align=right>
+				<?php
+					global $db;
+					$sql = "SELECT YEAR FROM ISO_ITEM GROUP BY YEAR";
+					$r = $db->query($sql)->fetchAll();
+				?>
+				Phiên bản <select name=YEAR1 onchange="document.frm.submit();">
+				<?php
+					foreach($r as $itemyear){
+						echo "<option value='".$itemyear["YEAR"]."'>".$itemyear["YEAR"]."</option>";
+					}	
+				?>
+				</select>
+				<script>
+					document.frm.YEAR1.value='<?=$this->year?>';
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<th nowrap="nowrap">STT</th>
+			<?php if($this->lock==0){ ?>
+			<th nowrap="nowrap"><input type=checkbox name=CHECKALL onclick="SelectAll(this,'DEL')"></th>
+			<?php } ?>
+			<th width="100%">Tên/Loại tài liệu</th>
+			<th nowrap="nowrap">Mã hiệu</th>
+			<th nowrap="nowrap">Ghi chú</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="<?=$this->lock==0?5:4?>"></th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+$sttlevel1 = 0;
+$sttlevel2 = 0;
+$sttlevel3 = 0;
+$sttlevel4 = 0;
+$stt="";
+foreach($this->data as $item){
+	if($item["LEVEL"]==1){
+		$sttlevel1++;
+		$sttlevel2 = 0;
+		$sttlevel3 = 0;
+		$sttlevel4 = 0;
+		$sttlevel5 = 0;
+		$stt = "<b>".$level[$item["LEVEL"]][$sttlevel1]."</b>";
+	}
+	if($item["LEVEL"]==2){
+		$sttlevel2++;
+		$sttlevel3 = 0;
+		$sttlevel4 = 0;
+		$sttlevel5 = 0;
+		$stt = "<b>".str_repeat("&nbsp;&nbsp;&nbsp;",$item["LEVEL"]).$sttlevel2."</b>";
+	}
+	if($item["LEVEL"]==3){
+		$sttlevel3++;
+		$sttlevel4 = 0;
+		$sttlevel5 = 0;
+		$stt = str_repeat("&nbsp;&nbsp;&nbsp;",$item["LEVEL"]).$sttlevel2.".".$sttlevel3;
+	}
+	if($item["LEVEL"]==4){
+		$sttlevel4++;
+		$sttlevel5 = 0;
+		$stt = str_repeat("&nbsp;&nbsp;&nbsp;",$item["LEVEL"]).$sttlevel2.".".$sttlevel3.".".$sttlevel4;
+	}
+?>
+		<tr style="height:15px">
+			<td nowrap="nowrap" style="height:15px"><?=$stt?></td>
+			<?php if($this->lock==0){ ?>
+			<td nowrap="nowrap" style="height:15px"><input type=checkbox name=DEL[] value=<?=$item["ID_ITEM"]?>></td>
+			<?php } ?>
+			<td width="100%" style="height:15px">
+				<?php if($this->lock==0){ ?>
+				<a href="#" onclick="ItemClick(<?=$item["ID_ITEM"]?>);"><?=($item["LEVEL"]<3?"<b>":"").$item["NAME"].($item["LEVEL"]<3?"</b>":"")?></a>
+				<?php }else{ ?>
+				<?=($item["LEVEL"]<3?"<b>":"").$item["NAME"].($item["LEVEL"]<3?"</b>":"")?>
+				<?php } ?>
+			</td>
+			<td nowrap="nowrap" style="height:15px">
+				<?php if($item["FILE_MASO"]!=""){?>
+				<a href="/iso/iso/download/id/<?=$item["ID_ITEM"]?>"><?=$item["MAHIEU"]?></a>
+				<?php } else { ?>
+				<?=$item["MAHIEU"]?>
+				<?php } ?>
+			</td>
+			<td nowrap="nowrap" style="height:15px"><?=$item["GHICHU"]?></td>
+		</tr>
+<?php 
+} 
+?>
+	</tbody>
+</table>
+</form>
+<script>
+function DeleteButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","abc");
+	if(mess){
+		if(confirm("Bạn có muốn xóa các tài liệu được chọn không?")){
+			document.frm.action = "/iso/iso/delete";
+			document.frm.submit();
+		}
+	}else{
+		alert("Phải chọn ít nhất một tài liệu để xóa.");
+	}
+}
+function AddNewButtonClick(){
+	document.frm.action = "/iso/iso/input/YEAR/"+document.frm.YEAR1.value;
+	document.frm.submit();
+}
+function ItemClick(id){
+	document.frm.action = "/iso/iso/input/id/"+id+"/YEAR/"+document.frm.YEAR1.value;
+	document.frm.submit();
+}
+<?php if($this->bug==1){ ?>
+alert("Phải xóa hết các mục con trược khi xóa mục cha.");
+<?php } ?>
+</script>

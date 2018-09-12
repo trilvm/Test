@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src="/js/Json/json2.js"?>></script>
+<script type="text/javascript" src="/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel=Stylesheet href=stylesheet.css>
+</head>
+<body style="background-color:transparent">
+
+ <input type="button" title="Chọn gửi SMS" value="Chọn gửi SMS" onclick="AddSMSButtonClick();" >
+
+<form name="frmThongKe" target="_blank" id="frmThongKe" action="/giaoviec/danhsachguisms/addsms" enctype="multipart/form-data" method="post">
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap rowspan=2>STT</th>
+                                <th rowspan=2></th>
+				<th rowspan=2>Văn bản</th>
+				<th rowspan=2>Trích yếu văn bản</th>
+				<th rowspan=2>Cơ quan thực hiện</th>
+				<th rowspan=2>Nội dung nhiệm vụ</th>
+                                <th rowspan=2>Hạn xử lý</th>
+				<th colspan=2>Đã hoàn thành</th>
+				<th colspan=2>Chưa hoàn thành</th>
+				<th rowspan=2>Lý do trễ hạn</th>
+			</tr>
+			<tr>
+				<th>Đúng hạn</th>
+				<th>Trễ hạn</th>
+				<th>Trong hạn</th>
+				<th>Trễ hạn</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+				$stt=0;
+				foreach($this->dataReport as $itemreport){
+			?>
+			<tr>
+				<td nowrap align=right><?php echo ++$stt?></td>
+                                <td nowrap align="center">
+                                
+                                <?php
+                                    require_once "giaoviec/models/DanhSachGuiMailModel.php";
+                                    $thongtindonvi = DanhSachGuiMailModel::getDonVi($itemreport->IDDONVINHAN);
+                                    $noidunggui =  QLVBDHCommon::getTreHanNgay($itemreport->NGAYDUKIENHOANTHANH);
+                                ?>
+                                    <input type=hidden name="sodienthoai" value="<?=$thongtindonvi[0]['SODIENTHOAI']  ?>" >
+                                    <input type=hidden name="tendonvi" value="<?=$thongtindonvi[0]['TENDONVI']  ?>" >  
+                                    <input type=hidden name="tennguoinhan" value="<?=$thongtindonvi[0]['TENNGUOINHAN']  ?>" >  
+                                    <input type=hidden name="id_donvi" value="<?=$thongtindonvi[0]['MADONVI']  ?>" > 
+                                    <input type=checkbox name=DEL[] value='<?php echo $itemreport->SOKYHIEU.$noidunggui ?>'>
+                               </td> 
+				<td><?php echo $itemreport->SOKYHIEU?> - <?php echo QLVBDHCommon::MysqlDateToVnDate($itemreport->NGAYBANHANH)?> - <?php echo $itemreport->DONVIGIAO?></td>
+				<td><?php echo $itemreport->TRICHYEU?></td>
+				<td><?php echo $itemreport->DONVINHAN?></td>
+				<td><?php echo $itemreport->TENCONGVIEC?></td>
+                                <td><?= date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH)).'<br>'.QLVBDHCommon::getTreHanNgay($itemreport->NGAYDUKIENHOANTHANH) ?></td>
+				<td align=center><?php echo $itemreport->CNTXONGDUNGHAN?></td>
+				<td align=center><?php echo $itemreport->CNTXONGTREHAN?></td>
+				<td align=center><?php echo $itemreport->CNTCHUATRONGHAN?></td>
+				<td align=center><?php echo $itemreport->CNTCHUATREHAN?></td>
+				<td><?php echo $itemreport->LYDOTREHAN?></td>
+			</tr>
+			<?php
+				}
+			?>
+                          
+		</body>
+		<tfoot>
+		</tfoot>
+	</table>
+</form>
+<p id="lasttext"></p>
+<script>
+    function resize() {
+        try {
+            var iframeElement = window.parent.document.getElementById('reportview');
+            iframeElement.style.height = "" + (document.getElementById("lasttext").offsetTop) + "px";
+            iframeElement.width = "100%";
+            setTimeout("resize()", 1000);
+        } catch (ex) {
+        }
+    }
+    resize();
+    
+function AddSMSButtonClick(){
+        var ln = 0;
+        var arr = document.getElementsByName('DEL[]');
+        for (var i = 0; i < arr.length; i++){
+            if (arr[i].checked == true){
+                ln = 1;
+            }
+        }
+        if (ln == 1){
+            document.frmThongKe.submit();
+        }else{
+            alert("Bạn phải chọn một loại công việc giao việc để gửi sms!");
+        }
+}
+    
+</script>
+</body>
+</html>

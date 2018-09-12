@@ -1,0 +1,23 @@
+<table class="adminlist">
+	<thead>
+		<tr>
+			<th>STT</th>
+			<th colspan=2>Tên thư mục</th>
+			
+		</tr>
+	</thead>
+	<tbody>
+		<?php $stt = 1 ; foreach ($this->data as $item){ ?>
+			<tr>
+				<td nowrap><?=$stt?></td>
+				<td width=100%><a href="/hscv/thumuccanhan/inputthumuc?id=<?=$item["ID_TMCN"]?>" ><?=htmlspecialchars(str_repeat("--",$item["LEVEL"]-1).$item["NAME"])?></a></td>
+				<td> <a href="/hscv/thumuccanhan/deletethumuc?id=<?=$item["ID_TMCN"]?>"> [<b>Xóa</b>] </a> </td>
+			</tr>
+		<?php $stt++;}?>
+	</tbody>
+</table>
+<script>
+function AddNewButtonClick(){
+		window.location.href = "/hscv/thumuccanhan/inputthumuc";
+	}
+</script>

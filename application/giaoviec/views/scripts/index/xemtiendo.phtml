@@ -1,0 +1,174 @@
+<?php if(count($this->data)>0){?>
+<table class="adminlist2" style="background:#fff !important; border-collapse:collapse" width="100%">
+    <h1>THÔNG TIN HỒ SƠ NHIỆM VỤ</h1>
+    <br>
+    <tbody>
+    
+        <tr class="row1">
+            <td style="color:blue;width:151px;" nowrap="nowrap">Tên (Trích yếu) nhiệm vụ</td>
+            <td nowrap="nowrap"><?= $this->data[0]->TENCONGVIEC ?></td>
+        </tr>
+        <tr class="row1">
+            <td style="color:blue" nowrap="nowrap">Số Công văn giao nhiệm vụ</td>
+            <td nowrap="nowrap"><?= $this->data[0]->SOKYHIEU ?></td>
+        </tr>
+        <tr class="row1">
+            <td style="color:blue" nowrap="nowrap">Ngày phát hành</td>
+            <td nowrap="nowrap">
+                <?php if($this->data[0]->NGAYBANHANH !='' && $this->data[0]->NGAYBANHANH != '1970-01-01 00:00:00') {
+                    echo date("d/m/Y", strtotime($this->data[0]->NGAYBANHANH));
+                }else {
+                    echo '';
+                }?>
+            </td>
+        </tr>
+        <tr class="row1">
+            <td style="color:blue" nowrap="nowrap">Hạn xử lý</td>
+            <td>
+                <?php if($this->data[0]->NGAYDUKIENHOANTHANH !='' && $this->data[0]->NGAYDUKIENHOANTHANH != '1970-01-01 00:00:00') {
+                    echo date("d/m/Y", strtotime($this->data[0]->NGAYDUKIENHOANTHANH));
+                }else {
+                    echo '';
+                }?>
+            </td>
+        </tr>
+        <tr class="row1">
+            <td style="color:blue" nowrap="nowrap">Trạng thái xử lý</td>
+            <td> <?php
+                if ($this->data[0]->TRANGTHAI == 0) {
+                    echo 'Chưa tiếp nhận';
+                } elseif ($this->data[0]->TRANGTHAI == 1) {
+                    echo 'Đang xử lý';
+                } elseif ($this->data[0]->TRANGTHAI == 2) {
+                    echo 'Từ chối <br>(<i style="color:red;">' . $this->data[0]->LYDOTUCHOI . '</i>)';
+                } elseif ($this->data[0]->TRANGTHAI == 3) {
+                    echo 'Đã hoàn thành';
+                } elseif ($this->data[0]->TRANGTHAI == 4) {
+                    echo 'Chưa hoàn thành';
+                }
+                ?></td>
+        </tr>
+        <tr class="row1">
+            <td style="color:blue" nowrap="nowrap"><?= $this->data[0]->TENLOAICONGVIEC ?></td>
+            <td><?= $this->data[0]->HOTENNGUOIKY ?></td>
+        </tr>
+
+    </tbody>
+</table>
+<br>
+<form name="frmnhatky" method=post action="/giaoviec/index/savetiendo" enctype="multipart/form-data">
+    <fieldset>
+        <h1 style="font-size: 13.0pt">Cập nhật tiến độ công việc</h1><br>
+        <!-- table hien thong tin ve ho so  -->
+        
+        <table style="table-layout: fixed; width: 100%"> 
+         
+            <tr>
+               <td valign=top style="border:none;width:200px"> Trạng thái công việc</td>
+               <td nowrap style="color: red; border: none;width: 950px">
+                   <!-- <?php $count = (int) count($this->data);
+                    if( (int) $this->data[$count-1]->TIENDO >=100){
+                    ?>
+                    <span style="color: blue"> Đã hoàn thành</span>
+                    <?php
+                    }else{
+                    ?>
+                    <span style="color: red"> Chưa hoàn thành</span>
+                    <?php
+                    }
+                    ?> -->
+                    <select name="trangthaixacnhan" id="trangthaixacnhan">
+                        <option value="0">--Chọn trạng thái--</option>
+                        <option value="1" <?php if((int) $this->data[$count-1]->TRANGTHAI ==3) echo 'selected';?>>Đã hoàn thành</option>
+                        <option value="3" <?php if((int) $this->data[$count-1]->TRANGTHAI != 3) echo 'selected';?>>Chưa hoàn thành</option>
+                    </select>
+                    <input type="hidden" name="macongviectt" value="<?php echo $this->data[$count-1]->MACONGVIEC; ?>"/>
+                    <input type="hidden" name="donvinhantt" value="<?php echo $this->data[$count-1]->IDDONVINHAN; ?>"/>
+               </td> 
+            </tr>
+            <!-- <tr>
+                <td valign=top style="border:none;"> Tiến độ công việc hiện tại</td>
+                <td nowrap style="color: red; border: none;width: 950px">                          
+                    <input type=number id=tiendo  style="width: 100px;color: red;height:16px" name=tiendo value="<?php echo $this->data[$count-1]->TIENDOHIENTAI; ?>"><span style="color: red">%</span>
+                </td>
+            </tr> -->
+           <tr>
+                <td valign=top style="border:none;"> Mô tả tiến độ hiện tại</td>
+                <td nowrap style="color: red; border: none;width: 950px">
+                    <textarea id=motatiendo name="motatiendo" style="width: 637px; height: 64px;"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td valign=top style="border:none;">File đính kèm báo cáo kết quả</td>
+                <td>
+                <input name=uploadedfile id=uploadedfile type="file" >
+                </td>
+            </tr>
+        </table>
+        <!-- end table the hien thong tin ve ho so  -->
+        <input type="hidden" name="id_congviec" value="<?php echo $this->data[$count-1]->MACONGVIEC; ?>"/>
+        <input type="hidden" name="id_vblienthongra" value="<?php echo $this->data[$count-1]->ID_VBLIENTHONG_VAO; ?>"/>           
+        <input type="hidden" name="id_congviecdetail" value="<?php echo $this->data[$count-1]->ID_CONGVIECDETAIL; ?>"/>           
+        <input type=button  name=SEND value="Lưu" onclick="savetiendo()">
+    </fieldset>
+    
+</form>
+<br>
+<table class="adminlist2" style="background:#fff !important; border-collapse:collapse" width="100%">
+    <h1>TIẾN ĐỘ GIẢI QUYẾT NHIỆM VỤ ĐƯỢC GIAO</h1>
+    <br>
+    <thead>
+
+        <tr>
+            <th nowrap>Ngày thực hiện</th>
+            <th nowrap>Trạng thái</th>
+            <!-- <th nowrap>Tiến độ (%)</th> -->
+            <th nowrap>Cán bộ thực hiện</th>
+            <th nowrap>Cơ quan thực hiện</th>
+            <th nowrap>File đính kèm báo cáo kết quả</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($this->data as $item) {
+            ?>
+            <tr>
+                <td nowrap align=left>
+                    <?php if($item->NGAYCAPNHAT != '' && $item->NGAYCAPNHAT != '1970-01-01 00:00:00' && $item->NGAYCAPNHAT != null){
+                        echo QLVBDHCommon::MysqlDateToVnDateWithTime($item->NGAYCAPNHAT);
+                    }else {echo '';}  ?>
+                </td>
+                <td nowrap align=left><?php echo $item->NOIDUNG; ?></td>
+                <!-- <td nowrap align=left><?php echo $item->TIENDO; ?></td> -->
+                <td nowrap align=left><?php echo $item->NAME_NGUOIXL; ?></td>
+                <td nowrap align=left><?php echo $item->PHONG_NGUOIXL; ?></td>
+                <td nowrap align=left>
+                    <?php
+                    if($item->ID_FILEDINHKEM != '' && $item->ID_FILEDINHKEM != null){
+                        require_once 'giaoviec/models/GiaoViecModel.php';
+                        $giaoviec = new GiaoViecModel();
+                        $giaoviec->ShowFileDinhKem($this->session,$item->ID_FILEDINHKEM,$item->MASOVANBAN);
+                    }
+                    
+                ?>
+                </td>
+            </tr>
+
+            <?php
+        }
+        ?>
+
+    </tbody>
+</table>
+    <?php }else{ echo "Không tìm thấy hồ sơ công việc";}?>
+<script>
+    function BackButtonClick()
+    {	
+	    // window.location = "/giaoviec/index/danhsach";
+        window.history.back();
+    }
+    function savetiendo()
+    {
+        document.frmnhatky.submit();
+    }
+</script>

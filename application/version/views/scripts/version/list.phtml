@@ -1,0 +1,83 @@
+<?= QLVBDHCommon::useDlgConfirm() ?>
+<form name="frm" action="#" method="post">
+    <table class="adminlist" width="100%"  >
+
+        <?php
+        if (count($this->data) == 0) {
+            echo '<tr><td colspan=3>Không có phiên bản mới nào</td><tr>';
+        }
+        ?>
+        <thead>
+            <tr ">
+                
+                <th nowrap="nowrap">TÊN PHIÊN BẢN</th>
+                <th nowrap="nowrap">NGÀY BAN HÀNH</th>
+                <th nowrap="nowrap">YÊU CẦU CẬP NHẬT</th>
+                <th nowrap="nowrap">DANH SÁCH FILE</th>
+                <th nowrap="nowrap">THEO DÕI CẬP NHẬT</th>       
+            </tr> 
+        </thead>
+        
+        <tfoot>
+            <tr>
+                <th colspan="<?= $this->lock == 0 ? 7 : 4 ?>"></th>
+            </tr>
+        </tfoot>
+        
+        <tbody>
+            <?php
+            $stt = 0;
+            $i = 0;
+            if (count($this->data) > 0) {
+                foreach ($this->data as $row) {
+                    ?>
+                    <tr>
+                       
+                        <td nowrap="nowrap" style="height:15px"><font color=red><b><?= $row['NAME_VERSION'] ?></td>
+                        <td nowrap="nowrap" style="height:15px"><?= display($row['DATE_UPDATE'])  ?></td>
+                        <td nowrap="nowrap" style="height:15px"><?php
+                    if ($row['ID_DONVI'] == '0') echo '<font color=#0CA1E3><b>CẬP NHẬT CHUNG</b></font>'; 
+                    else if ($row['IS_UPDATE'] == 0) echo'<b><font color=#0CA1E3> CẬP NHẬT RIÊNG</font>';
+                    else  echo'<b><font color=green>ĐÃ CẬP NHẬT</font>';
+                    ?></td>
+                        <td nowrap="nowrap" style="height:15px"><a href="#" onclick = "danhsachfile(<?php echo $row['ID'] ?>);">Danh Sách File</a></td>
+                        <td nowrap="nowrap" style="height:15px"><a href="#" onclick = "theodoicapnhat(<?php echo $row['ID'] ?>);">Theo Dõi Cập Nhật File</a></td>
+                    </tr>
+                    <?php
+                }
+            }
+            ?>
+        </tbody>
+    </table>     
+    <script>
+        function DeleteButtonClick(){
+            if(confirm("<?php echo DELETEQUESTION; ?>")){
+                document.frm.action = "/qtht/Danhmucnhomnguoidung/Delete";
+                document.frm.submit();
+            }
+        }
+        function AddNewButtonClick(){
+            document.frm.action = "/qtht/Danhmucnhomnguoidung/input";
+            document.frm.submit();
+        }
+        function danhsachfile(id){
+            document.frm.action = "/version/version/danhsachfile/id/"+id;
+            document.frm.submit();
+        }
+        function theodoicapnhat(id){
+            document.frm.action = "/version/version/theodoicapnhat/id_vers/"+id;
+            document.frm.submit();
+        }
+        function BackButtonClick(){
+                document.frm.action = "/default/index/index";
+                document.frm.submit();
+            }
+    </script>
+    <?php
+            function display($param) {
+                $arr=explode(" ", $param); 
+                $day=substr($arr[0], -2);
+                $month=substr($arr[0], 5, 2);
+                $year=substr($arr[0],0, 4);
+                return $day.'/'.$month.'/'.$year;
+            }

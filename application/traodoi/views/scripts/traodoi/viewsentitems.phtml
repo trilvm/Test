@@ -1,0 +1,300 @@
+<form name="frmTraodoi" action="/traodoi/traodoi/" method="POST">
+<table cellpadding="0" cellspacing="0" class="adminlist" style="margin-top:5px" >
+	<tr>
+		<td width="15%" valign="top">			
+			<div class="urbangreymenu">
+				<div class="headerbar">Thư mục tin</div>
+					<ul>
+						<li><a style="<?php echo ("inbox"==$this->class && $this->filter_object==0?"background:#d6f3fc;":"background:#fff;") ?><?=($this->cntsubinbox>0? " font-weight:bold":"")?>" href="#" onclick="document.frmTraodoi.filter_object.value='';viewInbox(); return false;"><span <?php echo ($this->unread>0?"style='border-bottom-width:1px; font-weight: bold; '":"") ?>>
+						<img style="padding-right:5px;" id=inboximage
+						src = "/images/j_arrow.png" onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('inboxlist').style.display==''){
+							document.getElementById('inboxlist').style.display='none';
+							document.getElementById('inboximage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('inboxlist').style.display='';
+							document.getElementById('inboximage').src='/images/j_arrow_down.png';
+						}
+						return false;
+						"> Tin đến <?php echo ($this->unread>0?" (".$this->unread.")":"") ?></span></a>
+							<ul id="inboxlist" style="display:none">
+								<?php
+									foreach($this->chudedatainbox as $itemchude){
+										//if($itemchude["C"]>0){
+								?>
+								<li style="background:#fff">
+									<a 
+									style="padding-left:30px;<?php echo ("inbox"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='inbox';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span><?=$itemchude["ten_chude"].($itemchude["C"]>0?" (".$itemchude["C"].")":"")?></span>
+									</a>
+								</li>
+								<?php
+										//}
+									}
+								?>
+							</ul>
+						</li>
+						<li><a style="<?php echo ("sentitems"==$this->class && $this->filter_object==0?"background:#d6f3fc":"background:#fff") ?>" href="#"  onclick="document.frmTraodoi.filter_object.value='';viewSentItems(); return false;"><span><img style="padding-right:5px;"  id=sentitemsimage src = "/images/j_arrow.png"
+						onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('sentitemslist').style.display==''){
+							document.getElementById('sentitemslist').style.display='none';
+							document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('sentitemslist').style.display='';
+							document.getElementById('sentitemsimage').src='/images/j_arrow_down.png';
+						}
+						"> Tin đã gửi</span></a>
+							<ul id=sentitemslist style="display:none">
+								<?php
+									foreach($this->chudedatasent as $itemchude){
+										//if($itemchude["C"]>0){
+								?>
+								<li style="background:#fff">
+									<a style="padding-left:30px;<?php echo ("sentitems"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='sentitems';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span <?php echo ("sentitems"==$this->class && $itemchude["id_chude"]==$this->filter_object?"style='border-bottom-width:1px; '":"") ?>><?=$itemchude["ten_chude"].""?></span>
+									</a>
+								</li>
+								<?php
+										//}
+									}
+								?>
+							</ul>
+						</li>
+						<li><a style="<?php echo ("draft"==$this->class && $this->filter_object==0?"background:#d6f3fc":"background:#fff") ?>" href="#"  onclick="document.frmTraodoi.filter_object.value='';viewDraft(); return false;"><span><img style="padding-right:5px;display:none"  id=draftimage src = "/images/j_arrow.png"
+						onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('draftlist').style.display==''){
+							document.getElementById('draftlist').style.display='none';
+							document.getElementById('draftimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('draftlist').style.display='';
+							document.getElementById('draftimage').src='/images/j_arrow_down.png';
+						}
+						"> Tin nháp</span> <?=$this->drafts>0?"(".$this->drafts.")":""?></a>
+							<ul id=draftlist style="display:none">
+								<?php
+									foreach($this->chudedatadraft as $itemchude){
+										if(false){
+								?>
+								<li style="background:#fff">
+									<a style="padding-left:30px;<?php echo ("draft"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='draft';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span <?php echo ("draft"==$this->class && $itemchude["id_chude"]==$this->filter_object?"style='border-bottom-width:1px; font-weight: bold; '":"") ?>><?=$itemchude["ten_chude"]." (".$itemchude["C"].")"?></span>
+									</a>
+								</li>
+								<?php
+										}
+									}
+								?>
+							</ul>
+						</li>
+					</ul>
+					<script>
+					document.getElementById('inboxlist').style.display='none';
+					document.getElementById('inboximage').src='/images/j_arrow.png';
+					document.getElementById('sentitemslist').style.display='none';
+					document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+					document.getElementById('draftlist').style.display='none';
+					document.getElementById('draftimage').src='/images/j_arrow.png';
+				<?php
+					if($this->filter_object>0){
+						switch($this->class){
+							case "inbox":
+				?>
+						if(document.getElementById('inboxlist').style.display==''){
+							document.getElementById('inboxlist').style.display='none';
+							document.getElementById('inboximage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('inboxlist').style.display='';
+							document.getElementById('inboximage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+							case "sentitems":
+				?>
+						if(document.getElementById('sentitemslist').style.display==''){
+							document.getElementById('sentitemslist').style.display='none';
+							document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('sentitemslist').style.display='';
+							document.getElementById('sentitemsimage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+							case "draft":
+				?>
+						if(document.getElementById('draftlist').style.display==''){
+							document.getElementById('draftlist').style.display='none';
+							document.getElementById('draftimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('draftlist').style.display='';
+							document.getElementById('draftimage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+						}
+					}else{
+						if($this->class=='inbox'){
+				?>
+					
+					document.getElementById('inboxlist').style.display='';
+					document.getElementById('inboximage').src='/images/j_arrow_down.png';
+				<?php
+						}
+					}
+				?>
+				</script>
+			</div>	
+		</td>
+		<td width="85%">
+				<div class="traodoi_search_tb">				
+					<div style="float:left;margin-left:10px;margin-bottom:10px;">
+						<input  accesskey="9" type="button" name="send" value="Phản hồi" title="Phản hồi" onclick="Reply('<?php echo $this->id ?>')">
+						<input  type="button" name="forward" value="Chuyển tiếp" onclick="Forward('<?php echo $this->id ?>')">
+						<input type="button" accesskey="0" name="cancel" value="Xóa" title="Xóa" onclick="Delete('<?php echo $this->id ?>')">
+					</div>
+				</div>			
+				  
+			   
+		 		<table width="100%" cellpadding="0" cellspacing="0" border="0">						
+						<tr>
+							<td colspan="2" style="background: #F6F6F6; border-color:#CCCCCC; border-width:1px; border-style:dashed">
+								<div class="required">
+									<label>Gửi từ :</label>	
+									<div style="float:left;margin-top:3px;margin-left:5px"><a href="#"><?php echo $this->form->getElement('nguoinhan')->getValue();?><i>(<?php echo $this->tennguoigui ?>)</i></a></div>						
+									<input type="hidden" name="nguoinhan" value="<?php echo $this->form->getElement('nguoinhan')->getValue();?>">
+								</div>	
+								<div class="clr"></div>
+								<div class="required">
+									<label>Gửi đến :</label>
+									<div style="float:left;margin-top:3px;margin-left:5px">
+									<?php
+											foreach($this->nguoinhans as $row)
+											{
+												if($row['danhan']==1)
+												{
+									?>
+												<a href="#"><font color="red"><?php echo $row['USERNAME'] ?> <?php echo "(".$row['TENNGUOI'].")" ?></font>;</a>
+									<?			
+												}
+												else 
+												{
+									?>
+												<a href="#"><?php echo $row['USERNAME'] ?> <?php echo "(".$row['TENNGUOI'].")" ?>;</a>
+									<?php
+												}
+											}
+									?>		
+									</div>									
+								</div>		
+								<div class="clr"></div>
+								<div class="required">
+									<label id="lblTextIput">Tiêu đề :</label>	
+									<div style="float:left;margin-top:3px;margin-left:5px"><?php echo $this->form->getElement('tieude')->getValue();?></div>
+									<input type="hidden" name="tieude" value="<?php echo $this->form->getElement('tieude')->getValue();?>">
+								</div>
+								<div class="clr"></div>
+								<div class="required">
+									<label id="lblTextIput">Tệp đính kèm</label>
+									<div id="idFileDinhKem" style="margin-top:3px"></div>
+									<span class="box_erro_area">
+							        </span>
+								</div>	
+								<script type="text/javascript">
+									divFileDinhKemId='idFileDinhKem';
+									url='/hscv/file/attachment?iddiv=idFileDinhKem&idObject=<?php echo ($this->idTemp >0?$this->idTemp:0) ?>&is_new=<?php echo ($this->idTemp > 0?0:1)?>&isreadonly=<?php echo $this->isreadonly; ?>&from=sentitems&year=<?php echo $this->year ?>&type=<?php echo ($this->idTemp > 0?6:-1) ?>';
+									loadDivFromUrl(divFileDinhKemId,url,0);
+								</script>														
+								<div class="clr"></div>		
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">								
+								<div style="margin-left:10px;">
+								<?php echo $this->noidung; ?>
+							</td>
+						</tr>						
+				</table>
+				<table width="100%" cellpadding="0" cellspacing="0" border="0">
+						<tr height="50">
+							<td style="background: #f0f0f0;" colspan="2">
+								<div style="float:left;margin-left:10px;">
+									<input  accesskey="9" type="button" name="send" value="Phản hồi" title="Phản hồi" onclick="Reply('<?php echo $this->id ?>')">
+									<input  type="button" name="forward" value="Chuyển tiếp" onclick="Forward('<?php echo $this->id ?>')">
+						            <input type="button" accesskey="0" name="cancel" value="Xóa" title="Xóa" onclick="Delete('<?php echo $this->id ?>')">
+						     	</div>								
+							</td>
+						</tr>							
+				</table>
+		</td>
+	</tr>
+</table>
+<input type="hidden" name="act" id="id_act" value="">
+<input type="hidden" name="id" id="id" value="<?php echo $this->id ?>">
+<input type="hidden" name="view" value="">
+<input type="hidden" name="comeFrom" value="listForm">
+<input type="hidden" name="DEL[]" id="DEL">
+<input type="hidden" name="filter_object" value="<?=$this->filter_object?>">
+</form>
+<script>
+function Reply(id)
+{
+	document.frmTraodoi.action = "/traodoi/traodoi/input/idreply/"+id;
+	document.frmTraodoi.submit();
+}
+function Forward(id)
+{
+	document.frmTraodoi.action = "/traodoi/traodoi/input/idforward/"+id;
+	document.frmTraodoi.submit();	
+}
+function Delete(id)
+{
+	if(confirm("Bạn muốn xóa tin này"))
+	{
+		document.getElementById("DEL").value=id;
+		document.frmTraodoi.action = "/traodoi/traodoi/delete";		
+		document.frmTraodoi.submit();	
+	}
+}
+
+function CreateNewMessage()
+{
+	document.location.href = "/traodoi/traodoi/input";
+	
+}
+function BackButtonClick()
+{
+	document.frmTraodoi.action = "/traodoi/traodoi/";
+	document.frmTraodoi.submit();
+}
+function SaveButtonClick(){
+	
+	var err = true;
+	err = err & validateInput("req",document.frmTraodoi.ten_chude,"Trường này phải nhập liệu");
+    err = err & err==true?validateInput("maxlen=50",document.frmTraodoi.ten_chude,"Dữ liệu quá dài"):false;                   
+    if(err==true)
+    {
+        document.frmTraodoi.submit();
+    }	
+}
+function viewDraft()
+{
+	document.frmTraodoi.view.value="draft";
+	document.frmTraodoi.submit();	
+}
+function viewInbox()
+{
+	document.frmTraodoi.view.value="inbox";
+	document.frmTraodoi.submit();	
+}
+function viewSentItems()
+{
+	document.frmTraodoi.view.value="sentitems";
+	document.frmTraodoi.submit();	
+}
+
+</script>

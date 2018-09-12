@@ -1,0 +1,88 @@
+<form name=frm action="/thongbao/index/save" method="post" enctype="multipart/form-data">
+<table>
+	<tr>
+		<td><font color="Blue">Tiêu đề</font><font color="Red" size="3">*</font></td>
+		<td><input type=text name=TIEUDE size="64" value="<?=htmlspecialchars($this->data["TIEUDE"])?>"></td>
+		<td class="box_erro_area" id=ERRTIEUDE></td>
+	</tr>
+	<tr style="display:none">
+		<td valign=top><font color="Blue">Ngày hiệu lực</font><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap" valign="top">
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["NGAYBATDAU"]==""?date("Y-m-d"):$this->data["NGAYBATDAU"]),"NGAYBATDAU","NGAYBATDAU") ?>
+		</td>
+		<td class="box_erro_area" id=ERRNGAYBATDAU></td>
+	</tr>
+	<tr>
+		<td valign=top><font color="Blue">Ngày hết hạn</font><font color="Red" size="3">*</font></td>
+		<td nowrap="nowrap" valign="top">
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["NGAYKETTHUC"]==""?date("Y-m-d",time()+86400):$this->data["NGAYKETTHUC"]),"NGAYKETTHUC","NGAYKETTHUC") ?>
+		</td>
+		<td class="box_erro_area" id=ERRNGAYKETTHUC></td>
+	</tr>
+        <tr>
+		<td valign=top><font color="Blue">File đính kèm</font></td>
+		<td nowrap="nowrap" valign="top">
+                    <div class="required">                    
+                    <div id="idFileDinhKem"></div>
+                    <span class="box_erro_area">
+                    </span>
+                    </div>
+		</td>
+		<td class="box_erro_area"></td>
+	</tr>
+        <?php 
+            if(null!=$this->type){
+                $type=$this->type;
+            }elseif($this->idTemp>0){
+                $type=2016;
+            }else{ 
+                $type=-1;
+            }
+        ?>
+        <script type="text/javascript">
+                divFileDinhKemId='idFileDinhKem';
+                url='/hscv/file/attachment?iddiv=idFileDinhKem&idObject=<?php echo ($this->idTemp>0?$this->idTemp:0) ?>&is_new=<?php echo ($this->idTemp>0?0:1)  ?>&year=<?php echo $this->year ?>&type=<?php echo $type; ?>';
+                loadDivFromUrl(divFileDinhKemId,url,0);
+        </script>							
+	<tr>
+		<td valign=top><font color="Blue">Nội dung</font><font color="Red" size="3"></font></td>
+		<td>
+			<?php
+				$sBasePath = $this->dirFCK .'/fckeditor/';
+				$oFCKeditor = new FCKeditor('NOIDUNG') ;
+				
+				$oFCKeditor->BasePath = $sBasePath;
+				$oFCKeditor->Config['SkinPath'] = $sBasePath . 'editor/skins/' . htmlspecialchars('office2003') . '/' ;
+				$oFCKeditor->Value = $this->data["NOIDUNG"];
+				$oFCKeditor->Width = 550;
+				$oFCKeditor->Height = 450;
+				$oFCKeditor->ToolbarSet = 'Default';
+				$oFCKeditor->Create();
+			?>
+		</td>
+		<td class="box_erro_area" id=ERRNOIDUNG valign=top></td>
+	</tr>
+</table>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+		err = err & validateInput("req",document.frm.TIEUDE,"Tiêu đề không được rỗng.");
+		err = err & err==true?validateInput("maxlen=512",document.frm.TIEUDE,"Tiêu đề không được quá 512 ký tự"):false;
+		err = err & validateInput("req",document.frm.NGAYBATDAU,"Ngày hiệu lực không được rỗng.");
+		err = err & validateInput("req",document.frm.NGAYKETTHUC,"Ngày hết hạn không được rỗng");
+		err = err & err==true?validateInput("gtdate="+document.frm.NGAYBATDAU.value,document.frm.NGAYKETTHUC,"Ngày hết hạn không được nhỏ hơn ngày hiện tại"):false;
+		if(err==true){
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+		document.frm.action = "/thongbao/index/index";
+		document.frm.submit();
+	}
+</script>
+	<input type=hidden name=id value=<?=$this->data["ID_TB"]?>>
+	<input type=hidden name=page value="<?php echo $this->page; ?>">
+	<input type=hidden name=limit value="<?php echo $this->limit; ?>">
+	<input type=hidden name=search value="<?php echo $this->search; ?>">
+	<input type=hidden name=filter_object value="<?php echo $this->filter_object; ?>">
+</form>

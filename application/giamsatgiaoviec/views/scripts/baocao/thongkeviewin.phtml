@@ -1,0 +1,225 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 15">
+<style>
+<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\,";}
+@page
+	{margin:.75in .7in .75in .7in;
+	mso-header-margin:.3in;
+	mso-footer-margin:.3in;}
+-->
+tr
+	{mso-height-source:auto;}
+col
+	{mso-width-source:auto;}
+br
+	{mso-data-placement:same-cell;}
+.style0
+	{mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	white-space:nowrap;
+	mso-rotate:0;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	color:black;
+	font-size:11.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	border:none;
+	mso-protection:locked visible;
+	mso-style-name:Normal;
+	mso-style-id:0;}
+td
+	{mso-style-parent:style0;
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:black;
+	font-size:11.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Calibri, sans-serif;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	border:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	mso-protection:locked visible;
+	white-space:nowrap;
+	mso-rotate:0;}
+.xl65
+	{mso-style-parent:style0;
+	font-size:14.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	white-space:normal;}
+.xl66
+	{mso-style-parent:style0;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	white-space:normal;}
+.xl67
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	white-space:normal;}
+.xl68
+	{mso-style-parent:style0;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:middle;
+	border:.5pt solid windowtext;
+	white-space:normal;}
+
+</style>
+</head>
+
+<body link="#0563C1" vlink="#954F72" class=xl66>
+
+<table border=0 cellpadding=0 cellspacing=0 width=512 style='border-collapse:
+ collapse;table-layout:fixed;width:384pt'>
+ <col class=xl66 width=64 span=8 style='width:48pt'>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 width=64 style='height:15.0pt;width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+ </tr>
+<?php
+require_once 'giamsatgiaoviec/models/BaoCaoModel.php';
+?>
+ <tr height=25 style='height:18.75pt'>
+  <td colspan=8 height=25 class=xl65 width=512 style='height:18.75pt;
+  width:384pt'>BÁO CÁO THỐNG KÊ TỔNG HỢP GIAO VIỆC</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td colspan=8 height=20 class=xl66 width=512 style='height:15.0pt;width:384pt'>(<?=$this->thu ?>)</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 width=64 style='height:15.0pt;width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+  <td class=xl66 width=64 style='width:48pt'></td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td rowspan=2 height=58 class=xl67 width=64 style='height:43.5pt;width:48pt'>STT</td>
+  <td rowspan=2 class=xl67 width=64 style='width:48pt'>Cơ quan thực hiện</td>
+  <td rowspan=2 class=xl67 width=64 style='width:48pt'>Tổng số vb</td>
+  <td rowspan=2 class=xl67 width=64 style='width:48pt'>Tổng số nhiệm vụ công
+  việc</td>
+  <td colspan=2 class=xl67 width=128 style='border-left:none;width:96pt'>Đã
+  hoàn thành</td>
+  <td colspan=2 class=xl67 width=128 style='border-left:none;width:96pt'>Chưa
+  hoàn thành</td>
+ </tr>
+ <tr height=38 style='height:28.5pt'>
+  <td height=38 class=xl67 width=64 style='height:28.5pt;border-top:none;
+  border-left:none;width:48pt'>Đúng hạn</td>
+  <td class=xl67 width=64 style='border-top:none;border-left:none;width:48pt'>Quá
+  hạn</td>
+  <td class=xl67 width=64 style='border-top:none;border-left:none;width:48pt'>Trong
+  hạn</td>
+  <td class=xl67 width=64 style='border-top:none;border-left:none;width:48pt'>Quá
+  hạn</td>
+ </tr>
+     <?php
+        $fromdateQuery=$this->params['fromdate'].'/'.$this->year;
+        $todateQuery=$this->params['todate'].'/'.$this->year;
+        
+        $baoCaoModel =new BaoCaoModel();
+                require_once("hscv/models/coquanlienthongModel.php");
+                $data_cqlt = coquanlienthongModel::getDataCQLienThong();
+                if(isset($this->params['sel_donvi']) && is_array($this->params['sel_donvi'])){
+                if(in_array(0,$this->params['sel_donvi'])){
+                    $cqArr = array();
+                    foreach($data_cqlt as $itemcq){
+                        array_push($cqArr, $itemcq['CODE']);
+                    }            
+                    $this->params['sel_donvi']= $cqArr;
+                }
+                $stt=0;
+                foreach ($this->params['sel_donvi'] as $itemUserThongKe){
+                    $stt++;
+                ?>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl68 width=64 style='height:15.0pt;border-top:none;
+  width:48pt'><?=$stt?></td>
+  <td class=xl68 width=64 style='border-top:none;border-left:none;width:48pt'><?php
+                            foreach($data_cqlt as $itemcq){
+                                if($itemUserThongKe ==$itemcq['CODE']){
+                                    echo $itemcq['NAME'];
+                                }
+                            }
+                            ?>  </td>
+  <td class=xl68 width=64 style='border-top:none;border-left:none;width:48pt'><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,0,$fromdateQuery,$todateQuery)?></td>
+  <td class=xl68 width=64 style='border-top:none;border-left:none;width:48pt'><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,1,$fromdateQuery,$todateQuery)?></td>
+  <td class=xl68 width=64 style='border-top:none;border-left:none;width:48pt'><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,4,$fromdateQuery,$todateQuery)?></td>
+  <td class=xl68 width=64 style='border-top:none;border-left:none;width:48pt'><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,5,$fromdateQuery,$todateQuery)?></td>
+  <td class=xl68 width=64 style='border-top:none;border-left:none;width:48pt'><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,2,$fromdateQuery,$todateQuery)?></td>
+  <td class=xl68 width=64 style='border-top:none;border-left:none;width:48pt'><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,3,$fromdateQuery,$todateQuery)?></td>
+ </tr>
+      <?php
+                }
+            }
+        ?>  
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=64 style='width:48pt'></td>
+  <td width=64 style='width:48pt'></td>
+  <td width=64 style='width:48pt'></td>
+  <td width=64 style='width:48pt'></td>
+  <td width=64 style='width:48pt'></td>
+  <td width=64 style='width:48pt'></td>
+  <td width=64 style='width:48pt'></td>
+  <td width=64 style='width:48pt'></td>
+ </tr>
+ <![endif]>
+</table>
+    <script>
+        <?php
+        $is_in = $this->params['is_in'];		
+        if($is_in){
+            if($this->params["h_isexel"]!=1){
+            ?>
+            print();
+            <?php
+            }	
+        }
+        ?>
+    </script>
+</body>
+</html>

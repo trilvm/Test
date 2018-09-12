@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/Json/Base64.js"></script>
+<script type="text/javascript" src="/js/Json/json2.js"></script>
+<script type="text/javascript" src="/js/Json/json_parse.js"></script>
+<script type="text/javascript" src="/js/Json/json_parse_state.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name="frm" method=post action="/giaoviec/index/savegiaonhiemvu">
+<fieldset>
+<legend style="color:#0066CC;">
+	Người nhận nhiệm vụ
+</legend>
+</fieldset>
+<table class=admintable width=100%>
+        <tr>
+                    <td colspan="3"><b style="margin-left: 5px">Nội dung</b>
+                            <textarea rows="2" cols="45" name=NOIDUNG></textarea>
+                    </td>
+        </tr>
+	<tr>
+		<td valign="top" nowrap="nowrap">
+			<?php echo QLVBDHCommon::writeMultiSelectDepartmentUser('DEP_NGUOIGUI','NGUOIGUI')?>
+		</td>
+	</tr>
+        <tr>
+        	<td valign="top"><input type="button" value="&gt;&gt;" onclick="InsertIntoArr()" style="margin-top:10px;"/></td>
+        </tr>
+</table>
+<div id="listuser"></div>
+<input type=hidden name=id value="<?=$this->id?>">
+<input type=hidden name=tencongviec value="<?=$this->tencongviec?>">
+<input type=hidden name=sokyhieu value="<?=$this->sokyhieu?>">
+<input type=hidden name=macongviec value="<?=$this->macongviec?>">
+<input type=button name=SEND value="Chuyển" onclick="SaveButtonClick();" class="butphe">
+<p id=lasttext></p>
+</form>
+</body>
+</html>
+<script>
+    var arr_user = new Array();
+    var arr_user_temp = new Array();
+    var arr1 = new Array();
+    function SaveButtonClick(){
+            var err = true;
+            if(err==true){
+                    var alltype = document.getElementsByName("TYPE[]");
+                    for(var i=0;i<alltype.length;i++){
+                            if(alltype[i].value==2){
+                                    document.frm.istheodoi.value=0;
+                                    break;
+                            }else{
+                                    document.frm.istheodoi.value=1;
+                            }
+                    }
+                    document.frm.submit();
+            }
+    }
+    function InsertIntoArr(){
+            var opt = document.frm.NGUOIGUI.options;
+            for(var i=0;i<opt.length;i++){
+                    if(opt[i].selected){
+                            arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,opt[i].value,opt[i].text,1,'<?=$xltrans["HANXULY"]?>');
+                            arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+                    }
+            }
+        //arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+        arr1[0] = new Array(100,'Tên');
+        ShowArr('listuser',arr1,arr_user);
+        FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+    }
+    function ShowArr(idDiv,Arr1,Arr2){
+        var html;
+        html = '<table class="adminlist" width=100%>';
+        html += '<thead>';
+        html += '<tr>';
+        html += '<th nowrap>#</td>';
+        for(i=0;i<Arr1.length;i++){
+            if(Arr1[i][0]==0){
+                    html += '<th nowrap>' + Arr1[i][1] + '</td>';
+            }else{
+                    html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+            }
+        }
+        html += '</tr>';
+        html += '</thead>';    
+        html += '<tfoot><tr><th colspan=2 align=left>';
+        html += '</th></tr></tfoot>';
+        html += '<tbody>';
+            for(i=0;i<Arr2.length;i++){
+                    html += '<tr>';
+                    html += '<td nowrap align="right">' + (i + 1) + '</td>';
+                    html += '<td>';
+                    html += Arr2[i][2];
+                    html += "<input type=hidden name=ID_U[] value="+Arr2[i][1]+">";
+                    html += '</td>';
+                    html += '</tr>';
+            }
+        html += '</tbody>';
+        html += '</table>';
+        document.getElementById(idDiv).innerHTML = html;
+        resize();    	
+    }
+    function FastReload(){
+            FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+    }
+    function resize(){
+            var iframeElement = parent.document.getElementById('iframebutphe<?=$this->id?>');
+            iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+            iframeElement.width = "100%";
+    }
+    function UpdateHanXuLy(obj,i){
+            arr_user[i][4] = obj.value;
+    }
+    function UpdateType(obj,i){
+            curcombo = obj;
+            arr_user[i][3] = obj.value;
+            if(obj.value==1 || obj.value==3){
+                    document.getElementById("HANXULY"+i).style.display="none";
+            }else{
+                    document.getElementById("HANXULY"+i).style.display="";
+                    getvalue("auth","user","checksendable","wf_id_t=<?=count($hscv)>0?$xltrans["ID_T"]:$this->wf_id_t?>&idu="+arr_user[i][1]);
+            }
+    }
+    function UpdateRet(){
+            if(retvalue=="0"){
+                    alert("Người được chọn không có quyền xử lý.");
+                    curcombo.value = 1;
+                    curcombo.onchange();
+
+            }
+    }
+    resize();
+</script>

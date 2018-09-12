@@ -1,0 +1,298 @@
+<?php
+require_once 'qtht/models/UsersModel.php';
+require_once 'vbden/models/vbdenModel.php';
+?>
+
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse_state.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<script language="javascript" type="text/javascript" src="/js/autocomplete.js"></script>
+<script> 
+
+</script>
+<form name=frm method=post>
+<table>
+		<tr>
+			<td nowrap="nowrap">Loại công việc</td>
+			<td nowrap="nowrap">
+				<select name="filter_object" id="filter_object" class="inputbox" size="1" onchange="document.frm.submit();" style="width: 200px; padding: 2px;">
+					<option value=0 <?php if($this->filter_object == 0) echo "selected"?> >--Loại công việc--</option>
+					<option value="VBD" <?php if($this->filter_object == "VBD") echo "selected"?> >Văn bản đến</option>
+					<option value="VBSOANTHAO" <?php if($this->filter_object == "VBSOANTHAO") echo "selected"?> >Công việc</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap">Trích yếu dự thảo</td>
+			<td nowrap="nowrap">
+				<input type="text" style="width: 198px;" name="search" id="search" value="<?php echo htmlspecialchars($this->search); ?>" class="text_area" onchange="document.frm.page.value=1;document.frm.submit();" />
+			</td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap">Người soạn</td>
+				<td nowrap="nowrap" colspan="3">
+				<?php
+					echo QLVBDHCommon::AutoComplete(
+						UsersModel::getAllNameAndId(1),
+						"ID_U",
+						"NAME",
+						"NGUOISOAN",
+						"NGUOISOAN_TEXT",
+						true,
+						"width:200px",
+						"",
+						$this->NGUOISOAN,
+						'');
+				?>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" onclick="document.frm.submit();" value="Tìm Kiếm">
+			</td>
+		</tr>
+</table>
+<table class=adminlist id="active-vb">
+	<thead>
+		<tr>
+			<th colspan="6">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/vbdi/danhsachvanbanbanhanh/';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit<=10 && $this->limit > 5){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit<=15 && $this->limit > 10){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit<=20 && $this->limit > 15){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit<=25 && $this->limit > 20){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit<=30 && $this->limit > 25){echo "selected";} ?>>30</option>
+							<option value="40" <?php if($this->limit<=40 && $this->limit > 30){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit <=50 && $this->limit > 40){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit<=100 && $this->limit > 50){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+
+		<tr>
+			<th nowrap>
+				#
+			</th>
+			<th width=70%>
+				Dự thảo
+			</th>
+			<th nowrap>
+				Phiên bản
+			</th>
+			<th nowrap>
+				Tệp đính kèm
+			</th>
+			<th nowrap>
+				Người soạn
+			</th>
+			<th nowrap>
+			</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="6">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/vbdi/danhsachvanbanbanhanh/';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit<=10 && $this->limit > 5){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit<=15 && $this->limit > 10){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit<=20 && $this->limit > 15){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit<=25 && $this->limit > 20){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit<=30 && $this->limit > 25){echo "selected";} ?>>30</option>
+							<option value="40" <?php if($this->limit<=40 && $this->limit > 30){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit <=50 && $this->limit > 40){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit<=100 && $this->limit > 50){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+		<?php
+			if(count($this->data)==0){
+		?>
+			<tr>
+				<td colspan=6>Không có dự nào nào đang chờ ban hành</td>
+			</tr>
+		<?php
+			}else{
+				$stt=1;
+				foreach($this->data as $item){
+					$pb = BanHanhVanBanModel::GetLastPhienBan($item["ID_DUTHAO"]);
+		?>
+			<tr>
+				<td nowrap><?=$stt?></td>
+				<td>
+					<?php
+						if($item["ALIAS"]=="VBD"){
+							echo "<img src='/images/icon_vbden.jpg'>";
+						}else if($item["ALIAS"]=="VBSOANTHAO"){
+							echo "<img src='/images/icon_soanthaovb.jpg'>";
+						}else if($item["ALIAS"]=="MOTCUA"){
+							echo "<img src='/images/icon_motcua.jpg'>";
+						}
+					?>
+					<?=htmlspecialchars($item['TENDUTHAO'])?>
+					<?php 
+						$mdlVbden = new vbdenModel();
+						$idvbd = $mdlVbden->findByHscv($item['ID_HSCV']);
+						if($item["ALIAS"]=="VBD"){
+					?>
+							<ul>
+								<li id=groupicon6_<?=$idvbd["ID_VBD"]?>>
+									<a href='javascript:{ SwapDiv(<?=$idvbd["ID_VBD"]?>,"/vbden/vbden/way/id_vbd/<?=$idvbd["ID_VBD"]?>/year/<?=$this->year;?>/code/vbd",6);}'><img src="/images/icon_luanchuyen.jpg" border="0" hspace="5" /> Luân chuyển</a>
+								</li>
+							</ul>
+							
+					<?php } else if($item["ALIAS"]=="VBSOANTHAO") { ?>
+							<ul>
+								<li id=groupiconhscv7_<?=$item["ID_HSCV"]?>>
+									<a href='javascript:SwapDiv1(<?=$item["ID_HSCV"]?>,"/hscv/hscv/way/id/<?=$item["ID_HSCV"]?>/year/<?=$this->year;?>",7);'><img src="/images/icon_luanchuyen.jpg" border="0" hspace="5" /> Luân chuyển</a>
+								</li>
+							</ul>
+					<?php } ?>
+				</td>
+				<td nowrap><?=$pb[0]['VERSION']?></td>
+				<td style="width:15%;word-wrap: break-word; word-break: break-all;">
+					<a href="/hscv/File/download?year=&maso=<?=$pb[0]['MASO']?>"><?=$pb[0]['FILENAME']?></a>
+				</td>
+				<td nowrap><?=UsersModel::getEmloyeeNameByIdUser($item['NGUOISOAN'])?></td>
+				<td nowrap>
+					<?php if($item['TRANGTHAI'] ==2 ){?>
+					Đã ban hành
+					<?php }else{?>
+					<b><a href="/vbdi/banhanh/input/idduthao/<?=$item['ID_DUTHAO']?>/year/<?=$this->year?>">Ban hành</a></b>
+					<?php }?>
+					<br/>
+					<a href="#" onclick="deleteDuThao(<?=$item["ID_DUTHAO"]?>);return false;"><b>Xóa</b></a></td>
+			</tr>
+			<tr>
+				<?php if($item["ALIAS"]=="VBD"){ ?>
+						<td class="hidetd" id="hideupvbd<?=$idvbd["ID_VBD"]?>"></td>
+						<td colspan="4" class="groupcontent" id="groupcontent<?=$idvbd["ID_VBD"]?>" style="display:none; border: 1px solid #ccc">
+						</td>
+						<td class="hidetd" id="hidedownvbd<?=$idvbd["ID_VBD"]?>"></td>
+				<?php } else if($item["ALIAS"]=="VBSOANTHAO") { ?>
+						<td class="hidetd" id="hideuphscv<?=$item["ID_HSCV"]?>"></td>
+						<td colspan="4" class="groupcontent-hscv" id="groupcontent-hscv<?=$item["ID_HSCV"]?>" style="display:none; border: 1px solid #ccc">
+						</td>
+						<td class="hidetd" id="hidedownhscv<?=$item["ID_HSCV"]?>"></td>
+					<?php } ?>
+				</td>
+			</tr>
+		<?php
+					$stt++;
+				}
+			}
+		?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.hidetd').hide();
+})
+function SwapDiv(id,url,tab){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		if(document.getElementById("groupcontent"+id).style.display==""){
+			document.getElementById("groupcontent"+id).style.display="none";
+			document.getElementById("hideupvbd"+id).style.display="none";
+			document.getElementById("hidedownvbd"+id).style.display="none";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("hideupvbd"+id).style.display="";
+			document.getElementById("hidedownvbd"+id).style.display="";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+		}
+	}
+	
+	function SwapDiv1(id,url,tab){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupiconhscv"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupiconhscv"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent-hscv"+id).style.display="none";
+						document.getElementById("groupiconhscv"+i+"_"+id).className = "groupiconhscv";
+						break;
+					}
+				}
+			}
+		}
+		if(document.getElementById("groupcontent-hscv"+id).style.display==""){
+			document.getElementById("groupcontent-hscv"+id).style.display="none";
+			document.getElementById("hideuphscv"+id).style.display="none";
+			document.getElementById("hidedownhscv"+id).style.display="none";
+			document.getElementById("groupiconhscv"+tab+"_"+id).className = "groupiconhscv";
+		}else{
+			document.getElementById("groupcontent-hscv"+id).style.display="";
+			document.getElementById("hideuphscv"+id).style.display="";
+			document.getElementById("hidedownhscv"+id).style.display="";
+			document.getElementById("groupiconhscv"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontent-hscv"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent-hscv"+id,url,1);
+		}
+	}
+	
+	function deleteDuThao(id){
+		if(confirm("Bạn muốn xóa dự thảo ra khỏi danh sách không?")){
+			
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("get", "/vbdi/danhsachvanbanbanhanh/delete?id="+id , true); 
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			oXmlHttp.onreadystatechange = function () { 
+			if (oXmlHttp.readyState == 4) { 
+				if (oXmlHttp.status == 200) { 
+					//alert(oXmlHttp.responseText);
+					if(oXmlHttp.responseText == 1){
+						//alert('Dự thảo đã được xóa ra khỏi danh sách');
+						window.location.reload();
+					}else{
+						alert('Không thể xóa dự thảo ra khỏi danh sách');
+					}
+				}
+			}
+			};
+			oXmlHttp.send(null);
+		}
+	}
+
+
+</script>

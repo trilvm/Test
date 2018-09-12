@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<FONT  style="font-size: 12pt;">
+<table>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><?=mb_strtoupper( $this->config->sys_info->company,"utf-8")?></b></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b>CỘNG HÒA XÃ HỘI CHỦ  NGHĨA VIỆT NAM</b></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><?=$this->config->sys_info->coquan_tiepnhan?></b></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><u>Độc lập – Tự do – Hạnh phúc</u></b></td>
+	</tr>
+	
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px">Mã số: <b><?=$this->data->MAHOSO?></b><br><img src="/barcode.php?barcode=<?=substr(md5($this->data->MAHOSO),0,6)?>&text=0&height=20"></img></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="right" style="line-height: 16px"></td>
+	</tr>
+</table>
+<p align="center"><font style="font-size: 12pt;"><b>PHIẾU NHẬN HỒ SƠ</b></font></p>
+<table width="100%">
+<tr>
+	<td colspan=4>
+		Hồ sơ của đơn vị:&nbsp;<b><?=$this->data->TENTOCHUCCANHAN?></b>.&nbsp;Địa chỉ:&nbsp;<b><?=$this->data->DIACHI?>.</b>
+		<?php if($this->data->DIENTHOAI!=""){
+			?>&nbsp;Điện thoại:&nbsp;<b><?=$this->data->DIENTHOAI?>.</b>
+			<?
+			}else echo ""; ?>
+	</td>
+</tr>
+<tr>
+	<td colspan=2>
+		Loại hồ sơ: <b><?=$this->tenloai?></b>
+	</td>
+	<td colspan=2>
+		Ngày nhận hồ sơ: <b><?=QLVBDHCommon::MysqlDateToVnDate($this->data->NGAYNHAN)?></b>		
+	</td>
+</tr>
+<tr>
+	<td colspan=2>
+		Tên hồ sơ: <b><?=$this->data->TRICHYEU?><b>		
+	</td>
+	
+</tr>
+
+</table>
+<FONT  style="font-size: 10pt;">
+<table width="100%">
+<tr><td nowrap="nowrap" align="center" style="line-height: 16px" colspan="4"><b>HỒ SƠ GỒM CÓ</b></td></tr>
+
+<?php
+if(count($this->nhangom)>0){
+	$st=0;
+	foreach($this->nhangom as $itemnhangom){
+	if($st%2==0)
+		echo "<tr>";
+?>
+	<td colspan="1" width=50%><b><?=$st+1?></b>/ <?=$itemnhangom->TEN_THUTUC?></td>
+	
+<?php
+	if($st%2 == 1 || $st == (count($this->nhangom)-1))	
+	echo "</tr>";
+	$st++;
+}}
+?>
+
+<tr><td colspan="2"><b>Ngày nhận lại hồ sơ: ngày <?=date("d",strtotime($this->data->NHANLAI_NGAY))?> tháng <?=date("m",strtotime($this->data->NHANLAI_NGAY))?> năm <?=date("Y",strtotime($this->data->NHANLAI_NGAY))?></b></tr>
+</table>
+</font>
+<b>
+<table width="100%">
+	<tr>
+		<td nowrap="nowrap" width="33%" align="center">Người tiếp nhận</td>
+		<td nowrap="nowrap" width="33%" align="center"></td>
+		<td nowrap="nowrap" width="33%" align="center">Người nộp</td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" width="33%" align="center">(Ký tên)</td>
+		<td nowrap="nowrap" width="33%" align="center"></td>
+		<td nowrap="nowrap" width="33%" align="center">(Ký tên)</td>
+	</tr>
+	<tr>
+		<td colspan="3"><br><br><br></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" width="33%" align="center"><?=$this->user->FULLNAME?></td>
+		<td nowrap="nowrap" width="33%"></td>
+		<td nowrap="nowrap" width="33%" align="center">Người nhận kết quả</td>
+	</tr>
+
+</table>
+</b>
+
+<?php 
+if(count($this->nhangom)>6){ ?>
+<div style="page-break-after:always"></div>
+<?php }else{?>
+<hr>
+<?php }?>
+<table>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><?=$this->config->sys_info->company?></b></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b>CỘNG HÒA XÃ HỘI CHỦ  NGHĨA VIỆT NAM</b></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><?=$this->config->sys_info->coquan_tiepnhan?></b></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="center" style="line-height: 16px"><b><u>Độc lập – Tự do – Hạnh phúc</u></b></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="center" style="line-height: 16px">Mã số: <?=$this->data->MAHOSO?></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td nowrap="nowrap" align="right" style="line-height: 16px"><i><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></i></td>
+	</tr>
+	<tr>
+		<td style="line-height: 16px"></td>
+		<td width="100%" style="line-height: 16px"></td>
+		<td align="right" style="line-height: 16px"></td>
+	</tr>
+</table>
+<p align="center"><font style="font-size: 12pt;"><b>PHIẾU NHẬN HỒ SƠ</b></font></p>
+<table width="100%">
+<tr>
+	<td colspan=4>
+		Hồ sơ của đơn vị:&nbsp;<b><?=$this->data->TENTOCHUCCANHAN?></b>.&nbsp;Địa chỉ:&nbsp;<b><?=$this->data->DIACHI?>.</b>
+		<?php if($this->data->DIENTHOAI!=""){
+			?>&nbsp;Điện thoại:&nbsp;<b><?=$this->data->DIENTHOAI?>.</b>
+			<?
+			}else echo ""; ?>
+	</td>
+</tr>
+<tr>
+	<td colspan=2>
+		Loại hồ sơ:<b><?=$this->tenloai?></b>	
+	</td>
+	<td colspan=2>
+		Ngày nhận hồ sơ: <b><?=QLVBDHCommon::MysqlDateToVnDate($this->data->NGAYNHAN)?></b>			
+	</td>
+</tr>
+<tr>
+	<td colspan=2>
+		Tên hồ sơ: <b><?=$this->data->TRICHYEU?><b>		
+	</td>
+	
+</tr>
+
+</table>
+
+<FONT  style="font-size: 10pt;">
+<table width="100%">
+<tr><td nowrap="nowrap" align="center" style="line-height: 16px" colspan="4"><b>HỒ SƠ GỒM CÓ</b></td></tr>
+
+<?php
+if(count($this->nhangom)>0){
+	$st=0;
+	foreach($this->nhangom as $itemnhangom){
+	if($st%2==0)
+		echo "<tr>";
+?>
+	<td colspan="1" width=50%><b><?=$st+1?></b>/ <?=$itemnhangom->TEN_THUTUC?></td>
+	
+<?php
+	if($st%2 == 1 || $st == (count($this->nhangom)-1))	
+	echo "</tr>";
+	$st++;
+}}
+?>
+
+<tr><td colspan="2"><b>Ngày nhận lại hồ sơ: ngày <?=date("d",strtotime($this->data->NHANLAI_NGAY))?> tháng <?=date("m",strtotime($this->data->NHANLAI_NGAY))?> năm <?=date("Y",strtotime($this->data->NHANLAI_NGAY))?></b></tr>
+</table>
+</font>
+<b>
+<table width="100%">
+	<tr>
+		<td nowrap="nowrap" width="33%" align="center">Người tiếp nhận</td>
+		<td nowrap="nowrap" width="33%" align="center">Phòng nghiệp vụ</td>
+		<td nowrap="nowrap" width="33%" align="center">Người nộp</td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" width="33%" align="center">(Ký tên)</td>
+		<td nowrap="nowrap" width="33%" align="center">(Ký tên)</td>
+		<td nowrap="nowrap" width="33%" align="center">(Ký tên)</td>
+	</tr>
+	<tr>
+		<td colspan="3"><br><br><br></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" width="33%" align="center"><?=$this->user->FULLNAME?></td>
+		<td nowrap="nowrap" width="33%"></td>
+		<td nowrap="nowrap" width="33%"align="center">Người nhận kết quả</td>
+	</tr> 
+</table>
+</b>
+</font>
+</body>
+</html>
+<script>
+window.print();
+
+</script>

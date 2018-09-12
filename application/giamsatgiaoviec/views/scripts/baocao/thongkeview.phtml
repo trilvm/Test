@@ -1,0 +1,96 @@
+<?php
+require_once 'giamsatgiaoviec/models/BaoCaoModel.php';
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel=Stylesheet href=stylesheet.css>
+</head>
+<body style="background-color:transparent">
+<h3><?=$this->thu ?></h3>
+<table class="adminlist" width="100%">
+    <thead>
+        <tr>
+            <th nowrap="" rowspan="2">STT</th> 
+            <th nowrap="" rowspan="2">Cơ quan thực hiện</th>
+            <th nowrap="" rowspan="2">Tổng số vb</th>
+            <th nowrap="" rowspan="2">Tổng số nhiệm vụ công việc</th>
+            <th nowrap="" colspan="2">Đã hoàn thành</th>
+            <th nowrap="" colspan="2">Chưa hoàn thành</th>
+        </tr>
+        <tr>
+            <th nowrap="">Đúng hạn</th>
+            <th nowrap="">Quá hạn</th>
+            <th nowrap="">Trong hạn</th>
+            <th nowrap="">Quá hạn</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        $fromdateQuery=$this->params['fromdate'].'/'.$this->year;
+        $todateQuery=$this->params['todate'].'/'.$this->year;
+        
+        $baoCaoModel =new BaoCaoModel();
+                require_once("hscv/models/coquanlienthongModel.php");
+                $data_cqlt = coquanlienthongModel::getDataCQLienThong();
+                if(isset($this->params['sel_donvi']) && is_array($this->params['sel_donvi'])){
+                if(in_array(0,$this->params['sel_donvi'])){
+                    $cqArr = array();
+                    foreach($data_cqlt as $itemcq){
+                        array_push($cqArr, $itemcq['CODE']);
+                    }            
+                    $this->params['sel_donvi']= $cqArr;
+                }
+                $stt=0;
+                foreach ($this->params['sel_donvi'] as $itemUserThongKe){
+                    $stt++;
+                ?>
+                <tr>
+                    <td nowrap=""><?=$stt?></td>
+                    <td>
+                        <b>
+                            <?php
+                            foreach($data_cqlt as $itemcq){
+                                if($itemUserThongKe ==$itemcq['CODE']){
+                                    echo $itemcq['NAME'];
+                                }
+                            }
+                            ?>                        
+                        </b>
+                    </td>
+                    <td nowrap=""><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,0,$fromdateQuery,$todateQuery)?></td>
+                    <td nowrap=""><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,1,$fromdateQuery,$todateQuery)?></td>
+                    <td nowrap=""><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,4,$fromdateQuery,$todateQuery)?></td>
+                    <td nowrap=""><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,5,$fromdateQuery,$todateQuery)?></td>
+                    <td nowrap=""><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,2,$fromdateQuery,$todateQuery)?></td>
+                    <td nowrap=""><?=$baoCaoModel->countThongKeDonViNgoai($itemUserThongKe,3,$fromdateQuery,$todateQuery)?></td>
+                </tr>                 
+                <?php
+                }
+            }
+        ?>  
+    </tbody>
+</table>
+<p id="lasttext"></p>
+<script>
+    function resize() {
+        try {
+            var iframeElement = window.parent.document.getElementById('reportview');
+            iframeElement.style.height = "" + (document.getElementById("lasttext").offsetTop) + "px";
+            iframeElement.width = "100%";
+            setTimeout("resize()", 1000);
+        } catch (ex) {
+        }
+    }
+    resize();
+</script>
+</body>

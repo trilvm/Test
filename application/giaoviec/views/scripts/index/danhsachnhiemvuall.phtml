@@ -1,0 +1,423 @@
+<link rel="stylesheet" type="text/css" href="/popupmini/popupmini.css" />
+<script src="/jquery/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+    var jq1102 = jQuery.noConflict(true);
+</script>
+<form name=frm method=post action='/giaoviec/index/danhsachnhiemvuall' onsubmit="document.frm.page.value = 1;document.frm.action = '/giaoviec/index/danhsach';return true;">
+<div>
+    <table>
+        <tr>
+            <td nowrap="nowrap">Đơn vị nhận</td>
+            <td nowrap="nowrap">
+                <select name="CQLIENTHONG" id="CQLIENTHONG" class="inputbox" size="1" onchange="document.frm.submit();">
+
+                    <?php
+                        require_once "giaoviec/models/GiaoViecModel.php";
+                        echo GiaoViecModel::WriteDonVi((int)$this->CQLIENTHONG, "-- Chọn tất cả  --");
+                    ?>
+                </select>
+
+            </td>
+
+        </tr>
+        <tr>
+            <td nowrap="nowrap">Số ký hiệu</td>
+            <td nowrap="nowrap" >
+                <input type=text class=inputbox name=SOKYHIEU value="<?= $this->SOKYHIEU ?>" size=20>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td nowrap="nowrap" valign=top>Tên công việc</td>
+            <td nowrap="nowrap" colspan="3">
+                <input type=text class=inputbox name=TENCONGVIEC value="<?= $this->TENCONGVIEC ?>" size=50>
+            </td>
+            <td width="100%"></td>
+        </tr>
+        
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap" colspan="3">
+                <input type=hidden   name=advanced><input type=submit value="Tìm kiếm">
+            </td>
+            <td width="100%"></td>
+        </tr>
+        <tr></tr>
+    </table>
+</div>
+
+<table class="adminlist">
+    <thead>
+        <tr>
+			<th colspan="11">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/giaoviec/index/danhsach';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="30" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="30" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+	</tr>
+        <tr>
+            <th colspan=12><a id=trangthai0 href="/giaoviec/index/danhsachnhiemvuall/trangthai/0">Chưa tiếp nhận</a> | 
+                <a id=trangthai1 href="/giaoviec/index/danhsachnhiemvuall/trangthai/1">Đã tiếp nhận</a> | 
+                <a id=trangthai3 href="/giaoviec/index/danhsachnhiemvuall/trangthai/3">Đã hoàn thành</a> | 
+                <a id=trangthai2 href="/giaoviec/index/danhsachnhiemvuall/trangthai/2">Từ chối</a> | 
+                <a id=trangthai4 href="/giaoviec/index/danhsachnhiemvuall/trangthai/4">Chưa hoàn thành</a> | 
+                <a id="trangthai-1" href="/giaoviec/index/danhsachnhiemvuall/trangthai/-1">Tất cả</a></th>
+        </tr>
+        <tr>
+            <th >STT</th>
+            <th >Ngày Giao</th>
+            <th >Công việc</th>
+            <th >Đơn vị nhận</th>
+            <th >Người theo dõi</th>
+            <th >Người xử lý</th>
+            <th >Tiến độ</th>
+            <th >Hạn xử lý</th>
+            <th >Trạng thái</th>
+            <th >Kết quả</th>
+            <th >Chức năng</th>
+        </tr>
+    </thead>
+
+    <tbody>
+         <style>
+        
+        table.adminlist tbody tr.dahoanthanh {
+            background: #fbfdb9 !important;
+            border-top: 1px solid #fff;
+        }
+        table.adminlist tbody tr.dahoanthanh td {
+            background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+            border-top: 1px solid #fff;
+        }
+   
+    </style>    
+        <?php
+        $stt = 1;
+        $i = 0;
+        foreach ($this->data as $item) {
+            ?>
+            <tr class="row<?=$i?><?php if ($item->XACNHANTRANGTHAI == 1) {echo ' dahoanthanh';} ?>"  row="<?=$i?>">
+
+                <td nowrap align=right><?= $stt++ ?></td>
+                <td width=30% valign=top><strong><strong><?= date("d/m/Y", strtotime($item->NGAYGIAO)) ?></strong></td>
+                <td width=50% valign=top>
+                    <strong><?= $item->TENCONGVIEC ?></strong>
+                   </strong>
+                </td>
+               
+                <td width=10%  align=left valign=top>
+                     <?= $item->DONVINHAN ?>
+                </td>
+                 <td nowrap align=left valign=top>
+                    <?= $item->CHUYENVIENTHEODOI ?>
+                </td>
+                <!--
+                <td nowrap align=left valign=top>
+                     <?= $item->LADONVICHINH == 0 ? "Phối hợp" : "Xử lý chính" ?>
+                </td> 
+                -->
+                <td nowrap align=left valign=top>
+                    <?= $item->HOTENNGUOINHAN ?>
+                </td> 
+                <td nowrap align=left valign=top>
+                    <?php
+                    if($item->TIENDOHIENTAI > 0) {
+                        echo  $item->TIENDOHIENTAI.'%';
+                    }else
+                        echo '';
+                        ?>
+                </td>
+                <td nowrap align=center valign=top>
+                   <?= date("d/m/Y", strtotime($item->NGAYDUKIENHOANTHANH)).'<br>'.QLVBDHCommon::getTreHanNgay($item->NGAYDUKIENHOANTHANH) ?>
+                </td>
+                <td nowrap align=left valign=top>
+                    <?php
+                    if ($item->TRANGTHAI == 0) {
+                        echo 'Chưa tiếp nhận';
+                    } elseif ($item->TRANGTHAI == 1) {
+                        echo 'Đang xử lý';
+                    } elseif ($item->TRANGTHAI == 2) {
+                        echo 'Từ chối <br>(<i style="color:red;">' . $item->LYDOTUCHOI . '</i>)';
+                    } elseif ($item->TRANGTHAI == 3) {
+                        echo 'Đã hoàn thành';
+                    } elseif ($item->TRANGTHAI == 4) {
+                        echo 'Chưa hoàn thành';
+                    }
+                    ?>
+                </td>
+                <td nowrap align=center valign=top>
+                <?php
+                    $files = danhsachModel::selectfileById($item->ID_VBLIENTHONG_RA);
+                    foreach ( $files as $file ) {
+                        $configlt = new Zend_Config_Ini('../application/config.ini', 'general', true);
+                        echo "<a  href='" . $configlt->domainlienthong . "/edxml/download.php?maso=" . $file['AttachmentName'] . "&filename=" . $file['Description'] . "'>" . $file['Description'] . "</a>, ";
+                    }
+                ?>    
+                </td>
+                <td valign=top>
+
+                    <?php
+                    if ($item->TRANGTHAI == 3) {
+                        ?>
+                        <a href="javascript:void(0)" onclick="
+                                        if (jq1102(this).hasClass('selected')) {
+                                            popupMiniDeselect_cntt($(this));
+                                        } else {
+                                            loadDataPopupCapnhattrangthai_cntt('<?= $item->MACONGVIEC ?>', '<?= $item->IDDONVINHAN ?>', '<?= $item->XACNHANTRANGTHAI ?>');
+                                            jq1102(this).addClass('selected');
+                                            jq1102(this).closest('tr').addClass('row2');
+                                            jq1102('.pop_capnhat_tt').popupMiniSlideFadeToggle();
+                                        }
+                                        return false;" class="capnhattrangthai" >Cập nhật trạng thái</a>
+                           <?php
+                       }
+                       ?>
+                       <?php
+                       if ($item->TRANGTHAI == 4) {
+                            $hanconlai = QLVBDHCommon::MysqlDateToVnDate($item->NGAYDUKIENHOANTHANH);
+                           ?>
+                        <a href="javascript:void(0)" onclick="
+                                        if (jq1102(this).hasClass('selected')) {
+                                            popupMiniDeselect($(this));
+                                        } else {
+                                            loadDataPopupGiaHan('<?= $item->IDDONVINHAN ?>','<?= $hanconlai ?>', '<?= $item->MACONGVIEC ?>', '<?= date("Y-m-d", strtotime($item->NGAYDUKIENHOANTHANH)) ?>');
+                                            jq1102(this).addClass('selected');
+                                            jq1102(this).closest('tr').addClass('row2');
+                                            jq1102('.pop').popupMiniSlideFadeToggle();
+                                        }
+                                        return false;" class="giahan" >Gia hạn</a>
+
+                        <?php
+                    }
+                    ?>
+                </td>
+            </tr>
+            <?php
+        }
+        ?>
+
+    </tbody>
+    <tfoot>
+		<tr>
+			<th colspan="11">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/giaoviec/index/danhsachnhiemvuall';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="30" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="30" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+
+</form>
+<div class="giahanpopup pop">
+    <form method="post" name="giahanform" id="giahanform" enctype="multipart/form-data">
+        <p>
+        <h3>Gia hạn xử lý</h3>            
+        Hạn hiện tại: <span id="hanhientai"></span>
+        </br>
+        Gia hạn thêm:
+        <input type="text" size="30" style="width:50px" name="songaygiahan" id="songaygiahan" /> ngày
+        </p> 
+        <input type="hidden" name="macongviecgh" id="macongviecgh" value="">
+        <input type="hidden" name="hanxlhientai" id="hanxlhientai" value="">
+        <input type="hidden" name="donvinhangiahan" id="donvinhangiahan" value="">
+
+        <p>
+            <font color="red" id="errorGH"></font>
+            </br>
+            <button name="giahan_submit" onclick="sendGiaHan()" id="giahan_submit">Gia Hạn</button> 
+            <button  onclick="popupMiniDeselect(jq1102('a.giahan.selected'));
+                    return false;">Hủy bỏ</button>
+        </p>
+    </form>
+</div>
+<div class="capnhattrangthaipopup pop_capnhat_tt">
+    <form method="post" name="capnhattrangthaiform" id="capnhattrangthaiform" enctype="multipart/form-data">
+        <p>
+        <h3> Xác nhận kết quả nhiệm vụ:</h3>
+        <select id="trangthaixacnhan" name="trangthaixacnhan"  style="width:190px;">
+            <option value='0'>--Chọn Trạng Thái--</option>
+            <option value="1">Hoàn thành</option>
+            <option value="2">Hoàn thành trễ hạn</option>
+            <option value="3">Chưa hoàn thành</option>
+        </select>
+        <input type="hidden" name="macongviectt" id="macongviectt" value="">
+        <input type="hidden" name="donvinhantt" id="donvinhantt" value="">
+        </p>        
+        <p>
+            <font color="red" id="errorCNTT"></font>
+            </br>
+            <button name="capnhat_submit" onclick="sendCapNhatTrangThai()" id="capnhat_submit">Xác nhận</button> 
+            <button  onclick="popupMiniDeselect_cntt(jq1102('a.capnhattrangthai.selected'));
+                    return false;">Hủy bỏ</button>
+        </p>
+    </form>
+</div>
+
+
+<script>
+    function NhiemvuTheogioiKhongVBClick() {
+        document.location = '/giaoviec/index/danhsachnhiemvu';
+    }
+    $(document).ready(function () {
+        $("#trangthai<?= $this->trangthai ?>").css("color", "red");
+    });
+    var TrangThai = new Array("Chưa tiếp nhận", "Đã tiếp nhận", "Từ chối", "Đã hoàn thành");
+
+    function tiepNhanGiaoViec(id) {
+        if (confirm("Bạn có muốn tiếp nhận nhiệm vụ này không?")) {
+            $.ajax({
+                type: "POST",
+                url: "/giaoviec/index/tiepnhan",
+                data: "id=" + id,
+                dataType: "json",
+                success: function (data1) {
+                    if (data1.error.code == 0) {
+                        alert("Tiếp nhận thành công");
+                        location.reload();
+                    } else {
+                        alert("Tiếp nhận lỗi: " + data1.error.message);
+                    }
+                },
+                error: function (request, status, errorThrown) {
+
+                }
+            });
+        }
+    }
+
+    function tuChoiGiaoViec(id) {
+        if (confirm("Bạn có muốn từ chối nhiệm vụ này không?")) {
+            $.ajax({
+                type: "POST",
+                url: "/giaoviec/index/tuchoi",
+                data: "id=" + id,
+                dataType: "json",
+                success: function (data1) {
+                    if (data1.error.code == 0) {
+                        alert("Từ chối thành công");
+                        location.reload();
+                    } else {
+                        alert("Từ chối lỗi: " + data1.error.message);
+                    }
+                },
+                error: function (request, status, errorThrown) {
+
+                }
+            });
+        }
+    }
+
+    function sendCapNhatTrangThai() {
+        jq1102('#errorCNTT').html("");
+        jq1102.ajax({
+            url: '/giaoviec/index/xacnhantrangthai',
+            data: {
+                'macongviectt': jq1102('#macongviectt').val(),
+                'donvinhantt': jq1102('#donvinhantt').val(),
+                'trangthaixacnhan': jq1102('#trangthaixacnhan').val()
+            },
+            async: false,
+            type: 'post',
+            cache: false,
+            success: function (data) {
+                //var jsonObj = jq1102.parseJSON(data);
+                //popupMiniDeselect_cntt(jq1102('a.pop_capnhat_tt.selected'));
+                // jq1102(jq1102('a.pop_capnhat_tt.selected').closest('tr')).find('#tiendo_cn').html(jsonObj.trangthai);                   
+                // return false;
+
+            }
+        });
+    }
+
+
+    jq1102.fn.popupMiniSlideFadeToggle = function (easing, callback) {
+        return this.animate({opacity: 'toggle', height: 'toggle'}, 'fast', easing, callback);
+    };
+    function popupMiniDeselect_cntt(e) {
+        jq1102('.pop_capnhat_tt').popupMiniSlideFadeToggle(function () {
+            e.removeClass('selected');
+            jq1102('#trangthaixacnhan').val('');
+        });
+    }
+    function loadDataPopupCapnhattrangthai_cntt(macongviectt, donvinhantt, trangthaixacnhan) {
+        jq1102('#macongviectt').val(macongviectt);
+        jq1102('#donvinhantt').val(donvinhantt);
+        jq1102("#trangthaixacnhan").val(trangthaixacnhan);
+    }
+
+    function loadDataPopupGiaHan(donvinhangiahan,hanconlai, macongviecgh, hanhientai) {
+        jq1102('#donvinhangiahan').val(donvinhangiahan);
+        jq1102('#hanhientai').html(hanconlai);
+        jq1102('#hanxlhientai').val(hanhientai);
+        jq1102('#macongviecgh').val(macongviecgh);
+    }
+
+    function sendGiaHan() {
+        jq1102('#errorGH').html("");
+        jq1102.ajax({
+            url: '/giaoviec/index/giahanxuly',
+            data: {
+                'hanxlhientai': jq1102('#hanxlhientai').val(),
+                'macongviecgh': jq1102('#macongviecgh').val(),
+                'donvinhangiahan': jq1102('#donvinhangiahan').val(),
+                'songaygiahan': jq1102('#songaygiahan').val()
+            },
+            async: false,
+            type: 'post',
+            cache: false,
+            success: function (data) {
+//                var jsonObj = jq1102.parseJSON(data);
+//                if (jsonObj.status == 'true') {
+//                    popupMiniDeselect(jq1102('a.giahan.selected'));
+//                    //jq1102(jq1102('a.giahan.selected').closest('tr')).find('#hanchinhthucGH').html(jsonObj.hanxuly);
+//                    return false;
+//                } else {
+//                    jq1102('#errorGH').html("Không thể gia hạn :(");
+//                }
+            }
+        });
+
+    }
+
+</script>

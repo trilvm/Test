@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head >
+	<link rel="stylesheet" href="/styles/dragfile.css" type="text/css" />
+    <script type="text/javascript">
+        function fileSelected(file) {
+            if (file) {
+                var fileSize = 0;
+                if (file.size > 1024 * 1024){
+                    fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+                }else{
+                    fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+				}
+                document.getElementById('fileName').innerHTML = file.name;
+                //document.getElementById('fileSize').innerHTML = 'Size: ' + fileSize;
+                //document.getElementById('fileType').innerHTML = 'Type: ' + file.type;
+            }
+        }
+		var cntFile = 0;
+		var currentFile = 0;
+		var files;
+		var maxUploadMb = <?=(int)(ini_get('upload_max_filesize'))?>;
+		var maxUpload = <?=(int)(ini_get('upload_max_filesize')) * 1024 * 1024; ?>;
+		/**
+		* Gửi từng file, khi gởi xong thì hệ thống gọi hàm complete, tiếp tục gởi tập tin tiếp theo
+		*/
+        function doUploadProcess(f) {
+			if(f == 'nextFile'){
+				currentFile++;
+			}else{
+				files = f;
+				cntFile = files.length;
+			}
+			if(currentFile < cntFile){
+				var file = files[currentFile];
+				if(file.size > maxUpload ){
+					alert(file.name + " : Không thể upload tập tin vượt quá dung lượng cho phép là "+ maxUploadMb + " Mb");
+					doUploadProcess('nextFile');
+				}else{
+					upload(file);
+				}
+			}else{
+				currentFile = 0;
+			}
+			
+        }
+		function upload(file){
+			
+			document.getElementById('fileName').innerHTML = file.name;
+			var idObject = getIdObject();
+            var fd = new FormData();
+            fd.append("uploadedfile", file);
+			fd.append("enableDragAndDrop",1);
+			fd.append("idObject",idObject);
+			fd.append("year","<?=QLVBDHCommon::getYear()?>");
+			fd.append("is_new","0");
+			fd.append("is_nogetcontent","1");
+			fd.append("type","-1");
+			fd.append("iddiv","idFileDinhKem");
+			
+			// chỗ này cần if để chuyển đổi idObject với cái trên composeAction
+			// cân nhắc có bỏ idObject của composeAction hay không
+			
+            var xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener("progress", uploadProgress, false);
+            xhr.addEventListener("load", uploadComplete, false);
+            xhr.addEventListener("error", uploadFailed, false);
+            xhr.addEventListener("abort", uploadCanceled, false);
+            xhr.open("POST", "/hscv/file/save");
+			document.getElementById('fileDragBox').style.display = "none";
+			resizeOnProgress();
+            xhr.send(fd);
+		}
+		
+		var ID_OBJECT = "<?=(int)$this->idObject?>";
+		/**
+		* Dò tìm id của iframe trong idFileDinhKem, lấy id nếu giá trị bắt đầu bằng tftemp
+		* Nếu không tìm thấy, sử dụng idObject của composeAction
+		*/
+		function getIdObject(){
+			if(ID_OBJECT == "0"){
+				//var matches = [];
+				var searchEles = window.parent.document.getElementById('idFileDinhKem').children;
+				for(var i = 0; i < searchEles.length; i++) {
+					if(searchEles[i].tagName == 'IFRAME') {
+						if(searchEles[i].id.indexOf('tftemp') == 0) {
+							//matches.push(searchEles[i]);
+							var idIframe = searchEles[i].id;
+							ID_OBJECT = idIframe.substring(6);							
+							break;
+						}
+					}
+				}
+			}
+			//console.log("ID_OBJECT: "+ID_OBJECT);
+			return ID_OBJECT;
+			 
+		}
+        function uploadProgress(evt) {
+            if (evt.lengthComputable) {
+                var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                document.getElementById('progressNumber').innerHTML = percentComplete.toString() + '%';
+                document.getElementById('prog').value = percentComplete;
+            }
+            else {
+                document.getElementById('progressNumber').innerHTML = 'Chưa xác định';
+            }
+        }		
+        function uploadComplete(evt) {
+            //console.log(evt.target.responseText);
+            var response = evt.target.responseText;
+			var cmd = response.substring(8,response.length - 9);
+            //console.log(cmd);
+			if(currentFile == (cntFile - 1)){
+				eval(cmd);
+			}
+			resizeOnDragLeave();
+			document.getElementById('fileDragBox').style.display = "";
+			doUploadProcess('nextFile');
+			//reloadFrame(ID_OBJECT);
+        }
+		function getQueryVariable(query, variable) {
+			var vars = query.split('&');
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split('=');
+				if (decodeURIComponent(pair[0]) == variable) {
+					return decodeURIComponent(pair[1]);
+				}
+			}
+			//console.log('Query variable %s not found', variable);
+		}
+        function uploadFailed(evt) {
+            //alert(evt.target.status);
+        }
+
+        function uploadCanceled(evt) {
+            alert("The upload has been canceled by the user or the browser dropped the connection.");
+        }
+    </script>
+	<style>
+		body {
+		display: block;
+		margin: 2px;
+		margin-top: 2px;
+		margin-right: 2px;
+		margin-bottom: 2px;
+		margin-left: 2px;
+		}
+	</style>
+</head>
+<body>
+	<div id="fileDragBox">
+		<div id="filedrag" class="filedrag">KÉO THẢ TẬP TIN VÀO ĐÂY</div>
+	</div>
+    <form id="form1">
+    
+    <div id="fileSize">
+    </div>
+    <div id="fileType">
+    </div>
+	<div style="width:100%; display:none;float:left;" id="fileProgressBar">
+		<div  style="float:left">	
+		<progress id="prog" value="0" max="100.0"></progress>
+		</div>
+		<div id="fileName" style="font-size:14px;float:left;padding-left:5px;font-family:'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol';">
+		</div>
+		<div id="progressNumber" style="font-size:14px;float:left;padding-left:5px;font-family:'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol';">
+		</div>
+    </div>
+	</form>
+	<p id=lasttext> </p>
+	<script>
+	resize();
+	function resize(){ 
+		var iframeElement = window.parent.document.getElementById('dragAndropFrame');
+		iframeElement.width = "100%";
+	}
+	function resizeOnDragOver(){
+		var iframeElement = window.parent.document.getElementById('dragAndropFrame');
+		iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+		iframeElement.width = "100%";
+	}
+	function resizeOnProgress(){
+		document.getElementById('fileProgressBar').style.display = '';
+		var iframeElement = window.parent.document.getElementById('dragAndropFrame');
+		iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop+20)+"px";
+		iframeElement.width = "100%";
+	}
+	function resizeOnDragLeave(){		
+		var iframeElement = window.parent.document.getElementById('dragAndropFrame');
+		iframeElement.style.height = "20px";
+		iframeElement.width = "100%";
+	}
+	/**
+	* enableDragAndDrop : enable chức năng kéo thả tương ứng với tạo văn bản đến và đi
+	*/
+	function reloadFrame(idObject){
+		window.parent.document.getElementById('dragAndropFrame').src="/hscv/file/index/enableDragAndDrop/1/isDragAndDrop/1/idObject/"+idObject;
+		window.location = "/hscv/file/index/enableDragAndDrop/1/isDragAndDrop/1/idObject/"+idObject;
+	}
+	
+	</script>
+	<script type="text/javascript" src="/js/mailclient/filedrag.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<?php 
+$year = QLVBDHCommon::getYear();
+?>
+<form name="frm">
+<table class="adminlist">
+<thead>
+<tr>
+			<th colspan="4">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/report/baocaolanhdao/reportview';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	<tr>
+<tr>
+	<th>#</th>
+	<th><?php
+	switch($this->type){
+		case 1:
+			echo "Xử lý văn bản đến";
+			break;
+		case 2:
+			echo "Công việc";
+			break;
+		case 3:
+			echo "Hồ sơ một cửa";
+			break;
+		default:
+			echo "Không xác định";
+	}
+	?></th>
+	<th>Phòng ban</th>
+	<th>Trạng thái</th>
+</tr>
+</thead>
+<tfoot>
+	<tr>
+			<th colspan="4">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/report/baocaolanhdao/reportview';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+</tfoot>
+<tbody>
+<?php $stt=1;foreach($this->data as $item){?>
+<tr>
+	<td>
+		<?=$stt?>
+	</td>	
+	<td>
+	<?php echo BaocaolanhdaoModel::getNameHSCV($year,$item["ID_HSCV"],$this->type);?>
+	</td>
+	
+	<td>
+		<?=$item["NAME_DEP"]."<br>"." ( ".$item["NAME_U"]." ) "?>
+	</td>
+	<td>
+		
+		<?php 
+		if($item["IS_THEODOI"]==1){
+			echo "Đang lưu theo dõi";
+		}else{
+		if($item["IS_FINISH"]==1){
+			echo "Đã kết thúc";
+		}else{
+		$dis_hour = QLVBDHCommon::getTreHan($item["DATESEND"],$item["HANXULY"]);
+				if($dis_hour > 0){
+					
+					if($this->id_u == $item_luanchuyen["ID_U_RECEIVE"])
+						echo '<font color="Red">đang xử lý (trễ '. (int)($dis_hour/8) .' ngày '.($dis_hour%8).' giờ)</font>';
+					else 
+						echo 'đang xử lý (trễ '. (int)($dis_hour/8) .' ngày '.($dis_hour%8).' giờ)';
+				}
+				else{ 
+					$con = 0- $dis_hour;
+					echo 'đang xử lý (còn '. (int)($con/8) .' ngày '.($con%8).' giờ)';
+				}
+		}}
+		?>
+	</td>
+</tr>
+<?php $stt++;} ?>
+</tbody>
+
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+<input type="hidden" name="sel_lcv" value="<?php echo $this->type; ?>">
+<input type="hidden" name="todate" value="<?php echo $this->todate; ?>">
+<input type="hidden" name="fromdate" value="<?php echo $this->fromdate; ?>">
+<?php foreach ($this->id_pbs as $id_pb){?>
+<input type="hidden" name='sel_pb[]' value="<?=$id_pb?>">
+<?php }?>
+</form>
+<script>
+function BackButtonClick(){
+	//window.location ="/report/baocaolanhdao/index";
+	document.frm.action = "/report/baocaolanhdao/index";
+	document.frm.submit();
+}
+</script>

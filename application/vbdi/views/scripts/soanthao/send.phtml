@@ -1,0 +1,69 @@
+<?php  require_once 'Common/FileDinhKem.php';?>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<form name=frm method="post" action="/vbdi/soanthao/Send">
+<script>
+var arr_user = new Array();
+var arr1 = new Array();
+</script>
+<fieldset>
+<legend><?php echo 'Chọn người gửi' ?></legend>
+<?php echo QLVBDHCommon::writeSelectDepartmentUser('DEP_NGUOIGUI','NGUOIGUI')?>
+<input type="button" value="<?php echo 'Chọn'?>" onClick="InsertIntoArr()">
+</fieldset>
+<fieldset>
+    <legend><?php echo 'Chọn người nhận' ?></legend>
+    <div id="listuser"></div>
+</fieldset>
+<input type=hidden name=ID_HSCV value="<?php echo $this->data->ID_HSCV; ?>">
+</form>
+<script>
+    function InsertIntoArr(){
+    	arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+        arr1[0] = new Array(25,'ID_DEP');
+        arr1[1] = new Array(25,'ID_U');
+        arr1[2] = new Array(50,'Tên');
+    	ShowArr('listuser',arr1,arr_user);
+    }
+    /**
+	 * Tạo lưới từ 2 mảng
+	 * 
+	 * @param String idDiv id div hoặc khung chứa lưới
+	 * @param int Arr1 mảng chứa tên trường và độ rộng tính theo % của trường
+	 * @param int Arr2 mảng chứa dữ liệu của các trường trên
+	 * @return html code
+	 */
+    function ShowArr(idDiv,Arr1,Arr2){
+        var html;
+    	html += '<table class="adminlist">';
+    	html += '<thead>';
+    	html += '<tr>';
+    	html += '<th nowrap>#</td>';
+    	for(i=0;i<Arr1.length;i++)
+    		html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+    	html += '</tr>';
+    	html += '</thead>';
+    	html += '<tfoot>';
+    	html += '</tfoot>';
+    	html += '<tbody>';
+    	for(i=0;i<Arr2.length;i++){
+    		html += '<tr>';
+    		html += '<td nowrap align="right">' + (i + 1) + '</td>';
+    		html += '<td nowrap>';
+    		html += Arr2[i][2];
+    		html += "<input type=hidden name=ID_U[] value="+Arr2[i][1]+">";
+    		html += '</td>';
+    		html += '</tr>';
+        }
+    	html += '</tbody>';
+    	html += '</table>';
+    	//
+    	document.getElementById(idDiv).innerHTML = html;    	
+    }
+    function BackButtonClick(){
+        document.frm.action = "/vbdi/soanthao";
+        document.frm.submit();
+    }
+    function SendButton(){
+        return;
+    }    
+</script>

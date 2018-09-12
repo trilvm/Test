@@ -1,0 +1,95 @@
+<form name=frmListthongtins method="post" action="/traodoi/chude/">	
+	<table class="adminlist">
+	<thead>
+		<tr>
+			<th nowrap>#</th>
+			<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></th>
+			<th width="80%">Tên chủ đề</th>
+			<th nowrap width="20%">Trạng thái</th>				
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="7">
+					<div class="pagination">
+						<div class="limit">Hiển thị #
+							<select name="limit" id="limit" class="inputbox" size="1" onchange="document.frmListthongtins.submit();" style="width:60px;">
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<script>
+									document.frmListthongtins.limit.value='<?php echo $this->limit ?>';
+								</script>
+							</select>
+						</div>
+						<div  style="float:right;"><?php echo $this->showPage; ?></div>
+					</div>
+			</td>
+		</tr>
+	</tfoot>
+
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+foreach ($this->data as $row )
+	{
+	$stt++;
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td nowrap align="right"><?php echo $stt ?></td>
+			<td nowrap align="center">
+				<input type=checkbox name=DEL[] value='<?php echo $row['id_chude'] ?>'>
+			</td>
+			<td>
+				<a href="#" onclick = "ItemClick(<?php echo $row['id_chude'] ?>);">
+				<?php echo htmlspecialchars($row['ten_chude']) ?>
+				</a>
+			</td>
+			<td><a href="<?php echo $this->url(array('controller'=>'traodoi', 
+            'action'=>'input', 'id'=>$row['id_chude'],'islast'=>$row['trangthai']));?>"><?php if($row['trangthai']=='1') echo 'Đang dùng';
+			else echo 'Đã bỏ';?></a></td>
+			
+		</tr>
+<?php
+	$i = (-1+$i)*-1;
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+<input type="hidden" name="comeFrom" value="listForm">
+</form>
+<script>
+function DeleteButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","Chọn ít nhất một menu để xoá.");
+	if(mess){
+		if(confirm("<?php echo 'Bạn muốn xóa mục này!'; ?>")){
+			document.frmListthongtins.action = "/traodoi/chude/delete";
+			document.frmListthongtins.submit();
+		}
+	}else{
+		alert("Chọn ít nhất một menu để xoá.");
+	}
+}
+function AddNewButtonClick()
+{
+	document.frmListthongtins.action = "/traodoi/chude/input";
+	document.frmListthongtins.submit();
+}
+function ItemClick(id)
+{
+	document.frmListthongtins.action = "/traodoi/chude/input/id/"+id;
+	document.frmListthongtins.submit();
+}
+</script>
+
+
+
+

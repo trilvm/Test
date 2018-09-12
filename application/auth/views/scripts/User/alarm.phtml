@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style type="text/css">
+<!--
+body {
+	margin:0 auto;
+	padding:0;
+	font:normal 12px Arial, Helvetica, sans-serif;
+	background: transparent;
+}
+#table_alert {
+	width:304px;
+	height:auto;
+}
+#table_ale_top {
+	background:url(/images/tab_top.gif) no-repeat;
+	width:304px;
+	height:25px;
+}
+.close {
+	color:white;
+	font-weight:bold;
+	float:right;
+	margin-right:10px;
+	text-decoration:none;
+}
+.close a {
+	color:white;
+	font-weight:bold;
+	text-decoration:none;
+}
+.close a:hover {
+	color:white;
+	font-weight:bold;
+	text-decoration:none;
+}
+#table_ale_ct {
+	width:274px;
+	background:url(/images/tab_bg.gif) repeat-y;
+	height:auto;
+	padding:5px 15px 5px 15px;
+}
+#table_ale_bot {
+	background:url(/images/tab_bot.gif) no-repeat;
+	width:304px;
+	height:25px;
+}
+#table_ct {
+	
+}
+.title {
+	font-weight:bold;
+	color:black;
+	font-size:13px;
+}
+.noidungtin {
+	color:#666666;
+	font-size:11px;
+}
+p {
+	margin:0;
+	padding:0;
+}
+a {
+	color:#008000;
+	text-decoration:underline;
+}
+a:hover {
+	color:#008000;
+	text-decoration:underline;
+}
+.line {
+	height:1px;
+	width:274px;
+	border-bottom:1px dotted #CCCCCC;
+	margin:5px 0 5px 0;
+	float:left;
+	overflow:hidden;
+}
+
+-->
+</style>
+</head>
+
+<body scroll=no>
+<div id="table_alert">
+	<div id="table_ale_top">
+    	<div><a href="javascript:;" onclick="document.frm.submit();return false;" class="close">X</a></div>
+    </div>
+    <div id="table_ale_ct">
+<?php
+$id = "0";
+foreach($this->data as $item){
+	$id .= ",".$item['ID_MESS'];
+?>
+    	<div>
+            <p class="noidungtin"><?=$item['NOIDUNG']?></p>
+            <p><a href="javascript:;" onclick="doredirect('<?=$item['LINK']?>');">Chi tiết</a></p>
+        </div>
+        <div class="line"></div>
+<?php
+}
+?>
+    </div>
+    <div id="table_ale_bot"></div>
+</div>
+<form name=frm method=post action = "/auth/user/nomessage">
+<input type=hidden name=id value="<?=$id?>">
+</form>
+<form name=redirect method=post target="_blank" action="/auth/login/index">
+<input type=hidden name=url value="">
+<input type=hidden name=code value="mini">
+<input type=hidden name=nomd5 value="yes">
+<input type=hidden name=username value="<?=$this->user->USERNAME?>">
+<input type=hidden name=password value="<?=$this->user->PASSWORD?>">
+</form>
+<script>
+function doredirect(link){
+	document.redirect.url.value = link;
+	document.redirect.submit();
+}
+</script>
+</body>
+</html>

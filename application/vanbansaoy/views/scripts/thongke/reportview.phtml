@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<form name=frm action="/vanbansaoy/thongke/reportview" method="POST">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel=Stylesheet href=stylesheet.css>
+</head>
+<body style="background-color:transparent">
+<table class=adminlist width="100%">
+ <thead>
+ 	<tr>
+	    <th nowrap >Stt</th>		
+ 		<th nowrap >Số ký hiệu văn bản sao y </th>
+		<th nowrap >Trích yếu</th>
+                <th nowrap >Người đề nghị</th>
+                <th nowrap >Ngày tạo</th> 		 		
+                <th nowrap >Tình trạng</th>
+ 	</tr>
+ </thead>
+ <tbody>
+ <?php  require_once 'vanbansaoy/models/tkvanbansaoyModel.php';
+ $stt=1; foreach($this->data as $item){?>
+	
+	<tr>
+    <td nowrap valign=top ><?=$stt?></td>	
+ 	<td nowrap valign=top ><?echo $item['KYHIEUVANBANSAOY'];?></td>
+        <td nowrap valign=top ><?echo $item['TRICHYEU'];?></td>
+        <td valign=top ><?if($item['NGUOIDENGHI']!=""){ echo tkvanbansaoyModel::getName($item['NGUOIDENGHI']);}?></td> 	
+        <td nowrap  valign=top ><?php echo QLVBDHCommon::MysqlDateToVnDate($item["NGAYTAO"]) ?></td>        
+ 	<td nowrap valign=top ><?php if($item["ISFINISHED"]==1) echo "Đã phê duyệt";
+            else echo "Chưa phê duyệt";?></td>
+	</tr>
+	<?php $stt++;}?>
+ </tbody>
+ <tfoot>
+ </tfoot>
+</table>
+<p id=lasttext></p>
+</body>
+</html>
+</form>
+<script>
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%"; 
+
+</script>

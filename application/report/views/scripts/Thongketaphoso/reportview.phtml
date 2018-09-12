@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<form name=frm action="/report/Thongketaphoso/reportview" method="POST">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel=Stylesheet href=stylesheet.css>
+</head>
+<body style="background-color:transparent">
+<table class=adminlist width="100%">
+ <thead>
+ 	<tr>
+	    <th nowrap >Stt</th>		
+ 		<th nowrap>Tên hồ sơ công việc điện tử</th>		
+		<th nowrap >Thuộc thư mục hồ sơ công việc điện tử </th>         
+ 		<th >Người tạo</th>		
+ 		<th nowrap>Ngày tạo</th>		
+ 		<th >Văn bản, tệp đính kèm</th>		      
+ 	</tr>
+ </thead>
+ <tbody>
+ <?php  require_once 'report/models/ThongketaphosoModel.php';
+ $stt=1; foreach($this->data as $item){?>
+	
+	<tr>
+    <td nowrap valign=top ><?=$stt?></td>	
+ 	<td nowrap valign=top ><?echo $item['TEN'];?></td>	
+ 	<td nowrap valign=top ><?php ThongketaphosoModel::ToTreethumuc($this->datathumuc,$item['ID_THUMUC']); ?></td> 	
+	<td valign=top ><?if($item['NGUOITAO']!=""){ echo ThongketaphosoModel::getName($item['NGUOITAO']);}?></td>
+ 	<td nowrap  valign=top ><?php echo QLVBDHCommon::MysqlDateToVnDate($item["NGAYTAO"]) ?></td>
+ 	<td nowrap valign=top ><a href="#" onclick="Detail(1,<?=$item['ID_TAPHOSO']?>)">
+	<?php echo count(ThongketaphosoModel::Vanbantaphoso($item['ID_TAPHOSO'])) ; ?> </a></td>		
+	</tr>
+	<?php $stt++;}?>
+ </tbody>
+ <tfoot>
+ </tfoot>
+</table>
+<p id=lasttext></p>
+</body>
+</html>
+</form>
+<script>
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%"; 
+
+function Detail(vb,id_taphoso){
+	document.frm.action = "/report/Thongketaphoso/reportview?bienvanban="+vb+"&id_taphoso="+id_taphoso;
+	document.frm.target = "_blank";
+	document.frm.submit();
+}
+</script>

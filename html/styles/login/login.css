@@ -1,0 +1,124 @@
+body{
+	margin:0 auto;
+	padding:0;
+	line-height: 1.5em;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	background:#f3f3f3;
+}
+
+#content-box {
+	width:100%;
+}
+#content-box .padding {
+    padding: 100px 0 0  0;
+}
+div#element-box {
+    background:#FFFFFF;
+}
+.login {
+    margin: 0 auto 100px;
+    width: 612px;
+	border-top:1px solid #F0F0F0;
+	border-left:1px solid #F0F0F0;
+	border-right:1px solid #cdcdcd;
+	border-bottom:1px solid #cdcdcd;
+}
+.login .loginbanner {
+	background:url(../../images/login/loginbanner.jpg) no-repeat;
+	height:86px;
+}
+.login .login-content {
+	background:url(../../images/login/login-bg.jpg) repeat-x;
+	height:163px;
+	border-bottom:1px solid #F0F0F0;
+}
+.login .login-content div.login-left {
+	background:url(../../images/login/login-left.jpg) no-repeat right;
+	height:163px;
+	width:270px;
+	float:left;
+}
+.login .login-content div.login-right {
+	height:163px;
+	width:330px;
+	float:right;
+}
+.login .login-bottom {
+	padding:5px 0;
+	margin:0 auto;
+	text-align:center;
+}
+.login .login-error {
+	padding:5px 0;
+	text-align:left;
+	border-top:1px solid #cdcdcd;
+}
+.login .login-error span {
+	color:red;
+}
+.login .login-bottom span {
+	background:url(../../images/login/logo-unispace.jpg) no-repeat left;
+	padding:5px 0 5px 70px;
+}
+.login .login-bottom span a {
+	color:#F60;
+	text-decoration:underline;
+}
+
+form {
+    margin: 0;
+    padding: 0;
+}
+p {
+    margin: 8px 0;
+    padding: 0;
+}
+#form-login label {
+    color: #0b7cae;
+    display: block;
+    float: left;
+    font-weight: bold;
+    padding: 2px 4px;
+    text-align: right;
+    width: 120px;
+	font-size:13px;
+}
+form .inputbox {
+    margin-left: 10px;
+    width: 137px;
+	border:none;
+	height:23px;
+	font-size:13px;
+	padding-left:5px;
+	padding-top:4px;
+	padding-right:2px;
+	padding-bottom:1px;
+	background:url(../../images/login/login-input.png) no-repeat left 2px;
+}
+select {
+    border: 1px solid silver;
+    font-size: 10px;
+	padding-top:4px;
+}
+#form-login .button_holder {
+    float: left;
+    padding-left: 180px;
+}
+.clr {
+    clear: both;
+    height: 0;
+    overflow: hidden;
+}
+
+.login-btn {
+	background:url(../../images/login/login-btn.png) no-repeat;
+	width:97px;
+	height:24px;
+	border:none;
+	cursor:pointer;
+	margin-left:138px;
+}
+.error{
+	color:red;
+}

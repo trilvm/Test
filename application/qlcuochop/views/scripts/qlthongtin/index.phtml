@@ -1,0 +1,335 @@
+<form name=frm method=post action="">
+    <table>
+        <tr>
+            <td nowrap="nowrap" valign=top>
+                Tên cuộc họp
+                <?php
+//                $date = date("Y-m-d");// current date
+//
+//                $date = strtotime(date("Y-m-d", strtotime($date)) . " +1 day");
+//                //var_dump($date);exit;
+//
+//                echo date("w",mktime(0,0,0,12,4,2011));
+                ?>
+            </td>
+            <td nowrap="nowrap" colspan="3">
+                <input type=text class=inputbox name=NAME value="<?=$this->TEN?>" size=50>
+            </td>
+        </tr>
+		<tr>
+            <td nowrap="nowrap" valign=top>
+                Phạm vi
+            </td>
+            <td nowrap="nowrap" colspan="3">
+               <select name="phamvi">
+			   <option value="2">
+				Tất cả
+			   </option>
+			   <option value="1">
+				Trong cơ quan
+			   </option>
+			   <option value="0">
+				Ngoài cơ quan
+			   </option>
+			   </select>
+            </td>
+        </tr>
+        <tr>
+            <td nowrap="nowrap" valign=top>
+                Thời gian
+            </td>
+            <td>
+                <?=QLVBDHCommon::calendarfull($this->fromdate,"fromdate","fromdate")?>
+                Đến
+                <?=QLVBDHCommon::calendarfull($this->todate,"todate","todate")?>
+            </td>
+        </tr>
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap" colspan="3"><input type=submit value="Tìm kiếm"></td>
+            <td width="100%"></td>
+        </tr>
+    </table>
+    <table class=adminlist>
+        <thead>
+            <tr>
+                <th colspan="4">
+                    <div>
+                        <div class="limit" style="float:left;">Hiển thị #
+                            <select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/qlcuochop/qlthongtin/index';
+							document.frm.submit();
+                                    ">
+                                <option value="5"  <?php  if($this->limit==5){echo "selected";} ?>>5</option>
+                                <option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+                                <option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+                                <option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+                                <option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+                                <option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+                                <option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+                                <option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+                                <option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+                                <option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+                                <script>
+                                        document.frm.limit1.value='<?php echo $this->limit; ?>';
+                                </script>
+                            </select>
+                        </div>
+                       <div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap">STT</th>
+                <th nowrap valign="top">
+                    <input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')">
+                </th>
+                <th width="100%">Tên cuộc họp</th>
+                <th nowrap="nowrap">
+                    &nbsp;
+                </th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th colspan="4">
+                    <div class="pagination">
+                        <div class="limit">Hiển thị #
+                            <select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '';
+							document.frm.submit();
+                                    ">
+                                <option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+                                <option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+                                <option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+                                <option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+                                <option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+                                <option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+                                <option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+                                <option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+                                <option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+                                <option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+                                <script>
+                                        document.frm.limit1.value='<?php echo $this->limit; ?>';
+                                </script>
+                            </select>
+                        </div>
+                        <div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+                    </div>
+                </th>
+            </tr>
+        </tfoot>
+        <tbody>
+            <?php
+            $actid = ResourceUserModel::getActionByUrl('default','index','index');
+            if(ResourceUserModel::isAcionAlowed($this->user->USERNAME,$actid[0])){
+//            ?>
+            <?php
+            if(count($this->data)==0){
+		echo "<tr><td colspan=4>Không có dữ liệu nào được tìm thấy</td></tr>";
+            } else {
+                $stt = 0;                
+                foreach ($this->data as $item) {
+                    $stt++;
+                    $item['TEN']=$this->A==1?QLVBDHCommon::highlightWords($item['TEN'],$this->NAME):$item['TEN'];
+                    $statustrehan="";
+                 /*==============*/
+                    $d = split('~',$item['IDS_NGUOITHAMGIA']);
+                    $d1= $d[0];  //var_dump($d1); exit;
+                    $dd = explode(',',$d1);  //var_dump($dd); exit;                 
+                    if(($this->ID_U == $item['LD_THUCHIEN']) OR ($this->ID_U == $item['THUKY']) OR (in_array($this->ID_U,$dd))){
+                        $mday= $item['NGAY'];
+                        $day= date("w",mktime(0,0,0,substr($mday,5,2),substr($mday,8,2),substr($mday,0,4)));
+                        if((int)$day==5){
+                            $date_finish = date("Y-m-d",mktime(0,0,0,(int)substr($mday,5,2),(int)substr($mday,8,2)+4,(int)substr($mday,0,4)));
+                        }  else if((int)$day==4){
+                            $date_finish = date("Y-m-d",mktime(0,0,0,(int)substr($mday,5,2),(int)substr($mday,8,2)+4,(int)substr($mday,0,4)));
+                        }else if((int)$day!=4 && (int)$day!=5){
+                            $date_finish = date("Y-m-d",mktime(0,0,0,(int)substr($mday,5,2),(int)substr($mday,8,2)+2,(int)substr($mday,0,4)));
+                        }
+                        $tre = (strtotime(date("Y-m-d")) - strtotime($date_finish)) / (60 * 60 * 24);                        
+                        if($tre >= 0){
+                            $statustrehan = "Đã trể hạn nộp biên bản cuộc họp ";
+                        }
+                    }
+                 /*==============*/
+            ?>
+            <tr>
+                <td><?=$stt?></td>
+                <td>
+                    <input type="checkbox" name="DEL[]" value="<?=$item['ID_CUOCHOP']?>" />
+                </td>
+                <td id="idtd<?=$item['ID_CUOCHOP']?>"><b><?=$item['TEN']?></b>
+                    <div style="">
+                        <b>Thời gian: <?=QLVBDHCommon::MysqlDateToVnDate($item['NGAY'])?></b>
+                    </div>
+                    <?php if(($item['CHECK_BB']==0)) {?>
+                    <div>
+                        <font style="color: red"><?php echo $statustrehan;?></font>
+                    </div>
+                    <?php }?>
+                    <div >
+			<ul class="chitiethscv">                          
+                           <li id=groupicon3_<?=$item["ID_CONGVIEC"]?>><img
+					src="/images/icon_butphe.jpg" border="0" hspace="5"> <a
+					href="#idtd<?=$item['ID_CUOCHOP']?>" onclick="											
+                       // DivControlDisplay(1,'groupcontentcv<?//=$item["ID_CUOCHOP"]?>');
+                            if(document.getElementById('groupcontentcv<?=$item["ID_CUOCHOP"]?>').style.display=='none'){
+                                    document.getElementById('groupcontentcv<?=$item["ID_CUOCHOP"]?>').style.display='';
+                                    document.getElementById('iframesend<?=$item["ID_CUOCHOP"]?>').style.display='';
+                                    document.getElementById('iframesend<?=$item["ID_CUOCHOP"]?>').setAttribute('src','/qlcuochop/qlthongtin/detailcv/ID_CUOCHOP/<?=$item["ID_CUOCHOP"]?>/ID_NGUOITAO/<?=$item["ID_NGUOITAO"]?>/iframe/iframesend<?=$item["ID_CUOCHOP"]?>');
+                                        } else{
+                                            if(document.getElementById('groupcontentcv<?=$item["ID_CUOCHOP"]?>').style.display==''){
+                                                document.getElementById('groupcontentcv<?=$item["ID_CUOCHOP"]?>').style.display='none';
+                                            }
+                                        }
+                                    " >
+				Nội dung </a>           
+                            </li>                            
+                        </ul>
+                    </div>
+                    <div class="groupcontent" id="groupcontentch<?=$item["ID_CUOCHOP"]?>" style="display: none;"></div>
+                    <div  class="groupcontent" id="groupcontentcv<?=$item["ID_CUOCHOP"]?>" scrolling=yes style="display: none; border: 1px;">
+                        <iframe name="iframe" style="overflow-x:visible;display:none; width:100% ;"  width=auto height=auto id=iframesend<?=$item["ID_CUOCHOP"]?> allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src=""></iframe>
+                    </div>
+                </td>
+                <td nowrap="nowrap" ><a href="/qlcuochop/qlthongtin/input/ID_CUOCHOP/<?php echo $item['ID_CUOCHOP']?>/PHAMVI/<?=$item['PHAMVI']?>">
+                     <?php
+                     if($this->ID_U == $item['ID_NGUOITAO'])
+                     {
+                        echo 'Cập nhật';
+                     }
+                     ?>
+                    </a>
+                </td>
+            </tr>
+            <?php }} }?>
+        </tbody>        
+    </table>
+    <input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+
+<script type="text/javascript">
+    function AddNewButtonClick(){
+        window.location = '/qlcuochop/qlthongtin/input';
+    }
+
+    var arr_user_temp = new Array();
+
+    function SwapDivCH(id,url,tab,idcv){
+        for(var i=1;i<11;i++){
+            if(document.getElementById("groupicon"+i+"_"+id)){
+                if(tab!=i){
+                    if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+                        document.getElementById("groupcontentch"+id).style.display="none";
+                        document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+                        break;
+                    }
+                }
+            }
+        }
+        if(document.getElementById("groupcontentch"+id).style.display==""){
+            document.getElementById("groupcontentch"+id).style.display="none";
+            document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+        }else{
+            document.getElementById("groupcontentch"+id).style.display="";
+            document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+            document.getElementById("groupcontentch"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+            loadDivFromUrl("groupcontentch"+id,url,1);
+        }
+        if(document.getElementById("groupcontentcv"+idcv).style.display==""){
+            document.getElementById("groupcontentcv"+idcv).style.display="none";
+            //document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+        }
+        //document.getElementById("detailContent_"+id).style.display="none";
+    }
+    function SwapDivCV(id,url,tab,idch){
+        for(var i=1;i<11;i++){
+            if(document.getElementById("groupicon"+i+"_"+id)){
+                if(tab!=i){
+                    if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+                        document.getElementById("groupcontentcv"+id).style.display="none";
+                        document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+                        break;
+                    }
+                }
+            }
+        }
+        if(document.getElementById("groupcontentcv"+id).style.display==""){
+            document.getElementById("groupcontentcv"+id).style.display="none";
+            document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+        }else{
+            document.getElementById("groupcontentcv"+id).style.display="";
+            document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+            document.getElementById("groupcontentcv"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+            loadDivFromUrl("groupcontentcv"+id,url,1);
+        }
+        if(document.getElementById("groupcontentch"+idch).style.display==""){
+            document.getElementById("groupcontentch"+idch).style.display="none";
+            //document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+        }
+        //document.getElementById("detailContent_"+id).style.display="none";
+    }
+	// function setIframeHeight(iframename) {
+	// alert(iframename);
+    // parent.document.getElementById(iframename).height = document['body'].offsetHeight - 150;
+	// }
+	
+    function DeleteButtonClick()
+	 {
+	 	var ln = 0;
+	 	var arr = document.getElementsByName('DEL[]');
+	 	for(var i = 0 ; i < arr.length ;i++ )
+	 	{
+
+	 		if(arr[i].checked == true)
+	 		{
+	 			ln = 1;
+	 			break;
+	 		}
+	 	}
+	 	if(ln == 1)
+	 	{
+	 		if(confirm("<?php echo "Bạn có muốn xóa không"; ?>")){
+	 			//document.URL=
+	 			document.frm.action="/qlcuochop/qlthongtin/delete";
+	 			document.frm.method="post";
+	 			document.frm.submit();
+	 		}
+	 	}
+	 	else
+	 	{
+	 		alert("Bạn phải một dòng chọn để xóa");
+	 	}
+	 }
+
+         function DivControlDisplay(type,id_div_close,id_div_open)
+         {
+            if(type=="1"){
+                //document.getElementById(id_div_close).style.display="none";                
+                if(document.getElementById(id_div_open).style.display=""){
+                    document.getElementById(id_div_open).style.display="none";
+                }else{
+                    if(document.getElementById(id_div_open).style.display="none"){
+                        document.getElementById(id_div_open).style.display="";
+                    }
+                }
+            }
+         }
+
+    setDefaulValue();
+    function setDefaulValue(){
+        var ID_CUOCHOP = '<?=(int)$this->ID_CUOCHOP?>';
+        if(ID_CUOCHOP > 0 )
+        {
+         document.getElementById('groupcontentcv'+ID_CUOCHOP).style.display='';
+         document.getElementById('iframesend'+ID_CUOCHOP).style.display='';
+         document.getElementById('iframesend'+ID_CUOCHOP).setAttribute('src','/qlcuochop/qlthongtin/detailcv/ID_CUOCHOP/'+ID_CUOCHOP+'/ID_NGUOITAO/'+ID_CUOCHOP+'/iframe/iframesend'+ID_CUOCHOP);
+        }
+    }
+    
+</script>

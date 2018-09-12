@@ -1,0 +1,46 @@
+<table class="adminlist">
+<thead>
+	<tr>
+		<th>#</th>
+		<th>Cơ quan gửi</th>
+		<th width=100% colspan=2>Văn bản</th>
+	</tr>
+</thead>
+	<tbody>
+	<?php $stt = 1;foreach($this->vbnhans as $it_vb){ ?> 	
+		<tr>
+			<td nowrap><?=$stt?></td>
+			<td nowrap><?=$it_vb["CQ_GUI"]. ($it_vb["EMAIL_GUI"]!=""? "(".$it_vb["EMAIL_GUI"].")":"")?></td>
+			<td>
+				<b>[ <?=$it_vb["SOKYHIEU"]." - ".implode("/",array_reverse(explode("-",$it_vb["NGAYBANHANH"])))." - ".$it_vb["COQUANBANHANH"]?> ]</b><br/>
+				<i><?=$it_vb["TRICHYEU"]?></i><br/>
+				<?php 
+				
+				$files = filedinhkemModel::getListFileByIdObject($it_vb["ID_VBNHAN"],13);
+				foreach($files as $file){
+					echo "<a href='/hscv/file/download?maso=".$file['MASO']."'>". $file['FILENAME'] ."</a>&nbsp;&nbsp;&nbsp;";
+				}
+				?>
+			</td>
+			<td>
+			<a href="/vbden/vbden/input?ID_VBNHAN=<?=$it_vb["ID_VBNHAN"]?>">Tiếp nhận</a><br/>
+			<a href="#" onclick="deleteItem(<?=$it_vb["ID_VBNHAN"]?>)">Xóa</a>
+			</td>
+		</tr>
+	<?php $stt++;}?>
+	</tbody>
+
+</table>
+
+<script>
+	function deleteItem(id){
+		if(confirm("Bạn có muốn xóa không?")){
+			window.location = "/vbmail/index/deletevbnhan?ID_VBNHAN="+id;
+		}
+		
+	}
+
+	function Receive(){
+		document.location = '/vbmail/index/receivevb';;
+	}
+</script>

@@ -1,0 +1,309 @@
+<?php
+	require_once 'Common/FileDinhKem.php';
+	require_once('auth/models/ResourceUserModel.php');
+	$disable="/isreadonly/1";
+?>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse_state.js"?>></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<script type="text/javascript" src="/js/realitysearch.js"></script>
+<form name=frm method=post action='/vbden/vbden/list' onclick="
+if(at_container){ at_Hide(false);}" onsubmit="document.frm.page.value = 1;document.frm.action = '/vbden/vbden/listnhiemvu';return true;">
+<div>
+    <table>
+        <tr>
+            <td nowrap="nowrap">Sổ văn bản</td>
+            <td nowrap="nowrap">
+				<select name="ID_SVB" id="ID_SVB" class="inputbox" size="1" onchange="document.frm.submit();">
+            	<?php 
+            		echo vbdenModel::WriteSVBBox((int)$this->ID_SVB,"-- Chọn tất cả  --", true,2);
+            	?> 
+        		</select>
+			</td>
+            <td nowrap="nowrap">Loại văn bản</td>
+            <td nowrap="nowrap">
+                <select name="ID_LVB" id="ID_LVB" class="inputbox" size="1" onchange="document.frm.submit();">
+                    <?php
+                    echo vbdenModel::WriteLVB((int) $this->ID_LVB, "-- Chọn tất cả  --");
+                    ?> 
+                </select>
+            </td>
+
+        </tr>
+        
+        <tr>
+            <td nowrap="nowrap" valign=top>Nội dung trích yếu</td>
+            <td nowrap="nowrap" colspan="3">
+                <input type=text onchange="setRealityKeyword(this.value);" class=inputbox name=TRICHYEU value='<?= htmlspecialchars($this->TRICHYEU) ?>' style="width: 474px;">
+                <input name=TRICHYEU_ISLIKE value=1 type=checkbox <?=$this->TRICHYEU_ISLIKE==1?"checked":""?> > Tìm gần đúng<br>
+                <input type="hidden" value="" name="REALITYKEYWORD">
+                <input type="checkbox" name=INNAME value=1 checked style="display:none"><!--Trong trích yếu-->
+                <input type="checkbox" name=INFILE value=1 style="display:none"><!--Trong nội dung văn bản-->
+            </td>
+            <td width="100%"></td>
+        </tr>    
+                    
+        <tr>
+            <td nowrap="nowrap">Số đến</td>
+            <td nowrap="nowrap">
+                <input type=text class=inputbox name=SODEN value="<?= $this->SODEN ?>" style="width: 198px;"/>				
+            </td>             
+            <td nowrap="nowrap" colspan="2">
+                <input name=SODEN_ISLIKE value=1 type=checkbox <?= $this->SODEN_ISLIKE == 1 ? "checked" : "" ?> > Tìm gần đúng
+            </td>                            
+        </tr>
+        <tr>
+            <td nowrap="nowrap">Số, ký hiệu VB</td>
+            <td nowrap="nowrap">
+                <input type=text class=inputbox name=SOKYHIEU value="<?= $this->SOKYHIEU ?>" style="width: 198px;"/>
+            </td>             
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap" ></td>
+                            
+        </tr>
+		</tr>
+                <tr>
+                    <td nowrap="nowrap">Người tham gia xử lý</td>
+                    <td nowrap="nowrap" colspan="3">
+					<?php
+						echo QLVBDHCommon::AutoComplete(
+							UsersModel::getAllNameAndId(1),
+							"ID_U",
+							"NAME",
+							"NGUOIXULY",
+							"NGUOIXULY_TEXT",
+							true,
+							"width:200px",
+							"",
+							$this->NGUOIXULY,
+							'');
+					?>
+					</td>
+					<td></td>
+		</tr>
+
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td>                
+                <input type=checkbox onclick="doAdvance();">Tìm kiếm nâng cao
+            </td>
+            <td></td>
+        </tr>
+        <tr id=FindAdvanced2>
+            <td nowrap="nowrap">Ngày đến</td>
+            <td nowrap="nowrap" colspan="3">
+                <?= QLVBDHCommon::calendar($this->NGAYDEN_BD, "NGAYDEN_BD", "NGAYDEN_BD") ?>
+                <span style="font-weight:bold;padding-left:10px;"> >> </span>
+                <?= QLVBDHCommon::calendar($this->NGAYDEN_KT, "NGAYDEN_KT", "NGAYDEN_KT") ?>
+            </td>
+            <td width="100%"></td>
+        </tr>
+        <tr id=FindAdvanced3>
+            <td nowrap="nowrap">Ngày ban hành</td>
+            <td nowrap="nowrap" colspan="3">
+                <?= QLVBDHCommon::calendar($this->NGAYBANHANH_BD, "NGAYBANHANH_BD", "NGAYBANHANH_BD") ?>
+                <span style="font-weight:bold;padding-left:10px;"> >> </span>
+                <?= QLVBDHCommon::calendar($this->NGAYBANHANH_KT, "NGAYBANHANH_KT", "NGAYBANHANH_KT") ?>
+            </td>
+            <td width="100%"></td>
+        </tr>
+        <tr id=FindAdvanced4>
+            <td nowrap="nowrap">Cơ quan</td>
+            <td nowrap="nowrap">
+                <?php
+                echo QLVBDHCommon::AutoComplete(
+                        vbdenModel::GetDataCQ((int) $this->ID_CQ), "ID_CQ", "NAME", "ID_CQ", "COQUANBANHANH_TEXT", false, "width:200px", "", (int) $this->ID_CQ, '');
+                ?>
+            </td>
+            <td width="10" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td width="100%"></td>
+        </tr>
+        <tr>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap">
+                <input type=hidden name=advanced>
+                <input type=submit value="Tìm kiếm">
+        </tr>
+        
+        
+           <input type=hidden name=ADVANCEDVALUE value="<?= $this->ADVANCED ?>">
+            </td>
+            <td width="10" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            <td width="100%"></td>
+        </tr>
+    </table>
+</div>
+
+<table class=adminlist>
+	
+	<tfoot>
+		<tr>
+			<th colspan="13">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/vbden/vbden/listnhiemvu';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+            
+            <tr>
+			<td style="height:45.0pt; width:32pt">STT</td>
+			<td style="width:155pt">T&ecirc;n c&ocirc;ng việc</td>
+			<td style="width:80pt">Vb đến/Căn cứ</td>
+			<td style="width:76pt">Ng&agrave;y đến/giao</td>
+			<td style="width:66pt">Ph&ograve;ng thực hiện&nbsp;</td>
+			<td style="width:74pt">Người thực hiện&nbsp;</td>
+			<td style="width:65pt">Ph&ograve;ng phối hợp&nbsp;</td>
+			<td style="width:44pt">Tiến độ (%)</td>
+			<td style="width:56pt">Ng&agrave;y cập nhật/ho&agrave;n th&agrave;nh</td>
+                        <!--
+			<td style="width:137pt">Mô tả tiến độ</td>
+                        -->
+			<td style="width:62pt">Thời hạn</td>
+			<td style="width:55pt">T&igrave;nh h&igrave;nh xử l&yacute;</td>
+			<td style="width:62pt">Trạng th&aacute;i&nbsp;</td>
+		</tr>
+                
+<?php
+	if(count($this->data)<=0){
+		echo "<tr><td colspan='4'>Không tìm thấy hồ sơ công việc nào</td></tr>";
+	}else{
+	$stt=($this->page-1)*$this->limit;
+	$i=0;
+	foreach($this->data as $row){
+		//var_dump($row);
+		$stt++;
+		
+?>
+		
+            <?php
+		$vbdeninfo = $this->vbden->find($row["ID_VBD"])->current();
+               // var_dump($vbdeninfo);
+                $COQUANBANHANH_TEXT = explode("/",$vbdeninfo->COQUANBANHANH_TEXT,2);
+                if(count($COQUANBANHANH_TEXT)==2){
+                        $COQUANBANHANH_TEXT = $COQUANBANHANH_TEXT[1];
+                }else{
+                        $COQUANBANHANH_TEXT = $COQUANBANHANH_TEXT[0];
+                }
+            ?>  
+            <tr>
+                            <td style="height:60.0pt"><?=$stt?></td>
+                            <td style="width:155pt"><?php echo  dfdsf;   ?></td>
+                            <td style="width:80pt"><?php echo  $vbdeninfo->SOKYHIEU." - ".QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYBANHANH)." - ".$COQUANBANHANH_TEXT;   ?></td>
+                            <td><?=QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYDEN) ?></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td style="width:62pt">&nbsp;</td>
+             </tr>
+            
+            
+            
+            
+            
+            
+            <!--
+            <tr class="row<?=$this->ID_VBD==$row['ID_VBD']?"2":$i?>">
+			<td valign="top"><a name="vbden<?=$row['ID_VBD']?>"></a><?=$stt?></td>
+			<td valign="top"><?php
+				$vbdeninfo = $this->vbden->find($row["ID_VBD"])->current();
+				$COQUANBANHANH_TEXT = explode("/",$vbdeninfo->COQUANBANHANH_TEXT,2);
+				if(count($COQUANBANHANH_TEXT)==2){
+					$COQUANBANHANH_TEXT = $COQUANBANHANH_TEXT[1];
+				}else{
+					$COQUANBANHANH_TEXT = $COQUANBANHANH_TEXT[0];
+				}
+				echo "<b>".$vbdeninfo->SOKYHIEU." - ".QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYBANHANH)." - ".$COQUANBANHANH_TEXT."</b>";
+				if($vbdeninfo->NGAYHETHAN!="" && $vbdeninfo->HANXULYTOANBO>0 && $vbdeninfo->IS_FINISH==0){
+					echo QLVBDHCommon::trehantostr(QLVBDHCommon::countdateswitch(strtotime($row["NGAYHETHAN"]),null));
+				}else if($row["IS_FINISH"]==1){
+					if($vbdeninfo->TRE>0){
+						echo "<font color=red> <i>Đã xử lý xong - Trễ hạn</i></font>";
+					}else if($vbdeninfo->TRE==0){
+						echo "<font color=blue> <i>Đã xử lý xong - Đúng hạn</i></font>";
+					}else{
+						echo "<font color=blue> <i>Đã xử lý xong - Sớm hạn</i></font>";
+					}
+				}
+				?>
+				
+				<?php
+				echo "<br>";
+				?>
+				<?=$row['TRICHYEU']?>
+				<?php
+					if($this->INFILE==1){
+						$dt = PhienBanDuThaoModel::getFileContentFromVBD($row['ID_VBD']);
+						foreach($dt as $itemdt){
+							$rfind = QLVBDHCommon::highlightString($itemdt['CONTENT'],$this->TRICHYEU);
+							if($rfind!=""){
+				?>
+				<br><a href="/hscv/File/download?year=&maso=<?=$itemdt['MASO']?>"><B><?=$itemdt['FILENAME']?>:</B> <?=$rfind?></a>
+				<?php 
+							}
+						}
+					}
+				?>
+				<?php //if(isset()){
+					//$key = array_search($row["ID_VBD"],$this->arr_idnews);
+					
+					if(!$row['DA_XEM']){
+						echo "
+						<img id='image_new_".$row['ID_VBD']. "' src='/images/moi.gif'>
+						";
+					}
+					$id_url = "/id/".$row["ID_HSCV"];
+					$isidvbden = "/isidvbden=0";
+					//if($row["IS_KHONGXULY"] || QLVBDHCommon::getYear()==2008){
+						$id_url = "/id/".$row["ID_VBD"];
+						$isidvbden = "/isidvbden/1";
+					//}
+				?>
+								
+			</td>
+			
+		</tr>
+            -->
+                
+                
+<?php
+		$i = (-1+$i)*-1;	
+	}
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>

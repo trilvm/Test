@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel="stylesheet" href="/styles/system.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/styles/rounded.css" />
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel="stylesheet" type="text/css" href="/styles/template.css" />
+</head>
+<body style="background-color:transparent">
+<form name=frm action="/motcua/motcua/savebosung">
+<table>
+	<tr>
+		<td nowrap="nowrap"><font color="blue">Số phiếu </font></td>
+		<td nowrap="nowrap" width="10"></td>
+		<td width="100%"><?=$this->phieu_yc->_sophieu ?></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap"><font color="blue">Nội dung yêu cầu bổ sung</font></td>
+		<td nowrap="nowrap" width="10"></td>
+		<td width="100%"><?=nl2br($this->phieu_yc->_cacghichu)?></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap"><font color="blue">Các hồ sơ bổ sung</font></td>
+		<td nowrap="nowrap" width="10"></td>
+		<td width="100%"><textarea name="ghichu" rows="3" cols="60"></textarea></td>
+	</tr>
+</table>
+
+<input type="submit" name="SEND" value="Bổ sung">
+<input type=hidden name=id value="<?=$this->ID_HSCV?>">
+<input type=hidden name=id_yeucau value="<?=$this->phieu_yc->_id_yeucau ?>">
+<input type=hidden name=pre_ghichu value="<?=$this->phieu_yc->_cacghichu?>" >
+</form>
+
+<p id=lasttext></p>
+
+</body>
+</html>
+<script>
+var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+iframeElement.style.height = ""+ (document.getElementById("lasttext").offsetTop+30) +"px";
+iframeElement.width = "100%"; 
+
+
+
+</script>

@@ -1,0 +1,87 @@
+<?php
+require_once 'congviec/models/Qlgv_workModel.php';
+require_once 'Common/ValidateInputData.php';
+?>
+<table>
+	<tr>
+		<td nowrap="nowrap" style="color: blue" >Mô tả</td>
+		<td><?=$this->data["DESCRIPTION"]?></td>       
+		<td nowrap="nowrap" style="color: blue">Ngày hoàn thành</td>
+		<td nowrap="nowrap">
+		 <?php if($this->data["TREDATE"]>0 && $this->data["ISFINISHED"]==1){?>
+		<?=date("d/m/y H:i:s",strtotime($this->data["FINISHDATE"]))?>
+		 <?php 
+		 	$delay= $this->data["TREDATE"];
+		  echo  " <font color=blue><i>(Trễ ".(floor($delay/8)>0?floor($delay/8)." ngày ":"").($delay%8)." giờ)</i></font>";
+		 
+		 }?>
+		</td>		
+            
+
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color: blue">Ngày bắt đầu</td>
+		<td nowrap="nowrap"><?=date("d/m/y",strtotime($this->data["BEGINDATE"]))?></td>
+		<td nowrap="nowrap" style="color: blue">Ngày kết thúc</td>
+		<td nowrap="nowrap"><?=date("d/m/y",strtotime($this->data["ENDDATE"]))?></td>
+	
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color: blue">Người tạo</td>
+		<td nowrap="nowrap"><?php 
+		echo UsersModel::getEmloyeeNameByIdUser($this->data["NGUOITAO"]);
+		?></td>
+		<td nowrap="nowrap" style="color: blue">Tiến độ công việc</td>
+		<td nowrap="nowrap"><?=$this->data["STATUS"]?>%</td>	
+
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color: blue">Người xử lý chính</td>
+		<td nowrap="nowrap"><?php
+		//var_dump($this->data1);
+		foreach($this->data1 as $data1){
+			if($data1["ISMAIN"] == 1){
+				echo	UsersModel::getEmloyeeNameByIdUser($data1["ID_U"]).",";
+			}
+			/*if($data1["ISMAIN"]==1){
+			 $year = QLVBDHCommon::getYear();
+			 $data2 = Qlgv_workModel::getismain($year,$data1["ID_WORK"]);
+			 echo	UsersModel::getEmloyeeNameByIdUser($data2["ID_U"]).",";
+			 }*/
+		}
+		?></td>
+		
+		<td nowrap="nowrap" style="color: blue">Người nhận</td>
+		<td nowrap="nowrap"><?php
+		//$user = Zend_Registry::get('auth')->getIdentity();
+		//if(Qlgv_workModel::isUserReceive($row["ID_WORK"],$user->ID_U) == 0)
+		foreach($this->data1 as $data1){?> <?=Qlgv_workModel::isUserReceive($this->data["ID_WORK"],$data1["ID_U"])==1?"<font color='red'>":""?>
+		<?=UsersModel::getEmloyeeNameByIdUser($data1["ID_U"]).","?> <?=Qlgv_workModel::isUserReceive($this->data["ID_WORK"],$data1["ID_U"])==1?"</font>":""?>
+
+		<?php
+		}
+		?></td>		
+
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color: blue">Người giao việc</td>
+		<td nowrap="nowrap" colspan=3>
+			<?php if($this->data['NGUOIGIAO'] != "") { ?>
+				<?=Qlgv_workModel::getNguoiGiaoViec($this->data['NGUOIGIAO']); ?>
+			<?php } ?>
+		</td>
+	</tr>
+	<tr>
+	  <td nowrap="nowrap" style="color: blue"> File đính kèm </td>
+	   <td nowrap="nowrap" valign="top" colspan=3>
+			<?php
+			   $file= Qlgv_workModel::getfile($this->data["ID_WORK"]);
+			   // var_dump($file);
+			   
+				foreach($file as $fileitem){
+					echo "<a href='/hscv/File/download?year=&maso=".$fileitem['MASO']."'>".$fileitem['FILENAME']."</a>, ";
+				}
+			?>
+		</td>             
+	</tr>
+</table>

@@ -1,0 +1,133 @@
+<?php
+require_once 'giamsatgiaoviec/models/BaoCaoModel.php';
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel=Stylesheet href=stylesheet.css>
+</head>
+<body style="background-color:transparent">
+<table class="adminlist" width="100%">
+    <thead>
+        <tr>
+            <th nowrap="">STT</th>            
+            <th >Tên công việc</th>
+            <th >Văn bản đến/Căn cứ</th>
+            <th nowrap="">Ngày đến/giao</th>
+            <th >Thủ tục nội bộ</th>
+            <th >Phòng thực hiện</th>
+            <th >Người thực hiện</th>
+            <th >Phòng phối hợp</th>
+            <th nowrap="">Tiến độ</th>
+            <th >Ngày cập nhật/Hoàn thành</th>
+            <th >Mô tả tiến độ (2 dòng mô tả tiến độ mới nhất)</th>
+            <th >Thời hạn</th>
+            <th >Tình hình xử lý</th>
+            <th >Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>        
+        <?php
+        $fromdateQuery=$this->params['fromdate'].'/'.$this->year;
+        $todateQuery=$this->params['todate'].'/'.$this->year;
+        $baoCaoModel =new BaoCaoModel();
+        if(isset($this->params['ID_U']) && is_array($this->params['ID_U'])){
+
+            if($this->params['ID_U'][0]=='1'){    
+                $this->params['ID_U']= $baoCaoModel->getAllUserByDep($this->params['sel_pb']);
+            }
+            if(in_array(0,$this->params['sel_nhomcv'])){
+                $ncvArr = array();
+                foreach ($this->dataloaicongviec as $itemlcv){
+                    array_push($ncvArr, $itemlcv['CODE']);
+                }
+                $this->params['sel_nhomcv'] =$ncvArr;
+            }
+            $dataReport = $baoCaoModel->baoCaoChiTietDonVi($this->params['sel_nhomcv'],$this->params['ID_U'],$this->params['sel_tinhhinh'],$this->params['sel_trangthai'],$fromdateQuery,$todateQuery);
+            $stt =0;            
+            foreach($this->params['sel_nhomcv'] as $itemnhom){
+                $check =false;
+                foreach($dataReport as $itemReport){ 
+                    if($itemnhom == $itemReport['LOAICV_GIAOVIEC']){
+                        $stt++;
+                        if($check!=true){
+                            ?>
+                            <tr>
+                                <td nowrap="" colspan="14"><?= $itemReport['LOAICVNAME_GIAOVIEC'] ?></td>
+                            </tr>
+                            <?php
+                            $check =true;
+                        }
+                        ?>
+                        <tr>
+                            <td nowrap=""><?=$stt ?></td> 
+                            <td ><?=$itemReport['NHIEMVU'] ?></td>
+                            <td ><?=$itemReport['SOKYHIEU'].'-'.$itemReport['TRICHYEU'] ?></td>
+                            <td nowrap=""><?=$itemReport['NGAYDEN'] ?></td>
+                            <td ></td>
+                            <td ><?php
+                                $nguoixuly = json_decode($itemReport['ID_U_XULYGIAOVIEC']);
+                                foreach($nguoixuly as $itemNguoiXuLy){
+                                    echo $baoCaoModel->getDepOfNguoiXuLy($itemNguoiXuLy).'</br>';
+                                }
+                                ?></td>
+                            <td ><?php
+                                foreach($nguoixuly as $itemNguoiXuLy){
+                                    echo UsersModel::getEmloyeeNameByIdUser($itemNguoiXuLy).'</br>';
+                                }
+                            ?></td>
+                            <td ><?php
+                                $nguoiphoihop = json_decode($itemReport['ID_U_PHOIHOPGIAOVIEC']);
+                                foreach($nguoiphoihop as $itemNguoiPhoiHop){
+                                    echo $baoCaoModel->getDepOfNguoiXuLy($itemNguoiPhoiHop).'</br>';
+                                }
+                            ?></td>
+                            <?php
+                            $dataTienDo = $baoCaoModel->getMoTaTienDo($itemReport['ID_HSCV']);
+                            ?>
+                            <td nowrap=""><?=$itemReport['TIENDO_GIAOVIEC']?></td>
+                            <td ><?=$dataTienDo[0]['NGAYCAPNHAT']?></td>
+                            <td ><?php
+                            foreach($dataTienDo as $itemdataTienDo){
+                                echo $itemdataTienDo['TIENDO'].'-'.$itemdataTienDo['MOTA'].'</br>';
+                            }
+                            ?></td>
+                            <td ></td>
+                            <td ><?=$itemReport['TIENDO_GIAOVIEC'] >=100?"Đã hoàn thành":'Đang xử lý'?></td>
+                            <td >
+                                <?php
+                                
+                                ?>
+                            </td>
+                        </tr> 
+                        <?php
+                    }
+                }
+            }
+        } 
+        ?>
+    </tbody>
+</table>
+<p id="lasttext"></p>
+<script>
+    function resize() {
+        try {
+            var iframeElement = window.parent.document.getElementById('reportview');
+            iframeElement.style.height = "" + (document.getElementById("lasttext").offsetTop) + "px";
+            iframeElement.width = "100%";
+            setTimeout("resize()", 1000);
+        } catch (ex) {
+        }
+    }
+    resize();
+</script>
+</body>

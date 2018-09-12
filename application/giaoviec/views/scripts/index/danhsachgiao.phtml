@@ -1,0 +1,102 @@
+<form name=frm method=post action='/giaoviec/index/danhsachgiao' onsubmit="document.frm.page.value = 1;document.frm.action = '/giaoviec/index/danhsachgiao';return true;">
+<table class="adminlist">
+    <thead>
+         <tr>
+			<th colspan="11">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/giaoviec/index/danhsachgiao';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="30" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="30" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+	</tr>
+        <tr>
+            <th width="2%">STT</th>
+            <th nowrap>Tên nhiệm vụ</th>
+            <th nowrap>Số ký hiệu VBD</th>
+            <th nowrap>Nội dung</th>
+            <th nowrap>Người nhận</th>
+            <th nowrap>Ngày giao</th>
+            <th width="8%">Trạng thái</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <?php
+        $stt = 1;
+	    $i=0;
+        foreach ($this->data as $item) {
+            ?>
+           <tr>
+                    <td valign="top"><?= $stt ?></td>
+                    <td valign="top"><?= $item['TENCONGVIEC'] ?></td>
+                    <td valign="top"><?= $item['SOKYHIEU_VBD'] ?></td>
+                    <td valign="top"><?= $item['NOIDUNG'] ?></td>
+                    <td valign="top"><?= UsersModel::getEmloyeeNameByIdUser($item['ID_NGUOINHAN']) ?></td>
+                    <td valign="top"><?= $item['NGAYGIAO'] ?></td>
+                    <td valign="top"><?php switch ($item['TRANGTHAI']) {
+                                            case 1:
+                                                echo "Đang xử lý";
+                                                break;
+                                            case 2:
+                                                echo "Hoàn thành";
+                                                break;
+                                            default:
+                                                echo "Chưa cập nhật";
+                                        } ?></td>
+           </tr>
+            <?php
+            $stt++;
+        }
+        ?>
+
+    </tbody>
+    <tfoot>
+		<tr>
+			<th colspan="11">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/giaoviec/index/danhsachgiao';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="30" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="30" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>

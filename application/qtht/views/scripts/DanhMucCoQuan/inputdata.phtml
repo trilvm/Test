@@ -1,0 +1,132 @@
+<?php require_once 'qtht/models/capcoquanModel.php'; ?>
+<form name="datacdform"  action="/qtht/DanhMucCoQuan/save" method="post">
+<div style="float: right;">
+            Trường có dấu <font color="red">*</font> là bắt buộc nhập
+</div>
+<div class="required clearfix">
+	<label id="lblTextIput">Ký hiệu</label>
+	<input type="text" name="kyhieu" size=50 maxlength="128" value="<?php echo htmlspecialchars($this->kyhieu);?>">
+	<span class="box_erro_area" id="ERRkyhieu">		
+	</span>
+</div>
+<div class="required clearfix">
+	<label id="lblTextIput">Tên Cơ Quan<font color="red">*</font></label>
+	<input type="text" name="name" size=50 maxlength="128" value="<?php echo htmlspecialchars($this->namebefore);?>">
+	<span class="box_erro_area" id="ERRname">		
+	</span>
+</div>
+<div class="required clearfix">
+	<label id="lblTextIput">Email</label>
+	<input type="text" name="email" maxlength="50" value="<?php echo htmlspecialchars($this->emailbefore);?>">
+	<span class="box_erro_area" id="ERRemail">		
+	</span>
+</div>
+<div class="required clearfix">
+	<label id="lblTextIput">Mã cơ quan</label>
+	<input type="text" name="code" maxlength="20" value="<?php echo htmlspecialchars($this->codebefore);?>">
+	<span class="box_erro_area" id="ERRcode">		
+	</span>
+</div>
+<div class="required clearfix">
+	<label id="lblTextIput">Cơ quan cha</label>
+	<select name="choiceCQCha" >
+	<option value="1">Không có cơ quan cha</option>
+	<?php 
+		//in ra cac gia tri cua combobox
+		$count = count($this->data);
+		
+		for($i = 0 ; $i<$count  ;$i++){
+			if($this->data[$i]["ID_CQ"] != $this->id && $this->data[$i]["ID_CQ_PARENT"] != $this->id)
+			echo '<option value='.$this->data[$i]["ID_CQ"].'>'.htmlspecialchars(str_repeat("--",$this->data[$i]["LEVEL"]-1).$this->data[$i]["NAME"]). '</option>';
+		}
+
+	?>   		
+	</select>
+	<script>
+		document.datacdform.choiceCQCha.value ="<?=$this->ID_CQ_PARENT?>";
+		
+	</script>
+	<span class="box_erro_area" >		
+	</span>
+</div>
+<div class="required clearfix">
+	<label id="lblTextIput">Cấp cơ quan</label>
+	<select name="choiceCapCQ" >
+	<?php 
+		echo capcoquanModel::toComboName(array($this->cap => 'selected'));
+	?>   	
+
+	</select>
+	<span class="box_erro_area" id="ERRname">		
+	</span>
+</div>
+<div class="required clearfix">
+	<label id="lblTextIput">Nội bộ</label>
+	<?php
+		if($this->isnoibo == 1){
+			echo '<input type="checkbox" value=1 name="phamvi" checked=checked>';
+		}
+		else {
+			echo '<input type="checkbox" value=1 name="phamvi">';
+		}
+	?>
+</div>
+
+<input type=hidden name="idCoQuan" value=<?php echo $this->id?> >
+<input type=hidden name="idChucDanh" value=<?php echo $this->id?> >
+<input type=hidden name="limit" value=<?php echo $this->limit?> >
+<input type=hidden name="filter_object" value=<?php echo $this->filter_object?> >
+<input type=hidden name="search" value=<?php echo $this->search?> >
+<input type=hidden name="page" value=<?php echo $this->page?> >
+</form>
+
+
+<script>
+function checkFormData(){
+	var str = "Bạn phải nhập tên cơ quan";
+	var strerr = validateInput("required",document.datacdform.name,str);
+	if(!strerr){
+		document.datacdform.name.focus();
+		return false;
+	}
+	str="Tên cơ quan không được quá 128 ký tự";
+	strerr = validateInput("maxlen=128",document.datacdform.name,str);
+	if(!strerr){
+		
+		document.datacdform.name.focus();
+		return false;
+	}
+	
+	str="Email sai định dạng";
+	strerr = validateInput("email",document.datacdform.email,str);
+	if(!strerr){
+		document.datacdform.email.focus();
+		return false;
+	}
+	
+	str="Bạn phải nhập mã cơ quan";
+	var strerr = validateInput("required",document.datacdform.code,str);
+	if(!strerr){
+		document.datacdform.code.focus();
+		return false;
+	}
+	str="Mã cơ quan là một chuỗi nhỏ hơn 10 ký tự";
+	strerr = validateInput("maxlen=20",document.datacdform.code,str);
+	if(!strerr){
+		document.datacdform.code.focus();
+		return false;
+	}
+	return true;
+}
+
+function SaveButtonClick(){
+	
+	
+	if(checkFormData())
+		document.datacdform.submit();
+}
+function BackButtonClick(){
+	document.datacdform.action = '/qtht/danhmuccoquan/index';
+	document.datacdform.submit();
+}
+</script>

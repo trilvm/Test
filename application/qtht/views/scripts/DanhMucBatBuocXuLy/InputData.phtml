@@ -1,0 +1,69 @@
+<form id="containerID" action="/qtht/DanhMucBatBuocXuLy/save" method="post" enctype="multipart/form-data" name="datacdform" >
+<fieldset>
+	<div style="float: right;">
+             Trường có dấu <font color="red">*</font> là bắt buộc nhập
+	</div>
+     
+	<div class="required clearfix">
+		<label>Từ khóa<font color="red">*</font></label>
+        <input type="text" name="name" maxlength="128" value="<?php echo htmlspecialchars($this->namebefore);?>" class="inputText" size="10" >
+    	<span class="box_erro_area" id="ERRname"></span>
+	</div>
+        <div class="required clearfix">
+        <label>Loại</label>                       
+		
+			<select id="LIKE_TYPE" name="LIKE_TYPE" >
+				<option value="-1">-- Chọn loại --</option>
+						<option value="1"<?php if($this->loaibefore ==1): ?> selected="selected"<?php endif; ?>>Trích yếu</option>
+						<option value="2"<?php if($this->loaibefore ==2): ?> selected="selected"<?php endif; ?>>Số KH</option>
+			</select>
+	</div>
+	
+	<div class="required clearfix">
+		<label>Đã được sử dụng</label>
+        <?php
+            if($this->activeselect == 1){
+                echo '<input type="checkbox" value=1 class="inputCheckbox" name="active" checked=checked>';
+            }
+            else {
+                echo '<input type="checkbox" value=1 class="inputCheckbox" name="active">';
+            }
+        ?>
+	</div>
+</fieldset>
+<input type=hidden name="InputIDDMBB" value=<?php echo $this->id?> >
+<input type=hidden name="limit" value=<?php echo $this->limit?> >
+<input type=hidden name="filter_object" value=<?php echo $this->filter_object?> >
+<input type=hidden name="search" value=<?php echo $this->search?> >
+<input type=hidden name="page" value=<?php echo $this->page?> >
+</form>
+<script>
+function checkFormData(){
+	var str = "Bạn phải từ khóa";
+	var strerr = validateInput("required",document.datacdform.name,str);
+	if(!strerr){
+		document.datacdform.name.focus();
+		return false;
+	}
+	str="Từ khóa 128 ký tự";
+	strerr = validateInput("maxlen=128",document.datacdform.name,str);
+	if(!strerr){		
+		document.datacdform.name.focus();
+		return false;
+	}	  
+		document.datacdform.submit();
+
+}
+
+
+
+function SaveButtonClick(){
+    checkFormData();
+}
+
+function BackButtonClick(){
+	document.datacdform.action = '/qtht/DanhMucBatBuocXuLy/index';
+	document.datacdform.submit();
+}
+
+</script>

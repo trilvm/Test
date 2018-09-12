@@ -1,0 +1,651 @@
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_actb.js"></script>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_common.js"></script>
+<script language="javascript" type="text/javascript" src="/js/common.js"></script>
+<script>
+var customarray = new Array();
+<?php 
+	foreach($this->usernamedata as $addr_item){
+		echo "customarray.push('".$addr_item["USERNAME"] ."');" ;
+	}
+?>
+
+
+var custom2 = new Array('something','randomly','different');
+</script>
+<form name="frmTraodoi" action="/traodoi/traodoi/" method="POST">
+<table cellpadding="0" cellspacing="0" class="adminlist" style="" >
+	<tr>
+		<td width="15%" valign="top">			
+			<div class="urbangreymenu">
+				<div class="headerbar">Thư mục tin</div>
+					<ul>
+						<li><a style="<?php echo ("inbox"==$this->class && $this->filter_object==0?"background:#d6f3fc;":"background:#fff;") ?><?=($this->cntsubinbox>0? " font-weight:bold":"")?>" href="#" onclick="document.frmTraodoi.filter_object.value='';viewInbox(); return false;"><span <?php echo ($this->unread>0?"style='border-bottom-width:1px; font-weight: bold; '":"") ?>>
+						<img style="padding-right:5px;" id=inboximage
+						src = "/images/j_arrow.png" onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('inboxlist').style.display==''){
+							document.getElementById('inboxlist').style.display='none';
+							document.getElementById('inboximage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('inboxlist').style.display='';
+							document.getElementById('inboximage').src='/images/j_arrow_down.png';
+						}
+						return false;
+						"> Tin đến <?php echo ($this->unread>0?" (".$this->unread.")":"") ?></span></a>
+							<ul id="inboxlist" style="display:none">
+								<?php
+									foreach($this->chudedatainbox as $itemchude){
+										//if($itemchude["C"]>0){
+								?>
+								<li style="background:#fff">
+									<a 
+									style="padding-left:30px;<?php echo ("inbox"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='inbox';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span><?=$itemchude["ten_chude"].($itemchude["C"]>0?" (".$itemchude["C"].")":"")?></span>
+									</a>
+								</li>
+								<?php
+										//}
+									}
+								?>
+							</ul>
+						</li>
+						<li><a style="<?php echo ("sentitems"==$this->class && $this->filter_object==0?"background:#d6f3fc":"background:#fff") ?>" href="#"  onclick="document.frmTraodoi.filter_object.value='';viewSentItems(); return false;"><span><img style="padding-right:5px;"  id=sentitemsimage src = "/images/j_arrow.png"
+						onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('sentitemslist').style.display==''){
+							document.getElementById('sentitemslist').style.display='none';
+							document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('sentitemslist').style.display='';
+							document.getElementById('sentitemsimage').src='/images/j_arrow_down.png';
+						}
+						"> Tin đã gửi</span></a>
+							<ul id=sentitemslist style="display:none">
+								<?php
+									foreach($this->chudedatasent as $itemchude){
+										//if($itemchude["C"]>0){
+								?>
+								<li style="background:#fff">
+									<a style="padding-left:30px;<?php echo ("sentitems"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='sentitems';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span <?php echo ("sentitems"==$this->class && $itemchude["id_chude"]==$this->filter_object?"style='border-bottom-width:1px; '":"") ?>><?=$itemchude["ten_chude"].""?></span>
+									</a>
+								</li>
+								<?php
+										//}
+									}
+								?>
+							</ul>
+						</li>
+						<li><a style="<?php echo ("draft"==$this->class && $this->filter_object==0?"background:#d6f3fc":"background:#fff") ?>" href="#"  onclick="document.frmTraodoi.filter_object.value='';viewDraft(); return false;"><span><img style="padding-right:5px;display:none"  id=draftimage src = "/images/j_arrow.png"
+						onclick="
+						if(event==null) event =  window.event;
+						event.cancelBubble = true;
+						if(document.getElementById('draftlist').style.display==''){
+							document.getElementById('draftlist').style.display='none';
+							document.getElementById('draftimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('draftlist').style.display='';
+							document.getElementById('draftimage').src='/images/j_arrow_down.png';
+						}
+						"> Tin nháp</span> <?=$this->drafts>0?"(".$this->drafts.")":""?></a>
+							<ul id=draftlist style="display:none">
+								<?php
+									foreach($this->chudedatadraft as $itemchude){
+										if(false){
+								?>
+								<li style="background:#fff">
+									<a style="padding-left:30px;<?php echo ("draft"==$this->class && $itemchude["id_chude"]==$this->filter_object?"background:#d6f3fc":"background:#fff") ?>" href="#" onclick="document.frmTraodoi.view.value='draft';document.frmTraodoi.filter_object.value='<?=$itemchude["id_chude"]?>'; document.frmTraodoi.submit();return false;">
+									<span <?php echo ("draft"==$this->class && $itemchude["id_chude"]==$this->filter_object?"style='border-bottom-width:1px; font-weight: bold; '":"") ?>><?=$itemchude["ten_chude"]." (".$itemchude["C"].")"?></span>
+									</a>
+								</li>
+								<?php
+										}
+									}
+								?>
+							</ul>
+						</li>
+					</ul>
+					<script>
+					document.getElementById('inboxlist').style.display='none';
+					document.getElementById('inboximage').src='/images/j_arrow.png';
+					document.getElementById('sentitemslist').style.display='none';
+					document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+					document.getElementById('draftlist').style.display='none';
+					document.getElementById('draftimage').src='/images/j_arrow.png';
+				<?php
+					if($this->filter_object>0){
+						switch($this->class){
+							case "inbox":
+				?>
+						if(document.getElementById('inboxlist').style.display==''){
+							document.getElementById('inboxlist').style.display='none';
+							document.getElementById('inboximage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('inboxlist').style.display='';
+							document.getElementById('inboximage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+							case "sentitems":
+				?>
+						if(document.getElementById('sentitemslist').style.display==''){
+							document.getElementById('sentitemslist').style.display='none';
+							document.getElementById('sentitemsimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('sentitemslist').style.display='';
+							document.getElementById('sentitemsimage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+							case "draft":
+				?>
+						if(document.getElementById('draftlist').style.display==''){
+							document.getElementById('draftlist').style.display='none';
+							document.getElementById('draftimage').src='/images/j_arrow.png';
+						}else{
+							document.getElementById('draftlist').style.display='';
+							document.getElementById('draftimage').src='/images/j_arrow_down.png';
+						}
+				<?php
+								break;
+						}
+					}else{
+						if($this->class=='inbox'){
+				?>
+					
+					document.getElementById('inboxlist').style.display='';
+					document.getElementById('inboximage').src='/images/j_arrow_down.png';
+				<?php
+						}
+					}
+				?>
+				</script>
+			</div>	
+		</td>
+		<td width="85%" valign=top>
+				<div class="traodoi_search_tb">
+					<div style="float:left;margin-left:10px;">
+						<input  accesskey="9" type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" name="send" value="Gửi" title="Gửi tin" onclick="Send();this.disabled = true;">
+						<input  type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" name="savedraft" value="Lưu nháp" onclick="SaveDraft()">
+						<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" accesskey="0" name="cancel" value="Hủy bỏ" title="Hủy bỏ" onclick="Cancel()">
+					
+					</div>		
+					<div style="float:right;margin-right:10px;">
+					</div>						
+				</div>		   
+		 		<table width="100%" cellpadding="0" cellspacing="0" border="0">						
+						<tr>
+							<td colspan="2">
+								 <?php
+								    global $auth;		
+		                            $user = $auth->getIdentity();
+		                            $actidsms = ResourceUserModel::getActionByUrl("qtht","danhmucnguoidung","sms");
+									$actidemail = ResourceUserModel::getActionByUrl("qtht","danhmucnguoidung","email");
+									if(ResourceUserModel::isAcionAlowed($user->USERNAME,$actidemail[0])||ResourceUserModel::isAcionAlowed($user->USERNAME,$actidsms[0])){
+	                             ?>
+		                         <div class="required">
+	                             <?php 
+		                       }else{
+	                             ?>
+		                           <div style="display:none">
+	                              <?php
+	                             	} 
+	                              ?>								
+									<label class="input" id="lblTextIput"><font color="red"></font></label>
+									<?php if(ResourceUserModel::isAcionAlowed($user->USERNAME,$actidsms[0])){ ?>Gửi qua SMS<input type=checkbox name="IS_SMS" value=1>  <?php } ?>
+									<?php if(ResourceUserModel::isAcionAlowed($user->USERNAME,$actidemail[0])){ ?>Gửi qua EMAIL<input type=checkbox name="IS_EMAIL" value=1 >  <?php } ?>
+								</div>
+								<div class="clr"></div>
+								<div class="required">
+									<label class="input" id="lblTextIput">Chủ đề<font color="red">*</font></label>
+									<select name="filter_object" id="filter_object" class="inputbox" size="1">									
+										<option  value="0">Không có chủ đề</option>
+										<?php
+											foreach ($this->chudedata as $row )
+											{
+										?>
+										<option  value="<?php echo $row->id_chude ?>" <?php echo ($row->id_chude==$this->filter_object)?"selected":"" ?>><?php echo $row->ten_chude ?></option>
+										<?php
+											}
+										?>										
+									</select>
+								</div>	
+								<div class="clr"></div>
+								<div class="required">
+									<label class="input" id="lblTextIput">Gửi đến<font color="red">*</font></label>
+									<?php echo $this->form->getElement('nguoinhan');?>
+									<script> var obj = actb(document.getElementById('nguoinhan'),customarray);</script>
+									<br />									
+							    	<span style="padding-left:92px;" class="box_erro_area" id="ERRnguoinhan">
+								    	<a href="#" onclick="ToggleUsers()">Chọn người nhận</a>
+							        	<?php 
+											echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('nguoinhan'));
+							            ?>
+							        </span>
+								</div>	
+								<div class="clr"></div>
+								<div id="BuildUsers" style="display:none; margin-left:140px; vertical-align:top; " >
+								<?php 
+										echo QLVBDHCommon::writeSelectDepartmentMultiUserHWithGroupSelDep('DEP_NGUOIGUI','NGUOIGUI',$this->ID_DEP, 'InsertIntoArr')
+								?>
+										<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Chọn" onclick="BuildUsers()"/>
+										<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Chọn hết" onclick="BuildUsersAll()"/>
+                                    <div class="clr"></div>								
+								</div>
+								<div class="clr"></div>
+								<div class="required">
+									<label class="input" id="lblTextIput">CC:</label>
+									<?php echo $this->form->getElement('nguoinhan_cc');?>		
+									<script> var obj = actb(document.getElementById('nguoinhan_cc'),customarray);</script>
+									<br />									
+							    	<span style="padding-left:92px;" class="box_erro_area" id="ERRnguoinhan_cc">
+								    	<a href="#" onclick="ToggleUsers_cc()">Chọn người cc</a>
+							        	<?php 
+											echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('nguoinhan_cc'));
+							            ?>
+										
+							        </span>
+								</div>	
+								<div id="BuildUsers_cc" style="display:none; margin-left:140px; vertical-align:top; " >
+								<?php 
+										echo QLVBDHCommon::writeSelectDepartmentMultiUserHWithGroupSelDep('DEP_NGUOIGUI_CC','NGUOIGUI_CC',$this->ID_DEP, 'InsertIntoArrCC')
+								?>
+								
+								
+										<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Chọn" onclick="BuildUsers_cc()"/>
+										<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Chọn hết" onclick="BuildUsersAll_cc()"/>
+                                    <div class="clr"></div>								
+								</div>
+								<div class="clr"></div>							
+								<div class="required">
+									<label class="input" id="lblTextIput">Tiêu đề<font color="red">*</font></label>
+									<?php echo $this->form->getElement('tieude');?>
+							    	<span class="box_erro_area"  id="ERRtieude">
+							        	<?php 
+											echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('tieude'));
+							            ?>
+							        </span>
+								</div>	
+								<div class="clr"></div>														
+								<div class="required">
+									<label class="input" id="lblTextIput">File đính kèm</label>
+									<div id="idFileDinhKem"></div>
+									<span class="box_erro_area">
+							        </span>
+								</div>
+								<?php 
+									if(null!=$this->type)
+									{
+										$type=$this->type;
+									}
+									else if($this->idTemp>0)
+									{
+										$type=6;
+									}
+									else $type=-1;
+								?>
+								<script type="text/javascript">
+									divFileDinhKemId='idFileDinhKem';
+									url='/hscv/file/attachment?iddiv=idFileDinhKem&idObject=<?php echo ($this->idTemp>0?$this->idTemp:0) ?>&is_new=<?php echo ($this->idTemp>0?0:1)  ?>&year=<?php echo $this->year ?>&type=<?php echo $type; ?>';
+									loadDivFromUrl(divFileDinhKemId,url,0);
+								</script>
+								<?php
+									$isiPad = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPad');
+									$isiPad = $isiPad || (bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPhone');
+									if($isiPad){
+								?>
+								<div class="clr"></div>							
+								<div class="required">
+									<label class="input" id="lblTextIput">Nội dung<font color="red"></font></label>
+									<textarea name=noidung id=noidung style="width:450px;height:150px"><?=htmlspecialchars($this->noidung)?></textarea>
+							    	<span class="box_erro_area"  id="ERRnoidung">
+							        	
+							        </span>
+								</div>
+								<?php
+									}else{
+								?>
+								<div class="clr"></div>														
+								<div class="required">
+									<?php
+
+									$sBasePath = $this->dirFCK .'/fckeditor/';
+									$oFCKeditor = new FCKeditor('noidung') ;
+									
+									$oFCKeditor->BasePath = $sBasePath;
+									$oFCKeditor->Config['SkinPath'] = $sBasePath . 'editor/skins/' . htmlspecialchars('office2003') . '/' ;
+									$oFCKeditor->Value = $this->noidung;
+									$oFCKeditor->Width = 550;
+									$oFCKeditor->Height = 600;
+									$oFCKeditor->ToolbarSet = 'Default';
+									$oFCKeditor->Create();
+									
+								
+								?>				
+							    	<span class="box_erro_area">
+							        	
+							        </span>
+									
+								</div>
+								<?php
+									}		
+								?>
+							</td>
+						</tr>					
+				</table>
+				<table width="100%" cellpadding="0" cellspacing="0" border="0">
+						<tr height="50">
+							<td style="background: #f0f0f0;" colspan="2">
+								<div style="float:left;margin-left:10px;">
+									<input  accesskey="9" type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" name="send" value="Gửi" title="Gửi tin" onclick="Send();this.disabled = true;">
+						            <input  type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" name="savedraft" value="Lưu nháp" onclick="SaveDraft()">
+						            <input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" accesskey="0" name="cancel" value="Hủy bỏ" title="Hủy bỏ" onclick="Cancel()">
+								</div>								
+							</td>
+						</tr>							
+				</table>
+		</td>
+	</tr>
+</table>
+<input type="hidden" name="act" id="id_act" value="">
+<input type="hidden" name="id" id="id" value="<?php echo $this->id ?>">
+<input type="hidden" name="view" value="">
+<input type="hidden" name="thongtinlienquan" value="<?php echo $this->thongtinlienquan; ?>">
+<input type="hidden" name="fw_or_re" value="<?php echo $this->fw_or_re; ?>">
+<input type="hidden" name="page" value="">
+</form>
+<script>
+function SaveDraft()
+{
+	var err = true;
+	err = err & validateInput("req",document.frmTraodoi.nguoinhan,"Trường này phải nhập liệu");
+    err = err & err==true?validateInput("maxlen=50",document.frmTraodoi.nguoinhan,"Dữ liệu quá dài"):false;                   
+    err = err & validateInput("req",document.frmTraodoi.tieude,"Trường này phải nhập liệu");
+    err = err & err==true?validateInput("maxlen=100",document.frmTraodoi.tieude,"Dữ liệu quá dài"):false;           
+    
+    if(err==true)
+    {
+       	document.getElementById("id_act").value="draft";
+		document.frmTraodoi.action = "/traodoi/traodoi/input/";
+		document.frmTraodoi.submit();
+    }	
+	
+}
+function Send()
+{
+	document.getElementById("id_act").value="send";
+	document.frmTraodoi.action = "/traodoi/traodoi/input/";
+	document.frmTraodoi.submit();	
+}
+function Cancel()
+{
+	if(trim(document.frmTraodoi.tieude.value)!='' || trim(document.frmTraodoi.nguoinhan.value)!='')
+	{
+		if(confirm("Bạn chắc chắn muốn hủy tin này? Toàn bộ nội dung thư sẽ bị mất"))
+		{
+			document.frmTraodoi.action = "/traodoi/traodoi/";
+			document.frmTraodoi.submit();		
+		}
+	}
+	else
+	{
+		document.frmTraodoi.action = "/traodoi/traodoi/";
+		document.frmTraodoi.submit();
+	}
+	
+}
+
+function CreateNewMessage()
+{
+	document.location.href = "/traodoi/traodoi/input";
+	
+}
+function BackButtonClick()
+{
+	document.frmTraodoi.action = "/traodoi/traodoi/";
+	document.frmTraodoi.submit();
+}
+function SaveButtonClick(){
+	
+	var err = true;
+	err = err & validateInput("req",document.frmTraodoi.ten_chude,"Trường này phải nhập liệu");
+    err = err & err==true?validateInput("maxlen=50",document.frmTraodoi.ten_chude,"Dữ liệu quá dài"):false;                   
+    if(err==true)
+    {
+        document.frmTraodoi.submit();
+    }	
+}
+function viewDraft()
+{
+	document.frmTraodoi.view.value="draft";
+	document.frmTraodoi.submit();	
+}
+function viewInbox()
+{
+	document.frmTraodoi.view.value="inbox";
+	document.frmTraodoi.submit();	
+}
+function viewSentItems()
+{
+	document.frmTraodoi.view.value="sentitems";
+	document.frmTraodoi.submit();	
+}
+
+var arr_user = new Array();
+var arr_user_cc = new Array();
+var arr_user_temp = new Array();
+function BuildUsers()
+{
+	var opt = document.frmTraodoi.NGUOIGUI.options;
+	for(var i=0;i<opt.length;i++)
+	{
+		if(opt[i].selected)
+		{
+			arr_user[arr_user.length] = new Array(document.frmTraodoi.DEP_NGUOIGUI.value,opt[i].value,opt[i].text);	
+			arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+		}
+	}
+	exportToNguoiNhan();
+}
+
+function BuildUsers_cc()
+{
+	var opt = document.frmTraodoi.NGUOIGUI_CC.options;
+	for(var i=0;i<opt.length;i++)
+	{
+		if(opt[i].selected)
+		{
+			arr_user_cc[arr_user_cc.length] = new Array(document.frmTraodoi.DEP_NGUOIGUI_CC.value,opt[i].value,opt[i].text);	
+		}
+	}
+	exportToNguoiNhan_cc();
+}
+
+function BuildUsersAll()
+{
+	var opt = document.frmTraodoi.NGUOIGUI.options;
+	for(var i=0;i<opt.length;i++)
+	{
+		//if(opt[i].selected)
+		//{
+			arr_user[arr_user.length] = new Array(document.frmTraodoi.DEP_NGUOIGUI.value,opt[i].value,opt[i].text);	
+		//}
+	}
+	exportToNguoiNhan();
+}
+
+function BuildUsersAll_cc()
+{
+	var opt = document.frmTraodoi.NGUOIGUI_CC.options;
+	for(var i=0;i<opt.length;i++)
+	{
+		//if(opt[i].selected)
+		//{
+			arr_user_cc[arr_user_cc.length] = new Array(document.frmTraodoi.DEP_NGUOIGUI_CC.value,opt[i].value,opt[i].text);	
+		//}
+	}
+	exportToNguoiNhan_cc();
+}
+
+function InsertIntoArr(){
+	BuildUsers();
+}
+
+function InsertIntoArrCC(){
+	BuildUsers_cc();
+}
+
+function exportToNguoiNhan()
+{
+	var nguoinhan="";
+	for(i=0;i<arr_user.length;i++)
+	{
+		nguoinhan +=arr_user[i][1]+";";	
+	}
+	if(nguoinhan!="")
+	{
+		addNguoiNhan(nguoinhan);		
+		arr_user = new Array();
+	}	 
+}
+
+function exportToNguoiNhan_cc()
+{
+	var nguoinhan="";
+	for(i=0;i<arr_user_cc.length;i++)
+	{
+		nguoinhan +=arr_user_cc[i][1]+";";	
+	}
+	if(nguoinhan!="")
+	{
+		addNguoiNhan_cc(nguoinhan);		
+		arr_user_cc = new Array();
+	}	 
+}
+function addNguoiNhan(value)
+{
+	var Nguoinhan=document.getElementById('nguoinhan').value;
+	if(Nguoinhan.length>0)
+	{
+		if(Nguoinhan.charAt(Nguoinhan.length-1) != ';') 
+		{
+			document.getElementById('nguoinhan').value+=";";
+		}
+	}
+	var arrNguoiNhan=Split(Nguoinhan,";");
+	var arrAddNguoiNhan=Split(value,";");	
+	if(arrAddNguoiNhan.length>0)
+	{
+		for(j=0;j<arrAddNguoiNhan.length;j++)
+		{
+			m=0;			
+			if(arrAddNguoiNhan[j]!="")
+			{
+				while(m<arrNguoiNhan.length)
+				{
+					if(Trim(arrAddNguoiNhan[j])==Trim(arrNguoiNhan[m]))
+					{
+						break;		
+					}
+					else
+					{
+						m++;
+					}
+				}		
+				if(m==arrNguoiNhan.length)
+				{
+					document.getElementById('nguoinhan').value+=trim(arrAddNguoiNhan[j])+";";			
+				}				
+			}
+		}	
+	}
+}
+
+function addNguoiNhan_cc(value)
+{
+	var Nguoinhan=document.getElementById('nguoinhan_cc').value;
+	if(Nguoinhan.length>0)
+	{
+		if(Nguoinhan.charAt(Nguoinhan.length-1) != ';') 
+		{
+			document.getElementById('nguoinhan_cc').value+=";";
+		}
+	}
+	var arrNguoiNhan=Split(Nguoinhan,";");
+	var arrAddNguoiNhan=Split(value,";");	
+	if(arrAddNguoiNhan.length>0)
+	{
+		for(j=0;j<arrAddNguoiNhan.length;j++)
+		{
+			m=0;			
+			if(arrAddNguoiNhan[j]!="")
+			{
+				while(m<arrNguoiNhan.length)
+				{
+					if(Trim(arrAddNguoiNhan[j])==Trim(arrNguoiNhan[m]))
+					{
+						break;		
+					}
+					else
+					{
+						m++;
+					}
+				}		
+				if(m==arrNguoiNhan.length)
+				{
+					document.getElementById('nguoinhan_cc').value+=trim(arrAddNguoiNhan[j])+";";			
+				}				
+			}
+		}	
+	}
+}
+
+
+function moveOne(fromList, toList)
+	{
+		if ( fromList.selectedIndex > -1 )
+		{
+			var oOption = document.createElement("OPTION");
+			
+			toList.options.add(oOption);
+			oOption.innerText = fromList.options(fromList.selectedIndex).text
+			oOption.value = fromList.options.value;
+			fromList.options.remove(fromList.selectedIndex)
+		}
+		else
+			alert( "Please Select an Item to Move" );
+}
+
+function ToggleUsers()
+{
+	obj=document.getElementById("BuildUsers");
+   	visible=(obj.style.display!="none")
+  	if (visible) 
+  	{
+  		obj.style.display="none";   
+	} 
+  	else 
+  	{
+  		obj.style.display="block";
+	}
+}
+
+function ToggleUsers_cc()
+{
+	obj=document.getElementById("BuildUsers_cc");
+   	visible=(obj.style.display!="none")
+  	if (visible) 
+  	{
+  		obj.style.display="none";   
+	} 
+  	else 
+  	{
+  		obj.style.display="block";
+	}
+}
+function PressCtrlS(){
+	Send();
+}
+</script>

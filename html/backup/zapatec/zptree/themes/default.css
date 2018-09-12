@@ -1,0 +1,120 @@
+/* $Id: default.css 7630 2007-07-31 10:54:02Z andrew $ */
+.zpTreeDefaultContainer .tree,
+.zpTreeDefaultContainer .tree-item table.tree-table{
+  font: 11px tahoma,verdana,sans-serif;
+}
+
+.zpTreeDefaultContainer .tree {
+  padding-left: 20px;
+}
+
+.zpTreeDefaultContainer .tree-top {
+  padding-left: 0;
+}
+
+.zpTreeDefaultContainer .tree-item { 
+  padding-left: 17px;
+}
+
+.zpTreeDefaultContainer .tree-item-more {
+  padding-left: 1px;
+}
+
+.zpTreeDefaultContainer .tree-item td.label {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.zpTreeDefaultContainer .tree-item table.tree-table td.label{
+  padding: 0 2px;
+}
+
+.zpTreeDefaultContainer .tree-item .tgb {
+  width: 9px; 
+  height: 9px; 
+  cursor: default;
+}
+
+.zpTreeDefaultContainer .tree-item .plus {
+  background: transparent url("img/plus.gif") no-repeat 0 50%;
+  padding-right: 7px;
+}
+
+.zpTreeDefaultContainer .tree-item .minus {
+  background: transparent url("img/minus.gif") no-repeat 0 50%;
+  padding-right: 7px;
+}
+
+.zpTreeDefaultContainer .tree-item .fetching {
+  background: transparent url("img/fetching.gif") no-repeat 0 50%;
+  padding-right: 7px;
+}
+
+.zpTreeDefaultContainer .tree-item .icon {
+  cursor: pointer; 
+  cursor: hand;
+  width: 18px; 
+  height: 18px; 
+  text-align: center; 
+}
+
+.zpTreeDefaultContainer .tree-item-selected table.tree-table td.label {
+  background-color: #0A246A; 
+  color: #fff;
+}
+
+.zpTreeDefaultContainer .checkboxContainer {
+  cursor: pointer; 
+  cursor: hand;
+  width: 12px; 
+  height: 12px; 
+  text-align: center; 
+  background-repeat: no-repeat;
+  background-position: 1px 50%;
+}
+
+
+.zpTreeDefaultContainer .tree-lines-t .checkboxContainer,
+.zpTreeDefaultContainer .tree-lines-t .tgb {
+  background-position: 1px top !important;
+  vertical-align: top;
+} 
+
+.zpTreeDefaultContainer .tree-lines-b .checkboxContainer,
+.zpTreeDefaultContainer .tree-lines-b .tgb {
+  background-position: 1px bottom !important;
+  vertical-align: bottom;
+}
+
+
+.zpTreeDefaultContainer .checkboxChecked {
+	background-image: url(img/checkbox_checked.png);
+}
+
+.zpTreeDefaultContainer .checkboxUnchecked {
+	background-image: url(img/checkbox_unchecked.png);
+}
+
+.zpTreeDefaultContainer .checkboxHalfChecked {
+	background-image: url(img/checkbox_halfchecked.png);
+}
+
+.zpTreeDefaultContainer .tree-lines-c {
+  background: transparent url("img/lines-c.gif") no-repeat 1px 50% !important;
+}
+
+.zpTreeDefaultContainer .tree-lines-b {
+  background: transparent url("img/lines-b.gif") no-repeat 1px bottom !important;
+}
+
+.zpTreeDefaultContainer .tree-lines-t {
+  background: transparent url("img/lines-t.gif") no-repeat 1px top !important;
+}
+
+.zpTreeDefaultContainer .tree-lines-s {
+  background: transparent url("img/lines-s.gif") no-repeat 1px 50% !important;
+}
+
+.zpTreeDefaultContainer .tree-lined {
+  background: transparent url("img/lines-v.gif") repeat-y 1px 0 !important;
+}

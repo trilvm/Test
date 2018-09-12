@@ -1,0 +1,416 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="/styles/system.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/styles/rounded.css" />
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel="stylesheet" type="text/css" href="/styles/template.css" />
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<!-- email auto complete-->
+
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_actb.js"></script>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_common.js"></script>
+<script>
+//var customarray=new Array('an apple','alligator','elephant','pear','kingbird','kingbolt', 'kingcraft','kingcup','kingdom','kingfisher','kingpin');
+
+var customarray = new Array();
+<?php 
+	foreach($this->addr_ing as $addr_item){
+		echo "customarray.push('".'"'.$addr_item["NAME_FRIEND"] .'"'. "<".$addr_item["EMAIL_ADDR_FR"] .">');" ;
+	}
+	//echo "customarray.push(str_addr);";
+?>
+
+
+var custom2 = new Array('something','randomly','different');
+</script>
+
+<!-- email auto complete-->
+
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+
+</head>
+<body style="background-color:transparent;"
+<?php if($this->is_popup == 0){ ?>
+onclick="parent.document.getElementById('id_tooltip').style.display='none';parent.document.getElementById('id_tooltip_group').style.display='none'"
+<?php }?>
+>
+ <?php if(Mail_Quota::checkQuotaUser() == 0 && $this->is_popup == 1 ){?>
+<div><font color="red"><b><i>Dung lượng chứa thư của bạn đã hết. Để nhận hay gửi thư, hãy xóa một số thư cũ để giảm dung lượng</i></b></font></div>
+<?php }?>
+ <table width=100%>
+	<tr>
+		<td valign="top" nowrap >
+	
+		<div title="Gửi Email" style="cursor:pointer;position:relative;white-space:nowrap;width:100px;" onclick="Compose();return false;">
+		<img src="/images/email/sent_mail.gif" width="100" height="25" ></img>		
+		</div> 
+	</td>
+	
+	<td valign="top" nowrap >
+	<div title="Lưu nháp" style="cursor:pointer;position:relative;white-space:nowrap;width:100px;" onclick="SentDraft();return false;">
+	<img src="/images/email/sent_draft.gif" width="100" height="25"></img>
+	</div> 
+	</td>
+		
+		<td colspan="3">
+		<div style="margin-left:0px;">
+			
+		</div>
+		<td>
+		<td valign="top" align="right" nowrap>
+		<?php if($this->is_popup == 0){ ?>
+		<div title="Mở cửa sổ mới" style="float:left;cursor:pointer;margin:2px;	position:relative;white-space:nowrap;width:25px;" onclick="doPoppup();return false;">
+		<img src="/images/email/popup.jpg" width="25" height="21" ></img>
+		</div>
+		<?php }?>
+		</td>
+		<td valign="top" align="right" nowrap>
+		<?php if($this->is_popup == 0){ ?>
+		<div title="Đóng lại" style="float:left;cursor:pointer;margin:2px;position:relative;white-space:nowrap;width:25px;" onclick="doClose();return false;">
+		<img src="/images/email/close_view.jpg" width="25" height="21" ></img>
+		</div>
+		<?php }?>
+		</td>
+	
+	</tr>
+	<tr>
+	<td valign="top" nowrap >
+	
+	
+	</td>
+	
+	<td valign="top" nowrap >
+	</td>
+	
+	<td valign="top" nowrap>
+	</td>
+	<td width="100%"><td>
+	</tr>
+	
+	</table>
+
+<form name="frm" action="/mailclient/emailengine/sendmail"  method="post" target="AjaxFrm" 
+onclick="if(at_container){ if(at_container.style.display!='none')at_Hide(false);}" >
+
+
+<input type="hidden" name="idfolder" value="<?=$this->idfolder?>">
+<input type="hidden" name="is_draft" value="0">
+
+<div id="id_progress" style="display:none;">
+<img src='/images/loading.gif'> <font color="blue" ><b><span id="is_succcend">Đang gửi mail</span></b></font> </div>
+
+<table>
+<tr>
+	<td nowrap valign="top">
+		<b>Email gửi</b>
+	</td>
+	<?php if(count($this->data_mailacc)==0){?>
+		<td width=100%>
+			<b><i>Bạn chưa cấu hình địa chỉ mail của bạn cho hệ thống.Click <a target="_blank" href="/mailclient/emailengine/inputconfig/" >vào đây</a> để cấu hình</i></b>
+		</td>
+	<?php }else if(count($this->data_mailacc)==1){	
+	?>
+		<td><b><i><?=$this->data_mailacc[0]["EMAIL_ADDR"] ?></i></b></td>
+		<input type="hidden" name="ADDR_FROM" value="<?=htmlspecialchars($this->data_mailacc[0]["EMAIL_ADDR"])?>">
+		<input type="hidden" name="ID_EAC" value="<?=$this->data_mailacc[0]["ID_EAC"]?>">
+	<?php } else if(count($this->data_mailacc)>1){?>
+	<td width=100%>
+	<!--	
+		<?php
+		echo QLVBDHCommon::AutoComplete(
+						$this->data_mailacc,
+						"ID_EAC",
+						"EMAIL_ADDR",
+						"ID_EAC",
+						"ADDR_FROM",
+						true,
+						"width:80%",
+						"",
+						$this->ID_EAC,
+						'');
+						
+		?>
+	-->
+	<input type="hidden" name="ADDR_FROM" value="<?=htmlspecialchars($this->data_mailacc[0]["EMAIL_ADDR"])?>">
+	<select name="ID_EAC" onchange="document.frm.ADDR_FROM.value=this.options.selected.text;">  
+		<?php foreach($this->data_mailacc as $acc){?>
+		<option value="<?=$acc["ID_EAC"]?>"><?=$acc["EMAIL_ADDR"]?></option>
+		<?php }?>
+	</select>
+	</td>
+	<?php }?>
+	
+	
+</tr>
+
+<tr>
+	<td nowrap valign="top">
+		<b>Gửi đến</b>
+	</td>
+		
+	<td width=100%>
+		<textarea  name="ADDR_TO" style="width:80%;" id='ADDR_TO' ><?=htmlspecialchars($this->ADDR_TO)?></textarea> 
+		<span><a href="#" title="Chọn địa chỉ email trong sổ địa chỉ" onclick="findContact();return false;" >Sổ địa chỉ</a></span>
+		<script> var obj = actb(document.getElementById('ADDR_TO'),customarray);</script>
+	</td>
+</tr>
+
+
+
+
+<tr>
+	<td nowrap valign="top">
+		
+	</td>
+		
+	<td width=100%>
+		<span id="ospanthem_CC" style="cursor:pointer" onclick="displayCC('CC');"><font color="blue"><b><u>Thêm CC</u></b></font></span>	
+		<span id="ospanthem_BCC" style="cursor:pointer ; margin-left:10px" onclick="displayCC('BCC');"><font color="blue"><b><u>Thêm BCC</u></b></font></span>
+	</td>
+</tr>
+
+<tr id='div_CC' style="display:none" valign="top">
+	<td nowrap>
+		CC
+	</td>
+		
+	<td width=100%>
+		<textarea  name="ADDR_CC" style="width:80%;" id='ADDR_CC' ><?=htmlspecialchars($this->ADDR_CC)?></textarea> 
+		<script> var obj = actb(document.getElementById('ADDR_CC'),customarray);</script>
+		<span><a href="#" title="Chọn địa chỉ email trong sổ địa chỉ" onclick="findContact();return false;" >Sổ địa chỉ</a></span>
+	</td>
+</tr>
+
+<tr id='div_BCC' style="display:none;" >
+	<td nowrap valign=top>
+		BCC
+	</td>
+		
+	<td width=100%>
+		<textarea  name="ADDR_BCC" style="width:80%;" id='ADDR_BCC' ><?=htmlspecialchars($this->ADDR_BCC)?></textarea> 
+		<script> var obj = actb(document.getElementById('ADDR_BCC'),customarray);</script>
+		<span><a href="#" title="Chọn địa chỉ email trong sổ địa chỉ" onclick="findContact();return false;" >Sổ địa chỉ</a></span>
+	</td>
+</tr>
+
+<tr>
+	<td nowrap valign="top">
+		<b>Tiêu đề</b>
+	</td>
+		
+	<td width=100%>
+		<textarea type="text" name="SUBJECT" style="width:80%;"><?=$this->SUBJECT?> </textarea>
+	</td>
+</tr>
+
+<tr>
+	<td nowrap valign="top">
+		Đính kèm
+	</td>
+		
+	<td width=100%>
+		<div id="idFileDinhKem" style="width:80%;"></div>
+	</td>
+</tr>
+
+<tr>
+	<td nowrap valign="top">
+		<b>Nội dung</b>
+	</td>
+
+ 											 
+ 	
+
+	<td width=100%>
+				<?php
+					$sBasePath = $this->dirFCK .'/fckeditor/';
+					$oFCKeditor = new FCKeditor('NOIDUNG') ;
+					
+					$oFCKeditor->BasePath = $sBasePath;
+					$oFCKeditor->Config['SkinPath'] = $sBasePath . 'editor/skins/' . htmlspecialchars('office2003') . '/' ;
+					$oFCKeditor->Value = $this->NOIDUNG;
+					$oFCKeditor->Width = "80%";
+					$oFCKeditor->Height = 300;
+					$oFCKeditor->ToolbarSet = 'Basic';
+				
+					$oFCKeditor->Create();
+				?>
+	</td>
+</tr>
+
+</table>
+
+
+
+
+ 
+<iframe style="height:0px;width:0px;overflow-x:visible" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no id="AjaxFrm" name="AjaxFrm" >
+</iframe>
+
+<p id=lasttext> </p>
+</body>
+
+
+</html>
+
+<script>
+if(document.frm.ADDR_CC.value != "")
+		displayCC('CC');
+	if(document.frm.ADDR_BCC.value != "")
+		displayCC('BCC');
+
+function Compose(){
+	//document.frm.submit();
+	doSent(0);
+}
+
+function findContact(){
+window.open("/mailclient/emailengine/findcontact/",
+				"findContact","status=0,toolbar=0,width=700,height=500");
+}
+
+function doFillAddr(addr_to,addr_cc,addr_bcc){
+	if(document.frm.ADDR_TO.value == "")
+		document.frm.ADDR_TO.value = addr_to;
+	else
+		document.frm.ADDR_TO.value += ";" + addr_to;
+	if(document.frm.ADDR_CC.value == "")
+		document.frm.ADDR_CC.value = addr_cc;
+	else 
+		document.frm.ADDR_CC.value += ";"+addr_cc;
+	if(document.frm.ADDR_BCC.value == "")
+		document.frm.ADDR_BCC.value = addr_bcc;
+	else
+		document.frm.ADDR_BCC.value += ";" + addr_bcc;
+}
+
+
+function SentDraft(){
+	doSent(1);
+}
+
+function doSent(is_draft){
+document.frm.is_draft.value = is_draft;
+document.frm.submit();
+}
+
+
+
+function doSent1(is_draft){
+		
+		document.frm.is_draft.value = is_draft;
+		
+		var o_divpro = document.getElementById("id_progress");
+		var o_is_succcend = document.getElementById("is_succcend");
+		o_divpro.style.display = "";
+		o_is_succcend.innerHTML = "Đang gởi mail";
+		
+		//var otext = document.getElementById('input_group_name');
+		//if(otext.value == ""){
+		//	alert("Bạn phải nhập tên nhóm");
+		//}
+		//else{
+			var submitAjax = new AjaxEngine(); 
+			var oXmlHttp = submitAjax.createXMLHttp();
+			oXmlHttp.open("post", "/mailclient/emailengine/sendmail" , true); 
+			var post = submitAjax.getDataFromFrm(document.frm);
+			alert(document.frm.NOIDUNG.value);
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+			oXmlHttp.onreadystatechange = function () { 
+				if (oXmlHttp.readyState == 4) { 
+					alert(oXmlHttp.responseText);
+					if (oXmlHttp.status == 200) { 
+						if(oXmlHttp.responseText ==1 ){
+							
+							if(is_draft == 0){
+								alert("Đã gửi văn bản thành công");
+							}
+							else
+								alert("Đã lưu nháp");
+							
+							o_divpro.style.display = "none";
+							self.close();
+
+						}
+						else{
+							//alert("Bạn không thể thêm liên hệ mới");
+							if(is_draft == 0)
+								o_is_succcend.innerHTML = "Không thể gởi mail được";
+							else
+								o_is_succcend.innerHTML = "Lưu nháp không thành công";
+						}
+						
+					} else { 
+					
+					} 
+				} 
+			       }; 
+				
+			oXmlHttp.send(post);
+		//}
+	}
+
+	
+
+	function displayCC(name){
+		var odiv = document.getElementById('div_'+name);
+		var ospanthem = document.getElementById('ospanthem_'+name);
+		odiv.style.display = "";
+		ospanthem.style.display = "none";
+		resize();
+	}
+	
+
+	function doPoppup(){
+		//window.open("/mailclient/main/compose/id/<?=$this->id?>",
+				//"windowviewmail<?=$this->id?>","status=0,toolbar=1,autoscroll,width=600,height=500");
+		document.frm.action="/mailclient/main/compose?IS_POPUP=1";
+		document.frm.method="post";
+		document.frm.target="_blank";
+		document.frm.submit();
+		window.parent.document.getElementById('right_frame').src='/mailclient/main/maillist/idfolder/<?=$this->idfolder?>';
+	}
+
+	function doClose(){
+		<?php if($this->is_popup == 0){ ?>
+		
+			window.parent.document.getElementById('right_frame').src='/mailclient/main/maillist/idfolder/<?=$this->idfolder?>';
+		<?php }else{?>
+			window.close();
+		<?php }?>
+		
+	}
+
+	function CloseOnChildFrame(){
+		<?php if($this->is_popup == 0){ ?>
+		
+			window.parent.document.getElementById('right_frame').src='/mailclient/main/maillist/idfolder/<?=$this->idfolder?>';
+		<?php }else{?>
+			window.close();
+		<?php }?>
+	}
+
+
+
+/* File dinh kem*/
+<?php
+$url = "";$is_new = 1;$type = -1;
+$url ="'/hscv/file/attachment?iddiv=idFileDinhKem&idObject=0&is_new=".$is_new."&type=".$type."'" ;
+?>
+loadDivFromUrl('idFileDinhKem',<?=$url?>,0);
+<?php if($this->is_popup == 0){ ?> 
+resize();
+<?php } ?>
+function resize(){
+		var iframeElement = window.parent.document.getElementById('right_frame');
+		iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop+50)+"px";
+		iframeElement.width = "100%";
+
+}
+</script>

@@ -1,0 +1,104 @@
+<?php 
+if($this->ID_VBLTCP == 1)
+{
+global $config;
+$coQuanLienThongHienTai=$config->service->lienthong->username;
+?>
+<table class=adminlist1>
+	<thead>
+		<tr>
+			<th nowrap="nowrap">Đơn vị chuyển</th>
+			<th nowrap="nowrap">Đơn vị nhận</th>
+			<th nowrap="nowrap">Ngày chuyển</th>
+			<th nowrap="nowrap">Trạng thái</th>
+                        <th nowrap="nowrap">Người xử lý</th>
+                        <th nowrap="nowrap">Phòng xử lý</th>
+		</tr>
+	</thead>
+    <tbody>
+        <?php
+            $stt = 0;
+            $i = 0;
+            if (count(array($this->data))==0) {
+                echo '<tr><td colspan=6>Không có dòng luân chuyển</td><tr>';
+            } else {
+            foreach ($this->data as $row) { 
+                $stt++;
+            ?>
+                <tr class="row<?= $row->StatusCode == '01' ? 2 : 1 ?>">
+                    <td>
+                     <?= $row->NameGui?>
+                    </td>
+                    <td><?= $row->NameNhan?></td>
+                    <td><?= $row->Timestamp?></td>
+                    <td>
+                        <?php
+                            echo $row->Description;
+                        ?>
+                    </td>
+                    <td><?= $row->Staff?></td>
+                    <td><?= $row->Department?></td>
+                </tr>
+            <?php
+                    $i = (-1 + $i) * -1;
+                    }
+                }
+            ?>
+    </tbody>
+</table>
+<?php }else{ global $config;
+$coQuanLienThongHienTai=$config->service->lienthong->username;
+
+?>
+<table class=adminlist1>
+	<thead>
+		<tr>
+			<th nowrap="nowrap">Đơn vị chuyển</th>
+			<th nowrap="nowrap">Đơn vị nhận</th>
+			<th nowrap="nowrap">Ngày chuyển</th>
+			<th nowrap="nowrap">Trạng thái</th>
+		</tr>
+	</thead>
+    <tbody>
+        <?php
+            $stt = 0;
+            $i = 0;
+            if (count($this->data)==0) { 
+                echo '<tr><td colspan=6>Không có dòng luân chuyển</td><tr>';
+            } else {
+
+            foreach ($this->data as $row) {
+                if($coQuanLienThongHienTai==$row['DONVI_GOI'] || $coQuanLienThongHienTai==$row['DONVI_NHAN']){                
+                $stt++;
+            ?>
+                <tr class="row<?php echo $i; ?>">
+                    <td>
+					<?= str_repeat("--",$row["LEVEL"]-1). $row['DONVI_GOI_NAME']." - ".htmlspecialchars(QLVBDHCommon::MySQLDateToVnDate($row['NGAYBANHANH'])."-".($row['SOKYHIEU']))?>
+					</td>
+                    <td>
+					<?php if($row['MADVTT'] == ""|| $row['MADVTT'] == null || $row['DONVI_NHAN'] == $row['MADVTT']){
+						echo $row['DONVI_NHAN_NAME'];						
+					}else{
+						echo $row['DVTT_NAME'];
+						echo "</br>";
+						echo "(".$row['DONVI_NHAN_NAME'].")";
+					}?>
+					</td>
+                    <td><?= QLVBDHCommon::MysqlDateToVnDateWithTime($row['NGAYGOI'])?></td>
+                    <td>
+                        <?php
+                            require_once 'vbden/models/chotiepnhanModel.php';
+                            echo ChoTiepNhanModel::ShowTrangThai($row['TRANGTHAI']);
+                        ?>
+                    </td>
+                </tr>
+            <?php
+                    $i = (-1 + $i) * -1;
+                    }
+            }
+                }
+            ?>
+    </tbody>
+</table>
+    
+<?php } ?>

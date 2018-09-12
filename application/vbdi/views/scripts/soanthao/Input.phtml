@@ -1,0 +1,465 @@
+<?php  require_once 'Common/FileDinhKem.php';
+	   require_once 'qtht/models/UsersModel.php';
+	   //var_dump($this->AllNextTransitions);
+?>
+<?php 
+$url = "";
+$is_new = 0;
+$type = 0;
+if((int)$this->data["ID_HSCV"]==0){
+	$is_new = 1;
+	$type = -1;
+}else{
+	$is_new = 0;
+	$type = 1;
+}
+$url ="'/hscv/file?iddiv=idFileDinhKem&idObject=".$this->data["ID_HSCV"]."&is_new=".$is_new."&year=" . $this->year . "&type=".$type."'" ;
+?>
+
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+
+<form name=frm method="post" action="/vbdi/soanthao/Save">
+<table style="float:left" width=80%>
+	<tbody>
+		<tr>
+        <td style="color:blue"><?php echo MSG11001004 ?><font color="Red" size="3">*</font></td>
+        <td>
+            <input type=text class=inputbox name=NAME value="<?=$this->data["NAME"]?>" size=50 style="width:90%">
+        	<div class="clr"></div>
+            <span class=error id="ERRNAME"></span>
+        </td>
+      </tr>
+<!--      tuanpp Thêm mô tả-->
+	<tr>
+        <td style="color:blue">Mô tả</td>
+        <td>
+            <TEXTAREA NAME="MOTA" ROWS="3" COLS="70" style="width:90%"><?=$this->data["MOTA"]?></TEXTAREA>
+        </td>
+      </tr>
+<!--      tuanpp END Thêm mô tả-->
+<!--độ quan trọng-->
+<tr>
+	   <td style="color:blue" nowrap>Độ quan trọng</td>
+	   <td>
+		<select name="DOQUANTRONG" id="DOQUANTRONG">
+            	<option value="0" selected><?php echo 'Bình thường' ?></option>
+            	<option value="1"><?php echo 'Quan trọng' ?></option>
+            	<option value="2"><?php echo 'Rất quan trọng' ?></option>
+             </select>
+	   </td>
+	  </tr>
+<!--End độ quan trọng-->      
+	  <tr>
+	   <td style="color:blue" nowrap>Văn bản nội bộ</td>
+	   <td>
+		<input type="checkbox"  name="noibo" value="1">
+	   </td>
+	  </tr>
+		<tr>
+	   <td style="color:blue" nowrap>File đính kèm mô tả công việc</td>
+	   <td id="idFileDinhKem" style="border:1px solid #ccc"></td>
+      	<script>
+			loadDivFromUrl('idFileDinhKem',<?echo $url ?>,0);
+	   </script> 
+	  </tr>
+	  <tr><td>&nbsp;</td><td></td></tr>
+	  <?php if($this->id_hscv == 0){?>
+      <tr>
+        <td style="color:blue" nowrap><?php echo MSG11001005 ?><font color="Red" size="3">*</font></td>
+        <td nowrap>
+            
+            <select  name="DEP_NGUOIYEUCAU" id="DEP_NGUOIYEUCAU" onchange='FillComboByCombo(this,document.getElementById("NGUOIYEUCAU"),ARR_NGUOIYEUCAU);'>
+            	<option value="-1">--Mặc định--</option>
+            	<?php foreach ($this->arr_deps_se as $dep_yc){?>
+            		
+            		<option value="<?=$dep_yc['ID_DEP']?>"> <?=$dep_yc['NAME']?></option>
+            	<?php } ?>
+            </select>
+            <select  name="NGUOIYEUCAU" id="NGUOIYEUCAU" >
+           	</select>
+            <?php //var_dump($this->arr_users_se);?>
+           	<script>
+            var ARR_NGUOIYEUCAU = new Array();
+           	<?php 
+           	
+           	$i=0 ;foreach ($this->arr_users_se as $user_yc){?>
+            	ARR_NGUOIYEUCAU[<?=$i?>]= new Array('<?=$user_yc['ID_DEP']?>','<?=$user_yc['ID_U']?>','<?=$user_yc['NAME']?>');	
+            <?php $i++;} ?>
+            FillComboByCombo(this,document.getElementById("NGUOIYEUCAU"),ARR_NGUOIYEUCAU);
+            <?php if($this->id_dep_cur_user_se > -2) {?> 
+            document.frm.DEP_NGUOIYEUCAU.value = <?=$this->id_dep_cur_user_se?>;
+            document.frm.DEP_NGUOIYEUCAU.onchange();
+            document.frm.NGUOIYEUCAU.value = <?=$this->nguoitao?>;
+            <?php }else {?>
+            document.frm.DEP_NGUOIYEUCAU.onchange();
+            <?php }?>
+            </script>
+			<div class="clr"></div>
+            <span class=error id="ERRNGUOIYEUCAU"></span>
+        </td> 
+      </tr>
+	  <tr>
+        <td style="color:blue" nowrap>Người tiếp nhận<font color="Red" size="3">*</font></td>
+        <td nowrap>
+			<div class="clr"></div>
+			<?php
+				echo WFEngine::FormSend($this->wf_id_t,false,true);
+				if(count($this->AllNextTransitions)>=1){
+					$tr_banhanh = 0;
+					$tr_binhthuong = $this->wf_id_t;
+					foreach($this->AllNextTransitions as $itemwf){
+						if($itemwf["ALIAS"]=="BH"){
+							$tr_banhanh = $itemwf["ID_T"];
+							break;
+						}
+					}
+					if($tr_banhanh>0){
+			?>
+				<input name=chuyenbanhanh type=checkbox value=1 onclick="if(this.checked){
+					document.frm.wf_nexttransition.value='<?=$tr_banhanh?>';
+				}else{
+					document.frm.wf_nexttransition.value='<?=$tr_binhthuong?>';
+				}"> Chuyển ban hành
+			<?php
+					}
+				}
+			?>
+			<div class="clr"></div>
+        </td>
+      </tr>
+	  <tr id=SMSEMAIL>
+        <td style="color:blue"></td>
+        <td>
+            <span style="display:none">Nhắc nhở khi còn <input type=text name="BEFORE" value=60 size=3 onkeypress='return isNumberKey(event)' maxlength=3> 
+			
+			<SELECT NAME="MULTIPLEBEFORE">
+				<OPTION VALUE="1" SELECTED>phút
+				<OPTION VALUE="60"> giờ
+            </SELECT> bằng </span>Gửi thông báo qua 
+			<span id=SMS><INPUT TYPE="checkbox" NAME="SMS" value=1>SMS </span>
+			<span id=EMAIL><INPUT TYPE="checkbox" NAME="EMAIL" value=1>Email</span>
+        </td>
+      </tr>
+	  <tr>
+        <td style="color:blue">Ý kiến xử lý</td>
+        <td>
+            <TEXTAREA NAME="NOIDUNG" ROWS="3" COLS="70" style="width:90%"><?=$this->data["NOIDUNG"]?></TEXTAREA>    
+        </td>        
+      </tr>
+	  	  <tr>
+      	<td style="color:blue">Hạn xử lý</td>
+      	<td>
+		<?=QLVBDHCommon::calendarFull($this->ketthuc_ngay,"KETTHUC_NGAY","KETTHUC_NGAY") ?>
+		<?=QLVBDHCommon::createInputHanxuly("id_HANXULY","HANXULY",WFEngine::GetHanXuLy($this->wf_id_t))?>
+		<div class="clr"></div>
+      	<span class=error id="ERRHANXULY"></span>
+      	</td>      	
+      </tr>
+	<tr>
+		<td style="color:blue">Dự thảo</td>
+		<td id="idDuthao"><div style="border:1px solid #ccc"  id=groupcontent<?=$this->ID_HSCVDT?>></div> </td>
+	</tr>
+
+      <?php }
+      // tuanpp Cập nhật độ quan trọng
+      else { ?>
+	  <!--độ quan trọng-->
+<tr>
+	   <td style="color:blue" nowrap>Độ quan trọng</td>
+	   <td>
+		<select name="DOQUANTRONG" id="DOQUANTRONG">
+            	<option value="0" <?=$this->data["DOQUANTRONG"]=='0'?"Selected":0?>><?php echo 'Bình thường' ?></option>
+            	<option value="1" <?=$this->data["DOQUANTRONG"]=='1'?"Selected":0?>><?php echo 'Quan trọng' ?></option>
+            	<option value="2" <?=$this->data["DOQUANTRONG"]=='2'?"Selected":0?>><?php echo 'Rất quan trọng' ?></option>
+             </select>
+	   </td>
+	  </tr>
+<!--End độ quan trọng-->  
+          <?php }?>
+	   <tr style="display:none">
+        <td style="color:blue">Thư mục HSCV:</td>
+        <td>
+            <?=thumucModel::toComboboxThumucHSCV()?>    
+        </td>        
+      </tr>
+ <?php
+		if(!$this->data["ID_VBDI_CVST"]){
+		require_once('hscv/models/gen_tempModel.php');
+		//$gen_temp = new gen_tempModel();
+		//$id_hscv_temp = $gen_temp->getIdTemp();
+	?>
+	<tr><td>&nbsp;</td><td></td></tr>
+	<tr>
+		<td nowrap="nowrap" style="color:blue" valign="top">Chuyển phối hợp</td>
+	</tr>
+	<tr>
+	<td></td>
+	<td valign=top>
+		<?php echo QLVBDHCommon::writeMultiSelectDepartmentUser('DEP_NGUOIGUI','NGUOIGUI')?>
+		<input type="button" value="Chọn" onclick="InsertIntoArr()" style="margin-left:52px !important" />
+	</td>
+	</tr>
+	<tr><td></td><td><div id="listuser" style="border:1px solid #ccc;width:90%"></div></td>
+	</tr>
+	<?php }?>
+	</tbody>
+</table>
+
+
+<input type=hidden name=id_hscv_temp value="<?=$id_hscv_temp?>">
+<input type=hidden name=year value="<?php echo $this->year; ?>">
+<input type=hidden name=ID_VBDI_CVST value="<?php echo $this->data["ID_VBDI_CVST"]; ?>">
+<input type=hidden name=id_hscv value="<?php echo $this->data["ID_HSCV"]; ?>">
+<input type="hidden" name="wf_nexttransition" value="<?=$this->wf_id_t?>">
+<input type="hidden" name="id_loaihscv" value="<?=$this->id_loaihscv?>">
+</form>
+<script>
+            	
+</script> 
+        
+<script>
+    function SwapDiv(id,url){
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+		}
+	SwapDiv(<?=$this->ID_HSCVDT?>,"/hscv/VanBanDuThao/index/iddivParent/groupcontent<?=$this->ID_HSCVDT?>/idHSCV/<?=$this->ID_HSCVDT?>");
+    function SaveButtonClick(){
+        var err = true;
+        err = err & validateInput("req",document.frm.NAME,"<?php echo ERR11001003 ?>");
+       	<?php if($this->id_hscv == 0){ ?>
+        err = err & err==true?validateInput("maxlen=1024",document.frm.NAME,"<?php echo ERR11001004 ?>"):false;                
+      	err = err & validateInput("req",document.frm.HANXULY,"Phải nhập hạn xu lý");                
+        <?php }?>
+        
+        //err = err & validateInput("req",document.frm.NGAY_BD,"<?php echo ERR11001007 ?>");
+        //err = err & err==true?validateInput("date",document.frm.NGAY_BD,"<?php echo ERR11001008 ?>"):false;
+        
+        //err = err & validateInput("req",document.frm.NGAY_KT,"<?php echo ERR11001009 ?>");
+        //err = err & err==true?validateInput("date",document.frm.NGAY_KT,"<?php echo ERR11001010 ?>"):false;
+        //err = err & err==true?validateInput("gtdate="+document.frm.NGAY_BD.value,document.frm.NGAY_KT,"<?php echo ERR11001011 ?>"):false;
+        
+        if(err==true){
+            document.frm.submit();
+        }
+    }
+    function BackButtonClick(){
+        document.frm.action = "/vbdi/soanthao";
+        document.frm.submit();
+    }
+	var retvalue;
+	function UpdateRet(){
+		document.frm.SMS.checked=false;
+		document.frm.EMAIL.checked=false;
+		//alert(retvalue);
+		if(parseInt(retvalue,10) > 0){
+			//chi co sms
+    		if(parseInt(retvalue,10)==1){
+				document.getElementById("SMS").style.display='';
+				document.getElementById("EMAIL").style.display='none';
+			}
+			if(parseInt(retvalue,10)==2){
+				document.getElementById("SMS").style.display='none';
+				document.getElementById("EMAIL").style.display='';
+			}
+			if(parseInt(retvalue,10)==3){
+				document.getElementById("SMS").style.display='';
+				document.getElementById("EMAIL").style.display='';
+			}
+			document.getElementById("SMSEMAIL").style.display='';
+    	}else{
+			document.getElementById("SMSEMAIL").style.display='none';
+		}
+    }
+	function UpdateRethanxuly(){
+		document.getElementById("id_HANXULY").value=retvalue;
+                document.getElementById("real_id_HANXULY").value=retvalue;
+    }
+	function UpdateRetntthuc(){
+		document.frm.KETTHUC_NGAY.value=retvalue;
+    }
+	function ChangeDate(){         
+         getvalue("auth","user","adddatehanxuly","date="+document.frm.KETTHUC_NGAY.value+"&all="+document.frm.type_real_id_HANXULY.value,"UpdateRethanxuly");
+    }
+	function Changhan(){	   
+	 getvalue("auth","user","adddate","all="+document.frm.type_real_id_HANXULY.value+"&value="+(parseInt(document.getElementById("id_HANXULY").value,10)),"UpdateRetntthuc");
+	}
+	Changhan();
+	function CheckEmail(obj){
+		getvalue('auth','user','checksmsemail','id_u='+obj);
+	}
+	CheckEmail(document.frm.wf_nextuser.value);
+
+	/* Cac ham xu ly khung chon chuyen de biet */
+//Ham xu ly chon nhieu nguoi dung cua nguyennd
+
+
+var arr_user = new Array();
+var arr1 = new Array();
+var arr_user_temp = new Array();
+<?php
+	
+	if(count($this->data_chuyendebiet)>0)
+	{
+		$i=0;
+		foreach ($this->data_chuyendebiet as $item )
+		{
+			$i++;
+?>
+		arr_user.push(new Array("<?php echo $item['DEP_NN']?>","<?php echo $item['NGUOINHAN']?>","<?php echo $item['EMPNN']?>","<? echo $item['EMPNC']?>"
+		,"<? echo $item['ID_VBDI_DLC']?>","1"
+		));
+		arr_user_temp.push( new Array("<?php echo $item['NGUOINHAN']?>"));
+<?php
+		}
+	}
+?>
+
+
+
+ 
+arr1 = new Array();
+arr1[0] = new Array(100,'Tên');
+arr1[1] = new Array(0,'Xóa');
+
+ShowArr('listuser',arr1,arr_user);
+FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+
+<?php //}?>
+function InsertIntoArr()
+{
+	
+		var opt = document.frm.NGUOIGUI.options;
+		//alert('1');
+		for(var i=0;i<opt.length;i++){
+			if(opt[i].selected){
+				arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,opt[i].value,opt[i].text,'<?=$this->name_u?>');
+				arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+			}
+		}
+	    //arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+	    arr1[0] = new Array(100,'Tên');
+	    arr1[1] = new Array(0,'Xóa');
+	    ShowArr('listuser',arr1,arr_user,1);
+	    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	
+	/*var check = true;
+	for(i=0;i<arr_user.length;i++)
+    {
+    	if(document.frm.NGUOIGUI.value==arr_user[i][1])  
+    	{
+    	  check=false;
+    	}
+    	
+    }
+    if(check)
+    {
+    	arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+    	arr1[0] = new Array(100,'Tên');
+    }
+    ShowArr('listuser',arr1,arr_user);*/
+}
+function DeleteFromArr(value)
+{
+    for(i=0;i<arr_user.length;i++)
+    {
+    	if(arr_user[i][1]==value)
+    	delete arr_user[i][1];    	
+    	
+    }
+    ShowArr('listuser',arr1,arr_user);    
+}
+
+/**
+ * Tạo lưới từ 2 mảng
+ * 
+ * @param String idDiv id div hoặc khung chứa lưới
+ * @param int Arr1 mảng chứa tên trường và độ rộng tính theo % của trường
+ * @param int Arr2 mảng chứa dữ liệu của các trường trên
+ * @return html code
+ */
+function ShowArr(idDiv,Arr1,Arr2){
+        var html;
+		
+        if(Arr2.length == 0){
+        	//document.getElementById(idDiv).innerHTML = "";
+        	//return;
+        }
+	    html = '<table class="adminlist1">';
+	    html += '<thead>';
+	    html += '<tr>';
+	    html += '<th nowrap>#</th>';
+	    
+	    html += '<th width=100% colspan=2>Người nhận</th>'
+	    html += '</tr>';
+	    html += '</thead>';
+	    html += '<tfoot><tr><th colspan=3 align=left>';
+	    html += '</th></tr></tfoot>';
+	    html += '<tbody>';
+	    	for(i=0;i<Arr2.length;i++){
+	    		html += '<tr>';
+	    		html += '<td nowrap align="right">' + (i + 1) + '</td>';
+	    		html += '<td width=100%>';
+	    		html += Arr2[i][2];
+	    		if(Arr2[i][5] == 1)
+	    			html += "<input type=hidden name=ID_OLD[] value="+Arr2[i][4]+">";
+	    		else 
+	    			html += "<input type=hidden name=ID_U[] value="+Arr2[i][1]+">";	
+	    		
+	    		html += '</td>';
+	    		
+	    		html += '<td nowrap>';
+	    		html += '<a href="javascript:;" onclick="arr_user_temp.splice('+i+',1);arr_user.splice('+i+',1);ShowArr(\'listuser\',arr1,arr_user);FastReload();return false;">Xóa</a>';
+	    		html += '</td>';
+	    		html += '</tr>';
+	        }
+	    	html += '</tbody>';
+	    	html += '</table>';
+	    //
+		    //alert(html);
+	    document.getElementById(idDiv).innerHTML = html;
+	}
+	function FastReload(){
+	    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	}
+
+	function addChuyenDeBiet(th){
+	//th 1: nguoi ky
+	//th 2: nguoi trinh
+		
+		var user_id =0;
+		var user_name = "";
+		if(th==1){
+			//nguoi ky
+			user_id = document.frm.NGUOIKY.value;
+			user_name = document.frm.NGUOIKY_TEXT.value;
+		}
+		if(th==2){
+			//nguoi ky
+			user_id = document.frm.NGUOITAO.value;
+			user_name = document.frm.NGUOITAO_TEXT.value;
+		}
+		if(th==3){
+			//nguoi soan
+			user_id = document.frm.NGUOISOAN.value;
+			user_name = document.frm.NGUOISOAN_TEXT.value;
+		}
+		if(user_id >0){
+			var ok=true;
+			for(var i=0;i<arr_user.length;i++){
+				if(arr_user[i][1]==user_id){
+					ok = false;
+					break;
+				}
+			}
+			if(ok){
+				arr_user.push(new Array(ARR_NGUOIGUI[user_id],user_id,user_name,"","","0"));
+				arr_user_temp.push( new Array(user_id));
+				ShowArr('listuser',arr1,arr_user);
+				FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+			}
+		}
+	}
+/* Ket thuc cac ham xu ly chon de biet */
+</script>

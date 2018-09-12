@@ -1,0 +1,284 @@
+<?php 
+require_once('qtht/models/DepartmentsModel.php');
+require_once('report/models/xulycongviecModel.php');
+ $year = QLVBDHCommon::getYear();
+//loc danh sach phong ban
+$data_departs = array();
+$user = Zend_Registry::get('auth')->getIdentity();
+
+if(count($this->pbs)==0 || $this->pbs[0]==0)
+{
+	
+	if($user->DEPLEADER == 1){
+		$data_departs = DepartmentsModel::getAll();
+	}else{
+		$data_departs[0] = array();
+		$data_departs[0]["ID_DEP"] =$user->ID_DEP;
+		$data_departs[0]["NAME"] = DepartmentsModel::getNameById($user->ID_DEP);
+	}
+}else{
+	if($user->DEPLEADER == 1){
+	$data_alldeparts =DepartmentsModel::getAll();
+	}else{
+		$data_alldeparts[0] = array();
+		$data_alldeparts[0]["ID_DEP"] =$user->ID_DEP;
+		$data_alldeparts[0]["NAME"] = DepartmentsModel::getNameById($user->ID_DEP);
+	}
+	foreach ($data_alldeparts as $dp){
+	
+	for($j= 0 ; $j< count($this->pbs);$j++){
+		
+		if($dp["ID_DEP"] == $this->pbs[$j]){
+			array_push($data_departs,$dp);
+			break;
+		}			
+	}
+	
+	
+}
+
+}
+
+?>
+<?php 
+$isdisXLVBD = false;
+$isdisST = false;
+$isdisMC = false;
+foreach ($this->lcv as $itlcv){
+	
+	if($itlcv=="0"){
+		$isdisXLVBD = true;
+		$isdisST = true;
+		$isdisMC = true;
+	}else if ($itlcv=="VBD"){
+		$isdisXLVBD = true;
+	}else if ($itlcv=="VBSOANTHAO"){
+		$isdisST = true;
+	}else if ($itlcv=="MOTCUA"){
+		$isdisMC = true;
+	}
+	
+}
+
+?>
+<?php if($isdisXLVBD){?>
+<!--Xử lý văn bản đến-->
+<div style="margin-top:20px;">
+<a href="#" onclick="
+var odiv = document.getElementById('div_depart_vbden');
+var oimg = document.getElementById('xlvbd_img');
+if(odiv.style.display=='none'){
+	odiv.style.display='';
+	oimg.src = '/images/iminus.gif';
+}
+else{
+	odiv.style.display='none';
+	oimg.src = '/images/iplus.gif';
+}
+return false;"
+><img  align="absmiddle" id='xlvbd_img' src='/images/iplus.gif'>
+Xử lý văn bản đến</a>
+<div id='div_depart_vbden' style="display:none;margin-left:20px;margin-top:20px;">
+<?php
+foreach($data_departs as $item){
+?>
+
+<a href="#" onclick="
+var id_div = 'id_users_vbden_<?php echo $item["ID_DEP"]?>';
+var odiv = document.getElementById(id_div);
+var oimg = document.getElementById('xlvbd_dp_<?=$item["ID_DEP"]?>');
+var oimg_load = document.getElementById('image_load_dep_1_<?=$item["ID_DEP"]?>');
+
+if(odiv.innerHTML != ''){
+	odiv.innerHTML = '';
+	oimg.src='/images/iplus.gif';
+}else{
+	oimg_load.style.display = '';
+	var ajx = new AjaxEngine();
+	ajx.loadDivFromUrlAndHideImage('id_users_vbden_<?php echo $item["ID_DEP"]?>','/report/xulycongviec/ajaxgetuserbydepart?todate=<?php echo $this->todate?>&fromdate=<?php echo $this->fromdate?>&type=1&id_dep=<?php echo $item["ID_DEP"]; ?>'
+	,'image_load_dep_1_<?=$item["ID_DEP"]?>'
+	);
+	oimg.src='/images/iminus.gif';
+}
+return false;" > 
+<img align="absmiddle" id='xlvbd_dp_<?=$item["ID_DEP"]?>' src='/images/iplus.gif' border="0" hspace="5">
+<?php echo $item['NAME'];
+
+//$arr_re = xulycongviecModel::thongkePhongBan($year,$item["ID_DEP"],1);
+
+//var_dump($arr_re);
+//echo "<font color=red><b> văn bản đang xử lý : ".$arr_re['DANGXULY']."(Công việc chưa xử lý: ".$arr_re['CV_CHUA_XULY']." đã xử lý trễ: " .$arr_re["CV_DA_XULY_TRE"].")--- văn bản đã kết thúc: ".$arr_re['KETTHUC']." (trễ : " .$arr_re["KETTHUC_TRE"]. " ) </b></font>";
+?></a>
+<?php 
+$arr_re = xulycongviecModel::getListHscvBydep($item["ID_DEP"],1,$year,$this->fromdate,$this->todate);
+echo '
+&nbsp;<i>(<b> Chờ xử lý </b><font color="Blue">'.count($arr_re["DANGXULY"]).'</font>'.($arr_re['DANGXULY_TRE']>0? '(<font color="Red"> trễ : '.$arr_re['DANGXULY_TRE'].'</font>)' : '').' 
+					<b>Đã xử lý </b><font color="Blue">'.count($arr_re["DAXULY"]).'</font>'.($arr_re['DAXULY_TRE']>0? '( <font color="Red">trễ : '.$arr_re['DAXULY_TRE'].'</font> )' : '').' 
+					<b>Đã kết thúc </b><font color="Blue">'.count($arr_re["KETTHUC"]).'</font>' .($arr_re['KETTHUC_TRE']>0? '( <font color="Red">trễ : '.$arr_re['KETTHUC_TRE'].'</font> )' : '').'
+			)</i>';
+?>
+<!-- 
+<table width="80%" border="0.5">
+	<tbody>
+	<tr bgcolor="">
+	<td width="25%"><b>Văn bản đang xử lý</b></td>
+	<td width="25%">Tổng số:  <font color="Blue"><b><?=$arr_re['DANGXULY']?></b></font></td>
+	<td width="25%">Công việc chưa xử lý: <font color="Blue"><b><?=$arr_re['CV_CHUA_XULY']?></b></font></td>
+	<td width="25%">Công việc đã xử lý: <font color="Blue"><b> <?=$arr_re['CV_DA_XULY']?></b></font> (<font color="Red"><b> trễ : <?=$arr_re['CV_DA_XULY_TRE']?></b></font>) </td>
+	</tr>
+	<tr bgcolor="">
+	<td width="25%"><b>Văn bản đã kết thúc</b></td>
+	<td width="25%">Tổng số: <font color="Blue"><b><?=$arr_re['KETTHUC']?> </b></font> ( <font color="Red"><b>trễ : <?=$arr_re["KETTHUC_TRE"]?></b></font>) </td>
+	<td width="25%"></td>
+	<td width="25%"></td>
+	</tr>
+	</tbody>
+</table>
+&nbsp;<i>(<b>Đang xử lý:</b> <font color="Blue"> <?=$arr_re['DANGXULY']?></font>. Trong đó: 
+ Chờ xử lý: <font color="Blue"><?=$arr_re['CV_CHUA_XULY']?></font>, 
+Đã xử lý: <font color="Blue"> <?=$arr_re['CV_DA_XULY']?></font> (<font color="Red"> trễ : <?=$arr_re['CV_DA_XULY_TRE']?></font>)
+<b>. &nbsp; Đã kết thúc:</b> <font color="Blue"><?=$arr_re['KETTHUC']?> </font> ( <font color="Red">trễ: <?=$arr_re["KETTHUC_TRE"]?></font>) 
+</i>
+)
+-->
+<img id="image_load_dep_1_<?=$item["ID_DEP"]?>" src="/images/loading.gif" style="display:none;">
+<div id="id_users_vbden_<?php echo $item["ID_DEP"]?>" style="margin-left:20px;margin-top:20px;"></div>
+<br/>
+<?php 
+}
+?>
+</div>
+</div>
+<?php }?>
+<?php if($isdisST){?>
+<!--Soạn thảo văn bản-->
+<div style="margin-top:20px;">
+
+<a href="#" onclick="
+odiv = document.getElementById('div_depart_sthao');
+var oimg = document.getElementById('stvb_img');
+if(odiv.style.display=='none'){
+	odiv.style.display='';
+	oimg.src = '/images/iminus.gif';
+}
+else{
+	odiv.style.display='none';
+	oimg.src = '/images/iplus.gif';
+}
+return false;">
+<img align="absmiddle" id='stvb_img' src='/images/iplus.gif'>
+Công việc</a>
+<div id='div_depart_sthao' style="display:none;margin-left:20px;margin-top:20px;">
+<?php
+foreach($data_departs as $item){
+?>
+
+<a href="#" onclick="
+var id_div = 'id_users_stvb_<?php echo $item["ID_DEP"]?>';
+var odiv = document.getElementById(id_div);
+var oimg = document.getElementById('stvb_dp_<?=$item["ID_DEP"]?>');
+var oimg_load = document.getElementById('image_load_dep_2_<?=$item["ID_DEP"]?>');
+if(odiv.innerHTML != ''){
+	odiv.innerHTML = '';
+	oimg.src='/images/iplus.gif';
+	
+}else{
+	oimg_load.style.display ='';
+	var ajx = new AjaxEngine();
+	ajx.loadDivFromUrlAndHideImage('id_users_stvb_<?php echo $item["ID_DEP"]?>','/report/xulycongviec/ajaxgetuserbydepart?type=2&id_dep=<?php echo $item["ID_DEP"]; ?>'
+	,'image_load_dep_2_<?=$item["ID_DEP"]?>'
+	);
+	oimg.src='/images/iminus.gif';
+}
+return false;
+" > 
+<img align="absmiddle" id='stvb_dp_<?=$item["ID_DEP"]?>' src='/images/iplus.gif' border="0" hspace="5">
+<?php echo $item['NAME'];
+
+?></a>
+<?php 
+$arr_re = xulycongviecModel::getListHscvBydep($item["ID_DEP"],2,$year,$this->fromdate,$this->todate);
+echo '
+&nbsp;<i>(<b> Chờ xử lý </b><font color="Blue">'.count($arr_re["DANGXULY"]).'</font>'.($arr_re['DANGXULY_TRE']>0? ' (<font color="Red"> trễ : '.$arr_re['DANGXULY_TRE'].'</font>)' : '').' 
+					<b>Đã xử lý </b><font color="Blue">'.count($arr_re["DAXULY"]).'</font>'.($arr_re['DAXULY_TRE']>0? '( <font color="Red">trễ : '.$arr_re['DAXULY_TRE'].'</font> )' : '').' 
+					<b>Đã kết thúc </b><font color="Blue">'.count($arr_re["KETTHUC"]).'</font>' .($arr_re['KETTHUC_TRE']>0? '( <font color="Red">trễ : '.$arr_re['KETTHUC_TRE'].'</font> )' : '').'
+			)</i>';
+?>
+<img id="image_load_dep_2_<?=$item["ID_DEP"]?>" src="/images/loading.gif" style="display:none;">
+<div id="id_users_stvb_<?php echo $item["ID_DEP"]?>"  style="margin-left:20px;margin-top:20px;"></div>
+<br/>
+<?php 
+}
+?>
+</div>
+</div>
+<?php } ?>
+<?php if($isdisMC){?>
+<!--ho so mot cua-->
+<div style="margin-top:20px;margin-top:20px;">
+
+<a href="#" onclick="
+odiv = document.getElementById('div_depart_motcua');
+var oimg = document.getElementById('hsmc_img');
+if(odiv.style.display=='none'){
+	odiv.style.display='';
+	oimg.src = '/images/iminus.gif';
+}
+else{
+	odiv.style.display='none';
+	oimg.src = '/images/iplus.gif';
+}
+return false;">
+<img align="absmiddle" id='hsmc_img' src='/images/iplus.gif'>
+Hồ sơ một cửa</a>
+<div id="div_depart_motcua" style="display:none;margin-left:20px;margin-top:20px;">
+<?php
+foreach($data_departs as $item){
+?>
+
+<a href="#" onclick="
+var id_div = 'id_users_hsmc_<?php echo $item["ID_DEP"]?>';
+var odiv = document.getElementById(id_div);
+var oimg = document.getElementById('hsmc_dp_<?=$item["ID_DEP"]?>');
+var oimg_load = document.getElementById('image_load_dep_3_<?=$item["ID_DEP"]?>');
+if(odiv.innerHTML != ''){
+	odiv.innerHTML = '';
+	oimg.src = '/images/iplus.gif';
+}else{
+	oimg_load.style.display ='';
+	var ajx = new AjaxEngine();
+	ajx.loadDivFromUrlAndHideImage('id_users_hsmc_<?php echo $item["ID_DEP"]?>','/report/xulycongviec/ajaxgetuserbydepart?type=3&id_dep=<?php echo $item["ID_DEP"]; ?>'
+	,'image_load_dep_3_<?=$item["ID_DEP"]?>'
+	);
+	oimg.src = '/images/iminus.gif';
+}
+
+return false;" > 
+<img align="absmiddle" id='hsmc_dp_<?=$item["ID_DEP"]?>' src='/images/iplus.gif' border="0" hspace="5">
+<?php echo $item['NAME'];
+
+$arr_re = xulycongviecModel::thongkePhongBan($year,$item["ID_DEP"],3);
+//echo "<font color=red><b> đang xử lý : ".$arr_re['DANGXULY']." --- đã kết thúc: ".$arr_re['KETTHUC']." (trễ: " .$arr_re["KETTHUC_TRE"]. " ) </b></font>";
+?></a>
+<?php 
+$arr_re = xulycongviecModel::getListHscvBydep($item["ID_DEP"],3,$year,$this->fromdate,$this->todate);
+echo '
+&nbsp;<i>(<b> Chờ xử lý </b><font color="Blue">'.count($arr_re["DANGXULY"]).'</font>'.($arr_re['DANGXULY_TRE']>0? ' (<font color="Red"> trễ : '.$arr_re['DANGXULY_TRE'].'</font>)' : '').' 
+					<b>Đã xử lý </b><font color="Blue">'.count($arr_re["DAXULY"]).'</font>'.($arr_re['DAXULY_TRE']>0? '( <font color="Red">trễ : '.$arr_re['DAXULY_TRE'].'</font> )' : '').' 
+					<b>Đã kết thúc </b><font color="Blue">'.count($arr_re["KETTHUC"]).'</font>' .($arr_re['KETTHUC_TRE']>0? '( <font color="Red">trễ : '.$arr_re['KETTHUC_TRE'].'</font> )' : '').'
+			)</i>';
+?>
+<img id="image_load_dep_3_<?=$item["ID_DEP"]?>" src="/images/loading.gif" style="display:none;">
+<div id="id_users_hsmc_<?php echo $item["ID_DEP"]?>"  style="margin-left:20px;margin-top:20px;"></div>
+<br/>
+<?php 
+}
+?>
+</div>
+</div>
+<?php } ?>
+<script>
+function BackButtonClick(){
+	window.location = "/report/xulycongviec/index?fromdate=<?=$this->fromdate?>&todate=<?=$this->todate?>";
+}
+</script>

@@ -1,0 +1,22 @@
+/* $Id: tree-lines.css 7630 2007-07-31 10:54:02Z andrew $ */
+/* lines */
+
+.tree-lines-c {
+	background: transparent url("img/lines-c.gif") no-repeat 3px 50% !important;
+}
+
+.tree-lines-b {
+	background: transparent url("img/lines-b.gif") no-repeat 3px bottom !important;
+}
+
+.tree-lines-t {
+	background: transparent url("img/lines-t.gif") no-repeat 3px top !important;
+}
+
+.tree-lines-s {
+	background: transparent url("img/lines-s.gif") no-repeat 3px 50% !important;
+}
+
+.tree-lined {
+	background: transparent url("img/lines-v.gif") repeat-y 3px 0 !important;
+}

@@ -1,0 +1,53 @@
+<form name="frm" >
+
+<table class="adminlist">
+	<thead>
+		<tr>
+			<td></td>
+			<td>Tên hiện thị</td>
+			<td nowrap colspan=2>Địa chỉ email</td>
+			
+		</tr>
+	</thead>
+	<tbody>
+		<?php if(count($this->data) == 0){?>
+<div>Chưa có dữ liệu</div>
+<?php }else{ 
+foreach ($this->data as $row){	
+?>
+		<tr>
+			<td><input type="checkbox" name="del_config[]" value="<?=$row["ID_EAC"]?>" ></td>
+			<td><a href="/mailclient/emailengine/inputconfig/id_ea/<?=$row["ID_EAC"]?>"><?=$row["NAME_INFO"]?></a></td>
+			<td><a href="/mailclient/emailengine/inputconfig/id_ea/<?=$row["ID_EAC"]?>"><?=$row["EMAIL_ADDR"]?></a></td>
+			<td>
+				<?=$row["IS_MAIN"]==1?'<b><font color="red">Là mail chính</font></b>':'<div style="cursor:pointer">
+		<a href="/mailclient/emailengine/updatemainaccount?id_eac='.$row["ID_EAC"].'"><b><font color="blue">Chọn làm mail chính</font></b></a></div>'?>
+			</td>
+		</tr>
+<?php }}?>	
+	</tbody>
+
+</table>
+
+
+
+
+</form>
+<script>
+	
+	
+	function DeleteButtonClick(){
+		document.frm.submit();
+	}
+
+	function AddNewButtonClick(){
+		window.location = "/mailclient/emailengine/inputconfig";
+	}
+	function BackButtonClick(){
+		window.location = "/mailclient/main/index";
+	}
+
+
+	
+
+</script>

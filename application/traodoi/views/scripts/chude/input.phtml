@@ -1,0 +1,41 @@
+<form name="frmChuDe"  action="/traodoi/chude/input"   method="<?php echo $this->form->getAttrib('method');?>">
+<div style="text-align:right;width:100%">
+		Trường có dấu <font color="red">*</font> là bắt buộc nhập
+</div>
+<div class="clr"></div>
+<div align="center"><span class="box_erro_area"><?php echo $this->error; ?></span></div>
+<div class="required">
+		<label id="lblTextIput">Tên chủ đề <font color="red">*</font></label>
+		<?php echo $this->form->getElement('ten_chude');?>
+    	<span class="box_erro_area" id="ERRten_chude">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ten_chude'));			
+            ?>
+        </span>
+</div>
+<div class="clr"></div>
+<div class="optional">
+		<label id="lblTextIput">Đang dùng</label>
+		<?php echo $this->form->getElement('trangthai');?>
+        <span class="box_erro_area"></span>
+</div>
+<div class="clr"></div>
+<input type=hidden name="id" value=<?php echo $this->id;?>>
+</form>
+<script>
+function BackButtonClick()
+{
+	document.frmChuDe.action = "/traodoi/chude/";
+	document.frmChuDe.submit();
+}
+function SaveButtonClick(){
+	
+	var err = true;
+	err = err & validateInput("req",document.frmChuDe.ten_chude,"Trường này phải nhập liệu");
+    err = err & err==true?validateInput("maxlen=50",document.frmChuDe.ten_chude,"Dữ liệu quá dài"):false;                   
+    if(err==true)
+    {
+        document.frmChuDe.submit();
+    }	
+}
+</script>

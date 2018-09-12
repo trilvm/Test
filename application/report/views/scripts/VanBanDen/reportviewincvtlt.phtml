@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style>
+td{
+	border-color: black;
+}
+th{
+	border-color: black;
+}
+</style>
+
+</head>
+<body style="background-color:transparent">
+<table  width=100% >
+<tr >
+  <td align=center ><?= mb_strtoupper($this->config->sys_info->unit,"utf-8") ?></td>
+
+  <td align=center>CỘNG HÒA XÃ HỘI CHỦ
+  NGHĨA VIỆT NAM</td>
+ </tr>
+ <tr >
+  <td align=center ><b><?=mb_strtoupper($this->config->sys_info->company,"utf-8") ?></b></td>
+  <td align=center >Ðộc lập - Tự do - Hạnh phúc</td>
+ </tr>
+ <tr >
+
+ 
+  <td ></td>
+  <td align=right><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+ </tr>
+
+ 
+</table>
+<p align=center><b>BÁO CÁO VĂN BẢN ĐẾN </b> </br>
+
+<?php echo $this->thu;?> năm <?=QLVBDHCommon::getYear()?></p>
+
+<table border="1" style="border: 1px solid black; border-collapse: collapse;">
+ <thead>
+ 	<tr>
+		<?php if(count($this->ngayden) >0) {?>
+		<th nowrap rowspan=2>Ngày đến</th>
+		<?php } ?>
+		<?php if(count($this->soden) >0) {?>
+ 		<th nowrap rowspan=2>Số đến</th>
+		<?php } ?>
+		 <?php if(count($this->coquanbh) >0) {?>
+ 		<th  rowspan=2>Cơ quan ban hành</th>
+        <?php } ?>
+ 		<th nowrap colspan=2 style="text-align:center">Văn bản đến</th>
+		<?php if(count($this->trichyeund) >0) {?>
+ 		<th  rowspan=2 >Trích yếu nội dung</th>
+		<?php } ?>
+		<!--<th nowrap rowspan=2>Số lượng</th> -->	
+		<?php if(count($this->chuyenchoai) >0) {?>
+		<th  rowspan=2>Đơn vị hoặc người nhận</th>
+		<?php } ?>
+		<?php if(count($this->ketqua) >0) {?>
+		<th  rowspan=2>Ký nhận</th>
+		<?php } ?>
+		<th  rowspan=2>Ghi chú</th>
+ 	</tr>
+ 	<tr>
+ 		<th nowrap>Số ký hiệu</th>
+ 		<th nowrap>Ngày</th>
+ 		
+ 	</tr>
+ </thead>
+ <tbody>
+<?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'qtht/models/CoquanModel.php'; 
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'qtht/models/UsersModel.php';
+?>
+<?php $nguoixuly ; $phongban; $stt=1; 
+$num = count($this->data); $ten= VanbandenreportModel::getNguoiXuly();
+
+foreach($this->data as $row){ 
+ 
+ ?>
+	
+	<tr>   
+	<?php if(count($this->ngayden) >0) {?>
+ 	<td  valign=top width="10%" ><?php echo QLVBDHCommon::MysqlDateToVnDate($row["NGAYDEN"]) ?></td>
+	<?php } ?>
+	<?php if(count($this->soden) >0) {?>
+ 	<td  valign=top ><?=$row["SODEN"]?></td>
+	<?php } ?>
+	<?php if(count($this->coquanbh) >0) {?>
+	<td  width="15%" valign=top ><?=$row["COQUANBANHANH_TEXT"]?> <?php //echo CoquanModel::getNameById($row["ID_CQ"]) ?></td>
+	<?php } ?>
+ 	<td  align=center  valign=top ><?php echo $row["SOKYHIEU"] ?></td>
+ 	<td  valign=top ><?php echo QLVBDHCommon::MysqlDateToVnDate($row["NGAYBANHANH"]) ?></td>
+	<?php if(count($this->trichyeund) >0) {?>
+	<td  valign=top width=30% ><?php echo $row["TRICHYEU"] ?></td>
+ 	<?php } ?>
+	<!--<td nowrap valign=top rowspan=<?php echo $d ?>><?php echo LoaiVanBanModel::getNameById($row["ID_LVB"]) ?></td>
+ 	<td nowrap valign=top rowspan=<?php echo $d ?>><?php echo UsersModel::getEmloyeeNameByIdUser($row["NGUOITAO"]) ?></td>-->
+
+ 	<!-- <td nowrap ><i><?php echo $row["SOBAN"] ?></i></td> -->	
+	<?php if(count($this->chuyenchoai) >0) {?>
+ 	<td width="20%">
+ 	<i><?php 
+ 	if($row["IS_KHONGXULY"] == 1)
+ 		echo "Văn bản không xử lý";
+ 	else{ 	     
+	      $idhscvs = VanbandenreportModel::getHscvsByIdVbd($row["ID_VBD"]);
+
+		foreach($idhscvs as $id_hs)
+			{
+		          if(VanbandenreportModel::getNguoiXulyFromVban2($id_hs["ID_HSCV"]))
+			      echo VanbandenreportModel::getNguoiXulyFromVban2($id_hs["ID_HSCV"]);
+			}
+	} 
+		 ?>
+ 		
+ 	</i></td>
+	<?php } ?>
+ 	 <?php if(count($this->ketqua) >0) {?>	
+	<td  valign=top width="15%">	
+	</td>
+	<?php } ?>
+	<td></td>
+	</tr>
+ 
+
+<?php  	
+
+  $stt++ ; } ?>
+ </tbody>
+
+</table>
+</body>
+<script>print();</script>
+</html>

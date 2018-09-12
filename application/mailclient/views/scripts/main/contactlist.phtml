@@ -1,0 +1,91 @@
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+			<?php $contacnog = Email_address::getContactsNoGroupByUser($this->id_u); 
+				if(count($contacnog) > 0){
+			?>
+				<div class="panel">
+						
+						<h3 class="title jpane-toggler">
+							<span>Chưa có nhóm<?php echo " (" .count($contacnog) .") "  ?></span>
+						</h3>
+						
+						<div class="jpane-slider content">
+							<table class="adminlist">
+								<tbody>
+									
+									<?php 
+										
+										
+										foreach($contacnog as $it_add){
+
+									?>
+									
+									<tr>
+										<td><img src="/images/email/person.gif"></img></td>
+										<td width="100%" style="cursor:pointer;" 
+										onmousemove="showAttrContact(event,'<?=htmlspecialchars($it_add["NAME_FRIEND"])?>',
+										'<?=htmlspecialchars($it_add["EMAIL_ADDR_FR"])?>',
+										'attr_<?=$it_add["ID_EAD"]?>',
+										'<?=$it_add["ID_EAD"]?>'				
+										);
+										">
+										
+										<b><?=$it_add["NAME_FRIEND"]?></b>
+										<input type="hidden" id="attr_<?=$it_add["ID_EAD"]?>" value="<?=htmlspecialchars($it_add["COMMENT"])?>">
+										
+										</td>
+									</tr>
+									
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+			<?php }?>
+			
+			<?php 
+				foreach($this->groups as $it_group){
+				$addr_ing = Email_address::getContactsById_group($it_group["ID_EG"]);
+			?>
+					<div class="panel">
+						
+						<h3 class="title jpane-toggler" onmousemove="showAttrGroup(event,'<?=htmlspecialchars($it_group["ID_EG"])?>','<?=htmlspecialchars($it_group["NAME"])?>');">
+							<span><?=$it_group["NAME"]?><?php echo " (" .count($addr_ing) .") "  ?></span>
+						</h3>
+						
+						<div class="jpane-slider content">
+							<table class="adminlist">
+								<tbody>
+									
+									<?php 
+										
+										
+										foreach($addr_ing as $it_add){
+
+									?>
+									
+									<tr>
+										<td><img src="/images/email/person.gif"></img></td>
+										<td width="100%" style="cursor:pointer;" 
+										onmousemove="showAttrContact(event,'<?=htmlspecialchars($it_add["NAME_FRIEND"])?>',
+										'<?=htmlspecialchars($it_add["EMAIL_ADDR_FR"])?>',
+										'attr_<?=$it_add["ID_EAD"]?>',
+										'<?=$it_add["ID_EAD"]?>'				
+										);
+										">
+										
+										<b><?=$it_add["NAME_FRIEND"]?></b>
+										<input type="hidden" id="attr_<?=$it_add["ID_EAD"]?>" value="<?=htmlspecialchars($it_add["COMMENT"])?>">
+										
+										</td>
+									</tr>
+									
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					
+			<?php	
+				}
+			?>
+			

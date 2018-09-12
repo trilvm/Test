@@ -1,0 +1,356 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+ <META NAME="Generator" CONTENT="EditPlus">
+ <META NAME="Author" CONTENT="text/xml">
+ <META NAME="Keywords" CONTENT="text/xml">
+ <META NAME="Description" CONTENT="text/xml">
+ <script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/validate.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/json/json_parse.js"></script>
+ <script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+//-->
+ </script>
+ </HEAD>
+ <BODY text=blue>
+  <script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/validate.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/json/json_parse.js"></script>
+<form name="frmimport" method="get" action="http://www.danangcity.gov.vn/serviceVBCDDH/Service?invoke=importDocument">
+<input type="hidden" name="invoke" value="importDocument">
+<table>
+<thead>
+	<tr>
+		<td colspan="4"><div align="left"><b>Thông tin văn bản</b></td>
+    </tr>
+</thead>
+<tbody>
+<tr>
+		<td width="131">Số ký hiệu</td>
+		<td width="195"><input type=text name=p_strDocNoSign size=20 value="<?=$this->data["SOKYHIEU"]?>" ></td>
+		<td width="134">Trích yếu</td>
+		<td width="249"><input type=text name=p_strDocOverview size=20></td>
+</tr>
+<tr>
+		<td>Ngày hết hiệu lực</td>
+			<td nowrap="nowrap" valign="top">
+			<!-- p_strDocAbortDate -->
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["p_strDocAbortDate"]),"p_strDocAbortDate","p_strDocAbortDate") ?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGAYBANHANH"></span>
+		<td>Ngày hiệu lực</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- p_strDocEffectDate -->
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["p_strDocEffectDate"]),"p_strDocEffectDate","p_strDocEffectDate") ?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGAYBANHANH"></span>	
+</tr>
+<tr>
+		<td>Người ký</td>
+		<td><input type=text name=p_strSigner size=20 ></td>
+		<td>Mã người ký</td>
+		<td><input type=text name=p_iSignerTitleID size=20 ></td>
+</tr>
+<tr>
+		<td>Nội dung văn bản</td>
+		<td><input type=text name=p_strDocContent size=20></input></td>
+		<td>Mã loại văn bản</td>
+		<td><input type=text name=p_iDocTypeID size=20 ></td>
+</tr>
+<tr>
+		<td>Mã lĩnh vực văn bản</td>
+		<td><input type=text name=p_strDocScope size=20 ></td>
+		<td>Mã cơ quan ban hành</td>
+		<td><input type=text name=p_strOfficePublishment size=20 ></td>
+</tr>
+<tr>
+		<td>Người tạo</td>
+		<td><input type=text name=p_strCreator size=20></td>
+		<td>Ngày tạo</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- p_strDocLastModifyDate -->
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["p_strDocCreateDate"]),"p_strDocCreateDate","p_strDocCreateDate") ?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGAYBANHANH"></span>	
+		</td>
+</tr>
+<tr>
+		<td>Người sửa cuối</td>
+		<td><input type=text name=p_strDocLastEditor size=20 ></td>
+		<td>Người soạn cuối</td>
+		<td><input type=text name=p_strAuditor size=20 ></td>
+</tr>
+<tr>
+		<td>Đã set mặc định</td>
+		<td><input type=text name=p_iDocStatusID size=20  ></td>
+		<td>Ngày sửa cuối</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- p_strDocLastModifyDate -->
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["p_strDocLastModifyDate"]),"p_strDocLastModifyDate","p_strDocLastModifyDate") ?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGAYBANHANH"></span>	
+		</td>
+    </tr>
+<tr>
+	  <td><input type="Button" value="Gửi văn bản" style="width:100px;background-color:#F0F0F0" onClick="soap_request();"></td>
+		<td>	<div class="clr"></div></td>
+		<td>Ngày ban hành</td>
+		<td nowrap="nowrap" valign="top">
+			<!-- p_strDocPublishDate -->
+			<?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->data["NGAYBANHANH"]),"p_strDocPublishDate","p_strDocPublishDate") ?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGAYBANHANH"></span>	
+		</td>
+</tr>
+</tbody>
+</table>
+</form>
+<form action="http://www.danangcity.gov.vn/serviceVBCDDH/Service?operation=attachAttachmentFile" name="frmattach"  method="get">
+<input type="hidden" name="invoke" value="attachAttachmentFile">
+<div id="Layer2" style="position:absolute; width:430px; height:226px; z-index:2; left: 755px; top: 283px;">
+
+<table>
+<tbody>
+<tr>
+		<td colspan="4"><div align="left"><strong> Thông tin file đinh kèm</strong></div></td>
+	  </tr>
+<tr>
+		<td>Mã  văn bản</td>
+		<td>
+		  <input name="p_iOfficialDocID" type="text" id="p_iOfficialDocID" size="20">
+		</td>
+</tr>
+<tr>
+		<td>Tên  file đính kèm</td>
+		<td><input name="p_strFileName" type="text" id="p_strFileName" size="20"></td>
+
+</tr>
+<tr>
+		<td>Kiểu  file</td>
+		<td><input name="p_strFileType" type="text" id="p_strFileType" size="20"></td>
+</tr>
+<tr>
+		<td>Kích  cỡ file</td>
+		<td><input name="p_iFileSize" type="text" id="p_iFileSize" size="20"></td>
+</tr>
+<tr>
+		<td>Nội  dung file</td>
+		<td><input name="p_strFileContent" type="text" id="p_strFileContent" size="20"></td>
+</tr>
+<tr>
+		<td><input type="Submit" onClick="submitattach();" value="Đính kèm file" style="width:100px;background-color:#F0F0F0" ></td>
+</tr>
+</tbody>
+</table>
+<br/>
+</div>
+</form>
+ </BODY>
+</HTML>
+<script>
+function BackButtonClick()
+{
+	//document.frm.action = "/vbdi/banhanh/list";
+	//document.frm.submit();
+	
+	window.location = "/vbdi/banhanh/list#vbdi<?=$this->id?>";
+}
+
+function request(){
+var req=null;
+if(XMLHttpRequest){
+  req=new XMLHttpRequest();
+}
+else if(window.ActiveX){
+  req=new ActiveXObject("Msxml2.XMLHTTP");
+    if(!req){
+        req=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+}
+  return req;
+}
+function soap_request(){
+
+/*
+p_strDocNoSign,p_strDocOverview,p_strDocPublishDate,p_strDocEffectDate,p_strDocAbortDate,p_strDocContent,p_strSigner,p_iSignerTitleID,p_iDocTypeID,p_strDocScope,p_strOfficePublishment,p_strCreator,p_strDocCreateDate,p_strDocLastEditor,p_strAuditor,p_iDocStatusID,p_strDocLastModifyDate
+*/
+
+var s='<'+'?'+'xml version="1.0" encoding="UTF-8"'+'?'+'>';
+s+='<definitions name="service" targetNamespace="http://business/OfficialDocManager.wsdl" xmlns="http://schemas.xmlsoap.org/wsdl/"'; s+='xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"'; s+='xmlns:tns="http://business/OfficialDocManager.wsdl" xmlns:ns1="http://business/IService.xsd">';
+s+='<types>';
+s+='<schema targetNamespace="http://business/IService.xsd" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"'; s+='xmlns="http://www.w3.org/2001/XMLSchema" />'; 
+s+='</types>';
+s+='<message name="importDocument0Request">';
+s+='<part name="p_strDocNoSign" type="xsd:string">'+document.frmimport.p_strDocNoSign .value+'</part>'; 
+s+='<part name="p_strDocOverview" type="xsd:string" >'+document.frmimport.p_strDocOverview.value+'</part>'; 
+s+='<part name="p_strDocPublishDate" type="xsd:string">'+document.frmimport.p_strDocPublishDate.value+'</part>'; 
+s+='<part name="p_strDocEffectDate" type="xsd:string">'+document.frmimport.p_strDocEffectDate.value+'</part>'; 
+s+='<part name="p_strDocAbortDate" type="xsd:string">'+document.frmimport.p_strDocAbortDate.value+'</part>'; 
+s+='<part name="p_strDocContent" type="xsd:string">'+document.frmimport.p_strDocContent.value+'</part>'; 
+s+='<part name="p_strSigner" type="xsd:string">'+document.frmimport.p_strSigner.value+'</part>'; 
+s+='<part name="p_iSignerTitleID" type="xsd:int">'+document.frmimport.p_iSignerTitleID.value+'</part>'; 
+s+='<part name="p_iDocTypeID" type="xsd:int">'+document.frmimport.p_iDocTypeID.value+'</part>'; 
+s+='<part name="p_strDocScope" type="xsd:int">'+document.frmimport.p_strDocScope.value+'</part>'; 
+s+='<part name="p_strOfficePublishment" type="xsd:int">'+document.frmimport.p_strOfficePublishment.value+'</part>'; 
+s+='<part name="p_strCreator" type="xsd:string">'+document.frmimport.p_strCreator.value+'</part>'; 
+s+='<part name="p_strDocCreateDate" type="xsd:string">'+document.frmimport.p_strDocCreateDate.value+'</part>'; 
+s+='<part name="p_strDocLastEditor" type="xsd:string">'+document.frmimport.p_strDocLastEditor.value+'</part>';
+s+='<part name="p_strAuditor" type="xsd:string">'+document.frmimport.p_strAuditor.value+'</part>'; 
+s+='<part name="p_iDocStatusID" type="xsd:int">'+document.frmimport.p_iDocStatusID.value+'</part>'; 
+s+='<part name="p_strDocLastModifyDate" type="xsd:string">'+document.frmimport.p_strDocLastModifyDate.value+'</part>'; 
+s+='</message>';
+s+='<service name="service">';
+s+='<port name="OfficialDocManagerPort" binding="tns:OfficialDocManagerBinding">';
+s+='<soap:address location="http://www.danangcity.gov.vn/Service" />'; 
+s+='</port>';
+s+='</service>';
+s+='</definitions>';
+var xmlhttp=request();
+    xmlhttp.onreadystatechange=function(){
+        if (xmlhttp.readyState==4&&xmlhttp.status==200){
+            alert(xmlhttp.responseText);
+			if (xmlhttp.responseText==-1)
+			{
+				alert("Sai mã loại văn bản");	
+			}
+
+			if(xmlhttp.responseText==-2)
+			{
+				alert("Sai mã lĩnh vực văn bản");
+			}
+        }
+    }
+    xmlhttp.open("POST", "callImport.php",true);
+    xmlhttp.setRequestHeader("SOAPAction", 'http://www.danangcity.gov.vn/serviceVBCDDH/Service');
+    xmlhttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+    xmlhttp.setRequestHeader('Content-Length', s.length);
+    xmlhttp.send(s);
+}
+
+/*
+function Submit()
+{
+
+		var data=null;
+		var submitAjax_port = new AjaxEngine(); 
+		var oXmlHttp_port = submitAjax_port.createXMLHttp();
+		oXmlHttp_port.open("post", "http://www.danangcity.gov.vn/serviceVBCDDH/Service" , true); 
+		oXmlHttp_port.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		var post = submitAjax_port.getDataFromFrm(document.frmimport);
+		alert(oXmlHttp_port.responseText);
+		oXmlHttp_port.onreadystatechange = function () { 
+		if (oXmlHttp_port.readyState == 4) { 
+		parseXML(data);
+			if (oXmlHttp_port.status == 200) { 
+			//alert(oXmlHttp_port.responseText);
+				if(oXmlHttp_port.responseText == -1){
+					alert("Sai mã loại văn bản");
+		}
+			else{
+					if(oXmlHttp_port.responseText == -2){
+						alert("Sai mã lĩnh vực văn bản");
+					}
+					if(oXmlHttp_port.responseText == -3){
+						alert("Sai mã cơ quan ban hành");
+					}
+				}
+	        } else { 
+            
+        	} 
+    	} 
+   }; 
+   oXmlHttp_port.send(post);
+}
+*/
+
+function submitattach(oText)
+{
+
+/*
+
+	if(frmattach.value=false)
+	{
+		alert("Chèn không thành công");
+	}
+
+	else
+	{
+		alert("Có lỗi kết nối");
+	}
+		document.frmattach.getAttribute("action", 'http://www.danangcity.gov.vn/serviceVBCDDH/Service?operation=attachAttachmentFile');
+		document.frmattach.setAttribute("target",null);
+		document.frmattach.submit();
+
+		document.frmattach.p_iOfficialDocID.value="";
+		document.frmattach.p_strFileName.value="";
+		document.frmattach.p_strFileType.value="";
+		document.frmattach.p_iFileSize.value="";
+		document.frmattach.p_strFileContent.value="";
+	*/
+
+ var s='<'+'?'+'xml version="1.0" encoding="UTF-8"'+'?'+'>';
+    s+='<SOAP-ENV:Envelope ';
+    s+=      ' xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"';
+    s+=      ' SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">';
+    s+=        '<SOAP-ENV:Body>';
+    s+=            '<message:attachAttachmentFile1Request xmlns:sn="http://snlibs.googlepages.com/schema.xml">';
+    s+=                '<part:text>'+oText+'</part:text>';
+    s+=            '</message:attachAttachmentFile1Request>';
+    s+=        '</SOAP-ENV:Body>';
+    s+=    '</SOAP-ENV:Envelope>';
+
+var xmlhttp=request();
+    xmlhttp.onreadystatechange=function(){
+        if (xmlhttp.readyState==4&&xmlhttp.status==200){
+            alert(xmlhttp.responseText);
+			if(xmlhttp.responseText==false);
+			{
+				alert("File đính kèm không hợp lệ");
+			}
+			if (xmlhttp.responseText==1)
+			{
+				alert("Đã chèn thành công");	
+			}
+		}
+    }
+    xmlhttp.open("POST", "callAttach.php",true);
+    xmlhttp.setRequestHeader("SOAPAction", 'http://www.danangcity.gov.vn/serviceVBCDDH/Service');
+    xmlhttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+    xmlhttp.setRequestHeader('Content-Length', s.length);
+    xmlhttp.send(s);
+}
+
+     function getSokyhieuIn(){
+    	var sokyhieu_text = document.frm.p_strDocNoSign.value;
+    	var sokyhieu_in = "";
+    	
+    	for(var i = 0 ; i < sokyhieu_text.length ;i++){
+    		c = sokyhieu_text.charAt(i);
+    		
+    		
+    		if(isInteger(sokyhieu_text.charAt(i))){
+    			//alert(i);
+    			sokyhieu_in += c  ; 
+    		}
+    		else{
+    			break;
+    		}
+    	}
+    	
+    	
+    	return sokyhieu_in;
+    }
+</script>
+
+

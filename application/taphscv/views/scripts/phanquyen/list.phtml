@@ -1,0 +1,65 @@
+<table class=adminlist>
+    <thead>
+        <tr>
+            <th>Nhóm</th>
+            <th>Phòng</th>
+            <th>Nhân viên</th>
+            <th>
+                <a href="#" onclick="window.document.location='/taphscv/phanquyen/phanquyen/id_ths/<?=$this->idtaphoso?>';">Phân quyền</a>
+            </th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+        </tr>
+    </tfoot>
+    <tbody>
+        <tr>
+            <td>
+            <?php
+                $groupPer = $this->model->GetAllGroup($this->idtaphoso,0);
+                //var_dump($groupPer);exit;
+                foreach ($groupPer as $rows) {?>
+                    <?=$rows['NAME']?>
+                    (
+                        <?=$rows['QUYENXEM']==1?"Xem - ":""?>
+                        <?=$rows['QUYENTHEMMOI']==1?"Cập nhật - ":""?>
+                        <?=$rows['QUYENPHANQUYEN']==1?"Phân quyền":""?>
+                    )
+                    <br>
+                <?}
+            ?>
+            </td>
+            <td>
+            <?php
+                $deptPer = $this->model->GetAllDep($this->idtaphoso,0);
+                //var_dump($groupPer);exit;
+                foreach ($deptPer as $rows) {?>
+                    <?=$rows['NAME']?>
+                    (
+                        <?=$rows['QUYENXEM']==1?"Xem - ":""?>
+                        <?=$rows['QUYENTHEMMOI']==1?"Cập nhật - ":""?>
+                        <?=$rows['QUYENPHANQUYEN']==1?"Phân quyền":""?>
+                    )
+                    <br>
+                <?}
+            ?>
+            </td>
+            <td colspan="2">
+                <?php
+                $userPer = $this->model->GetAllUser($this->idtaphoso,0);
+                //var_dump($groupPer);exit;
+                foreach ($userPer as $rows) {?>
+                    <?=$rows['NAME']?>
+                    (
+                        <?=$rows['QUYENXEM']==1?"Xem - ":""?>
+                        <?=$rows['QUYENTHEMMOI']==1?"Cập nhật - ":""?>
+                        <?=$rows['QUYENPHANQUYEN']==1?"Phân quyền":""?>
+                    )
+                    <br>
+                <?}
+            ?>
+            </td>
+        </tr>
+    </tbody>
+</table>

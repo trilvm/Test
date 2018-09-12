@@ -1,0 +1,452 @@
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script	type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<?php
+require_once 'congviec/models/Qlgv_workModel.php';
+$auth = Zend_Registry::get('auth');
+$data_session = $auth->getIdentity();
+$id_u =$data_session->ID_U;
+?>
+<form name=frm method=post action="/congviec/main/list">
+<table>
+     <tr>
+			<td align="right"> <b>Công việc giao, nhận: </b></td>
+			</td>
+			<td nowrap="nowrap"><select name="combo_object" id="combo_object"
+			class="inputbox" size="3" style=" width:200px">
+			<?php
+
+			echo Qlgv_workModel::toComboFilterCV($this->combo_object);
+			//echo ClassModel::ToCombo($this->class,$this->filter_object);
+			?>
+		</select></td>
+	 </tr><!--
+	 <tr>
+			<td align="right"> <b>Trạng thái công việc:</b> </td>
+			</td>
+			<td nowrap="nowrap" ><select name="filter_object" id="filter_object"
+			class="inputbox" size="4" style=" width:200px">
+			<?php
+
+//			echo Qlgv_workModel::toComboFilter($this->filter_object);
+			//echo ClassModel::ToCombo($this->class,$this->filter_object);
+			?>
+			</select></td>
+	 </tr>-->
+
+	<tr>
+			<td align="right"> <b>Tên công việc: </b></td>
+<!--			</td>-->
+			<td>
+			<input type="text" name="search"
+			id="search" value="<?php echo htmlspecialchars($this->search); ?>"
+			class="text_area"
+			onchange="document.frm.page.value=1;document.frm.submit();" style=" width:200px"/>
+			<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" onclick="document.frm.submit();" value="Tìm">
+			</td>	
+	</tr>
+</table>
+<table class="adminlist">
+	<thead>
+		<tr>
+			<th width="20%">Loại công việc</th>
+			<th nowrap="">Chưa hoàn thành</th>
+			<th nowrap="">Đã hoàn thành</th>
+			<th nowrap="">Trễ hạn</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td nowrap=""><b>Công việc được giao </b></td>
+			<td nowrap=""><font color="blue"><?=$this->cv_duocgiao_chuaht[0]['C']?></font></td>
+			<td nowrap=""><font color="blue"><?=$this->cv_duocgiao_daht[0]["C"]?></font></td>
+			<td nowrap=""><font color="red"><?=$this->cv_duocgiao_trehan[0]["C"]?></font></td>
+		</tr>
+		<tr>
+			<td nowrap=""><b>Công việc đã giao </b></td>
+			<td nowrap=""><font color="blue"><?=$this->cv_dagiao_chuaht[0]["C"]?></font></td>
+			<td nowrap=""><font color="blue"><?=$this->cv_dagiao_daht[0]["C"]?></font></td>
+			<td nowrap=""><font color="red"><?=$this->cv_dagiao_trehan[0]["C"]?></font></td>
+		</tr>
+		    <tr>
+	</tbody>
+</table>
+<table class="adminlist">
+	<thead>
+		<tr>
+			<th colspan="4">
+			<div>
+			<div class="limit" style="float: left;">Hiển thị<select
+				name="limit1" style="width: 60px;" id="limit1" class="inputbox"
+				size="1"
+				onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/congviec/main/list';
+							document.frm.submit();
+						">
+				<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+				<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+				<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+				<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+				<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+				<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+                                <option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+                                <option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+				<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+				<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+			</select></div>
+			<div class="limit" style="float: right;"><?php echo $this->showPage; ?></div>
+			</div>
+			</th>
+		</tr>
+		<tr>
+			<th nowrap="nowrap">Stt</th>
+			<th nowrap valign="top"><input type=checkbox name=DELALL
+				onclick="SelectAll(this,'DEL')"></th>
+			<th width="100%">Công việc</th>
+                        <th></th>
+			
+		</tr>
+	</thead>
+
+	<tfoot>
+		<tr>
+			<th colspan="4">
+			<div class="pagination">
+			<div class="limit">Hiển thị<select name="limit2"
+				style="width: 60px;" id="limit2" class="inputbox" size="1"
+				onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/congviec/main/list';
+							document.frm.submit();
+						">
+				<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+				<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+				<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+				<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+				<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+				<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+                                <option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+                                <option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+				<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+				<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+			</select></div>
+			<div style="float: right"><?php echo $this->showPage; ?></div>
+			</div>
+			</th>
+		</tr>
+	</tfoot>
+
+	<tbody>
+	<?php  if(count($this->data)<=0) {
+		echo "<tr><td colspan='4'> Không tìm thấy hồ sơ công việc nào</td></tr>";
+	}else {
+
+	 $stt=1 ;foreach ($this->data as $row){
+	  $row['NAME'] = QLVBDHCommon::highlightWords($row['NAME'],$this->search);
+	 	?>
+		<tr>
+			<td valign="top"><?=$stt ?></td>
+			<td valign="top"><?php
+
+			if($row["NGUOITAO"]== $id_u )
+
+			{?> <input type=checkbox name=DEL[]
+				value='<?php echo $row['ID_WORK'] ?>'> <?php }?></td>
+			<td valign="top">
+
+			<div>
+			<div><?php $user = Zend_Registry::get('auth')->getIdentity(); 
+			if($user->ID_U == $row["NGUOITAO"]){
+				?> <img id='congviecdi_<?=$row['ID_WORK'] ?>'
+				src='/images/arrow_left.png'> <?php }else{?> <img
+				id='congviecden_<?=$row['ID_WORK'] ?>' src='/images/arrow_right.png'><?}?>
+			<a name="id_<?=$row["ID_WORK"]?>"> </a> <?=$row["NAME"] ?> <?php
+			/*if($row["ISNEW"]==1){
+			 echo "
+			 <img id='image_new_".$row['ID_WORK']. "' src='/images/moi.gif'>
+			 ";
+			 } */
+			$user = Zend_Registry::get('auth')->getIdentity();
+			
+				if(Qlgv_workModel::isUserReceive($row["ID_WORK"],$user->ID_U) == 0 
+				||$user->ID_U == $row["NGUOITAO"]&& $row["ISNEW"]==1
+				){?> <img id='image_new_<?=$row['ID_WORK'] ?>' src='/images/moi.gif'>
+				<?php } ?> <?php if($row["ISFINISHED"]==0){?> <?php
+				$ngay=strtotime($row["ENDDATE"]);
+				$freedate = new Zend_Session_Namespace('freedate');
+				$free = $freedate->free;
+				$delay = QLVBDHCommon::countdate($ngay,$free);
+				if($delay>0){
+					echo  " <font color=red><i>(Trễ ".(floor($delay/8)>0?floor($delay/8)." ngày ":"").($delay%8)." giờ)</i></font>";
+					Qlgv_workModel::updatetrehan($row["ID_WORK"],$delay);
+				}
+				?></div>
+			<div
+				style="float: left; margin-left: 10px; background-color: #CCCCCC; width: 100px; height: 12px;">
+			<div id="tiendo_<?=$row['ID_WORK']?>" style="margin-left:0px;background-color:#99FF66;width:<?=$row["STATUS"]?>%;height:12px; " >
+			<div id="percent_<?=$row['ID_WORK']?>" style="width:100%;text-align:center;"><?=$row["STATUS"]?>%</div>
+			</div>
+
+			</div>
+			&nbsp; <?php
+			$user = Zend_Registry::get('auth')->getIdentity();
+			if(Qlgv_workModel::istiendo($row["ID_WORK"],$user->ID_U) == 1 ){
+
+				?> <input id='tien_do_<?=$row['ID_WORK'] ?>'
+				name="TIENDO_<?=$row['ID_WORK']?>" type=text
+				value="<?=$row["STATUS"]?>" size=1
+				onchange='
+     		  if(parseInt(this.value) <= 100){
+     		     if(0<=parseInt(this.value)){
+     		  document.getElementById("tiendo_<?=$row["ID_WORK"]?>").style.width=this.value+"px";document.getElementById("percent_<?=$row['ID_WORK']?>").innerHTML=this.value+"%";
+     		  changetiendo(<?=$row["ID_WORK"]?>,<?php echo '"tien_do_'.$row["ID_WORK"].'"'?>);
+     		  document.getElementById("ERRTIENDO_<?=$row['ID_WORK'] ?>").innerHTML="";
+     		  }else{
+     		         document.getElementById("ERRTIENDO_<?=$row['ID_WORK'] ?>").innerHTML="Tiến độ lớn hơn hoặc bằng 0";
+     		       }
+     		  }else{
+     		  	document.getElementById("ERRTIENDO_<?=$row['ID_WORK'] ?>").innerHTML="Tiến độ nhỏ hơn hoặc bằng 100";
+     		  }
+     		     '>% <?}?> <span class="box_erro_area"
+				id="ERRTIENDO_<?=$row['ID_WORK'] ?>"></span> <?php }else {     		  	  
+					?> <font nowrap="nowrap" style="color: blue">(Đã hoàn thành)</font>
+					<?php  }?>
+			<div class="clr"></div>
+			<div>
+			<ul class="chitiethscv">
+				<li id=groupicon1_<?=$row["ID_WORK"]?>><img
+					src="/images/icon_chitiet.jpg" border="0" hspace="5"> <a
+					href='javascript:
+			{SwapDiv(<?=$row["ID_WORK"]?>,"/congviec/main/detail?ID_WORK=<?=$row["ID_WORK"]?>",1);
+			 
+		     updateImageNew(<?php echo '"image_new_'.$row["ID_WORK"].'"'?>,<?=$row["ID_WORK"]?>,<?=$row["NGUOITAO"]==$id_u?1:0?>);
+		     }
+		     '>Chi tiết</a></li>
+
+				<li id=groupicon3_<?=$row["ID_WORK"]?>><img
+					src="/images/icon_butphe.jpg" border="0" hspace="5"> <a
+					href='javascript:SwapDiv(<?=$row["ID_WORK"]?>,"/congviec/noidunggopy/index?ID_WORK=<?=$row["ID_WORK"]?>",3);'>
+				Nội dung nhật ký </a> <span class="box_erro_area"
+					id="Noidungnk<?=$row["ID_WORK"]?>">(<?php echo "<font color=red>".Qlgv_workModel::countnoidung($row["ID_WORK"])."</font>"?>)</span>
+				</li>
+				<? if( $this->ISLEADER==1){?>
+					<li id=groupicon5_<?=$row["ID_WORK"]?>><img
+					src="/images/icon_butphe.jpg" border="0" hspace="5"> <a
+					href='javascript:SwapDiv(<?=$row["ID_WORK"]?>,"/congviec/noidungyk/index?ID_WORK=<?=$row["ID_WORK"]?>",5);'>
+				Ý kiến lãnh đạo </a> <span class="box_erro_area"
+					id="Noidungyk<?=$row["ID_WORK"]?>">(<?php echo "<font color=red>".Qlgv_workModel::countnoidungyk($row["ID_WORK"])."</font>"?>)</span>
+				</li>
+				<? }?>
+			</ul>
+			
+			</div>
+			</td>
+			<td nowrap="nowrap" valign="top"><?php	 		        
+			if($row["NGUOITAO"]== $id_u )
+
+			{?> <a
+				href="/congviec/main/input?ID_WORK=<?php echo $row['ID_WORK']?>">Cập
+			nhật</a><br />
+			<a href="#"
+				onclick='sethoanthanh(<?=$row["ID_WORK"]?>,<?=strtotime($row["ENDDATE"])?>);return false;'>Hoàn
+			thành </a> <?php }?></td>
+		</tr>
+		<tr>
+			<td colspan="4">
+			<div class="groupcontent" id="groupcontent<?=$row["ID_WORK"]?>"
+				style="display: none; border: 1px"></div>
+			</td>
+		</tr>
+
+		<?php $stt++;}
+	}
+	?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>"></form>
+<script>
+	//function clickDetail(id,tab){
+		//var url ="/congviec/main/detail?ID_WORK="+id; 
+		//document.getElementById("groupcontent_"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+		//var odiv = document.getElementById("groupcontent_"+id);
+		//loadDivFromUrl("groupcontent_"+id,url,1);
+		//alert(odiv.innerHTML);
+		//if((odiv.innerHTML+'') == '')
+		//	loadDivFromUrl("groupcontent_"+id,url,1);
+		//else
+			
+			//odiv.innerHTML = "";
+
+		
+	//}
+
+		function SwapDiv(id,url,tab){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		if(document.getElementById("groupcontent"+id).style.display==""){
+			document.getElementById("groupcontent"+id).style.display="none";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+
+		}
+		//document.getElementById("detailContent_"+id).style.display="none";
+	}
+
+	function AddNewButtonClick(){
+		//document.URL = "/qtht/DanhMucCoQuan/input";
+		document.frm.action="/congviec/main/input";
+		document.frm.method="post";
+		document.frm.submit();
+		
+	}
+   
+	 function updateImageNew(iddiv,id,is_ngtao){
+	    	var oimg = document.getElementById(iddiv);
+	    	if(oimg != null){
+		    	
+	                 
+	    		if(oimg.style.display != 'none'){
+		    	oimg.style.display = 'none';
+		    	
+		    	var AE = new AjaxEngine();
+				var oXmlHttp = AE.createXMLHttp(); 	
+			    			   
+				var url = '/congviec/main/updatedadoc?is_nguoitao='+is_ngtao+'&id_work='+id+'';
+				oXmlHttp.open('post', url , true);
+			    oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			    oXmlHttp.onreadystatechange = function () { 
+			        if (oXmlHttp.readyState == 4) { 
+			        	if (oXmlHttp.status == 200) {             	
+			            	//alert(oXmlHttp.responseText);
+			        	} else { 
+			            	
+			            }            
+			        } 
+			    };  
+			    oXmlHttp.send(null);   
+	    		}
+	    		
+	    	}
+		    
+	    }
+	 
+	 function DeleteButtonClick()
+	 {
+	 	var ln = 0;
+	 	var arr = document.getElementsByName('DEL[]');
+	 	for(var i = 0 ; i < arr.length ;i++ )
+	 	{
+	 		
+	 		if(arr[i].checked == true)
+	 		{
+	 			ln = 1;
+	 			break;
+	 		}
+	 	}
+	 	if(ln == 1)
+	 	{
+	 		if(confirm("<?php echo "Bạn có muốn xóa không"; ?>")){
+	 			//document.URL=
+	 			document.frm.action="/congviec/main/delete";
+	 			document.frm.method="post";
+	 			document.frm.submit();
+	 		}
+	 	}
+	 	else
+	 	{
+	 		alert("Bạn phải một dòng chọn để xóa");
+	 	}
+	 }
+  
+	     
+  function sethoanthanh(id,enddate){ 
+	 
+	  if(confirm( "Chấp nhận công việc hoàn thành")){	
+
+			//alert(1);
+			
+		    var AE = new AjaxEngine();
+			var oXmlHttp = AE.createXMLHttp(); 		     
+			var url = '/congviec/main/setcongviec?ID_WORK='+id+'& ENDDATE='+enddate+'';
+
+			oXmlHttp.open('get', url , true);
+			oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			  oXmlHttp.onreadystatechange = function () { 
+			        if (oXmlHttp.readyState == 4) { 
+			        	if (oXmlHttp.status == 200) {             	
+			            	
+			            	if(oXmlHttp.responseText == 1){
+			            		alert("Chấp nhận thành công.");
+			            		window.location = "/congviec/main/list";
+     							return;
+				            	}
+			            	else{
+			            		if(oXmlHttp.responseText == 2){
+			            			alert("Chấp nhận không thành công.");
+				            		                          }
+				            	
+				            	}
+			        	} else { 
+			            	
+			            }            
+			        } 
+			    };  
+			oXmlHttp.send(null);   
+		   
+  		}
+  	
+	  
+  }	    
+   function changetiendo(id,idstatus){
+	   var err = true;
+	   
+	  if(err==true)	{  
+	 var status =document.getElementById(idstatus).value;
+	
+		 var AE = new AjaxEngine();
+		var oXmlHttp = AE.createXMLHttp(); 		     
+		var url = '/congviec/main/tiendo?ID_WORK='+id+'& STATUS='+status+'';
+
+		oXmlHttp.open('get', url , true);
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		  oXmlHttp.onreadystatechange = function () { 
+		        if (oXmlHttp.readyState == 4) { 
+		        	if (oXmlHttp.status == 200) {             	
+		            	
+		            	if(oXmlHttp.responseText == 1){
+		            		
+							return;
+			            	}
+		     	else{
+		            		if(oXmlHttp.responseText == 2){
+		            			alert("Lưu không thành công.");
+			            		                          }
+			            	
+			            	}
+		        	} else { 
+		            	
+		            }            
+		        } 
+		    };  
+		oXmlHttp.send(null);   
+	            
+	  }
+   }
+
+   
+   </script>

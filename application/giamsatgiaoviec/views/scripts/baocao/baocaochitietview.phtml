@@ -1,0 +1,76 @@
+<?php
+require_once 'giamsatgiaoviec/models/BaoCaoModel.php';
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel=Stylesheet href=stylesheet.css>
+</head>
+<body style="background-color:transparent">
+<table class="adminlist" width="100%">
+    <thead>
+        <tr>
+            <th nowrap="" rowspan="2">STT</th> 
+            <th  rowspan="2">Cơ quan thực hiện</th>
+            <th  rowspan="2">Nội dung nhiệm vụ giao</th>
+            <th nowrap="" colspan="2">Đã hoàn thành</th>
+            <th nowrap="" colspan="2">Chưa hoàn thành</th>
+        </tr>
+        <tr>
+            <th nowrap="">Đúng hạn</th>
+            <th nowrap="">Quá hạn</th>
+            <th nowrap="">Trong hạn</th>
+            <th nowrap="">Quá hạn</th>
+        </tr>
+    </thead>
+    <tbody>        
+        <?php
+        $fromdateQuery=$this->params['fromdate'].'/'.$this->year;
+        $todateQuery=$this->params['todate'].'/'.$this->year;        
+        $baoCaoModel =new BaoCaoModel();
+        require_once("hscv/models/coquanlienthongModel.php");        
+        $data_cqlt = coquanlienthongModel::getDataCQLienThong();        
+        if(isset($this->params['sel_donvi'])){ 
+            $dataReport = $baoCaoModel->baoCaoChiTietDonViNgoai($this->params['sel_donvi'],$fromdateQuery,$todateQuery);
+            $stt =0;
+            foreach($dataReport as $itemReport){
+                $stt++;
+            ?>
+            <tr>
+                <td nowrap=""><?=$stt ?></td> 
+                <td ><?=$itemReport['NAMECQXULY'] ?></td>
+                <td ><?=$itemReport['NHIEMVU'] ?></td>
+                <td nowrap=""><?php if($itemReport['TIENDO_GIAOVIEC']>=100 && strtotime($itemReport['NGAYKETTHUC'])>=strtotime(date())){ echo "V"; } ?></td>
+                <td nowrap=""><?php if($itemReport['TIENDO_GIAOVIEC']>=100 && strtotime($itemReport['NGAYKETTHUC'])<strtotime(date())){ echo "V"; } ?></td>
+                <td nowrap=""><?php if($itemReport['TIENDO_GIAOVIEC']<100 && strtotime($itemReport['NGAYKETTHUC'])>=strtotime(date())){ echo "V"; } ?></td>
+                <td nowrap=""><?php if($itemReport['TIENDO_GIAOVIEC']<100 && strtotime($itemReport['NGAYKETTHUC'])<strtotime(date())){ echo "V"; } ?></td>
+            </tr> 
+            <?php
+            }
+        }  
+        ?>
+    </tbody>
+</table>
+<p id="lasttext"></p>
+<script>
+    function resize() {
+        try {
+            var iframeElement = window.parent.document.getElementById('reportview');
+            iframeElement.style.height = "" + (document.getElementById("lasttext").offsetTop) + "px";
+            iframeElement.width = "100%";
+            setTimeout("resize()", 1000);
+        } catch (ex) {
+        }
+    }
+    resize();
+</script>
+</body>

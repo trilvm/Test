@@ -1,0 +1,26 @@
+<?php
+$this->dojo()->enable();
+?>
+<form name=frm method="post">
+	require <input type=text name=REQUIRE><br>
+	length&lt;20 <input type=text name=LT20><br>
+	length&gt;6 <input type=text name=GT6><br>
+	Same above <input type=text name=EQUALS><br>
+	Email require <input type=text name=EMAILR><br>
+	Email no require <input type=text name=REQUIRE><br>
+	Number <input type=text name=REQUIRE><br>
+	Anphabeta + Num <input type=text name=REQUIRE><br>
+	Anphabeta + Num + Space <input type=text name=REQUIRE><br>
+	Anphabeta <input type=text name=REQUIRE><br>
+	Anphabeta + Space <input type=text name=REQUIRE><br>
+	Select one <input type=radio name=SELONE><input type=radio name=SELONE><input type=radio name=SELONE><br>
+	Check one <input type=radio name=CHECKONE[]><input type=radio name=CHECKONE[]><input type=radio name=CHECKONE[]><br>
+	<input type=button name=Check value=Check onclick="validate()">
+</form>
+<script>
+function validate(){
+	var mess="";
+	mess += validateInput("equ="+document.frm.GT6.value,document.frm.EQUALS,"Phai giong o tren");
+	alert(mess); 
+}
+</script>

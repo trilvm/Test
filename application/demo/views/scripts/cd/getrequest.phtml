@@ -1,0 +1,10 @@
+<?php
+
+?>
+<form name=frm action="/demo/cd/saverequest" method="POST">
+	Tên đĩa CD<input type=input name=NAME value="">
+	<?php
+		echo WFEngine::FormSend($this->wf_id_t);		
+	?>
+	<input type=submit value="Chấp nhận" name=submit>
+</form>

@@ -1,0 +1,207 @@
+<?php
+$phuong = new DanhMucPhuongModel();
+$phuong = $phuong->SelectAll(0,0,"");
+$loai = new LoaiModel();
+$loai->_linhvuc = $this->param['sel_lv'];
+$loai = $loai->SelectAll(0,0,"");
+?>
+<form name=frm action="/report/tiepnhanhosomotcua/reporthoso" method="POST">
+	<div>
+		<label><b>Thời gian tiếp nhận:</b></label>
+		<?=QLVBDHCommon::calendar($this->fromdate,"fromdate","fromdate") ?>
+		<?=QLVBDHCommon::calendar($this->todate,"todate","todate") ?>
+	</div>
+	<div class=clr></div>
+	<div>
+		<label><b>Thời gian giao trả:</b></label>
+		<?=QLVBDHCommon::calendar($this->fromdategt,"fromdategt","fromdategt") ?>
+		>>
+		<?=QLVBDHCommon::calendar($this->todategt,"todategt","todategt") ?>
+	</div>
+	<div class=clr></div>
+	<div>
+		<div>
+			<label><b>Tháng:</b></label>
+				<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/1')">1
+				<?php 
+				$year = QLVBDHCommon::getYear();
+				$d = strtotime($year."-3-1") ;
+				$d = $d - 86400;
+				$str_cuoi2 =date('d/m',$d); 
+				 ?>
+			<input type="radio" name='sel_timedis' value="2" onclick="setvalueDateD('1/2','<?php echo $str_cuoi2 ?>')" >2
+			<input type="radio" name='sel_timedis' value="3" onclick="setvalueDateD('1/3','31/3')">3
+			<input type="radio" name='sel_timedis' value="4" onclick="setvalueDateD('1/4','30/4')" >4
+			<input type="radio" name='sel_timedis' value="5" onclick="setvalueDateD('1/5','31/5')">5
+			<input type="radio" name='sel_timedis' value="6" onclick="setvalueDateD('1/6','30/6')">6
+			<input type="radio" name='sel_timedis' value="7" onclick="setvalueDateD('1/7','31/7')" >7
+			<input type="radio" name='sel_timedis' value="8" onclick="setvalueDateD('1/8','31/8')" >8
+			<input type="radio" name='sel_timedis' value="9" onclick="setvalueDateD('1/9','30/9')">9
+			<input type="radio" name='sel_timedis' value="10"onclick="setvalueDateD('1/10','31/10')">10
+			<input type="radio" name='sel_timedis' value="11" onclick="setvalueDateD('1/11','30/11')">11
+			<input type="radio" name='sel_timedis' value="12" onclick="setvalueDateD('1/12','31/12')">12
+		</div>
+		<div class=clr></div>
+		<div>
+			<label><b>Quý:</b></label>
+			<input type="radio" name='sel_timedis' value="I" onclick="setvalueDateD('1/1','31/3')">I
+			<input type="radio" name='sel_timedis' value="II" onclick="setvalueDateD('1/4','30/6')">II
+			<input type="radio" name='sel_timedis' value="III" onclick="setvalueDateD('1/7','30/9')">III
+			<input type="radio" name='sel_timedis' value="IV" onclick="setvalueDateD('1/10','31/12')">IV
+		</div>
+		<div class=clr></div>
+		<div>
+			<label><b>Năm:</b></label>
+			<input type="radio" name='sel_timedis' value="year" onclick="setvalueDateD('1/1','31/12')">
+		</div>
+	</div>
+	<div class=clr></div>
+	<br/>
+	<div>
+		<label><b>Chọn lĩnh vực:</b></label>
+		<select name="sel_lv" id="sel_lv">
+			<?php DepartmentsModel::toComboNamelinhvuc(array($this->param['sel_lv']),true)?>
+		</select>
+	</div>
+	<div class="clr"></div>
+	<div>
+		<label><b>Loại thống kê:</b></label>
+		<select name="sel_loaitk" id="sel_loaitk">
+		<option value="1">Đã tiếp nhận</option>
+		<option value="2">Đang xử lý</option>
+		<option value="3">Đang xử lý (Sắp trễ hạn)</option>
+		<option value="4">Đang xử lý (trễ)</option>
+		<option value="8">Đã hoàn thành (trễ)</option>
+		<option value="9">Đã hoàn thành (đúng hẹn)</option>
+		<option value="5">Đã thụ lý</option>
+		<!--<option value="6">Đã chuyển trả</option>-->
+		<option value="7">Đã hoàn thành (chờ công dân nhận)</option>
+		<option value="10">Không thụ lý</option>
+		</select>
+		<script>document.frm.sel_loaitk.value="<?=$this->param['sel_loaitk']?>";</script>
+	</div>
+	<div class="clr"></div>
+	<br>
+	<input type=hidden id=h_isexel name=h_isexel value=0>
+	<input type=button onclick="View();" value="Thống kê">
+	<input type=button onclick="In();" value="In">
+	<input type=button onclick="Excel();" value="Excel">
+</form>
+<br>
+<?php
+	if($this->param['sel_loaitk']>0){
+?>
+<div>
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th>
+				HỒ SƠ
+			</th>
+			<?php
+			foreach($phuong as $itemphuong){
+			?>
+			<th><?=$itemphuong["TENPHUONG"]?></th>
+			<?php
+			}
+			?>
+			<th>
+				Không rõ
+			</th>
+			<th>
+				TỘNG CỘNG
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+		$cntallphuong = array();
+		$cntall = 0;
+		foreach($loai as $itemloai){
+			$tong = 0;
+	?>
+		<tr>
+			<td>
+				<?=$itemloai["TENLOAI"]?>
+			</td>
+			<?php
+			$stt=0;
+			foreach($phuong as $itemphuong){
+				$cntphuong = TiepnhanhosomotcuaModel::CountHoso($this->param['sel_loaitk'],$itemloai["ID_LOAIHOSO"],$itemphuong["ID_PHUONG"],$this->xfromdate,$this->xtodate,$this->xfromdategt,$this->xtodategt);
+				$cntallphuong[$stt] += $cntphuong;
+				$stt++;
+				$tong += $cntphuong;
+				$cntall += $cntphuong;
+			?>
+			<td align=center><a href="#" onclick="Detail(<?=$this->param['sel_lv']?>,<?=$itemloai["ID_LOAIHOSO"]?>,0,<?=$this->param['sel_loaitk']?>,<?=$itemphuong["ID_PHUONG"]?>)"><?=$cntphuong?></a></td>
+			<?php
+			}
+			$cntphuong = TiepnhanhosomotcuaModel::CountHoso($this->param['sel_loaitk'],$itemloai["ID_LOAIHOSO"],0,$this->xfromdate,$this->xtodate,$this->xfromdategt,$this->xtodategt);
+			$tong += $cntphuong;
+			$cntallphuong[$stt] += $cntphuong;
+			$cntall += $cntphuong;
+			?>
+			<td align=center>
+				<a href="#" onclick="Detail(<?=$this->param['sel_lv']?>,<?=$itemloai["ID_LOAIHOSO"]?>,0,<?=$this->param['sel_loaitk']?>,0)"><?=$cntphuong?></a>
+			</td>
+			<td align=center>
+				<B><a href="#" onclick="Detail(<?=$this->param['sel_lv']?>,<?=$itemloai["ID_LOAIHOSO"]?>,0,<?=$this->param['sel_loaitk']?>,-1)"><?=$tong?></a></B>
+			</td>
+		</tr>
+	<?php
+		}
+	?>
+	</tbody>
+		<tfoot>
+		<tr>
+			<th>
+				TỔNG CỘNG
+			</th>
+			<?php
+			$stt=0;
+			foreach($phuong as $itemphuong){
+			?>
+			<th><a href="#" onclick="Detail(<?=$this->param['sel_lv']?>,0,1,<?=$this->param['sel_loaitk']?>,<?=$itemphuong["ID_PHUONG"]?>)"><?=$cntallphuong[$stt]?></a></th>
+			<?php
+				$stt++;
+			}
+			?>
+			<th>
+				<a href="#" onclick="Detail(<?=$this->param['sel_lv']?>,0,1,<?=$this->param['sel_loaitk']?>,0)"><?=$cntallphuong[$stt]?></a>
+			</th>
+			<th>
+				<a href="#" onclick="Detail(<?=$this->param['sel_lv']?>,0,1,<?=$this->param['sel_loaitk']?>,-1)"><?=$cntall?></a>
+			</th>
+		</tr>
+	</tfoot>
+</table>
+</div>
+<?php } ?>
+<script>
+function setvalueDateD(value_from,value_to){
+	document.frm.fromdate.value = value_from;
+	document.frm.todate.value = value_to;
+	document.frm.fromdategt.value = value_from;
+	document.frm.todategt.value = value_to;
+}
+function View(){
+	document.frm.action = "/report/tiepnhanhosomotcua/reporthoso";
+	document.frm.target = "_self";
+	document.frm.submit();
+}
+function Excel(){
+	document.frm.action = "/report/tiepnhanhosomotcua/reporthosoexcel/excel/1";
+	document.frm.target = "_self";
+	document.frm.submit();
+}
+function In(){
+	document.frm.action = "/report/tiepnhanhosomotcua/reporthosoexcel/excel/0";
+	document.frm.target = "_blank";
+	document.frm.submit();
+}
+function Detail(ID_LV_MC,ID_LOAIHS,ALL,sel_tinhtrang,phuong){
+	document.frm.action = "/report/tiepnhanhosomotcua/reportviewexcel?ID_LV_MC="+ID_LV_MC+"&sel_lhs[]="+ID_LOAIHS+"&sel_tinhtrang="+sel_tinhtrang+"&CHOICEALL_LOAI="+ALL+"&h_isexel=0&phuong="+phuong;
+	document.frm.target = "_blank";
+	document.frm.submit();
+}
+</script>

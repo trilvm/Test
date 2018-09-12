@@ -1,0 +1,282 @@
+<?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'motcua/models/LoaiModel.php'; 
+require_once 'motcua/models/linhvucmotcuaModel.php';
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'report/models/TiepnhanhosomotcuaModel.php'
+
+//$data_departs = DepartmentsModel::getAll();
+
+?>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<form name=frm action="/report/tiepnhanhosomotcua/reportview" method="POST" target="reportview">
+<div class=clr></div>
+<div>
+<div >
+<label><input type=radio value=1 name='baocao_tiepnhan' id='baocao_tiepnhan' onclick="checktypebaocao(this);"></label>
+<b>Báo Cáo Tiếp nhận</b>
+</div>
+
+<div class=clr></div>
+
+<div>
+<label><input type=radio value=1 name='baocao_trahoso' id='baocao_trahoso' onclick="checktypebaocao(this);"></label>
+<b>Báo Cáo trả hồ sơ</b>  
+</div>	
+<div class=clr></div>
+<div>
+<label><input type=radio value=1 name='baocao_thuong' id='baocao_thuong' onclick="checktypebaocao(this);" checked></label>
+<b>Báo Cáo thông thường</b>
+</div>	
+</div>
+<div class=clr></div>
+<div id=div_ngay style="display:none;">
+<label><b>Ngày:</b></label>
+<?=QLVBDHCommon::calendar('',"ngaybaocao","ngaybaocao") ?>
+<script>
+var thoigian = new Date();
+var ngay = thoigian.getDate();
+var thang = thoigian.getMonth() + 1;
+document.frm.ngaytiepnhan.value=ngay+"/"+thang;	
+</script>
+</div>
+<div class=clr></div>
+<div id="divNgayTiepnhan" >
+<div >
+<label><b>Ngày tiếp nhận:</b></label>
+<?=QLVBDHCommon::calendar($this->fromdate,"fromdate","fromdate") ?>
+<script> function ChangeDate(){
+	document.getElementById('time').value ="";
+}  </script>
+>>
+<?=QLVBDHCommon::calendar($this->todate,"todate","todate") ?>
+<script> function ChangeDate(){
+	document.getElementById('time').value ="";
+	}</script>
+</div>
+<div class=clr></div>
+<div >
+<label><b>Ngày hẹn trả:</b></label>
+<?=QLVBDHCommon::calendar($this->fromdate,"fromdategt","fromdategt") ?>
+<script> function ChangeDate(){
+	document.getElementById('time').value ="";
+}  </script>
+>>
+<?=QLVBDHCommon::calendar($this->todate,"todategt","todategt") ?>
+<script> function ChangeDate(){
+	document.getElementById('time').value ="";
+	}</script>
+</div>
+<div class=clr></div>
+<div>
+<div>
+<label><b>Tháng:</b></label>
+
+<?php 
+$year = QLVBDHCommon::getYear();
+$d = strtotime($year."-3-1") ;
+$d = $d - 86400;
+$str_cuoi2 =date('d/m',$d); 
+ ?>
+ <input type="radio" name='sel_timedis' onclick="document.getElementById('time').value= 'THÁNG 1';setvalueDateD('1/1','31/1')">1
+<input type="radio" name='sel_timedis' onclick="document.getElementById('time').value= 'THÁNG 2';setvalueDateD('1/2','<?php echo $str_cuoi2 ?>')" >2
+<input type="radio" name='sel_timedis' onclick="document.getElementById('time').value= 'THÁNG 3';setvalueDateD('1/3','31/3')">3
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'THÁNG 4';setvalueDateD('1/4','30/4')" >4
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'THÁNG 5';setvalueDateD('1/5','31/5')">5
+<input type="radio" name='sel_timedis' onclick="document.getElementById('time').value= 'THÁNG 6';setvalueDateD('1/6','30/6')">6
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'THÁNG 7';setvalueDateD('1/7','31/7')" >7
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'THÁNG 8';setvalueDateD('1/8','31/8')" >8
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'THÁNG 9';setvalueDateD('1/9','30/9')">9
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'THÁNG 10';setvalueDateD('1/10','31/10')">10
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'THÁNG 11';setvalueDateD('1/11','30/11')">11
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'THÁNG 12';setvalueDateD('1/12','31/12')">12
+</div>
+<div class=clr></div>
+<div>
+<label><b>Quí:</b></label>
+<input type="radio" name='sel_timedis' onclick="document.getElementById('time').value= 'QUÝ 1';setvalueDateD('1/1','31/3')">I
+<input type="radio" name='sel_timedis' onclick="document.getElementById('time').value= 'QUÝ 2';setvalueDateD('1/4','30/6')">II
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'QUÝ 3';setvalueDateD('1/7','30/9')">III
+<input type="radio" name='sel_timedis'onclick="document.getElementById('time').value= 'QUÝ 4';setvalueDateD('1/10','31/12')">IV
+</div>
+<div class=clr></div>
+<div>
+<label><b>Năm:</b></label>
+<input type="radio" name='sel_timedis' onclick="document.getElementById('time').value= 'TRONG';setvalueDateD('1/1','31/12')">
+</div>
+</div>
+</div>
+<div class=clr></div>
+<div id=div_tinhtrang>
+<div style="float:left">
+<label><b>Tình trạng:</b></label>
+<select name="sel_tinhtrang" id="sel_tinhtrang" >
+<option value="1">Đã tiếp nhận</option>
+		<option value="2">Đang xử lý</option>
+		<option value="3">Đang xử lý (Sắp trễ hạn)</option>
+		<option value="4">Đang xử lý (trễ)</option>
+		<option value="8">Đã hoàn thành (trễ)</option>
+		<option value="9">Đã hoàn thành (đúng hẹn)</option>
+		<option value="5">Đã thụ lý</option>
+		<!--<option value="6">Đã chuyển trả</option>-->
+		<option value="7">Đã hoàn thành (chờ công dân nhận)</option>
+		<option value="10">Không thụ lý</option>
+</select>
+</div>	
+
+</div>
+<div class=clr></div>
+<div>
+<div style="float:left;">
+
+<label><b>Lĩnh vực:</b></label>
+<select name="ID_LV_MC" onchange="
+						FillComboByCombo(this,document.getElementById('sel_lhs'),arr_loai)
+				">
+		<option value="0" >--Tất cả--</option>
+		<?=linhvucmotcuaModel::ToCombo($this->linhvuc,$this->ID_LV_MC)?>
+		</select>
+		<span id=check_all_loai ><input  type=checkbox value=1 name=CHOICEALL_LOAI onclick="choiceAllLoai();"> Chọn tất cả các loại</span>
+</div>	
+
+</div>
+<div class=clr></div>
+
+<div id='div_loaihoso'>
+<div style="float:left;">
+<label><b>Loại hồ sơ một cửa:</b></label>
+<select name="sel_lhs[]" id="sel_lhs" multiple="multiple" size=6 style="width:500px" >
+	<option value=0>[Tất cả các loại]</option>
+	<?php LoaiModel::toComboName(); ?>
+</select>
+</div>	
+</div>
+<div class="clr"></div>
+
+<input type=hidden id=h_isexel name=h_isexel value=0>
+<input type=hidden id=time name=time value="">
+<div>
+<input type=button value="Hiển thị" onclick="
+document.frm.target='reportview';
+document.frm.h_isexel.value = 0;
+document.frm.action = '/report/tiepnhanhosomotcua/reportview';
+document.frm.submit();
+return false;
+">
+<input type=button value="In" onclick="
+document.frm.target='_blank';
+document.frm.h_isexel.value = 0;
+document.frm.action = '/report/tiepnhanhosomotcua/reportviewexcel';
+document.frm.submit();
+return false;
+">
+<input type=button value="Excel" onclick="
+document.frm.target='reportview';
+document.frm.h_isexel.value = 1;
+document.frm.action = '/report/tiepnhanhosomotcua/reportviewexcel';
+document.frm.submit();
+return false;
+">
+</div>
+</form>
+<iframe style="overflow-x:visible" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no id="reportview" name="reportview" >
+</iframe>
+<script>
+
+var arr_loai = new Array();
+<?php 
+$arr_loai = TiepnhanhosomotcuaModel::getLoaiHs();
+$stt = 0;
+?>
+
+
+<?php
+
+foreach($arr_loai as $loai){
+?>
+	arr_loai[<?=$stt?>] = new Array();
+	arr_loai[<?=$stt?>][0] = "<?=$loai["ID_LV_MC"]?>";
+	arr_loai[<?=$stt?>][1] = "<?=$loai["ID_LOAIHOSO"]?>";
+	arr_loai[<?=$stt?>][2] = "<?=$loai["TENLOAI"]?>";
+<?php
+$stt++;}
+?>
+FillComboByCombo(document.frm.ID_LV_MC,document.getElementById('sel_lhs'),arr_loai);
+function setvalueDateD(value_from,value_to){
+	document.frm.fromdate.value = value_from;
+	document.frm.todate.value = value_to;
+	document.frm.fromdategt.value = value_from;
+	document.frm.todategt.value = value_to;
+}
+
+function choiceAllLoai(){
+	if(document.frm.CHOICEALL_LOAI.checked==true){
+		document.frm.sel_lhs.disabled = true;
+		//alert(1);
+	}else{
+		document.frm.sel_lhs.disabled = false;
+	}
+}
+
+function checktypebaocao(obj){
+	
+	/*if(document.frm.baocao.checked==true)
+	{
+		var thoigian = new Date();
+		var ngay = thoigian.getDate();
+		var thang = thoigian.getMonth() + 1;
+		document.frm.fromdate.value=ngay+"/"+thang;	
+
+	}*/
+	//alert(document.frm.baocaotrahoso.checked);
+	var odivngay = document.getElementById('divNgayTiepnhan');
+	var div_loaihoso = document.getElementById('div_loaihoso');
+	var div_tinhtrang = document.getElementById('div_tinhtrang');
+	var div_ngay = document.getElementById('div_ngay');
+	var check_all_loai = document.getElementById('check_all_loai');
+	if(obj.name == 'baocao_tiepnhan'){
+		if(document.frm.baocao_tiepnhan.checked==true){
+			
+			document.frm.baocao_trahoso.checked=false;
+			document.frm.baocao_thuong.checked=false;
+			odivngay.style.display = 'none';
+			div_loaihoso.style.display = 'none';
+			div_tinhtrang.style.display = 'none';
+			check_all_loai.style.display = 'none';
+			div_ngay.style.display = '';
+		}else{
+			if(document.frm.baocao_trahoso.checked==false)
+				odivngay.style.display = '';
+		}
+	}
+	if(obj.name == 'baocao_trahoso'){
+		if(document.frm.baocao_trahoso.checked==true){
+			
+			document.frm.baocao_tiepnhan.checked=false;
+			document.frm.baocao_thuong.checked=false;
+			odivngay.style.display = 'none';
+			div_loaihoso.style.display = 'none';
+			div_tinhtrang.style.display = 'none';
+			check_all_loai.style.display = 'none';
+			div_ngay.style.display = '';
+		}else{
+			if(document.frm.baocao_tiepnhan.checked==false)
+				odivngay.style.display = '';
+		}
+	}
+	if(obj.name == 'baocao_thuong'){
+		if(document.frm.baocao_thuong.checked==true){
+			
+			document.frm.baocao_tiepnhan.checked=false;
+			document.frm.baocao_trahoso.checked=false;
+			div_loaihoso.style.display = '';
+			odivngay.style.display = '';
+			div_tinhtrang.style.display = '';
+			check_all_loai.style.display = '';
+			div_ngay.style.display = 'none';
+		}
+	}
+
+
+	
+}
+</script>

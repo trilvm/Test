@@ -1,0 +1,178 @@
+<?=QLVBDHCommon::useDlgConfirm()?>
+<?php 
+require_once 'qtht/models/CoQuanModel.php';
+require_once 'qtht/models/capcoquanModel.php';
+echo('<script>');
+$status = $this->synchronousStatus;
+if($status==1 || $status==0){
+    $message = "Đồng bộ thành công".'\n';
+    if($status==0){
+        $message .= "Không có dữ liệu nào.";
+    }else{
+        $message .= "Thêm mới ".$this->insert." đơn vị".'\n';
+        $message .= "Cập nhật ".$this->update." đơn vị".'\n';
+    }
+    echo 'alert("'.$message.'");';
+}
+else if($status==2)
+{
+    $message = "Đồng bộ không thành công".'\n';
+    echo 'alert("'.$message.'");';
+    
+}
+echo('</script>');
+$capcoquanModel = new capcoquanModel();
+$dataCapCoQuan = $capcoquanModel->getAllCapCQ();
+$arrayCCQ = array();
+foreach($dataCapCoQuan as $item){
+	$arrayCCQ[$item['ID_CAPCOQUAN']] = $item['NAME'];
+}
+?>
+
+
+
+<form name="frm" action="<?echo $this->baseUrl()?>/qtht/DanhMucCoQuan" method="post"> 
+<table>
+		<tr>
+			<td align="left" width="100%">
+				Lọc:
+				<input type="text" name="search" id="search" value="<?php echo htmlspecialchars($this->search);  ?>" class="text_area" onchange="document.frm.submit();" />
+                                <input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" onclick="document.frm.submit();" value="Tìm"/>
+                                <input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" onclick="document.getElementById('search').value='';document.frm.submit();" value="Làm lại"/>
+                                <!--<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Đồng bộ" onclick="DongBo();" /> -->
+                                <span class="box_erro_area" id="infodb"></span>
+			</td>
+		</tr>
+</table>
+
+
+<table class="adminlist">
+	<thead>
+		<tr>
+			<th nowrap>Stt</th>
+			<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></th>
+			<th nowrap>Ký hiệu</th>
+			<th nowrap>Tên cơ quan</th>
+		    <th nowrap>Email</th>
+			<th nowrap>Mã cơ quan</th>
+			<th nowrap>Phạm vi</th>
+			<th nowrap>Cấp cơ quan</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+$parentId = 0;
+foreach ($this->data as $row ){
+	$stt++;
+    if($row["LEVEL"] == 1){
+        $parentId = $row['ID_CQ'];
+    }
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td nowrap align="right"><?php echo $stt ?></td>
+			<td nowrap align="center">
+				<input type=checkbox name=DEL[] title="<?=$row['LEVEL']?>" id="<?=$parentId.'-'.$row['LEVEL']?>" value='<?=$row['ID_CQ']?>' onclick="return checkAllowDelete(this.title,<?=$parentId?>,this);">
+			</td>
+			 <td >
+			     <?php echo htmlspecialchars($row['KYHIEU']) ?>
+			</td>
+			<td width=100%>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_CQ'] ?>);">
+				<?php echo str_repeat("----",$row["LEVEL"]-1).htmlspecialchars($row['NAME']) ?>
+				</a>
+			</td>
+			<td><?php echo htmlspecialchars($row['EMAIL']); ?>  </td>
+			<td><?php echo htmlspecialchars($row['CODE']); ?>  </td>
+			<td nowrap>
+<?php
+	$noibo =  $row["ISSYSTEMCQ"];
+	if($noibo == 1){
+		echo "Nội bộ";
+	}
+	else {
+		echo "Bên ngoài";
+	}
+?>
+			</td>
+			<td nowrap> 
+			<?=$arrayCCQ[$row["CAPCQ"]];?>
+			</td>
+		</tr>
+<?php
+	$i = (-1+$i)*-1;
+}
+?>
+ 
+	</tbody>
+		
+	<tfoot>
+	<tr>
+			<td colspan="8">
+					<div class="pagination">
+						<div class="limit">
+							
+						</div>
+						<div class="limit"><?php echo $this->showPage; ?></div>
+					</div>
+			</td>
+		</tr>		
+	</tfoot>	
+</table>					
+</form>
+<?php
+
+?>
+
+<script>
+
+function DeleteButtonClick(){
+	var ln = 0;
+	var arr = document.getElementsByName('DEL[]');
+	for(var i = 0 ; i < arr.length ;i++ ){
+		if(arr[i].checked == true){
+			ln = 1;
+		}
+	}
+	if(ln == 1){
+		var func_ok = "document.frm.action='/qtht/DanhMucCoQuan/delete';document.frm.method='post';document.frm.submit();";
+		var func_cancel = "";
+		displayConfirm("Bạn có muốn xóa không?","","",func_ok,func_cancel);
+	}else{
+		alert("Bạn phải một dòng chọn để xóa");
+	}
+}
+function checkAllowDelete(level,id,currentElement){
+    var nextLevel = parseInt(level)+1;
+    var subElement = document.getElementById(id+'-'+nextLevel);
+    if (typeof(subElement) != 'undefined' && subElement != null)
+    {
+      alert('Bạn không thể xóa cơ quan này, chỉ có thể xóa cơ quan không chứa cơ quan trực thuộc');
+      return false;
+    }
+}
+function AddNewButtonClick(){
+	//document.URL = "/qtht/DanhMucCoQuan/input";
+	document.frm.action="/qtht/DanhMucCoQuan/input";
+	document.frm.method="get";
+	document.frm.submit();
+	
+}
+function ItemClick(id){
+	document.frm.action="/qtht/DanhMucCoQuan/input/idCoQuan/"+id;;
+	document.frm.method="get";
+	document.frm.submit();
+   
+}
+
+function DongBo(){
+
+	document.frm.action="/qtht/DanhMucCoQuan/dongbocoquan";
+	document.frm.method="post";
+	document.frm.submit();
+        
+
+}
+</script>

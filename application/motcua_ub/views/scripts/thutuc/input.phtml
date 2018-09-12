@@ -1,0 +1,52 @@
+<form enctype="multipart/form-data" name="frmAddThuTuc"  method="<?php echo $this->form->getAttrib('method');?>" action="/motcua/thutuc/input">
+<fieldset>
+	<div style="text-align:right;width:100%">
+		Trường có dấu <font color="red">*</font> là bắt buộc nhập
+	</div>
+	<div align="center"><span class="box_erro_area"><?php echo $this->error; ?></span></div>	
+	<div class="required">
+		<label id="lblTextIput">Tên Thủ tục<font color="red">*</font></label>
+		<?php echo $this->form->getElement('TENTHUTUC');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('TENTHUTUC'));			
+            ?>
+        </span>
+	</div>
+	<div class="clr"></div>
+    <div class="required">
+		<label id="lblTextIput">Loại hồ sơ<font color="red">*</font></label>
+		<?php echo $this->form->getElement('ID_LOAIHOSO');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_LOAIHOSO'));			
+            ?>
+        </span>
+	</div>
+	<div class="clr"></div>
+    <div class="required">
+		<label id="lblTextIput">Kích hoạt </label>
+		<?php echo $this->form->getElement('ACTIVE');?>
+    	<span class="box_erro_area">        	
+        </span>
+	</div>	
+	<div class="clr"></div>
+</fieldset>
+<input type=hidden name="id" value=<?php echo $this->id?> >
+<input type=hidden name=page value="<?php echo $this->page; ?>">
+<input type=hidden name=limit value="<?php echo $this->limit; ?>">
+<input type=hidden name=search value="<?php echo $this->search; ?>">
+<input type=hidden name=filter_object value="<?php echo $this->filter_object; ?>">
+</form>
+
+<script>
+	function SaveButtonClick()
+	{
+		document.frmAddThuTuc.submit();
+	}
+	function BackButtonClick()
+	{
+		document.frmAddThuTuc.action = "/motcua/thutuc/";
+		document.frmAddThuTuc.submit();
+	}
+</script>

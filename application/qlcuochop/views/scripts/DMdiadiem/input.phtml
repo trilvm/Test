@@ -1,0 +1,71 @@
+<?php require_once 'qlcuochop/models/DMdiadiemModel.php'; ?>
+<form name="frm"  method="post" action="/qlcuochop/DMdiadiem/save">
+    <fieldset>
+        <div style="text-align:right;width:100%">
+		Trường có dấu <font color="red">*</font> là bắt buộc nhập
+        </div>
+        <div align="center"><span class="box_erro_area"></span></div>
+        <div class="required">
+            <label style="margin-left:50px" id="lblTextIput">Tên địa điểm họp <font color="red"> *</font></label>
+            <input type="text" name="diadiem" id="dd" size=60 value="<?php echo $this->data->TEN; ?>">
+            <span class="box_erro_area" id=ERRdiadiem>
+                <?php echo $this->err_exist ?>
+            </span>
+        </div>
+        <div class="clr"></div>
+    </fieldset>
+    <input type=hidden name="id" value="<?php echo $this->data->ID_DIADIEM; ?>">
+</form>
+<script>
+    document.getElementById("dd").focus();
+    function SaveButtonClick()
+    {        
+        var err = true;
+        err = err & validateInput("req",document.frm.diadiem,"Tên địa điểm không được rỗng.");
+        err = err & err==true?validateInput("maxlen=512",document.frm.diadiem,"Tển địa điểm không được quá 512 ký tự"):false;
+
+        if(err==true){
+            if(isvalid != 1){
+                    document.frm.submit();
+                }
+                else
+                {
+                    document.getElementById('ERRdiadiem').innerHTML = "Tên địa điểm họp này đã được sử dụng";
+                }
+        }
+        //document.frm.submit();
+    }
+
+    function BackButtonClick()
+    {
+        document.frm.action = "/qlcuochop/DMdiadiem/";
+        document.frm.submit();
+    }
+
+    var isvalid = 0;
+    function checkInputKQXL(id,value,str,loaitru){
+            if(value != loaitru)
+            {
+                    for(var i=0;i<jsArr.length;i++)
+                    {
+                            if(value == jsArr[i])
+                            {
+                                    isvalid = 1;
+                                    break;
+                            }
+                            else
+                            {
+                                    isvalid = 0;
+                            }
+                    }
+                    if(isvalid == 0)
+                    {
+                            document.getElementById(id).innerHTML = "";
+                    }
+                    else
+                    {
+                            document.getElementById(id).innerHTML = str;
+                    }
+            }
+    }
+</script>

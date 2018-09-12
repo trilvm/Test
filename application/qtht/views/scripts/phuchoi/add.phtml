@@ -1,0 +1,66 @@
+<form name="frm" action="/qtht/phuchoi/add" method="post" enctype="multipart/form-data">
+    <fieldset>
+	<div style="text-align:right;width:100%">
+		<font color="red">(*)là bắt buộc nhập </font> 
+	</div>
+	<div align="center"><span class="box_erro_area"></span></div>
+	<div class="clr"></div>
+	<div class="required">
+		<label id="lblTextIput">Nội dung:<font color="red">*</font></label>
+                <textarea name="content" cols="50" rows="5"></textarea>  	
+                <span class="box_erro_area"><?php echo $this->error;?></span>
+	</div>
+
+        <div class="clr"></div>	
+	<div class="required">
+        <span class="box_erro_area"></span>
+	</div>
+	<div class="clr"></div>
+	<div class="required">
+            <label id="lblTextIput">File đính kèm:</label>
+            <div id="idFileDinhKem" style="float: left;display: inline-block;">
+                <ul id="ulfile">
+                    <li id="my0Li" style="font-weight: bold;"><div id="namefile0"></div><input id="my0in" onchange="addElement();showValue('0');style.display='none'; " name="file[]" type="file"/></li>
+                </ul>
+                
+            </div>
+            <input type="hidden" value="0" id="theValue" />
+            <span class="box_erro_area"></span>
+	</div>
+	<div class="clr"></div>
+	
+</fieldset>
+</form>
+
+<script type="text/javascript">
+    function showValue(id){
+        
+        var li = document.getElementById('my'+id+'in');
+        document.getElementById('namefile'+id).innerHTML = li.value+' | <a href="javascript:removeElement(\'my'+id+'Li\')">Xóa</a>';
+        
+    }
+    function AddNewButtonClick(){
+        document.frm.action='/qtht/phuchoi/add';
+        document.frm.method="post";
+        document.frm.submit();
+    }
+    function addElement() {
+      var ni = document.getElementById('ulfile');
+      var numi = document.getElementById('theValue');
+      var num = (document.getElementById('theValue').value -1)+ 2;
+      numi.value = num;
+      var newli = document.createElement('li');
+      var liIdName = 'my'+num+'Li';
+      newli.setAttribute('id',liIdName);
+      newli.setAttribute('style','font-weight:bold');
+      newli.innerHTML = '<div id="namefile'+num+'"></div><input id="my'+num+'in" name="file[]" type="file" onchange="addElement();showValue(\''+num+'\');style.display=\'none\'; " />';
+      ni.appendChild(newli);
+    }
+    function removeElement(liNum) {
+      var u = document.getElementById('ulfile');
+      var oldli = document.getElementById(liNum);
+      u.removeChild(oldli);
+    }
+    
+    
+</script>

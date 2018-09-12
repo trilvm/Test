@@ -1,0 +1,847 @@
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/Ajax/testconfigmailAjax.js"></script>
+<form name=frm action="/qtht/config/save" method="post">
+<div class="submenu-box">
+	<div class="submenu-pad">
+		<ul id="submenu" class="configuration">
+			<li><a id="_system" class="active" onclick="SwitchPage('system');">Hệ thống</a></li>
+			<li><a id="_database" onclick="SwitchPage('database');">Cơ Sở Dữ Liệu</a></li>
+			<li><a id="_emailclient" onclick="SwitchPage('emailclient');">Thư Điện Tử</a></li>
+			<li><a id="_ldap" onclick="SwitchPage('ldap');">LDAP</a></li>
+			<li><a id="_attact" onclick="SwitchPage('attact');">File đính kèm</a></li>
+			<li><a id="_sendvb" onclick="SwitchPage('sendvb');">Email nhận và gửi VB</a></li>
+			<li><a id="_hscv" onclick="SwitchPage('hscv');">Hiển thị HSCV</a></li>
+			<li><a id="_work" onclick="SwitchPage('work');">Lịch làm việc</a></li>
+			<li><a id="_lienthong" onclick="SwitchPage('lienthong');">Liên thông</a></li>
+			<li><a id="_serverchat" onclick="SwitchPage('serverchat');">Server chat</a></li>
+			<li><a id="_replicate" onclick="SwitchPage('replicate');">Đồng bộ văn bản</a></li>
+			<li><a id="_autoupdate" onclick="SwitchPage('autoupdate');">Cập nhật</a></li>
+		</ul>
+		<div class="clr"></div>
+	</div>
+</div>
+<!-- dong bo van ban -->
+<table class=admintable id=replicate>
+	<tr>
+		<td class=key>Dịch vụ nhận văn bản:</td>
+		<td><input size=70 type=text name='repservice' value="<?=htmlspecialchars($this->data->sys_info->repservice)?>"></td>
+	</tr>
+	<tr>
+		<td class=key>Key:</td>
+		<td><input size=70 type=text name='keyservice' value="<?=htmlspecialchars($this->data->sys_info->keyservice)?>"></td>
+	</tr>
+</table>
+
+
+<!-- server chat-->
+	<table class=admintable id=serverchat>
+		<tr>
+			<td class=key>Services chung:</td>
+			<td><input size=50 type=text name='serviceschung' value="<?=$this->config_chat->services->chung?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Services chat:</td>
+			<td><input size=50 type=text name='serviceschat' value="<?=$this->config_chat->services->chat?>"></td>
+		</tr>	
+		<tr>
+			<td class=key>Địa chỉ IP:</td>
+			<td><input size=50 type="text" name='ipserverchat' value="<?=($this->config_chat->services->ip==null?$_SERVER['SERVER_ADDR']:$this->config_chat->services->ip)?>"></td>
+		</tr>
+	</table>
+<!--Thông số hệ thống-->
+	<table class=admintable id=system>
+			
+			<tr>
+				<td class=key>Đơn vị cấp trên:</td>
+				<td><input  size=50 type=text name='sysinfo_unit' value="<?php echo $this->data->sys_info->unit ?>"></td>
+			</tr>
+				<tr>
+				<td class=key>Tên cơ quan:</td>
+				<td><input  size=50 type=text name='sysinfo_company' value="<?php  echo $this->data->sys_info->company ?>"></td>
+			</tr>
+			<tr>
+				<td class=key>Thành phố/Tỉnh:</td>
+				<td><input size=50 type=text name='sysinfo_city' value="<?php echo $this->data->sys_info->city ?>"></td>
+			</tr>
+				
+			<tr>
+				<td class=key>Địa chỉ:</td>
+				<td><input size=50 type=text name='sysinfo_address' value="<?php echo $this->data->sys_info->address ?>"></td>
+			</tr>
+		
+			
+		
+			<tr>
+				<td class=key>Số điện thoại:</td>
+				<td><input  type=text name='sysinfo_phone' value="<?php echo $this->data->sys_info->phone ?>"></td>
+			
+				<td class=key>Fax:</td>
+				<td><input type=text name='sysinfo_fax' value="<?php echo $this->data->sys_info->fax ?>"></td>
+			</tr>
+			<tr>
+				<td class=key>Phiên bản:</td>
+				<td><input  type=text name='sysinfo_version' value="<?php echo $this->data->sys_info->version ?>"></td>
+			
+				<td class=key>Ký hiệu tiếp nhận:</td>
+				<td><input  type=text name='sysinfo_kyhieutiepnhan' value="<?php echo $this->data->sys_info->kyhieutiepnhan ?>"></td>
+			</tr>
+			<tr>
+				<td class=key>VT nhập bút phê:</td>
+				<td>
+				<input type=radio name=hscv_vtbp value=1 <?=($this->data->hscv->vtbp==1?"checked":"")?>> có 
+				<input type=radio name=hscv_vtbp value=0 <?=($this->data->hscv->vtbp==0?"checked":"")?>> không 
+				</td>
+			
+				<td class=key>Nhập lịch dự kiến:</td>
+				<td>
+				<input type=radio name=lct_dukien value=1 <?=($this->data->lct->dukien==1?"checked":"")?>> có 
+				<input type=radio name=lct_dukien value=0 <?=($this->data->lct->dukien==0?"checked":"")?>> không 
+				</td>
+			</tr>
+			<tr>
+				<td class=key>Nhập lịch ban đêm:</td>
+				<td>
+				<input type=radio name=lct_bandem value=1 <?=($this->data->lct->bandem==1?"checked":"")?>> có 
+				<input type=radio name=lct_bandem value=0 <?=($this->data->lct->bandem==0?"checked":"")?>> không 
+				</td>
+			</tr>
+			<tr>
+				<td class=key>Nơi nhận lịch:</td>
+				<td>
+					<textarea cols=50 rows=2 name=lct_noinhan><?=str_replace("\\n","\r\n",$this->data->lct->noinhan)?></textarea>
+				</td>
+			
+			<td class=key>Phân trang :</td>	
+			<td>
+				<select  name="limit">
+					 <option <?php if($this->data->limit == "5")
+					     echo "selected";?> value="5"><b>5</b></option>
+					 <option <?php if($this->data->limit == "10")
+						 echo "selected";?> value="10"><b>10</b></option>
+					 <option <?php if($this->data->limit == "15")
+						 echo "selected";?> value="15"><b>15</b></option>
+					 <option <?php if($this->data->limit == "20")
+						 echo "selected";?> value="20"><b>20</b></option>
+					 <option <?php if($this->data->limit == "25")
+						 echo "selected";?> value="25"><b>25</b></option>
+					 <option <?php if($this->data->limit == "30")
+						 echo "selected";?> value="30"><b>30</b></option>
+					<option <?php if($this->data->limit == "35")
+						 echo "selected";?> value="35"><b>35</b></option>
+					<option <?php if($this->data->limit == "40")
+						 echo "selected";?> value="40"><b>40</b></option>
+					
+				 </select>
+			</td>
+			<td class=key>Hiển thị dữ liệu:</td>	
+			<td>
+				<select  name="hienthi">
+					 <option <?php if($this->data->hienthi == "5")
+					     echo "selected";?> value="5"><b>5</b></option>
+					 <option <?php if($this->data->hienthi == "10")
+						 echo "selected";?> value="10"><b>10</b></option>					
+					 <option <?php if($this->data->hienthi == "20")
+						 echo "selected";?> value="20"><b>20</b></option>					
+					 <option <?php if($this->data->hienthi == "30")
+						 echo "selected";?> value="30"><b>30</b></option>
+					<option <?php if($this->data->hienthi == "40")
+						 echo "selected";?> value="40"><b>40</b></option>
+					<option <?php if($this->data->hienthi == "50")
+						 echo "selected";?> value="50"><b>50</b></option>
+				    <option <?php if($this->data->hienthi == "100")
+						 echo "selected";?> value="100"><b>100</b></option>
+					
+				 </select>
+			</td>
+		</tr>
+        <?php 
+            $selectSystemStatus = array(
+                $this->data->sys_info->status => "selected"
+            );
+        ?>
+        <tr>
+            <td class=key>Trạng thái hệ thống</td>
+            <td colspan="5">
+                <select name='sysinfo_status' value="">
+                    <option value="1" <?=$selectSystemStatus[1]?>>Hoạt động bình thường</option>
+                    <option value="2" <?=$selectSystemStatus[2]?>>Đang kiểm tra, rà soát hệ thống</option>
+                    <option value="3" <?=$selectSystemStatus[3]?>>Đang bảo trì, cập nhật hệ thống</option>
+                </select>
+            </td>
+        </tr>
+					<input type="hidden" name="pt_maldcq" value="<?php echo $this->data->pt_maldcq?>">			
+					<input type="hidden" name="pt_maldvp" value="<?php echo $this->data->pt_maldvp ?>">
+					<input type="hidden" name="pt_maldp" value="<?php echo $this->data->pt_maldp ?>">
+			</tr>
+			
+			
+			
+	</table>
+<!-- auto update -->
+	<table class=admintable id=autoupdate>
+		<tr>
+			<td class=key>Địa chỉ dịch vụ:</td>
+			<td><input size=50 type=text name='autoupdate_service' value="<?php echo $this->data->autoupdate->service ?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Đơn vị:</td>
+			<td><input size=50 type=text name='autoupdate_donvi' value="<?php echo $this->data->autoupdate->donvi ?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Lần cập nhật cuối cùng:</td>
+			<td>
+				<?php
+					include "config/ver.php";
+				?>
+			</td>
+		</tr>
+	</table>
+<!--Thông số Database-->
+	<table class=admintable id=database>
+		<tr>
+			<td class=key>Địa chỉ IP:</td>
+			<td><input size=50 type=text name='db_host' value="<?php echo $this->data->db->params->host ?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Tên đăng nhập:</td>
+			<td><input size=50 type=text name='db_username' value="<?php echo $this->data->db->params->username ?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Mật khẩu:</td>
+			<td><input size=50 type=password name='db_password' value="<?php echo $this->data->db->params->password ?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Tên CSDL</td>
+			<td><input size=50 type=text name='db_dbname' value="<?php echo $this->data->db->params->dbname ?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Thư mục chứa dữ liệu:</td>
+			<td><input size=50 type=text name='db_dbdatastorage' value="<?php echo $this->data->db->params->dbdatastorage ?>">
+			<span>(Để Backup )</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input class=input_button type='button' value='Kiểm tra kết nối' onclick="checkDatabase();">
+				
+			</td>
+			<td>
+				<img id="image_load" src="/images/loading.gif" style="display:none;">
+				<span id='re_cdb'></span>
+			</td>
+		</tr>
+
+	</table>
+<!--Thông số mail client-->
+	<table class=admintable id=emailclient>
+		<tr>
+				<td class=key>Server nhận mail:</td>
+				<td><input type=text name='default_outgoing_server'  value="<?=$this->config_mail->mail->default->outgoing_server?>"></td>	
+		</tr>
+		<tr>
+				<td class=key>Server gửi mail:</td>
+				<td><input type=text name='default_incoming_server'  value="<?=$this->config_mail->mail->default->incoming_server?>"></td>	
+		</tr>
+		<tr>
+				<td class=key>Quota:</td>
+				<td><input type=text name='QUOTA_MAXSIZE'  value="<?=$this->config_mail->mail->quota->maxsize?>" size=5>MB</td>	
+		</tr>
+		<tr>
+				<td class=key>Thư mục mã hoá (temp):</td>
+				<td><input type=text name='crypt_default_temp'  value="<?=$this->data_crypt->crypt->default->temp?>" size=80></td>	
+		</tr>
+		<tr>
+				<td class=key>Thư mục lưu trữ:</td>
+				<td><input type=text name='mail_default_mailclientstorage'  value="<?=$this->config_mail->mail->default->mailclientstorage?>" size=80></td>	
+		</tr>
+	</table>
+<!--Thông số Ldap-->
+	<table class=admintable id=ldap>
+		<tr>
+				<td class=key>Máy chủ LDAP:</td>
+				<td><input size=50 type=text name='ldap_os' value="<?php echo $this->data_ldap->ldap->host ?>"></td>
+		</tr>
+		<tr>
+				<td class=key>Cổng:</td>
+				<td><input size=50 type=text name='ldap_port' value="<?php echo $this->data_ldap->ldap->port ?>"></td>
+		</tr>
+		<tr>
+				<td class=key>Tên đăng nhập:</td>
+				<td><input size=50 type=text name='ldap_username' value="<?php echo str_replace(".","=",$this->data_ldap->ldap->username)?>"></td>
+		</tr>
+		<tr>
+				<td class=key>Mật khẩu:</td>
+				<td><input size=50 type="password" name='ldap_pass' value="<?php echo $this->data_ldap->ldap->password ?>"></td>
+		</tr>
+		<tr>
+				<td class=key>Kết nối với LDAP:</td>
+				<td>
+				   <input type=radio name=kn_ldap value=1 <?=($this->data_ldap->ldap->enable==1?"checked":"")?>> có 
+				   <input type=radio name=kn_ldap value=0 <?=($this->data_ldap->ldap->enable==0?"checked":"")?>> không 
+				</td>
+		</tr>
+		<tr>
+				<td class=key>Loại LDAP:</td>
+				<td>
+				   <input type=radio name=ldap_AD value=1 <?=($this->data_ldap->ldap->AD==1?"checked":"")?>> Active directory 
+				   <input type=radio name=ldap_AD value=0 <?=($this->data_ldap->ldap->AD==0?"checked":"")?>> Openldap 
+				</td>
+		</tr>
+		<tr>
+				<td class=key>Quy định username:</td>
+				<td>
+				   <input type=radio name=ldap_user_qd value=1 <?=($this->data_ldap->ldap->user_qd==1?"checked":"")?>> cn 
+				   <input type=radio name=ldap_user_qd value=0 <?=($this->data_ldap->ldap->user_qd==0?"checked":"")?>> uid 
+				</td>
+		</tr>
+		<tr>
+			<td>
+				<input  class=input_button type='button' value='Kiểm tra kết nối' onclick="checkDatabase_ldap();">
+			</td>
+			<td>
+				<span id='ldap1'></span>
+			</td>
+		</tr>
+	</table>
+<!--Thông số File đính kèm-->
+	<table class=admintable id=attact>
+		<tr>
+				<td class=key>Thư mục lưu trữ file:</td>	
+				<td><input size=50 type=text name='file_root_dir' value="<?php echo $this->data->file->root_dir ?>"></td>
+		</tr>
+		<tr>
+				<td class=key>Thư mục lưu trữ tạm (temp path):</td>	
+				<td><input size=50 type=text name='file_temp_path' value="<?php echo $this->data->file->temp_path ?>"></td>
+		</tr>
+	</table>
+<!--Thông số Phân trang-->
+	<table class=admintable id=page>
+		
+	</table>
+
+
+
+
+	<!--Thông số Lien thong-->
+	<table class=admintable id=lienthong>
+		<tr>
+			<td class=key>Services:</td>
+			<td><input size=50 type=text name='services' value="<?php echo $this->data->service->lienthong->uri?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Tài khoản:</td>
+			<td><input size=50 type=text name='user_lienthong' value="<?php echo $this->data->service->lienthong->username ?>"></td>
+		</tr>	
+		<tr>
+			<td class=key>Mật khẩu:</td>
+			<td><input size=50 type="password" name='pass_lienthong' value="<?php echo $this->data->service->lienthong->password?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Số văn bản tiếp nhận tối đa:</td>
+			<td><input size=50 type=text name='maxrows_lienthong' value="<?php echo $this->data->service->tiepnhanvb->maxrows?>"></td>
+		</tr>
+		<tr>
+			<td class=key>Host:</td>
+			<td><input size=50 type=text name='host_lienthong' value="<?php echo $this->data->service->lienthong->host?>"></td>
+		</tr>
+	</table>
+
+<!--Cấu hình mail nhận và gửi văn bản-->
+<div id=sendvb>
+<div class="clr"></div>
+<div>
+<label><b>Địa chỉ email</b></label>
+<input type="text" value="<?=$this->email_account->_email_addr?>" name="EMAIL_ADDR">
+</div>
+<div class="clr"></div>
+<div>
+<label><b>Tài khoản</b></label>
+<input type="text" value="<?=$this->email_account->_username?>" name="USERNAME">
+</div>
+<div class="clr"></div>
+<div>
+<label><b>Mật khẩu:</b></label>
+<input type="password" value="<?=$this->email_account->_password?>" name="PASSWORD">
+</div>
+<div class="clr"></div>
+<div style="float:left">
+    <label><b>Server nhận mail </b></label>
+    <input type="text" value="<?= $this->email_account->_incoming_hostname ?>" name="INCOMING_HOSTNAME">
+</div>
+<div class="clr"></div>
+<div style="margin-left:82px;">
+<table width="40%">
+        <tr>
+            <td nowrap>
+            <b>Giao thức </b>
+            <select  name="INCOMING_PROTOCOL" style="width:100px;">
+                <option <?php
+                    if ($this->email_account->_incoming_protocol == "POP3")
+                        echo "selected";
+                    ?> value="POP3"><b>POP3</b></option>
+            </select>
+            </td>
+                <td nowrap>
+                <b>Cổng </b>
+                <input type="text" size='5' name="INCOMING_PORT" value="<?= $this->email_account->_incoming_port ?>">
+            </td>
+            <td nowrap>
+            <b> SSL</b>
+            <select name="SSL_IN" style="width:120px;">
+                <option value=0>Không sử dụng</option>
+                <option value=1>Sử dụng SSL</option>
+                <option value=2>Sử dụng TLS</option>
+            </select>
+            <script>document.frm.SSL_IN.value=<?= $this->email_account->_ssl_in ?></script>    
+        </td>
+    </tr>
+    <tr>
+        <td nowrap>
+            <b>Giao thức </b>
+            <select  name="OUTGOING_PROTOCOL" style="width:100px;">
+                <option value="SMTP">SMTP</option>
+            </select>
+        </td>
+        <td nowrap>
+            <b>Cổng </b>
+            <input type="text"  size='5' name="OUTGOING_PORT" value="<?= $this->email_account->_outgoing_port ?>">
+        </td>
+        <td nowrap>
+            <b> SSL </b>
+            <select name="SSL_OUT" style="width:120px;">
+                <option value=0>Không sử dụng</option>
+                <option value=1>Sử dụng SSL</option>
+                <option value=2>Sử dụng TLS</option>
+            </select>
+            <script>document.frm.SSL_OUT.value=<?= $this->email_account->_ssl_out ?></script>
+
+        </td>
+    </tr>
+</table>
+</div>
+<div style="float:left">
+			<label><b>Server gửi mail </b></label>
+			<input type="text" value="<?=$this->email_account->_outgoing_hostname?>" name="OUTGOING_HOSTNAME">
+</div>
+<div class="clr"></div>
+<input type="hidden" name="ACTIVE" value="1"?>
+<input type="hidden" name="ID_EAC" value="<?=$this->id_eac?>"?>
+<div class="clr"></div>
+<div>
+<input class=input_button type="button" value="Kiểm tra kết nối" name="test_mail"
+onclick="testButtonClick();"
+>
+</div>
+<div class="clr"></div>
+
+<div id='test_result' style="display:none">
+<div id="check_3">
+<img id ='check_3_pro' src='/images/loading.gif' width='16' height='16' border='0'></img>
+<label id='check_3_lbl_dis'>Đăng nhập vào server nhận mail</label>
+<img id='check_3_suc' src='/images/header/icon-48-checkin.png' width='16' height='16' border='0' style='display:none'></img>
+<img id='check_3_err' src='/images/icon_del.jpg' width='16' height='16' border='0' style='display:none'></img>
+</div>
+<div class="clr"></div>
+<div id="check_4">
+<img id ='check_4_pro' src='/images/loading.gif' width='16' height='16' border='0'></img>
+<label id='check_4_lbl_dis'>Gửi mail thử</label>
+<img id='check_4_suc' src='/images/header/icon-48-checkin.png' width='16' height='16' border='0' style='display:none'></img>
+<img id='check_4_err' src='/images/icon_del.jpg' width='16' height='16' border='0' style='display:none'></img>
+</div>
+
+</div>
+</div>
+<!--Thông số Hiển thị danh sách hồ sơ công việc-->
+<table class=adminlist id=hscv>
+<tbody>
+<?php 
+//tach chuoi
+$hscv_1 = $this->data->HSCV_1;
+$arr_1 = explode(',',$hscv_1);
+?>
+<tr>
+	<td>Xử lý văn bản đến</td>
+	<td>
+	<input type='checkbox' value=1 name=HSCV_1_0 <? if($arr_1[0]==1) echo "checked" ?>> Chi tiết
+	<input type='checkbox' value=1 name=HSCV_1_1 <? if($arr_1[1]==1) echo "checked" ?>> Bút phê
+	<input type='checkbox' value=1 name=HSCV_1_2 <? if($arr_1[2]==1) echo "checked" ?>> Phối hợp
+	<input type='checkbox' value=1 name=HSCV_1_3 <? if($arr_1[3]==1) echo "checked" ?>> File đính kèm
+	<input type='checkbox' value=1 name=HSCV_1_4 <? if($arr_1[4]==1) echo "checked" ?>> Dự thảo
+	<input type='checkbox' value=1 name=HSCV_1_5 <? if($arr_1[5]==1) echo "checked" ?>> Luân chuyển
+	<input type='checkbox' value=1 name=HSCV_1_6 <? if($arr_1[6]==1) echo "checked" ?>> VB Liên quan
+        <input type='checkbox' value=1 name=HSCV_1_7 <? if($arr_1[7]==1) echo "checked" ?>> Giám sát công việc
+
+	</td>
+<tr>
+<?php 
+//tach chuoi
+$hscv_2 = $this->data->HSCV_2;
+$arr_2 = explode(',',$hscv_2);
+?>
+<tr>
+	<td>Công việc</td>
+	<td>
+	<input type='checkbox' value=1 name=HSCV_2_0 <? if($arr_2[0]==1) echo "checked" ?>> Chi tiết
+	<input type='checkbox' value=1 name=HSCV_2_2 <? if($arr_2[2]==1) echo "checked" ?>> Phối hợp
+	<input type='checkbox' value=1 name=HSCV_2_3 <? if($arr_2[3]==1) echo "checked" ?>> File đính kèm
+	<input type='checkbox' value=1 name=HSCV_2_4 <? if($arr_2[4]==1) echo "checked" ?>> Dự thảo
+	<input type='checkbox' value=1 name=HSCV_2_5 <? if($arr_2[5]==1) echo "checked" ?>> Luân chuyển
+	<input type='checkbox' value=1 name=HSCV_2_6 <? if($arr_2[6]==1) echo "checked" ?>> VB Liên quan
+	</td>
+<tr>
+<?php 
+//tach chuoi
+$hscv_3 = $this->data->HSCV_3;
+$arr_3 = explode(',',$hscv_3);
+?>
+<!--<tr>
+	<td>Hồ sơ một cửa</td>
+	<td>
+	<input type='checkbox' value=1 name=HSCV_3_0 <? //if($arr_3[0]==1) echo "checked" ?>> Chi tiết
+	<input type='checkbox' value=1 name=HSCV_3_2 <? //if($arr_3[2]==1) echo "checked" ?>> Phối hợp
+	<input type='checkbox' value=1 name=HSCV_3_3 <? //if($arr_3[3]==1) echo "checked" ?>> File đính kèm
+	<input type='checkbox' value=1 name=HSCV_3_4 <? //if($arr_3[4]==1) echo "checked" ?>> Dự thảo
+	<input type='checkbox' value=1 name=HSCV_3_5 <? //if($arr_3[5]==1) echo "checked" ?>> Luân chuyển
+	<input type='checkbox' value=1 name=HSCV_3_6 <? //if($arr_3[6]==1) echo "checked" ?>> VB Liên quan
+	<input type='checkbox' value=1 name=HSCV_3_7 <? //if($arr_3[7]==1) echo "checked" ?>> Bổ sung hồ sơ
+	</td>
+<tr>-->
+</tbody>
+</table>
+<!--Lịch làm việc của cơ quan-->
+<div id=work>
+	<iframe style="overflow-x:visible;" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no name="frmbussday" id="frmbussday" src="/qtht/config/viewbussdate" onload="SwitchPage('system')"> </iframe>
+</div>
+</form>
+<script type="text/javascript">
+//SwitchPage('work');
+
+//SwitchPage('system');
+
+function SaveButtonClick(){
+	//window.showModalDialog( '/DialogTemplate/QueryDialog.html',document);
+	var img = document.getElementById('image_load');
+		var re_dis = document.getElementById('re_cdb');
+    	img.style.display = '';
+    	re_dis.innerHTML ='';
+    	var submitAjax = new AjaxEngine(); 
+		var oXmlHttp = submitAjax.createXMLHttp();
+		oXmlHttp.open("post", "/qtht/config/checkdatabase" , true); 
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+		var post = submitAjax.getDataFromFrm(document.frm);
+		oXmlHttp.onreadystatechange = function () { 
+		if (oXmlHttp.readyState == 4) { 
+			
+			if (oXmlHttp.status == 200) { 
+				//alert(oXmlHttp.responseText);
+				if(oXmlHttp.responseText == 1){
+					re_dis.innerHTML = "<font color='blue'><b>Kết nối cơ sở dữ liệu thành công</b></font>";
+					document.frm.submit();
+					
+				}else{
+					re_dis.innerHTML = "<font color='red'><b>Không thể kết nối cơ sở dữ liệu</b></font>";
+				}
+					
+	        } else { 
+            
+        	} 
+        	
+        	
+    	} 
+    	img.style.display = "none";
+   }; 
+   oXmlHttp.send(post);
+	
+}
+function BackButtonClick(){
+	
+	window.location = '/default/index';
+	
+}
+
+function checkDatabase(){
+	//Luu van ban di bang ajax
+    	
+    	var img = document.getElementById('image_load');
+		var re_dis = document.getElementById('re_cdb');
+    	img.style.display = '';
+    	re_dis.innerHTML ='';
+    	var submitAjax = new AjaxEngine(); 
+		var oXmlHttp = submitAjax.createXMLHttp();
+		oXmlHttp.open("post", "/qtht/config/checkdatabase" , true); 
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+		var post = submitAjax.getDataFromFrm(document.frm);
+		oXmlHttp.onreadystatechange = function () { 
+		if (oXmlHttp.readyState == 4) { 
+			
+			if (oXmlHttp.status == 200) { 
+				//alert(oXmlHttp.responseText);
+				if(oXmlHttp.responseText == 1){
+					re_dis.innerHTML = "<font color='blue'><b>Kết nối cơ sở dữ liệu thành công</b></font>";
+					
+				}else{
+					re_dis.innerHTML = "<font color='red'><b>Không thể kết nối cơ sở dữ liệu</b></font>";
+				}
+					
+	        } else { 
+            
+        	} 
+        	
+        	
+    	} 
+    	img.style.display = "none";
+   }; 
+   oXmlHttp.send(post);
+}
+
+function dobackupnow(){
+	//Luu van ban di bang ajax
+    	
+    	var img = document.getElementById('image_load_bk');
+		var re_dis = document.getElementById('re_backupnow');
+    	img.style.display = '';
+    	re_dis.innerHTML ='';
+    	var submitAjax = new AjaxEngine(); 
+		var oXmlHttp = submitAjax.createXMLHttp();
+		oXmlHttp.open("post", "/qtht/config/dobackupnow" , true); 
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+		var post = submitAjax.getDataFromFrm(document.frm);
+		oXmlHttp.onreadystatechange = function () { 
+		if (oXmlHttp.readyState == 4) { 
+			
+			if (oXmlHttp.status == 200) { 
+				if(oXmlHttp.responseText == 1){
+					//alert(oXmlHttp.responseText);
+					re_dis.innerHTML = "<font color='blue'><b>Thiết lập sao lưu thành công.</b></font>";
+					
+				}else{
+					re_dis.innerHTML = "<font color='red'><b>Không thể thực hiện sao lưu.</b></font>";
+				}
+					
+				
+					
+	        } else { 
+            
+        	} 
+        	
+        	
+    	} 
+    	img.style.display = "none";
+   }; 
+   oXmlHttp.send(post);
+}
+
+ function checkDatabase_ldap(){   	
+    	
+		var re_dis = document.getElementById('ldap1');
+    	
+    	re_dis.innerHTML ='';
+    	var submitAjax = new AjaxEngine(); 
+		var oXmlHttp = submitAjax.createXMLHttp();
+		oXmlHttp.open("post", "/qtht/config/checkdatabaseldap" , true); 
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+		var post = submitAjax.getDataFromFrm(document.frm);
+		oXmlHttp.onreadystatechange = function () { 
+		if (oXmlHttp.readyState == 4) { 
+			
+			if (oXmlHttp.status == 200) { 
+				//alert(oXmlHttp.responseText);
+				if(oXmlHttp.responseText == 1){
+					re_dis.innerHTML = "<font color='blue'><b>Kết nối server ldap thành công</b></font>";
+					
+				}else{
+					re_dis.innerHTML = "<font color='red'><b>Không thể kết nối server ldap</b></font>";
+				}
+					
+	        } else { 
+            
+        	} 
+        	
+        	
+    	} 
+    	img.style.display = "none";
+   }; 
+   oXmlHttp.send(post);
+}
+
+/**
+* Gui van ban qua email
+*/
+function saveButtonClick(){
+	document.frm.submit();
+}
+
+
+
+function testButtonClick(){
+	
+	var odiv_re = document.getElementById('test_result');
+	odiv_re.style.display ="";
+	var values = new Array();
+	for(i = 2 ; i<4 ;i++ ){
+		switch(i){
+			case 0:
+			values[i] = document.frm.INCOMING_HOSTNAME.value;
+			break;
+			case 1:
+			values[i] = document.frm.OUTGOING_HOSTNAME.value;
+			break;
+			case 2:
+			values[i] = 0;
+			break;
+			case 3:
+			values[i] = 0;
+			break;
+			break;
+			default:
+			break;
+		}
+		
+	}
+	var url = "/mailclient/emailengine/testconnect";
+	//document.frm.action="/mailclient/emailengine/testconnect";
+	//document.frm.submit();
+	var ajobj= new testconfigmailAjax ();
+	for(i = 3 ; i<=4 ;i++ )
+	{
+		initDisplayState(i);
+		var frmobject = document.frm;
+		if(i==1 || i==2)
+			frmobject = null;
+		ajobj.getResultFromserver(frmobject,i,url,values[i-1]);
+	}
+	
+	
+}
+
+function initDisplayState(test_id){
+	var img_su = document.getElementById("check_"+test_id+"_suc");
+	var img_fa = document.getElementById("check_"+test_id+"_err");
+	var check_pro = document.getElementById("check_"+test_id+"_pro");
+	var check_1_lbl_dis = document.getElementById("check_"+test_id+"_lbl_dis");
+	img_fa.style.display = "none";
+	
+	img_su.style.display = "none";
+	check_1_lbl_dis.style.color = "black";
+	check_pro.style.display = "";
+}
+
+function SSL_INselect(){
+	
+	
+}
+
+function SSL_OUTselect(){
+	
+}
+
+/**
+* Ket thuc gui van ban qua mail
+*/
+
+function SwitchPage(obj){
+/*<li><a id="_system" class="active" onclick="SwitchPage('system');">Hệ thống</a></li>
+<li><a id="_database" onclick="SwitchPage('database');">Database</a></li>
+<li><a id="_emailclient" onclick="SwitchPage('emailclient');">Email client</a></li>
+<li><a id="_ldap" onclick="SwitchPage('ldap');">Ldap</a></li>
+<li><a id="_attact" onclick="SwitchPage('attact');">File đính kèm</a></li>
+<li><a id="_page" onclick="SwitchPage('page');">Phân trang</a></li>
+<li><a id="_sendvb" onclick="SwitchPage('sendvb');">Email nhận và gửi VB</a></li>
+<li><a id="_hscv" onclick="SwitchPage('hscv');">Hiển thị HSCV</a></li>
+<li><a id="_work" onclick="SwitchPage('work');">Lịch làm việc</a></li>*/
+document.getElementById("system").style.display="none";
+document.getElementById("database").style.display="none";
+document.getElementById("emailclient").style.display="none";
+document.getElementById("ldap").style.display="none";
+document.getElementById("attact").style.display="none";
+document.getElementById("sendvb").style.display="none";
+document.getElementById("hscv").style.display="none";
+document.getElementById("work").style.display="none";
+document.getElementById("lienthong").style.display="none";
+document.getElementById("serverchat").style.display="none";
+document.getElementById("replicate").style.display="none";
+document.getElementById("autoupdate").style.display="none";
+
+document.getElementById("_system").className="";
+document.getElementById("_database").className="";
+document.getElementById("_emailclient").className="";
+document.getElementById("_ldap").className="";
+document.getElementById("_attact").className="";
+document.getElementById("_autoupdate").className="";
+document.getElementById("_sendvb").className="";
+document.getElementById("_hscv").className="";
+document.getElementById("_work").className="";
+document.getElementById("_lienthong").className="";
+document.getElementById("_replicate").className="";
+document.getElementById("_serverchat").className="";
+document.getElementById(obj).style.display="";
+document.getElementById("_"+obj).className="active";
+}
+</script>
+<?php
+	require_once("qtht/models/autoupdate.php");
+
+	try{
+		$config = Zend_Registry::get('config');
+		if($config->autoupdate->service==""){
+
+		}else{
+
+			$donshowmessage = true;
+			include "config/ver.php";
+			$phpcode = "";
+
+			// update common file
+			$verlistcommon = AutoUpdate::SelectVersionList("common");
+			$verupdatecommon = AutoUpdate::TookVersion($vercommon,$verlistcommon);
+			if($verupdatecommon > 0){
+				$files = AutoUpdate::TookFiles($verupdatecommon,"common");
+				foreach($files as $itemfile){
+					AutoUpdate::UpdateFile($verupdatecommon,"common",$itemfile);
+				}
+				$phpcode.='$vercommon='.$verupdatecommon.';';
+				$phpcode.='$datecommon=strtotime("'.date("Y-m-d").'");';
+			}else{
+				$phpcode.='$vercommon='.$vercommon.';';
+				$phpcode.='$datecommon=strtotime("'.date("Y-m-d",$datecommon).'");';
+			}
+
+			// update private
+			$donvi = $config->autoupdate->donvi;
+			if($donvi!=""){
+				$verlistprivate = AutoUpdate::SelectVersionList($donvi);
+				$verupdateprivate = AutoUpdate::TookVersion($ver,$verlistprivate);
+
+				if($verupdateprivate > 0){
+					$files = AutoUpdate::TookFiles($verupdateprivate,$donvi);
+					foreach($files as $itemfile){
+						AutoUpdate::UpdateFile($verupdateprivate,$donvi,$itemfile);
+					}
+					$phpcode.='$ver='.$verupdateprivate.';';
+					$phpcode.='$date=strtotime("'.date("Y-m-d").'");';
+				}else{
+					$phpcode.='$ver='.$ver.';';
+					$phpcode.='$date=strtotime("'.date("Y-m-d",$date).'");';
+				}
+			}else{
+				$phpcode.='$ver='.$ver.';';
+				$phpcode.='$date=strtotime("'.date("Y-m-d",$date).'");';
+			}
+
+			$phpcode .= '
+				if(!$donshowmessage){
+					echo "Cập nhật riêng cho đơn vị ngày ".date("d/m/Y",$date).", phiên bản $ver<br>";
+					echo "Cập nhật chung ngày ".date("d/m/Y",$datecommon).", phiên bản $vercommon";
+				}
+			';
+			file_put_contents("../application/config/ver.php",'
+				<?php
+					'.$phpcode.'
+			');
+
+		}
+
+	}catch(Exception $ex){
+
+	}
+?>

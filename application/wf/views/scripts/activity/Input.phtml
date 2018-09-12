@@ -1,0 +1,51 @@
+<?php
+$this->dojo()->enable();
+?>
+<form name=frm method="post" action="/wf/Activity/Save" enctype="multipart/form-data" >
+<fieldset>
+	<div class="required clearfix">
+		<label>Tên trạng thái(*)</label>
+		<input type=text class=inputbox name=NAME value="<?=htmlspecialchars($this->data->NAME)?>" class="inputText" size="50" maxlength="100">
+    	<span class="box_erro_area" id="ERRNAME"></span>
+	</div>
+    <div class="required clearfix">
+		<label>Thuộc trạng thái mẫu(*)</label>
+		<select name="ID_AP" id="ID_AP">
+			<?php
+				foreach($this->activitypool as $row){
+					echo "<option value='".$row['IP_AP']."'>".$row['NAME']."</option>";
+				}
+			?>
+		</select>
+		<script>
+			document.getElementById("ID_AP").value='<?php echo $this->data->ID_AP; ?>';
+		</script>
+    	<span class="box_erro_area" id="ERRID_AP"></span>
+	</div>
+    <div class="required clearfix">
+		<label>Được sử dụng(*)</label>
+		<input type=checkbox class=inputbox name=ACTIVE value="1" <?php echo $this->data->ACTIVE==1?"checked":"" ?> class="inputText" size="50" maxlength="100">
+		<span class="box_erro_area" id="ERRALIAS"></span>
+	</div>
+	<div class="optional clearfix">
+		<label>(*) Bắt buộc nhập liệu.</label>
+	</div>
+</fieldset>
+<input type=hidden name=ID_A value="<?php echo $this->data->ID_A; ?>">
+<input type=hidden name=idp value="<?php echo $this->idp; ?>">
+</form>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+		err = err & validateInput("req",document.frm.NAME,"<?=ERR11006003?>");
+		err = err & err==true?validateInput("maxlen=50",document.frm.NAME,"<?=ERR11006004?>"):false;
+		err = err & validateInput("req",document.frm.ID_AP,"<?=ERR11006008?>");
+		if(err==true){
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+		document.frm.action = "/wf/workflow";
+		document.frm.submit();
+	}
+</script>

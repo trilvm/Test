@@ -1,0 +1,244 @@
+	<form name=frm action="/motcua/dongbohsmc/index">
+	<table>
+		<tr>
+			<td nowrap="nowrap">Loại hồ sơ</td>
+			<td nowrap="nowrap"><select name="LOAIHSMCID" onchange="
+						//document.frm.page.value = 1;
+						if(document.frm.TRANGTHAI!=null)document.frm.TRANGTHAI.value = 0;
+						document.frm.submit();
+				">
+						<option value="0">--Chọn tất cả--</option>
+						<?php 
+						$loaihss = DongboHSMCModel::getLoaihsDongbo(); 
+							foreach($loaihss as $loaihs ){
+						?>
+							<option value="<?=$loaihs["ID_ONWEBSITE"]?>"><?=$loaihs["TENLOAI"]?></option>
+						
+						<?php }?>
+						
+						
+				</select>
+				<script>document.frm.LOAIHSMCID.value="<?=$this->LOAIHSMCID?>";</script>
+				</td>
+			<td width="10" nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td width="100%"></td>
+		</tr>
+		
+		<tr >
+			<td nowrap="nowrap">Trạng thái</td>
+			<td nowrap="nowrap"><select name="TRANGTHAI" onchange="document.frm.submit();" >
+						<option value=3>Tất cả</option>
+						<option value=0>Chưa tiếp nhận</option>
+						<option value=1>Đã tiếp nhận</option>
+						<option value=2>Không hợp lệ</option>
+				</select>
+				<script>document.frm.TRANGTHAI.value="<?=$this->TRANGTHAI?>";</script>
+				</td>
+			<td width="10" nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td width="100%"></td>
+		</tr>
+		
+		<tr>
+			<td nowrap="nowrap">Tên tổ chức cá nhân</td>
+			<td nowrap="nowrap" colspan="3"><input type=text class=inputbox name=HOTEN value="<?=$this->HOTEN?>" size=50>
+			<input type=hidden name=SCOPE[] value=0 <?=count(array_keys($this->SCOPE,2))>0?"checked":""?>><!-- Nội dung tập tin -->
+			</td>
+			<td width="100%"></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap">Ngày gửi</td>
+			<td nowrap="nowrap"><?=QLVBDHCommon::calendar($this->NGAY_BD,"NGAY_BD","NGAY_BD") ?> Đến ngày <?=QLVBDHCommon::calendar($this->NGAY_KT,"NGAY_KT","NGAY_KT") ?></td>
+			<td width="10" nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td width="100%"></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap" colspan="3"><input type=submit value="Tìm kiếm"></td>
+			<td width="100%"></td>
+		</tr>
+	</table>
+
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th colspan="4">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/hscv/hscv/list/id_thumuc/<?=$this->id_thumuc?>/code/<?=$this->code?>';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+		<tr>
+			<th nowrap="nowrap">
+				#
+			</th>
+			<th width="100%">
+				Tên công việc
+			</th>
+			<th nowrap="nowrap">
+				&nbsp;
+			</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="3">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/hscv/hscv/list/id_thumuc/<?=$this->id_thumuc?>/code/<?=$this->code?>';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+	<?php $stt = 1; 
+			foreach($this->data as $row){
+		?>
+	<tr >
+			<td valign="top" rowspan="2"><a name="hscv<?=$row['ID_MC_HSW']?>"></a><?=$stt?></td>
+			<td valign="top"> <img src='/images/icon_motcua.jpg'>
+			<?=$row["TENLOAI"]." cho ". $row["TENTOCHUCCANHAN"] . " - ". $row["DIACHI"]?>
+			<?=$row["TRANGTHAI"]==5?"  <font color=red > ( Không hợp lệ ) </font>":"" ?>
+			<?=(int)$row["TRANGTHAI"]==4||(int)$row["TRANGTHAI"]==0?"  <font color=blue > ( Chờ tiếp nhận ) </font>":"" ?>
+			<?=$row["ID_LOAIHSCV"]>0?"":" <br> <font color=red >Loại hồ sơ chưa được gắn qui trình xử lý </font>" ?>
+			</td>
+			<td nowrap="nowrap" valign="top" >
+				<?php if($row["IS_TIEPNHAN"] != 1){ 
+					if(!$row["ID_LOAIHSCV"]){
+				?>
+					<a href="/motcua/loai/input/id/<?=$row["ID_LOAIHOSO"]?>">Gắn qui trình cho loại hồ sơ</a> <br>
+				<?php }else {?>
+					<a href="/motcua/motcua/input/id_dkquamang/<?=$row["ID_MC_HSW"]?>">Tiếp nhận</a> <br>
+				<?php }  }?>
+				<a href='javascript:SwapIframe(<?=$row["ID_MC_HSW"]?>,"/motcua/dongbohsmc/traodoi/code/khonghople/id/<?=$row["ID_MC_HSW"]?>",1);'> Không hợp lệ</a> <br>
+				<a href="#" onclick="nosign('<?=$row["ID_MC_HSW"]?>');">Không tiếp nhận</a> <br>
+				
+			</td>
+	
+	</tr>
+	
+	<tr class="row<?=$this->idhscv==$row['ID_DKQUAMANG']?"2":$i?>">
+			<td colspan="2">
+				<div>
+					<ul class="chitiethscv">
+					
+						<li id=groupicon1_<?=$row["ID_MC_HSW"]?> >
+							<img src="/images/icon_chitiet.jpg" border="0" hspace="5" >
+							<a href='javascript:SwapDiv(<?=$row["ID_MC_HSW"]?>,"/motcua/dongbohsmc/detail/id/<?=$row["ID_MC_HSW"]?>",1);'>Chi tiết</a>
+						</li>
+						<li id=groupicon1_<?=$row["ID_MC_HSW"]?> >
+							<img src="/images/icon_chitiet.jpg" border="0" hspace="5" >
+							<a href='javascript:SwapIframe(<?=$row["ID_MC_HSW"]?>,"/motcua/dongbohsmc/traodoi/id/<?=$row["ID_MC_HSW"]?>",1);'>Trao đổi</a>
+						</li>
+						
+						<li id=groupicon1_<?=$row["ID_MC_HSW"]?> >
+							<img src="/images/icon_chitiet.jpg" border="0" hspace="5" >
+							<a href='javascript:SwapIframe(<?=$row["ID_MC_HSW"]?>,"/motcua/dongbohsmc/viewdon/id/<?=$row["ID_MC_HSW"]?>",1);'>Đơn cấp phép</a>
+						</li>
+						
+					</ul>
+				</div>
+                                
+				<div class="groupcontent" id="groupconten<?=$row['ID_MC_HSW']?>" style="display:none;border: 1px solid #CCC"></div>
+			</td>
+		</tr>
+	<?php $stt++; }?>
+	</tbody>
+</table>
+
+</form>
+
+<script>
+function SwapDiv(id,url,tab){
+		
+		
+		for(var i=1;i<2;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		
+		if(document.getElementById("groupcontent"+id).style.display==""){
+			document.getElementById("groupcontent"+id).style.display="none";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+		}
+}
+
+function SwapIframe(id,url){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+					document.getElementById("groupcontent"+id).style.display="none";
+					document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+					break;
+				}
+			}
+		}
+		if(document.getElementById('groupcontent'+id).style.display == ''){
+			document.getElementById('groupcontent'+id).style.display = 'none';
+		}else{
+			document.getElementById('groupcontent'+id).innerHTML = '<iframe style="overflow-x:visible" height=0 id=iframebutphe'+id+' allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no></iframe>';
+			document.getElementById('iframebutphe'+id).src = url; 
+			document.getElementById('groupcontent'+id).style.display = '';
+		}
+	}
+
+	function nosign(id){
+		if(confirm("Hồ sơ sẽ bị xóa khỏi hệ thống")){
+			window.location ="/motcua/dongbohsmc/nosign/id_dkquamang/"+id;
+			return true;
+		}else{
+			return false;
+		}
+
+	}
+</script>

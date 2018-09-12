@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php 
+require_once 'Common/FileDinhKem.php';
+$url = "";
+$is_new = 0;$type = 0;
+
+if((int)$this->id_work==0){
+	$is_new = 1;
+		$type = -1;
+	
+}else{
+		$is_new = 0;
+		
+		$type = 11;
+	}
+$url ="'/hscv/file?iddiv=idFileDinhKem&idObject=".$this->id_work."&is_new=".$is_new."&type=".$type."'" ;
+
+?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+</head>
+<body style="background-color: transparent">
+<form name="frm" action="/congviec/main/save" method="post">
+<table>
+
+	<tr>
+		<td nowrap="nowrap" style="color: blue" >Tên công việc <font
+			color="Red" size="3">*</font></td>
+		<td nowrap="nowrap" wdith="10%"><?php if( (int)$this->id_work != 0){?>
+		<input type="text" name="NAME" 
+			value="<?php echo htmlspecialchars($this->NAME);?>" size="57" >
+		<div class="clr"></div>
+		<span class="box_erro_area" id="ERRNAME"></span> <?php }else {?> 
+		<input 	type="text" name="NAME"  
+			value="<?php echo htmlspecialchars($this->NAME);?>" size="57">
+		<div class="clr"></div>
+		<span class="box_erro_area" id="ERRNAME"></span> <?php }?></td>
+       
+	</tr>
+	<tr>
+		<td nowrap="nowrap" wdith="100%" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Mô tả công việc</font></td>
+		<td><textarea name="DESCRIPTION" cols="54" rows="2"> <?php echo htmlspecialchars($this->DESCRIPTION);?></textarea>
+		<div class="clr"></div>
+		<span class="box_erro_area" id="ERRDESCRIPTION"></span></td>
+	</tr>
+	<tr>
+		<td with="100%">
+			<font nowrap="nowrap" style="color:blue"> Ngày bắt đầu </font></td>
+		<td><?=QLVBDHCommon::calendarFull($this->BEGINDATE==""?date("d/m/Y"):QLVBDHCommon::MysqlDateToVnDate($this->BEGINDATE),"BEGINDATE","BEGINDATE") ?>
+		<font nowrap="nowrap" style="color: blue">Hạn xử lý </font>
+		  <input type=text  size="4" name=HANXULY onchange="ChangeHan();">Ngày 
+		  <input type="hidden" name="NGAYHETHONG"  
+			value="<?= date("d/m/Y") ?>"> </td>
+		
+	</tr>
+	<tr>
+		<td wdith="100%"><font nowrap="nowrap" style="color: blue">Ngày kết thúc</font> 
+		<font color="Red" size="3">*</font></td>
+		<td><?=QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate($this->ENDDATE),"ENDDATE","ENDDATE") ?>
+		<div class="clr"></div>
+		<span class="box_erro_area" id="ERRENDDATE"> </span></td>
+	</tr>
+	<tr>
+		<td><font nowrap="nowrap" style="color: blue">Người giao việc</font></td>
+		<td>
+			<?php require_once 'congviec/models/Qlgv_workModel.php'; 
+				global $auth;
+				$user = $auth->getIdentity();
+			?>
+			<?=QLVBDHCommon::AutoComplete(
+				Qlgv_workModel::getAllUser(),
+				"ID_U",
+				"FULLNAME",
+				"ID_NGUOIGIAOVIEC",
+				"FULLNAME",
+				false,
+				"width:200px",
+				"",
+				(int) $this->nguoigiao != 0 ? $this->nguoigiao : $user->ID_U,
+				$user->USERNAME);
+			?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGUOIKY"></span>
+		</td>
+	</tr>
+	<tr>
+	<?php
+	if( (int)$this->id_work != 0)
+
+	{?>
+
+		<td nowrap="nowrap" wdith="100%"><font style="color: blue">Tiến độ
+		công việc </font></td>
+		<td><input type="text" name="STATUS"
+			value="<?php echo $this->STATUS;?>">%
+		<div class="clr"></div>
+		<span class="box_erro_area" id="ERRSTATUS"></span></td>
+	</tr>
+		   
+	<tr>
+	<?php }?>
+		<td valign=top><font nowrap="nowrap" style="color: blue">Người xử lý</font></td>
+		<td valign="top" nowrap="nowrap"><?php echo QLVBDHCommon::writeMultiSelectDepartmentUser('DEP_NGUOIGUI','NGUOIGUI')?>
+		<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Chọn" onclick="InsertIntoArr()"
+			style='margin-left: 50px;' /></td>
+		<td valign="top" width=60%>
+		<div id="listuser"></div>
+		</td>
+	</tr>
+	<tr>
+        <td nowrap="nowrap" valign="top">
+			<font color="Blue">File đính kèm</font>
+		</td>
+		<td valign="top" id="idFileDinhKem"></td>
+		<td ></td>
+	
+        
+        
+   </tr> 
+	<input type=hidden name="ID_WORK" value="<?php echo $this->id_work?>">
+    <input type=hidden name="ISMAIN" >
+
+</table>
+</form>
+</body>
+</html>
+<script>
+loadDivFromUrl('idFileDinhKem',<?=$url?>,0);
+
+var arr_user = new Array();
+var arr_user_temp = new Array();
+var arr1 = new Array();
+arr1[0] = new Array(100,'Tên');
+arr1[2] = new Array(0,'Xóa');
+arr1[1] = new Array(2,'Xử lý chính');
+<?php
+		
+		if(count($this->data_nguoinhan)>0)
+		{
+			$i=0;
+			foreach ($this->data_nguoinhan as $item )
+			{
+				$i++;
+	?>			
+
+	arr_user.push(new Array("<?=$item["ID_DEP"]?>",<?=$item['ID_U']?>,"<?=$item["TENNG"]?>","<?=$item["ISMAIN"]?>"
+			
+			));
+	arr_user_temp.push( new Array("<?php echo $item['ID_U']?>"));		
+<?php 			
+			}
+		}
+	?>
+	
+ShowArr('listuser',arr1,arr_user);
+FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+
+ 
+	function InsertIntoArr(){
+		var opt = document.frm.NGUOIGUI.options;
+		for(var i=0;i<opt.length;i++){
+			if(opt[i].selected){
+				arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,opt[i].value,opt[i].text);
+				arr_user_temp[arr_user_temp.length] = new Array(opt[i].value);
+			}
+		}
+	    //arr_user[arr_user.length] = new Array(document.frm.DEP_NGUOIGUI.value,document.frm.NGUOIGUI.value,document.frm.NGUOIGUI[document.frm.NGUOIGUI.selectedIndex].innerHTML);
+	    arr1[0] = new Array(100,'Tên');
+	    arr1[2] = new Array(0,'Xóa');
+	    arr1[1] = new Array(2,'Xử lý chính');
+	    ShowArr('listuser',arr1,arr_user);
+	    FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	}
+    /**
+	 * Tạo lưới từ 2 mảng
+	 * 
+	 * @param String idDiv id div hoặc khung chứa lưới
+	 * @param int Arr1 mảng chứa tên trường và độ rộng tính theo % của trường
+	 * @param int Arr2 mảng chứa dữ liệu của các trường trên
+	 * @return html code
+	 */
+    function ShowArr(idDiv,Arr1,Arr2){
+        var html;
+	    html = '<table class="adminlist" width=100%>';
+	    html += '<thead>';
+	    html += '<tr>';
+	    html += '<th nowrap>#</td>';
+	    for(i=0;i<Arr1.length;i++)
+	    	html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+	    html += '</tr>';
+	    html += '</thead>';    
+	    html += '<tfoot><tr><th colspan=4 align=left>';
+	   
+	    html += '</th></tr></tfoot>';
+	    html += '<tbody>';
+	    	for(i=0;i<Arr2.length;i++){
+	    		html += '<tr>';
+	    		html += '<td nowrap align="right">' + (i + 1) + '</td>';
+	    		html += '<td nowrap>';
+	    		html += Arr2[i][2];	    		
+	    		
+	    		html += "<input type=hidden name=ID_U[] value="+Arr2[i][1]+">";
+	    		
+	    		html += '</td>';
+	    		html += '<td nowrap>';
+				html += "<input type= radio id="+ "check_" +Arr2[i][1] + " name =ISMAIN2 value="+Arr2[i][1]+ " onchange='if(this.checked){arr_user["+i+"][3]=1;}else{arr_user["+i+"][3]=0;}'>";
+	    		html += '</td>';
+	    		html += '<td nowrap>';
+	    		html += '<a href="javascript:;" onclick="arr_user_temp.splice('+i+',1);arr_user.splice('+i+',1);ShowArr(\'listuser\',arr1,arr_user);FastReload();return false;">Xóa</a>';
+	    		html += '</td>';
+	    		html += '</tr>';
+	        }
+	    	html += '</tbody>';
+	    	html += '</table>';
+	    //
+		    //alert(html);
+	    document.getElementById(idDiv).innerHTML = html;
+	    for(i=0;i<Arr2.length;i++){
+			var ch_id ="check_" +Arr2[i][1]; 
+			var ch_main = document.getElementById(ch_id);
+			if(Arr2[i][3]==1)
+			{
+				ch_main.checked = "checked";
+			}
+		}  
+	 //   resize();    	
+	}
+	function FastReload(){
+		FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+	}
+
+	   function SaveButtonClick(){			
+		var err = true;
+		err= err & validateInput("req",document.frm.NAME,"Chưa nhập tên công việc");
+		err = err & err==true?validateInput("maxlen=128",document.frm.NAME,"Tên công việc không được quá 128 ký tự"):false;
+    	err= err & validateInput("req",document.frm.ENDDATE,"Chưa nhập ngày kết thúc "); 
+    	err = err & err==true?validateInput("nequ=''",document.frm.ENDDATE,"Chưa nhập ngày kết thúc"):false;      
+     	err = err & err==true? validateInput("date",document.frm.ENDDATE,"Sai định dạng"):false;
+        
+     	  if(err==true)
+     	  {  if(document.frm.BEGINDATE.value !=0 ){
+     		    if(CompareDate(
+     				document.frm.ENDDATE.value + " 00:00",
+     				document.frm.BEGINDATE.value + " 00:00")==1){
+     			document.getElementById('ERRENDDATE').innerHTML = "Ngày kết thúc phải sau ngày ban hành";
+     			err=false; 
+                 }
+     	      }else {if(CompareDate(
+     				  document.frm.ENDDATE.value + " 00:00",
+     				  document.frm.NGAYHETHONG.value + " 00:00")==1){
+     			      document.getElementById('ERRENDDATE').innerHTML = "Ngày kết thúc phải sau ngày hiện tại";
+     			      err=false; 
+         	          
+         	        }
+     	      }
+     	  } 
+     	 var is_capnhat = "<?=$this->id_work?>";
+     	 if(is_capnhat > 0){
+    	  if(err==true){
+        	     if(document.frm.STATUS.value >100)
+        	     {document.getElementById('ERRSTATUS').innerHTML = "Tiến độ nhỏ hơn 100";
+      			   err=false; 
+            	 }
+        	  }
+     	 }
+     	 if(err==true){
+         	       
+         	     if(arr_user.length == 0)
+         	     { alert("Chọn một người xử lý");
+         	    	 err=false;
+         	     }	     
+         	 }
+     	 if(err==true){
+         	
+         	var obj = document.getElementsByName('ISMAIN2');
+         	  if(obj.length >0){
+     		       var ln = 0;
+			for(var i = 0 ; i<obj.length ;i++ )
+				if(obj[i].checked){
+					ln = 1;
+					document.frm.ISMAIN.value= obj[i].value;
+					break;
+				}
+			if(ln == 0)
+				{
+				alert("Chọn người xử lý chính");
+				err=false;
+				}
+        	 }
+     	 }
+     	  if(err==true){
+			
+       		 var submitAjax = new AjaxEngine(); 
+     		 var oXmlHttp = submitAjax.createXMLHttp();
+     		oXmlHttp.open("post", "/congviec/main/save" , true); 
+     		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+     		var post = submitAjax.getDataFromFrm(document.frm);
+     		
+     		oXmlHttp.onreadystatechange = function () { 
+     			
+     			if (oXmlHttp.readyState == 4) { 
+     				
+     				if (oXmlHttp.status == 200) { 
+     					//alert(oXmlHttp.responseText);
+     					if(oXmlHttp.responseText == 1){
+     						var is_capnhat = "<?=$this->id_work?>";
+     						if(is_capnhat > 0){
+     							alert("Đã cập nhật công việc thành công.");
+     							window.location = "/congviec/main/list";
+     							return;
+     						}
+     						alert("Đã lưu công việc thành công.");
+     						document.frm.NAME.value = "";
+     						document.frm.HANXULY.value = "";
+     						document.frm.DESCRIPTION.value = "";
+     						var now = new Date();
+     						document.frm.BEGINDATE.value = "<?=date("d/m/Y")?>";
+     						document.frm.ENDDATE.value = "";
+         					arr1 = new Array();
+         					arr1[0] = new Array(100,'Tên');
+     					    arr1[2] = new Array(0,'Xóa');
+     					    arr1[1] = new Array(2,'Xử lý chính');
+     						arr_user = new Array();
+     						arr_user_temp = new Array();   
+     											 
+     						loadDivFromUrl('idFileDinhKem',<?=$url?>,1);
+     						ShowArr('listuser',arr1,arr_user);
+     						FillComboBy2Combo(document.getElementById("GDEP_NGUOIGUI"),document.getElementById("DEP_NGUOIGUI"),document.getElementById("NGUOIGUI"),ARR_NGUOIGUI,arr_user_temp);
+     						     					  						
+     					     						
+     					}
+     					else{
+     						if(oXmlHttp.responseText == 2){
+     							
+						     alert("Lưu không thành công");
+     					}
+     					  }
+     					
+     		        } else { 
+     	            
+     	        	      } 
+     	    	} 
+     	   }
+     		 oXmlHttp.send(post);
+     		
+         	  }  
+		}
+	
+	function BackButtonClick(){
+		document.location.href='/congviec/main/list';
+        
+    	
+	}
+
+	var retvalue;
+    function ChangeHan(){
+         //alert(document.frmAddMotCua.NHAN_NGAY.value);
+          if(document.frm.BEGINDATE.value ==0){
+         getvalue("auth","user","adddate","date="+document.frm.NGAYHETHONG.value+"&value="+(parseInt(document.frm.HANXULY.value*8,10)));
+          }else{getvalue("auth","user","adddate","date="+document.frm.BEGINDATE.value+"&value="+(parseInt(document.frm.HANXULY.value*8,10)));
+              }
+    }
+    function UpdateRet(){
+    document.frm.ENDDATE.value = retvalue;
+    }
+	
+		
+</script>

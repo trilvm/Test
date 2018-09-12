@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<?php require_once('qtht/models/DepartmentsModel.php');
+require_once('report/models/congviecModel.php');
+$data_departs = DepartmentsModel::getAll();
+?>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">    
+<? //if ($this->countvbd) { ?>   
+<div style="padding-bottom:5px;padding-top:5px;padding-left:0px">
+                <p style="color: blue;">
+                    <b>SỐ LƯỢNG VĂN BẢN ĐẾN CÓ TRONG DANH SÁCH : <?=$this->countvbd?> VĂN BẢN
+                    </b>
+                </p>
+</div>
+<? //} ?>    
+    <table class=adminlist>
+	<thead>
+		<tr>
+			<th nowrap>STT</th>
+			<th width=20%>Họ tên</th>
+			<th nowrap>Nhận để xử lý</th>
+			<th nowrap>Đã xử lý</th>
+			<th nowrap>Chưa xử lý</th>
+			<th nowrap>Chờ xử lý</th>
+			<th nowrap>Trễ hạn</th>
+		</tr>
+	</thead>
+	<tbody>
+     <?php
+     foreach($this->data1 as $id_dep){ ?>
+    <tr>
+	 <td colspan=7> <b><?= mb_strtoupper($id_dep["NAME"],"utf-8")?> </b></td>
+	</tr>
+	<?php
+	      $tt= new congviecModel();
+		  $arr_dxl= $tt->counttkedxl($this->fromdate,$this->todate,$this->sel_svb);
+		   $arr_cxl= $tt->counttkecxl($this->fromdate,$this->todate,$this->sel_svb);
+		   $arr_choxl= $tt->counttkechoxl($this->fromdate,$this->todate,$this->sel_svb);
+		   $arr_tre1= $tt->counttketre1($this->fromdate,$this->todate,$this->sel_svb);
+		   $arr_tre2= $tt->counttketre2($this->fromdate,$this->todate,$this->sel_svb);
+	       $this->data = $tt->layidu($id_dep["ID_DEP"]);
+               
+		   $st=1;foreach($this->data as $iduitem){
+//        print_r($iduitem);exit;
+	?>  
+	   
+		<tr>
+			<td nowrap><?=$st?></td>
+                        <td nowrap><!--<a href="javascript:viewbaocao(<?//=$iduitem['ID_DEP']?>,'<?//=$iduitem['USERNAME']?>')" >--><?=$iduitem['HOTEN']?><!--</a>--></td>			
+			<td nowrap><?php echo (($arr_dxl[$iduitem['ID_U'].""] >0?$arr_dxl[$iduitem['ID_U'].""]:"0") + ($arr_cxl[$iduitem['ID_U'].""] >0?$arr_cxl[$iduitem['ID_U'].""]:"0")+($arr_choxl[$iduitem['ID_U'].""] >0?$arr_choxl[$iduitem['ID_U'].""]:"0")) ; ?></td>
+			<td nowrap><?php echo $arr_dxl[$iduitem['ID_U'].""] >0?$arr_dxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			<td nowrap><?php echo $arr_cxl[$iduitem['ID_U'].""] >0?$arr_cxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			<td nowrap><?php echo $arr_choxl[$iduitem['ID_U'].""] >0?$arr_choxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			<td nowrap><?php echo (($arr_tre1[$iduitem['ID_U'].""] >0?$arr_tre1[$iduitem['ID_U'].""]:"0") + 
+			     ($arr_tre2[$iduitem['ID_U'].""] >0?$arr_tre2[$iduitem['ID_U'].""]:"0")); ?></td>
+		</tr>
+	<?php
+		$st++;}
+	?>
+	<?php
+		}
+	?>           
+<!--            <tr>                
+                <td colspan="7"> <b>SỐ LƯỢNG VĂN BẢN ĐẾN CÓ TRONG DANH SÁCH : <?//=$this->countvbd?> </b></td>
+            </tr>-->
+	</tbody>
+</table>
+<p id=lasttext></p>
+<!--<form method="POST" action="/report/Xulyvanbanden/reportview" name="frm2" target="_blank">
+    <input type="hidden" name="type_date" value="0"></input>
+    <input type="hidden" name="fromdate" value="<?//=$this->fromdate?>"></input>
+    <input type="hidden" name="todate" value="<?//=$this->todate?>"></input>
+    <input type="hidden" name="xuat" value="1"></input>
+    <input type="hidden" name="soto" value="1"></input>
+    <input type="hidden" name="soden" value="1"></input>
+    <input type="hidden" name="trichyeu" value="1"></input>
+    <input type="hidden" name="nguoixl" value="1"></input>    
+    <input type="hidden" name="trangthai" value="1"></input>
+    <input type="hidden" name="ketquaxl" value="1"></input>
+    <input type="hidden" name="coquanbh" value="1"></input>
+    <input type="hidden" name="sokh" value="1"></input>
+    <input type="hidden" name="ngayden" value="1"></input>
+    <input type="hidden" name="nguoiky" value="1"></input>
+    <input type="hidden" name="SORTTYPE" value="ASC"></input>
+    <input type="hidden" name="sel_trangthai" value="0"></input>
+    <input type="hidden" name="sel_svb" value="0"></input>
+    <input type="hidden" name="op_lvb" value="0"></input>
+    <input type="hidden" name="op_cqbh" value="0"></input>
+    <input type="hidden" name="ID_DEP" value=""></input>
+    <input type="hidden" id="idu" name="ID_U[]"></input>
+    <input type="hidden" name="time" value=""></input>
+    <input type="hidden" name="h_isexel" value="0"></input>            -->
+</form>
+</body>
+</html>
+<script>
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%";
+function viewbaocao(id_dep,id_u) {
+    document.frm2.ID_DEP.value = id_dep;    
+    document.getElementById('idu').value = id_u;
+    document.frm2.submit();
+}
+</script>
+

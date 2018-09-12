@@ -1,0 +1,35 @@
+<form name=frm>
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Năm làm việc</th>
+		</tr>
+	</thead>
+	<tfoot></tfoot>
+	<tbody>
+<?php
+	foreach($this->workingyear as $row){
+?>
+		<tr>
+			<td nowrap>1</td>
+			<td width="100%"><a href="/qtht/workingyear/input/id/<?=$row->ID_YEAR?>"><?=$row->YEAR?></a></td>
+		</tr>
+<?php
+	}
+?>
+	</tbody>
+</table>
+</form>
+<script>
+function AddNewButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","BUOI[]","Vui lòng chọn ít nhất một buổi");
+	if(mess){
+		document.frm.action = "/qtht/workingyear/input";
+		document.frm.submit();
+	}else{
+		alert("Vui lòng chọn ít nhất một buổi");
+	}
+}
+</script>

@@ -1,0 +1,72 @@
+<?php 
+include_once  'hscv/models/phieutrinhchuyenxulyModel.php';
+$model= new phieutrinhchuyenxulyModel(); 
+$sendprossess=($this->sendprocess);
+//var_dump($sendprossess);exit;
+?>
+<input type="hidden" name="idhscv" value="<?= $this->idhscv ?>"><br>
+<input type="hidden" name="idpt"   value="<?= $this->idpt ?>" <br>
+<table class="adminlist2" style="background:#fff !important; border-collapse:collapse">
+        <tr>
+            <td width="21%"><b><font color="#0B55C4">Kính gởi</font></b></td>
+            <td><input type="textbox" style="width: 300px; height: 20px" value=" <?=$this->kg ?>" name="kinhgoi"></td>
+        </tr>
+         <tr>
+            <td><b><font color="#0B55C4">Vấn đề trình</font></b></td>
+             <td><input type="textbox"   style="width: 300px; height: 20px" value=" <?=$this->vd ?>" name="vande"></td>
+        </tr>
+         <tr>
+            <td><b><font color="#0B55C4">Văn bản liên quan</font></b></td>
+            <td><textarea name="lienquan" style="width: 295px" rows="3"><?=$this->lq ?></textarea></td>
+        </tr>
+        <tr>
+             <td><b><font color="#0B55C4">Tóm tắt nội dung</font></b></td>
+            <td><textarea name="noidung" style="width: 295px" rows="3"><?php echo $this->ttnd ?> </textarea></td>
+        </tr>
+         <tr>
+           <td><b><font color="#0B55C4">Ý kiến của lãnh đạo văn phòng</font></b></td>
+           
+            <td><textarea style="width: 295px" rows="3" name="yklanhdaophong"><?php echo $this->ykldp.' '; ?><?php                 
+                foreach ($sendprossess as $value) {
+                     $ID_GRO= $model->selectIdGroupFromIdu($value['ID_U_NC']);
+                       if ($ID_GRO==9) {
+                            if ($value['NOIDUNG'] != null) {
+                               $vt=0;
+                               $vt =(strrpos($this->ykldp,$value['NOIDUNG'])); 
+                               if($vt== 0)  echo $value['NOIDUNG'];
+                            }
+                        }
+            }
+            ?>
+            
+                </textarea>
+            </td>
+        </tr>
+        <tr>
+            <td><b><font color="#0B55C4">Ý kiến của chuyên viên sau khi thẩm tra</font></b></td>
+            <td><textarea rows="3" style="width: 295px" name="ykchuyenvien"><?= $this->ykcv ?></textarea></td>
+        </tr>
+        <tr>
+            <td><b><font color="#0B55C4">Ý kiến của lãnh đạo UBND tỉnh</font></b></td>
+            <td><textarea  style="width: 295px"rows="3" name="yklanhdaotinh"><?php  echo $this->ykldt.' '; ?><?php
+                    $data2 = $this->sendprocess[0];
+                    foreach ($sendprossess as $value) {
+                       $ID_GRO= $model->selectIdGroupFromIdu($value['ID_U_NC']);
+                       if ($ID_GRO==2) {
+                           
+                            if ($value['NOIDUNG'] != null) {
+                                  $vt=0;  
+                                  $vt =(strrpos($this->ykldt,$value['NOIDUNG'])); 
+                                     if($vt== 0)  echo $value['NOIDUNG'];
+                            }
+                            
+                        }
+                    }
+                    ?>
+                </textarea></td>
+        </tr>
+         <tr>
+             <td algin="center"><input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Thay đổi và in phiếu" onclick="document.frm.action='/hscv/quanlyphieutrinh/inphieu/update/1';submit()" ></input></td>
+             <td algin="center"><input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Hủy" onclick="window.parent.document.getElementById('<?= $this->id_div ?>').style.display='none';" ></input></td>
+        </tr>
+    </table>

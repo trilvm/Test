@@ -1,0 +1,26 @@
+<form name=frm method="post" action="/qtht/workingyear/save" enctype="multipart/form-data" >
+<fieldset>
+	<div class="required">
+		<label>Năm làm việc(*)</label>
+		<input type=text class=inputbox name=YEAR value="<?=$this->data->YEAR?>" class="inputText" size="4" maxlength="4">
+    	<span class="box_erro_area" id="ERRYEAR"></span>
+	</div>
+</fieldset>
+<input type=hidden name=ID_YEAR value="<?php echo $this->data->ID_YEAR; ?>">
+</form>
+<script>
+	function SaveButtonClick(){
+		var err = true;
+		err = err & validateInput("req",document.frm.YEAR,"Phải nhập năm làm việc");
+		err = err & err==true?validateInput("num",document.frm.YEAR,"Năm làm việc phải là số"):false;
+		err = err & err==true?validateInput("lt=2099",document.frm.YEAR,"Năm làm việc phải nhỏ hơn 2099"):false;
+		err = err & err==true?validateInput("gt=2000",document.frm.YEAR,"Năm làm việc phải lớn hơn 2000"):false;
+		if(err==true){
+			document.frm.submit();
+		}
+	}
+	function BackButtonClick(){
+		document.frm.action = "/qtht/workingyear";
+		document.frm.submit();
+	}
+</script>

@@ -1,0 +1,94 @@
+
+<table class="adminlist">
+<thead>
+<tr>
+<th nowrap colspan=8>
+<a href="#" onclick="  
+	
+		
+		var oframe = document.getElementById('inputykien<?=$this->id_work?>');
+		if(oframe.style.display=='none')
+		{
+		oframe.style.display = 'block';		
+		oframe.src ='/congviec/noidungyk/input?ID_WORK=<?=$this->id_work?>&ID_REMARK=<?=$item["ID_REMARK"]?>';
+		}else{
+			oframe.style.display='none';
+		}
+		return false"
+	 > 
+<img src="/images/icon_add.gif" border="0"> Thêm mới</a>
+
+</th>
+</tr>
+<tr>
+<th width="5%" nowrap>#</th>
+<th width="50%">Nội dung ý kiến</th>
+<th width="15%" nowrap>Ngày ghi</th>
+<th width="15%" nowrap>Người ghi</th>
+<th width="15%" nowrap></th>
+</tr>
+</thead>
+<tbody>
+ <?php 
+ $stt= 1;
+ if(count($this->data)==0){
+ 
+ ?>
+<tr><td colspan=7> Không có nội dung ý kiến</td> </tr>
+<?php }else{
+foreach ($this->data as $item){ ?>
+<tr>
+<td width="5%" nowrap valign="top" ><?php echo $stt?></td>
+<td width="50%" valign="top"><?=$item["CONTENT"] ?>  </td>     		  
+<td width="15%" valign="top">   		  			
+ <?=date("d/m/Y h:i:s",strtotime($item["TIME"])) ?></td>		    
+<td width="15%" nowrap valign="top">  <?=UsersModel::getEmloyeeNameByIdUser($item["NGUOIGOPY"])?> </td>
+
+<td width="15%" nowrap="nowrap" valign="top">
+<?php
+	 		        $auth = Zend_Registry::get('auth');
+		            $data_session = $auth->getIdentity();
+		            $id_u =$data_session->ID_U;
+	                  if($item["NGUOIGOPY"]== $id_u ) 
+	
+	          {?>
+	       
+  <p>	<a href="#" onclick="	
+		var oframe = document.getElementById('inputykien<?=$this->id_work?>');
+		if(oframe.style.display == 'none')
+		{
+		oframe.style.display = 'block';
+		oframe.src ='/congviec/noidungyk/input?ID_REMARK=<?=$item["ID_REMARK"]?>&ID_WORK=<?=$this->id_work?>';
+		}else{oframe.style.display = 'none';
+		     }
+		return false"
+		> Cập nhật</a> </p>
+		
+ <p>	<a href="#" onclick = '
+		 var oframe = document.getElementById("inputykien<?=$this->id_work?>");
+		  if(confirm("<?php echo "Bạn có muốn xóa không"; ?>")){
+			
+			oframe.src ="/congviec/noidungyk/Delete?ID_REMARK=<?=$item["ID_REMARK"]?>&ID_WORK=<?=$this->id_work?>";
+			
+		}else
+	        {
+		     
+	        }'
+	     >Xóa</a> </p>
+	     <?php }?>
+			
+			</td>
+</tr>
+  
+<?php $stt++;}}?>
+</tbody>
+
+<tfoot>
+<tr> <th align="left" colspan=8>
+<iframe id="inputykien<?=$this->id_work?>" name="inputykien<?=$this->id_work?>" style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no > </iframe>
+</th>
+</tr>
+</tfoot>
+
+</table>
+

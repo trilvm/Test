@@ -1,0 +1,110 @@
+<?php require_once 'qtht/models/LoaiVanBanModel.php';
+require_once 'qtht/models/CoquanModel.php'; 
+require_once 'qtht/models/DepartmentsModel.php';
+require_once 'qtht/models/sovanbanModel.php'
+?>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<form name=frm action="/giaoviec/BaoCaoGiaoViec/reportview" method="POST" target="reportview">
+<div class=clr></div>
+<div>
+<label><b>Ngày nhận:</b></label>
+<?=QLVBDHCommon::calendar($this->fromdate,"fromdate","fromdate") ?>
+>>
+<?=QLVBDHCommon::calendar($this->todate,"todate","todate") ?>
+
+</div>
+
+<div class=clr></div>
+<div>
+<div>
+<label><b>Tháng:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/1')">1
+<?php 
+$year = QLVBDHCommon::getYear();
+$d = strtotime($year."-3-1") ;
+$d = $d - 86400;
+$str_cuoi2 =date('d/m',$d); 
+ ?>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/2','<?php echo $str_cuoi2 ?>')" >2
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/3','31/3')">3
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/4','30/4')" >4
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/5','31/5')">5
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/6','30/6')">6
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7','31/7')" >7
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/8','31/8')" >8
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/9','30/9')">9
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10','31/10')">10
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/11','30/11')">11
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/12','31/12')">12
+</div>
+<div class=clr></div>
+<div>
+<label><b>Quí:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/3')">I
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/4','30/6')">II
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7','30/9')">III
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10','31/12')">IV
+</div>
+<div class=clr></div>
+<div>
+<label><b>Năm:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/12')">
+</div>
+</div>
+<!--
+<div class=clr></div>
+<div>
+<div style="float:left">
+<label><b>Sổ văn bản:</b></label>
+<select name="sel_svb" id="sel_svb" >
+	<option >[Chọn tất cả]</option>
+	<?php sovanbanModel::toComboNameWithDep();?>
+</select>
+</div>	
+</div>
+
+<div class=clr></div>
+
+<div style="display: none">
+
+<label><b>Loại văn bản:</b></label>
+<select name="sel_lvb[]" id="sel_lvb" multiple="multiple" size=3>
+	<option value=0>[Tất cả loại văn bản]</option>
+	<?php LoaiVanBanModel::toComboName(); ?>
+</select>
+</div>	
+
+<div>
+<label><b>Loại văn bản:</b></label>
+<select name="sel_lvb" id="sel_lvb">
+	<option value="0">Tất cả loại văn bản</option>
+	<?php LoaiVanBanModel::toComboName(); ?>
+</select>
+</div>	
+-->
+<div class="clr"></div>
+<input type=hidden id=h_isexel name=h_isexel value=0>
+<div>
+<br/>
+<input type="button" title="Hiển thị báo cáo" value="Hiển thị" onclick="document.frm.target='reportview';
+document.frm.h_isexel.value = 0;
+document.frm.action = '/giaoviec/BaoCaoGiaoViec/reportview';
+document.frm.submit();
+return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
+<input type="button" title="In báo cáo" value="In báo cáo" onclick="document.frm.target='_blank';
+document.frm.h_isexel.value = 0;
+document.frm.action = '/giaoviec/BaoCaoGiaoViec/reportview/is_in/1';
+document.frm.submit();
+return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
+</div>
+</form>
+<iframe  style="overflow-x:visible" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no 
+id="reportview" 
+name="reportview" >
+</iframe>
+<script>
+function setvalueDateD(value_from,value_to){
+	document.frm.fromdate.value = value_from;
+	document.frm.todate.value = value_to;
+}
+</script>

@@ -1,0 +1,133 @@
+<?/**
+   * @author trunglv 
+   * @version 1.0
+   * Lop View hiện thị trang danh sách các văn bản lien quan
+   */ ?>
+<?php require_once 'qtht/models/usersModel.php';?>
+
+<table class="adminlist1">
+<thead>
+<?php if($this->isCapnhat == 1){ ?>
+<tr>
+<th nowrap colspan=5>
+<a href="#frmThemVanBanLienQuan" onclick="
+	is_sys = 0 ;	
+	/*if (document.getElementById('issystemI').checked) {
+		is_sys = 1;
+	}*/
+	document.getElementById('addVanBanLienQuanFrm<?php echo $this->idHSCV ?>').src
+	='/hscv/vanbanlienquan/input?issystem='+is_sys+'isNoHSCV=<?php echo $this->isNoHSCV?>&idHSCV=<?php echo $this->idHSCV?>&isnew=1&iddivParent=<?php echo $this->iddivParent ?>&year=<?php echo $this->year ?>';
+		//alert(document.getElementById('addVanBanLienQuanFrm<?php echo $this->idHSCV ?>').src);
+		document.getElementById('addVanBanLienQuanFrm<?php echo $this->idHSCV ?>').style.display='';
+		return true;
+"><img src="/images/icon_add.gif" border="0">Thêm mới</a>
+<a href="javascript:;" onclick="
+	var ln = 0;
+	var arr = document.getElementsByName('DELidvanbanlienquan<?php echo $this->idHSCV ?>[]');
+	for(var i = 0 ; i < arr.length ;i++ ){
+		if(arr[i].checked == true){
+			ln = 1;
+		}
+	}
+	if(ln == 1){
+		if(confirm('<?php echo "Bạn có muốn xóa không"; ?>')){
+			sendDataObjectNameToServer('DELidvanbanlienquan<?php echo $this->idHSCV ?>[]','/hscv/vanbanlienquan/delete?isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&year=<?php echo $this->year ?>&iddivParent=<?php echo $this->iddivParent ?>');
+		}
+	}else{
+		document.getElementById('VBLQ_ERRNochoiceDelete<?php echo $this->idHSCV ?>').innerHTML = 'Bạn phải chọn ít nhất một dòng để xóa';
+	}
+	"><img src="/images/icon_del.gif" border="0">Xóa</a>
+
+<span class="box_erro_area" id="VBLQ_ERRNochoiceDelete<?php echo $this->idHSCV ?>"></span>
+</th>
+</tr>
+
+
+<?php } ?>
+
+<tr>
+<th nowrap="nowrap">#</th>
+<?php if($this->isCapnhat == 1){ ?>
+<th nowrap><input type=checkbox name='DELALLidvanbanlienquan<?php echo $this->idHSCV ?>' onclick="SelectAll(this,'DELidvanbanlienquan<?php echo $this->idHSCV ?>')"></th>
+<?php } ?>
+<th width="100%">Tên văn bản</th>
+
+</tr>
+</thead>
+<tbody>
+<?php 
+$stt = 1;
+if( count($this->data) == 0){
+	 ?>
+<tr><td colspan=5> Không có văn bản liên quan </td> </tr>
+<?php }else{
+foreach ($this->data as $item){ ?>
+<tr>
+	<?php 
+	$url = "";$is_new = 0;$type = 0;
+	if((int)$item["ID_VBLQ"]==0){ $is_new = 1;$type = -1;
+	}else{ $is_new = 0;$type = 4;
+	}
+	$url ="'/hscv/file?iddiv=idFileDinhKem".$stt."&idObject=".$item["ID_VBLQ"]."&is_new=".$is_new."&year=".$this->year."&type=".$type."'" ;
+	?>
+	<td nowrap valign="top"><?php echo $stt?></td>
+	<?php if($this->isCapnhat == 1){ ?>
+	<td nowrap valign="top">
+		<input type=checkbox name='DELidvanbanlienquan<?php echo $this->idHSCV ?>[]' value='<?php echo $item['ID_VBLQ']?>'>
+		
+	</td>
+	<?php } ?>
+	<td width="100%">
+	<div>
+	<a href="#"
+	onclick=" 
+	var update_name_div = document.getElementById('div_update_name<?php echo $stt?>');
+	if(update_name_div.style.display =='')
+		update_name_div.style.display ='none';
+	if(update_name_div.style.display =='none')
+		update_name_div.style.display ='';
+	return false;"
+	><b><?php echo $item['NAME']?></b></a>
+	
+	</div>
+	<div class="clr"></div>
+	<div id="div_update_name<?php echo $stt?>" style="display:none">
+		<label>Tên văn bản: </label>
+		<input type="text" id="txt_name_update<?php echo $stt?>" name="txt_name_update" value="<?php echo $item['NAME']?>"/>
+		<a href="#" onclick="
+		var otxtNameVB = document.getElementById('txt_name_update<?php echo $stt?>');
+		var txtNameVB =(otxtNameVB.value);
+		if(txtNameVB == '<?php echo $item['NAME']?>'){
+			var update_name_div = document.getElementById('div_update_name<?php echo $stt?>');
+			update_name_div.style.display ='none';
+		}
+		else
+		sendDataObjectNameToServer('DELidvanbanlienquan<?php echo $this->idHSCV ?>[]','/hscv/vanbanlienquan/save?txtNameVB='+ encodeURIComponent(txtNameVB)+'&idvblq=<?php echo $item["ID_VBLQ"] ?>&isNoHSCV=<?php echo $this->isNoHSCV ?>&idHSCV=<?php echo $this->idHSCV ?>&year=<?php echo $this->year ?>&iddivParent=<?php echo $this->iddivParent ?>');
+		return false;
+		">Cập nhật</a>
+	</div>
+	<div>
+	<a href="#" 
+	onclick="
+		loadDivFromUrl('idFileDinhKem<?php echo $stt?>',<?echo $url ?>,0);
+		return false;
+	"
+	>[File đính kèm]</a>
+	</div>
+	
+	<input type=hidden name='vanbanlienquanId[]' value="<?php echo $item['ID_VBLQ']?>">	
+
+	<div id="idFileDinhKem<?php echo $stt?>"></div>
+	</td>
+</tr>
+<?php $stt++;}} 
+?>
+</tbody>
+<tfoot>
+	<tr><th align="left" colspan=6>
+	<a name="frmThemVanBanLienQuan"></a>
+	<iframe style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no name="addVanBanLienQuanFrm<?php echo $this->idHSCV ?>" id="addVanBanLienQuanFrm<?php echo $this->idHSCV ?>" src="" width="100%"> 
+	</iframe></tr>
+</tfoot>
+</table>
+

@@ -1,0 +1,84 @@
+<form id="containerID" action="/giaoviec/danhmucloaicongviec/save" method="post" enctype="multipart/form-data" name="datacdform" >
+    <div style="float: right;"><font color="red">(*) Bắt buộc nhập liệu </font></div>
+    <div class="clr"></div>
+    <fieldset>
+        <div class="required clearfix">
+            <label>Tên<font color="red">*</font></label>
+            <input type="text" name="name" maxlength="200" value="<?php echo htmlspecialchars($this->namebefore); ?>" class="inputText" size="10" >
+            <span class="box_erro_area" id="ERRname"></span>
+        </div>
+        <div class="required clearfix">
+            <label>Mã số<font color="red">*</font></label>
+            <input type="text" name="code" maxlength="10" value="<?php echo htmlspecialchars($this->codebefore); ?>" class="inputText" size="10" >
+            <span class="box_erro_area" id="ERRcode"></span>
+        </div>
+        <div class="optional clearfix">
+            <label>Kích hoạt</label>
+            <?php
+            if ($this->activeselect == 1) {
+                echo '<input type="checkbox" value=1 class="inputCheckbox" name="active" checked="checked">';
+            } else {
+                echo '<input type="checkbox" value=1 class="inputCheckbox" name="active">';
+            }
+            ?>
+        </div>
+    </fieldset>
+    <input type=hidden name="InputIDLCV" value=<?php echo $this->id ?> >
+    <input type=hidden name="limit" value=<?php echo $this->limit ?> >
+    <input type=hidden name="filter_object" value=<?php echo $this->filter_object ?> >
+    <input type=hidden name="search" value=<?php echo $this->search ?> >
+    <input type=hidden name="page" value=<?php echo $this->page ?> >
+</form>
+<script type="text/javascript">
+
+    function SaveButtonClick() {
+        var flag = true;
+        var errname = true;
+        errname = errname & validateInput("req", document.datacdform.name, "Tên loại công việc phải từ 1 ký tự đến 200 ký tự");
+        var errcode = true;
+        errcode = errcode & validateInput("req", document.datacdform.code, "Mã loại công việc phải từ 1 ký tự đến 10 ký tự");
+
+        if (errcode) {
+            var AE = new AjaxEngine();
+            var oXmlHttp = AE.createXMLHttp();
+            oXmlHttp.open("post", "/giaoviec/danhmucloaicongviec/checkexist/code/" + document.datacdform.code.value + "/id/" + document.datacdform.InputIDLCV.value, true);
+            oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            oXmlHttp.onreadystatechange = function () {
+                if (oXmlHttp.readyState == 4) {
+                    if (oXmlHttp.status == 200) {
+                        if ('<?= $this->codebefore ?>' != ''){   //cập nhật
+                            if (document.datacdform.code.value != '<?= $this->codebefore ?>') {
+                                if (oXmlHttp.responseText == 1) {
+                                    document.getElementById('ERRcode').innerHTML = 'Mã số đã tồn tại';
+                                    flag = false;
+                                }
+                            }
+                            if (flag == true) {
+                                if (errcode && errname) {
+                                    document.datacdform.submit();
+                                }
+                            }
+                        }
+                        if ('<?= $this->codebefore ?>' == '') {
+                            if (oXmlHttp.responseText == 1) {
+                                document.getElementById('ERRcode').innerHTML = 'Mã số đã tồn tại';
+                            }
+                            else {
+                                if (errcode && errname) {
+                                    document.datacdform.submit();
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            oXmlHttp.send(null);
+        }
+    }
+
+    function BackButtonClick() {
+        document.datacdform.action = '/giaoviec/danhmucloaicongviec/index';
+        document.datacdform.submit();
+    }
+
+</script>

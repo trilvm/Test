@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name="frm" action="/hscv/dexuatchoxuly/save">
+<table class=admintable width=100%>
+	<tr>
+		<td nowrap><b style="margin-left: 5px">Nội dung</b>
+		</td>
+		<td width=100%>
+                    <textarea rows="2" cols="80" name=noidung><?=htmlspecialchars($this->data['COMMENT'])?></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+                <td><input type="button" value="Lưu chờ xử lý" onclick="luuchoxuly();" /></td>
+	</tr>
+	
+</table>
+<input type=hidden name=id value="<?=$this->id?>" />
+<input type=hidden name=nguoipheduyet value="" />
+<input type=hidden name=nguoigui value="" />
+</form>
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+
+function luuchoxuly(){
+document.frm.submit();
+}
+
+function resize(){
+	var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+	iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+	iframeElement.width = "100%";
+}
+resize();
+</script>

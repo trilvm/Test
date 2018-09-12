@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<form method="post" name="frmButPhe" action="/hscv/hscv/savenguoibutphe">
+<table style="font-size: 14px;">
+	<tr>
+		<td nowrap>Người nhập bút phê</td>
+		<td width="100%">
+			<font color="blue">
+			<?php 
+				echo $this->fullname;
+			?>
+			</font>
+		</td>
+	</tr>
+	<tr>
+		<td nowrap>Người bút phê</td>
+		<td>
+			<div style="float: left">
+			<select name="nguoiButPhe" id="nguoiButPhe">
+				<?php foreach($this->data as $data) { ?>
+					<option value="<?= $data['ID_U'];?>"><?= $data['FULLNAME'];?></option>
+				<?php } ?>
+			</select>
+			</div>
+			<div style="float: left; width: 50%;" id="listuser"></div>
+		</td>
+	</tr>
+	<tr>
+		<td nowrap>Ngày bút phê</td>
+		<td>
+			<?=QLVBDHCommon::calendarFullWithNoEvent(QLVBDHCommon::MysqlDateToVnDate(date("Y-m-d")),"NGAYBUTHE","NGAYBUTHE") ?>
+		</td>
+	</tr>
+	<tr>
+		<td>Nội dung bút phê</td>
+		<td><textarea rows="5" cols="30" name="noidung"></textarea></td>
+	</tr>
+	<tr>
+		<td><input type="button" name="btnSave" value="Lưu" onclick="SaveButtonClick()" /></td>
+		<td colspan="2"></td>
+	</tr>
+</table>
+<input type="hidden" name="idhscv" value="<?= $this->idhscv;?>" />
+</form>
+<script>
+	function SaveButtonClick()
+	{
+		document.frmButPhe.action = "/hscv/hscv/savenguoibutphe";
+		document.frmButPhe.submit();
+	}
+</script>
+</body>
+</html>

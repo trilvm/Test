@@ -1,0 +1,65 @@
+<?php 
+require_once 'qtht/models/Vb_nguoikyModel.php';
+?>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<form name="frm" action="/qtht/danhmucnguoiky/save" 
+method="post"
+onclick="if(at_container){ at_Hide(false);}">
+<div>
+<div class="required">
+<label>Chọn người ký </label>
+<?php
+				if($this->id_u > 0){
+					//truong hop cap nhat
+					echo QLVBDHCommon::AutoComplete(
+						Vb_nguoikyModel::getDataUser(0,$this->id_u),
+						"ID_U",
+						"NAME",
+						"ID_U",
+						"ID_U_TEXT",
+						true,
+						"width:200px",
+						"",
+						$this->id_u,
+						'');
+				}else{
+					//truong hop them moi
+					echo QLVBDHCommon::AutoComplete(
+						Vb_nguoikyModel::getDataUser(1,0),
+						"ID_U",
+						"NAME",
+						"ID_U",
+						"ID_U_TEXT",
+						true,
+						"width:200px",
+						"",
+						"",
+						'');
+				}
+				
+				
+				
+?>
+
+<input type="button" style="background: url(/images/hscv-input-bg.png) repeat-x;" name="btnSubmit" 
+value="<?php if($this->id_u > 0) echo "Cập nhật"; else echo "Thêm mới"?>" onclick="btnSubmitClick();"> 
+<div class="clr"></div>
+<span class="box_erro_area" id="err"></span>
+</div>
+</div>
+</form>
+<script>
+function btnSubmitClick(){
+	//alert(document.frm.ID_U.value);
+	if(document.frm.ID_U.value > 0)
+		document.frm.submit();
+	else{
+		var oerr = document.getElementById('err');
+		oerr.innerHTML = "Nhân viên không có trong danh mục";
+	}
+}
+function BackButtonClick(){
+	document.frm.action = '/qtht/Danhmucnguoiky/index';
+	document.frm.submit();
+}
+</script>

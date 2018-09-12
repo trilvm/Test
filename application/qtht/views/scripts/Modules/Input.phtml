@@ -1,0 +1,48 @@
+<?php
+$this->dojo()->enable();
+?>
+<form action="/qtht/Modules/Save" enctype="multipart/form-data" name="frm"  method="post">
+<fieldset>
+	<div class="required">
+		<label><?php echo MSG11011005 ?>(*)</label>
+		<input type=text class=inputbox name=NAME value="<?=$this->data->NAME?>" class="inputText" size="10" maxlength="100">
+    	<span class="box_erro_area" id="ERRNAME"></span>
+	</div>
+    <div class="required">
+		<label><?php echo MSG11011006 ?></label>
+		<input type=text class=inputbox name=URL value="<?=$this->data->URL?>" class="inputText" size="10" maxlength="100">
+    	<span class="box_erro_area" id="ERRLINK"></span>
+	</div>
+    <div class="required">
+		<label><?php echo MSG11011007 ?></label>
+		<input name="ACTIVE" class="inputCheckbox" type="checkbox" id="ACTIVE" value="1" <?php echo $this->data->ACTIVE==1?"checked":""; ?> />
+	</div>
+    <div class="required">
+		<label><?php echo MSG11011008 ?></label>
+		<input name="ISPUBLIC" class="inputCheckbox" type="checkbox" id="ISPUBLIC" value="1" <?php echo $this->data->ISPUBLIC==1?"checked":""; ?> />
+	</div>
+    <div class="optional">
+    	<span>(*) Bắt buộc nhập liệu.</span>
+    </div>
+</fieldset>
+<input type=hidden name=ID_MOD value="<?php echo $this->data->ID_MOD; ?>">
+<input type=hidden name=page value="<?php echo $this->page; ?>">
+<input type=hidden name=limit value="<?php echo $this->limit; ?>">
+<input type=hidden name=search value="<?php echo $this->search; ?>">
+<input type=hidden name=filter_object value="<?php echo $this->filter_object; ?>">
+</form>
+
+<script>
+    function SaveButtonClick(){
+        var err = true;
+        err = err & validateInput("req",document.frm.NAME,"<?php echo ERR11011003 ?>");
+        err = err & err==true?validateInput("maxlen=50",document.frm.NAME,"<?php echo ERR11011004 ?>"):false;
+        if(err==true){
+            document.frm.submit();
+        }
+    }
+    function BackButtonClick(){
+        document.frm.action = "/qtht/Modules";
+        document.frm.submit();
+    }
+</script>

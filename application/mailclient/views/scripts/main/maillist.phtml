@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+</head>
+<body style="background-color:transparent;margin:0;">
+<form name="frm" method="post" onclick="parent.document.getElementById('id_tooltip').style.display='none';parent.document.getElementById('id_tooltip_group').style.display='none'">
+	
+	
+	<div id="mail_maincolumn_search">
+		<!--<b>Tìm kiếm</b> <input type="text" name="search" id="search" value="<?php echo htmlspecialchars($this->search) ?>" class="text_area" onchange="document.frm.page.value=1;document.frm.submit();" /> -->
+		<b style="color:#FFF;"><?=mail::getNameFolderById($this->idfolder);?></b>
+		
+	</div>
+	<div class=clr></div>
+	
+	
+	
+	<div id="mail_maincolumn_top">
+		
+		<div style="float:left;"><b><?=mail::getNameFolderById($this->idfolder);?></b> 
+			<select name="ACTION" onchange="
+			if(checkSelectEmail()){
+				document.frm.mailaction.value=this.value;document.frm.submit();
+				window.parent.document.getElementById('folder_frame').src='/mailclient/main/folderlist/idfolder/'+'<?=$this->id_folder?>';
+				//document.frm.mailaction.value=
+				}
+			else 
+				document.frm.ACTION.value = 0;	
+			
+
+			">
+				<option value=0>--Hành động--</option>
+				<option value=1>Chưa đọc</option>
+				<option value=2>Đã đọc</option>
+				<option value=3>Đánh dấu</option>
+				<option value=4>Hủy đánh dấu</option>
+			<?php if($this->idfolder != 7 ){	?>	
+				<option value=6>Bỏ vào thùng rác</option>
+			<?php } ?>
+				<option value=5>Xóa</option>
+			</select>
+		</div>
+		<div style="float:right;text-align: right;"><?php echo $this->showPage; ?></div>
+		<div class=clr></div>
+		<div style="float:left;width:100%;">
+		Chọn: <a href="javascript:;" onclick="SelectAllForEmail(true,'ID_EM','','')">Tất cả</a>, <a href="javascript:;" onclick="SelectAllForEmail(false,'ID_EM','','')">Không chọn</a>, <a href="javascript:;" onclick="SelectAllForEmail(true,'ID_EM','0','')">Chưa đọc</a>, <a href="javascript:;" onclick="SelectAllForEmail(true,'ID_EM','1','')">Đã đọc</a>, <a href="javascript:;" onclick="SelectAllForEmail(true,'ID_EM','','1')">Đánh dấu</a>
+		</div>
+	</div>
+	
+	
+	
+	<div class=clr></div>
+	<div id="mail_maincolumn_middle">
+		
+		<table class="adminlist">
+			<thead>
+				<th nowrap="nowrap">#</th>
+				<th nowrap="nowrap"><img src="/images/toolbar/icon-32-default.png" width=16 height=16></img></th>
+				<th nowrap="nowrap">Người gửi</th>
+				<th width="100%">Tiêu đề</th>
+				<th nowrap="nowrap"><img src="/images/icon_phoihop.gif"></img></th>
+				<th nowrap="nowrap">Ngày gửi</th>
+			</thead>
+			<tfoot>
+			</tfoot>
+			<tbody>
+<?php
+	$key = Crypt_Key::createUserKey();
+	$crypt = new Crypt_Rijndael($key);
+	if($this->count==0){
+?>
+				<tr>
+					<td colspan="6">Không có mail nào.</td>
+				</tr>
+<?php
+	}else{
+		$i=0;
+		foreach($this->data as $item){
+?>
+				<tr  <?=$item['IS_READ']==1?"class='row<?=$i?>'": " style='background-color: #B4CFEC ;font-weight: bold;' class='unread_mail'"?> >
+					<td nowrap="nowrap" style="cursor:pointer;"><input type=checkbox value=<?=$item['ID_EM']?> name=ID_EM[] title="<?=$item['IS_READ']."-".$item['IS_MARK']?>"></td>
+					<td nowrap="nowrap" align="center" style="cursor:pointer;" onclick="doViewMail(<?=$item['ID_EM']?>);">
+					<?php if($item['IS_MARK']==1){?>
+					<img src="/images/toolbar/icon-32-default.png" width=16 height=16></img>
+					<?php }else{ ?>
+					<img src="/images/toolbar/icon-32-default-disable.gif" width=16 height=16></img>
+					<?php } ?>
+					</td>
+					<td  width="30%" valign=top style="cursor:pointer;" onclick="doViewMail(<?=$item['ID_EM']?>); return false;"><a href="#">
+					<?=htmlspecialchars(Mail_Mime::getAddressDescription($item['ADDR_FROM']))?></a></td>
+					<td valign=top width="50%" style="cursor:pointer;" onclick="doViewMail(<?=$item['ID_EM']?>);return false;"><a href="#"><?=substr(htmlspecialchars($crypt->doDecryptBlock($item['SUBJECT'])),0,30)." ..."?></a></td>
+					<td nowrap="nowrap" align="center" style="cursor:pointer;">
+					<?php if($item['IS_ATTACTMENT']==1){?>
+					<img src="/images/icon_phoihop.gif"></img>
+					<?php }else{ ?>
+					&nbsp;
+					<?php } ?>
+					</td>
+					<td valign=top nowrap="nowrap" style="cursor:pointer;"><?=htmlspecialchars(date("d/m/Y  ",strtotime($item['TIME'])))."<br/>".htmlspecialchars(date("  H:i",strtotime($item['TIME'])))?></td>
+				</tr>
+<?php
+			$i = (-1+$i)*-1;
+		}
+	}
+?>
+			</tbody>
+		</table>
+	</div>
+	
+	
+	<div class=clr></div>
+	
+	
+	
+	
+	
+	
+	<div id="mail_maincolumn_bottom">
+		<div style="float:left;"><b><?=mail::getNameFolderById($this->idfolder);?></b>
+			<select name="ACTION1" onchange="
+			if(checkSelectEmail()){
+			document.frm.mailaction.value=this.value;document.frm.submit();
+			window.parent.document.getElementById('folder_frame').src='/mailclient/main/folderlist/idfolder/'+'<?=$this->id_folder?>';
+			}
+			else
+			document.frm.ACTION.value = 0;
+			">
+				<option value=0>--Hành động--</option>
+				<option value=1>Chưa đọc</option>
+				<option value=2>Đã đọc</option>
+				<option value=3>Đánh dấu</option>
+				<option value=4>Hủy đánh dấu</option>
+				<?php if($this->idfolder != 7 ){	?>	
+				<option value=6>Bỏ vào thùng rác</option>
+				<?php } ?>
+				<option value=5>Xóa</option>
+			</select>
+		</div>
+		<div style="float:right;text-align: right;">
+			<?php echo $this->showPage; ?>
+		</div>
+		<div class=clr></div>
+		<div style="float:left;width:99%;">
+		Chọn: <a href="javascript:;" onclick="SelectAllForEmail(true,'ID_EM','','')">Tất cả</a>, <a href="javascript:;" onclick="SelectAllForEmail(false,'ID_EM','','')">Không chọn</a>, <a href="javascript:;" onclick="SelectAllForEmail(true,'ID_EM','0','')">Chưa đọc</a>, <a href="javascript:;" onclick="SelectAllForEmail(true,'ID_EM','1','')">Đã đọc</a>, <a href="javascript:;" onclick="SelectAllForEmail(true,'ID_EM','','1')">Đánh dấu</a>
+		</div>
+	</div>
+	<input type="hidden" name="mailaction" value="">
+	<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<p id=lasttext></p>
+</body>
+
+</html>
+<script>
+var iframeElement = window.parent.document.getElementById('right_frame');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%"; 
+
+
+
+function checkSelectEmail(){
+		ln = 0;
+		var arr = document.getElementsByName('ID_EM[]');
+		for(var i = 0 ; i < arr.length ;i++ ){
+		if(arr[i].checked == true){
+			ln = 1;
+		}
+		}
+		return ln;
+}
+function doViewMail(id){
+		//window.open("/mailclient/main/view/id/"+id,
+		//		"windowviewmail"+id,"status=0,toolbar=1,autoscroll,width=600,height=500");
+		//window.parent.document.getElementById('right_frame').location.reload();
+		//window.parent.document.getElementById('folder_frame').src='/mailclient/main/folderlist/idfolder/'+'<?=$this->id_folder?>';
+		//window.parent..location='/mailclient/main/index';
+
+		/*var odivView = window.parent.document.getElementById("viewmail_div");
+		var submitAjax = new AjaxEngine(); 
+		var oXmlHttp = submitAjax.createXMLHttp();
+		oXmlHttp.open("get", "/mailclient/main/view/id/"+id, true); 
+		//var post = submitAjax.getDataFromFrm(document.frm);
+		oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); 
+		
+		oXmlHttp.onreadystatechange = function () { 
+			if (oXmlHttp.readyState == 4) { 
+				//alert(oXmlHttp.responseText);
+				if (oXmlHttp.status == 200) { 
+					odivView.innerHTML =oXmlHttp.responseText ;
+					iframeElement.style.height = 0;
+				} else { 
+				
+				} 
+			} 
+			   }; 
+			
+		oXmlHttp.send(null);*/
+		
+		<?php 
+			//echo strtoupper(mail::getCodeFolderById($this->idfolder));
+			if( strtoupper(mail::getCodeFolderById($this->idfolder)) != 'DRAFT'){?>
+				window.parent.document.getElementById('right_frame').src = "/mailclient/main/view/id/"+id;
+			<?php }else{ ?>
+				window.parent.document.getElementById('right_frame').src = "/mailclient/main/compose/is_draft/1/ID_MESSAGE_DRAFT/"+id;
+			<?php } ?>
+		
+
+	}
+	<?php if(Mail_Quota::checkQuotaUser() == 1){?>
+	window.parent.document.getElementById('quota_alert').innerHTML="";
+	<?php }else{ ?>
+	window.parent.document.getElementById('quota_alert').innerHTML='<font color="red"><b><i>Dung lượng chứa thư của bạn đã hết. Để nhận hay gửi thư, hãy xóa một số thư cũ để giảm dung lượng</i></b></font>';
+	<?php }?>
+</script>

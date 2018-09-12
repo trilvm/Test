@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel="stylesheet" href="/styles/system.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/styles/rounded.css" />
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel="stylesheet" type="text/css" href="/styles/template.css" />
+</head>
+<body style="background-color:transparent">
+
+<form name=frm action="/motcua/motcua/saveyeucaubosung">
+<table>
+	<tr>
+		<td nowrap="nowrap"><font color=blue>Số phiếu</font></td>
+		<td nowrap="nowrap" width="10"></td>
+		<td>
+			<input type="text" name=sophieu>
+			<span class="box_erro_area" id="ERRsophieu" ></span>
+		</td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap"><font color=blue>Nội dung yêu cầu</font></td>
+		<td nowrap="nowrap" width="10"></td>
+		<td width="100%">
+			<textarea name="ghichu" rows="2" cols="60" ></textarea>
+		</td>
+	</tr>
+</table>
+<b> Đánh dấu các thủ tục cần bổ sung:</b>
+<table class="adminlist" id='tbl_thutuc'>
+	<thead>
+	
+	<tr>
+		<th>STT</th>
+		<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL_THUTUC');SelectAll(this,'DEL_NHANGOM');"></th>
+		<th>Tên thủ tục</th>
+	</tr>
+	
+	</thead>
+	<tbody >
+		<?php $stt=1; foreach($this->thutucdanhans as $thutuc){ ?>
+		<tr>
+			
+			<td><?=$stt?></td>
+			<td nowrap align="center">
+					<input type=checkbox name=DEL_THUTUC[] value='<?=$thutuc["ID_TAILIEU_NHAN"]?>'>
+			</td>
+			
+			<td width=100%><?=$thutuc["TEN_THUTUC"]?>
+			
+			</td>
+		</tr>
+		<?php $stt++; }?>
+	</tbody>
+	<thead>
+		<tr>
+		</tr>
+		<tr>
+			<td colspan=3 width=100%>
+			<span style="width:30%;" >Tên thủ tục:</span>
+			<input style="width:70%;" type=text name='new_thutuc_text' > <input type=button style="cursor:pointer;" value="Thêm mới" onclick="addnew_thutuc();">
+			</td>
+			
+		</tr>
+	</thead>
+</table>
+
+<input type="button" name="SEND" value="Chuyển yêu cầu" onclick="Submit();" class="chuyenxuly"></input>
+<input type=hidden name=id value="<?=$this->ID_HSCV?>">
+</form>
+
+
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+<?="var stt_thutuc = ".$stt.";"?>
+var stt_new = 0;
+
+var iframeElement = parent.document.getElementById('iframebutphe<?=$this->ID_HSCV?>');
+iframeElement.style.height = ""+ (document.getElementById("lasttext").offsetTop+30) +"px";
+iframeElement.width = "100%"; 
+
+function checkInputData(){
+	//so phieu la varchar 20 , khong duoc rong
+	var str = "Bạn phải nhập hạn số phiếu";
+	var strerr = validateInput("required",document.frm.sophieu,str);
+	if(!strerr){
+		document.frm.sophieu.focus();
+		return false;
+	}
+	return true;
+}
+
+function Submit(){
+	if(checkInputData()==true){
+		document.frm.submit();
+	}
+}
+
+function addnew_thutuc(){
+	//var new_thutuc_text = 
+	var tbl_thutuc = document.getElementById('tbl_thutuc');
+	var tbody = tbl_thutuc.getElementsByTagName("tbody")[0];
+	var new_tr =  document.createElement("TR");
+	
+	var new_td =  document.createElement("TD");
+	new_td.innerHTML = stt_thutuc;
+	new_tr.appendChild(new_td);
+	new_td =  document.createElement("TD");
+	new_td.innerHTML = "<input type=checkbox  checked name='NEW_THUTUC[]' value='"+stt_new+"'>";
+	new_tr.appendChild(new_td);
+	new_td =  document.createElement("TD");
+	new_td.innerHTML = document.frm.new_thutuc_text.value;
+	new_td.innerHTML += "<input type=hidden name='NEW_THUTUC_TEXT[]' value='"  + document.frm.new_thutuc_text.value + "' >";
+	new_tr.appendChild(new_td);
+	
+	tbody.appendChild(new_tr);
+	stt_thutuc++;
+	stt_new++;
+	document.frm.new_thutuc_text.value = "";
+	
+
+}
+
+</script>

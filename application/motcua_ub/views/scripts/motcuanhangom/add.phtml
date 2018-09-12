@@ -1,0 +1,13 @@
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+ <input type="text" name="TenThuTuc" id="idTenthutuc" maxlength="150" size="40"/>
+ <input type=hidden name="hiddenThuTuc" value="<?php echo $this->hiddenThuTuc?>">
+ <input type=hidden name="d_tt" value="<?php echo $this->d_tt?>">
+<a  href="#"  
+	onClick='
+	var TenThuTuc=document.frmAddMotCua.TenThuTuc.value;
+	var aj = new AjaxEngine();
+	aj.loadDivFromUrlAndForm("DivThuTuc","/motcua/motcuanhangom/index/idhoso/<?php echo $this->idhoso ?>/idloai/<?php echo $this->id_loaihoso ?>",document.frmAddMotCua);	
+	return false;
+	
+	'>Thêm</a>
+

@@ -1,0 +1,62 @@
+<?php
+$this->dojo()->enable();
+?>
+<form action="/qtht/Actions/Save" enctype="multipart/form-data" name="frm"  method="post">
+<fieldset>
+	<div class="required clearfix">
+		<label><?php echo MSG11001004 ?>(*)</label>
+		<input type=text class=inputbox name=NAME value="<?=$this->data->NAME?>" class="inputText" size="10" maxlength="100">
+    	<span class="box_erro_area" id="ERRNAME"></span>
+	</div>
+    <div class="required clearfix">
+		<label><?php echo MSG11001005 ?>(*)</label>
+		<select name="ID_MOD" id="ID_MOD" class="selectOne">
+            <?php
+                foreach($this->Modules as $row){
+                    echo "<option value='".$row->ID_MOD."'>".$row->NAME."</option>";
+                }
+            ?>
+        </select>
+        <script>
+            document.getElementById("ID_MOD").value='<?php echo $this->data->ID_MOD; ?>';
+        </script>
+    	<span class="box_erro_area" id="ERRID_MOD"></span>
+	</div>
+    <div class="required clearfix">
+		<label>Mô tả:</label>
+		<input type=text name="mota" size=50 value="<?=$this->data->DESCRIPTION?>">
+	</div>
+    <div class="required clearfix">
+		<label><?php echo MSG11001007 ?></label>
+		<input name="ISPUBLIC" class="inputCheckbox" type="checkbox" id="ISPUBLIC" value="1" <?php echo $this->data->ISPUBLIC==1?"checked":""; ?> />
+	</div>
+    <div class="required clearfix">
+		<label><?php echo MSG11001008 ?></label>
+		<input name="ACTIVE" class="inputCheckbox" type="checkbox" id="ACTIVE" value="1" <?php echo $this->data->ACTIVE==1?"checked":""; ?> />
+	</div>
+    <div class="optional clearfix">
+    	<span>(*) Bắt buộc nhập liệu.</span>
+    </div>
+</fieldset>
+<input type=hidden name=ID_ACT value="<?php echo $this->data->ID_ACT; ?>">
+<input type=hidden name=page value="<?php echo $this->page; ?>">
+<input type=hidden name=limit value="<?php echo $this->limit; ?>">
+<input type=hidden name=search value="<?php echo $this->search; ?>">
+<input type=hidden name=filter_object value="<?php echo $this->filter_object; ?>">
+</form>
+
+<script>
+    function SaveButtonClick(){
+        var err = true;
+        err = err & validateInput("req",document.frm.NAME,"<?php echo ERR11001003 ?>");
+        err = err & err==true?validateInput("maxlen=50",document.frm.NAME,"<?php echo ERR11001004 ?>"):false;
+        err = err & validateInput("req",document.frm.ID_MOD,"<?php echo ERR11001005 ?>");
+        if(err==true){
+            document.frm.submit();
+        }
+    }
+    function BackButtonClick(){
+        document.frm.action = "/qtht/Actions";
+        document.frm.submit();
+    }
+</script>

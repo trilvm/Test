@@ -1,0 +1,237 @@
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<form name=frm method=post>
+<table>
+	<tr>
+			<td nowrap="nowrap">Loại công việc</td>
+			<td nowrap="nowrap"><select name="OBJECT" onchange="
+						document.frm.submit();
+				">
+						<option value="">--Chọn loại công việc--</option>
+						<option value="VBD">Xử lý văn bản đến</option>
+						<option value="VBSOANTHAO">Công việc</option>
+						<!--<option value="MOTCUA">Hồ sơ một cửa</option>-->
+				</select>
+				<script>document.frm.OBJECT.value="<?=$this->OBJECT?>";</script>
+				</td>
+			<td width="10" nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td width="100%"></td>
+		</tr>
+    <tr style="display: none">
+			<td nowrap="nowrap">Lĩnh vực</td>
+			<td nowrap="nowrap"><select name="ID_LV_MC" onchange="document.frm.submit();
+				">
+						<option value=0>--Tất cả lĩnh vực--</option>
+						<?=linhvucmotcuaModel::ToCombo($this->linhvuc,$this->ID_LV_MC)?>
+				</select></td>
+			<td width="10" nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td width="100%"></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap" valign=top>Nội dung</td>
+			<td nowrap="nowrap" colspan="3"><input type=text class=inputbox name=NAMECV value="<?=$this->NAME?>" size=50><br>
+			<input type="checkbox" name=INNAME value=1 <?=$this->INNAME==1?"checked":""?>>Trong tên công việc 
+			<input type="checkbox" name=INFILE value=1 <?=$this->INFILE==1?"checked":""?>>Trong nội dung dự thảo
+			</td>
+			<td width="100%"></td>
+		</tr>
+		<tr style="display: none">
+			<td nowrap="nowrap" valign=top>Mã hồ sơ một cửa</td>
+			<td nowrap="nowrap" colspan="3"><input type=text class=inputbox name=MASOHOSO value="<?=$this->MASOHOSO?>" size=50><br>
+			</td>
+			<td width="100%"></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap">Từ ngày</td>
+			<td nowrap="nowrap"><?=QLVBDHCommon::calendar($this->NGAY_BD,"NGAY_BD","NGAY_BD") ?> Đến ngày <?=QLVBDHCommon::calendar($this->NGAY_KT,"NGAY_KT","NGAY_KT") ?></td>
+			<td width="10" nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap"></td>
+			<td width="100%"></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap" colspan="3"><input type=submit value="Tìm kiếm"></td>
+			<td width="100%"></td>
+		</tr>
+	</table>
+	<table class=adminlist>
+		<thead>
+			<tr><i>Nhập hoặc kích chuột vào ô Chuyển cho để chọn trước người dùng muốn chuyển nhiều hồ sơ công việc</i></tr>
+			<tr>
+				<th nowrap>Chuyển cho</th>
+				<th width=100%>
+					<?//=QLVBDHCommon::writeSelectDepartmentUserWithSelAndAction("ID_DEP","ID_U_RECEIVE",$this->ID_U_RECEIVE,1,"document.frm.submit();")?>
+<!--					<script>
+						document.frm.ID_DEP.value="<?//=$this->ID_DEP?>";
+						FillComboByComboWithSel(document.frm.ID_DEP,document.getElementById("ID_U_RECEIVE"),ARR_ID_U_RECEIVE,'<?//=$this->ID_U_RECEIVE?>');
+					</script>-->
+                                        <?php
+				echo QLVBDHCommon::AutoComplete(
+                                        UsersModel::selectAllUsersJoinEmployees2(),
+				"ID_U",
+				"NAME",
+				"ID_U_RECEIVE",
+				"ID_U_NAME",
+				true,
+				"width:200px",
+				"document.frm.submit()",
+				$this->ID_U_NAME,
+				$this->ID_U_NAME);
+			?>                                      
+				</th>
+			</tr>
+			<tr>
+				<th nowrap>#</th>
+				<th width=100%>Tên hồ sơ</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th colspan=2></th>
+			</tr>
+		</tfoot>
+		<tbody>
+			<?php
+			$stt=0;
+				require_once 'vbden/models/vbdenModel.php';
+				foreach($this->data as $row){
+					$vbdenmodel = new vbdenModel(QLVBDHCommon::getYear());
+					$vbden = $vbdenmodel->findByHscv($row['ID_HSCV']);
+					$vbdeninfo = $vbdenmodel->find($vbden['ID_VBD'])->current();
+					$masolienthong = $vbdeninfo->MASOLIENTHONG;
+					$datacongviec = array();
+					if($masolienthong != NULL)
+					{
+					$configlienthong = new Zend_Config_Ini('../application/config.ini', 'general');
+					$madonvi = $configlienthong->service->lienthong->username;
+					$password = $configlienthong->service->lienthong->password;
+					$giaoviecservice = new GiaoViecService();
+					$token = $giaoviecservice->login($madonvi,md5($password),"");
+					$reCongViec = $giaoviecservice->SelectCongViecByIdlt(
+							$token
+							,$masolienthong
+					);
+					$datacongviec = json_decode($reCongViec);
+					}
+					$sendable=false;
+					$lastlog = WFEngine::GetCurrentTransitionInfoByIdHscv($row['ID_HSCV']);
+					$action = WFEngine::GetNextTransitions($lastlog['ID_PI'],$this->ID_U);
+					for($actioncnt = 0; $actioncnt<count($action);$actioncnt++){
+						if(WFEngine::HaveSendAbleByTransition($action[$actioncnt]['ID_T'],$this->ID_U_RECEIVE)){
+							$action[$actioncnt]["SEND"]=1;
+							$sendable=true;
+						}else{
+							$action[$actioncnt]["SEND"]=0;
+						}
+					}
+					//var_dump($action);
+					if($sendable==false)continue;
+					$stt++;
+			?>
+			<tr class="row<?=$i?>">
+				<td rowspan=2><?=$stt?></td>
+				<td>
+					<?php
+					if($row["ALIAS"]=="VBD"){
+						echo "<img src='/images/icon_vbden.jpg'>";
+						$vbden = $this->vbden->findByHscv($row['ID_HSCV']);
+						//var_dump($vbden);
+					}else if($row["ALIAS"]=="VBSOANTHAO"){
+						echo "<img src='/images/icon_soanthaovb.jpg'>";
+					}else if($row["ALIAS"]=="MOTCUA"){
+						echo "<img src='/images/icon_motcua.jpg'>";
+					}
+				?>
+				<?php if($row["ALIAS"]=="VBD"){
+					$vbdeninfo = $this->vbden->find($vbden['ID_VBD'])->current();
+					if($vbdeninfo->IS_FINISH==0){
+						$datatre .= $row['ID_HSCV'].",".urlencode($vbdeninfo->NGAYTAO).",".$vbdeninfo->HANXULYTOANBO.",-1,";
+					}
+					echo "<b>".$vbdeninfo->SOKYHIEU." - ".QLVBDHCommon::MysqlDateToVnDate($vbdeninfo->NGAYBANHANH)." - ".$vbdeninfo->COQUANBANHANH_TEXT."</b> <span id='TREHANTONG".$row['ID_HSCV']."'></span><br>";
+				}?>
+                <?php if(count($datacongviec->data) > 0 )
+					{	echo "<font color='Red'>Văn bản giao nhiệm vụ</font><br>";
+						echo "<font style='color:blue;'>Nhiệm vụ : ".$datacongviec->data[0]->TENCONGVIEC."</br>Hạn xử lý : Đến ngày ".QLVBDHCommon::MysqlDateToVnDate($datacongviec->data[0]->NGAYDUKIENHOANTHANH)."</font>";
+						$ngayhoanthanh = explode(' ',$datacongviec->data[0]->NGAYDUKIENHOANTHANH);
+						echo QLVBDHCommon::getTreHanNgay($ngayhoanthanh[0]).'</br>'; ?>
+						<input type=hidden name=MACONGVIEC_<?=$row['ID_HSCV']?> value="<?=$datacongviec->data[0]->MACONGVIEC?>">
+						<?
+					}
+				?>
+				<?=$row['NAME']?><?=$row['EXTRA']!=""?" - ".$row['EXTRA']:""?>
+					<?php
+						if($lastlog['NOIDUNG']!=""){
+					?>
+					<br><I><?=$lastlog['NOIDUNG']?></I>
+					<?php
+						}
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<script>
+						var ARR_HANXL_<?=$row['ID_HSCV']?> = new Array();
+						<?php
+							//var_dump($action);
+							foreach($action as $actionitem){
+								if($actionitem['SEND']==1){
+									echo "ARR_HANXL_".$row['ID_HSCV']."[ARR_HANXL_".$row['ID_HSCV'].".length] = new Array();";
+									echo "ARR_HANXL_".$row['ID_HSCV']."[ARR_HANXL_".$row['ID_HSCV'].".length-1][0] = '".$actionitem['ID_T']."';";
+									echo "ARR_HANXL_".$row['ID_HSCV']."[ARR_HANXL_".$row['ID_HSCV'].".length-1][1] = '".$actionitem['HANXULY']."';";
+								}
+							}
+						?>
+					</script>
+					<select name=ID_T[] onchange="changelc(ARR_HANXL_<?=$row['ID_HSCV']?>,<?=$row['ID_HSCV']?>,this.value);">
+						<option value=0>--Không thực hiện--</option>
+					<?php
+						foreach($action as $actionitem){
+							if($actionitem['SEND']==1){
+								echo "<option value=".$actionitem['ID_T'].">".$actionitem['NAME']."</option>";
+							}
+						}
+					?>
+					</select>
+					Hạn xử lý <?=QLVBDHCommon::createInputHanxuly('HANXULY'.$row['ID_HSCV'],'HANXULY[]','0')?>
+					<input type=hidden name=ID_HSCV[] value="<?=$row['ID_HSCV']?>">
+				</td>
+			</tr>
+			<?php
+					$i = (-1+$i)*-1;
+				}
+			?>
+		</tbody>
+	</table>
+</form>
+<script>
+	function CreateButtonClick(){
+		document.frm.action = "/hscv/hscv/multisendsave";
+		document.frm.submit();
+	}
+	function changelc(arrhxl,idhscv,idlc){
+		//duyet han xu ly
+		for(var i=0;i<arrhxl.length;i++){
+			if(arrhxl[i][0]==idlc){
+				if(arrhxl[i][1]>1){
+					/*
+					<input id='HANXULY2193' type=textbox onkeypress='return isNumberKey(event)' name='temp_HANXULY[]' size=3 maxlength=3 value='2' onchange='document.getElementById("real_HANXULY2193").value=this.value/document.frm.type_real_HANXULY2193.value;'><input style='display:none' type=text id='real_HANXULY2193' name='HANXULY[]' value='2'><input checked type=radio name='type_HANXULY2193' id='type_1_HANXULY2193' onclick="document.frm.type_real_HANXULY2193.value=1;document.getElementById('real_HANXULY2193').value=document.getElementById('HANXULY2193').value/this.value;" value=1>ngày <input  type=radio name='type_HANXULY2193' id='type_8_HANXULY2193' onclick="document.frm.type_real_HANXULY2193.value=8;document.getElementById('real_HANXULY2193').value=document.getElementById('HANXULY2193').value/this.value;" value=8>giờ<input style='display:none' type=text id='type_real_HANXULY2193' name='type_real_HANXULY2193' value='1'>					<input type=hidden name=ID_HSCV[] value="2193">*/
+					document.getElementById('HANXULY'+idhscv).value=arrhxl[i][1];
+					document.getElementById('real_HANXULY'+idhscv).value=arrhxl[i][1];
+					document.getElementById('type_1_HANXULY'+idhscv).checked=true;
+					document.getElementById('type_real_HANXULY'+idhscv).value=1;
+				}else{
+					document.getElementById('HANXULY'+idhscv).value=arrhxl[i][1]*8;
+					document.getElementById('real_HANXULY'+idhscv).value=arrhxl[i][1];
+					document.getElementById('type_8_HANXULY'+idhscv).checked=true;
+					document.getElementById('type_real_HANXULY'+idhscv).value=8;
+				}
+				break;
+			}
+		}
+	}
+</script>

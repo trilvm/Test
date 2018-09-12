@@ -1,0 +1,183 @@
+<script type="text/javascript" src="/js/Ajax/testconfigmailAjax.js"></script>
+<div class="clr"></div>
+<div>
+<label><b>Địa chỉ email</b></label>
+<input type="text" value="<?=$this->email_account->_email_addr?>" name="EMAIL_ADDR">
+</div>
+<div class="clr"></div>
+<div>
+<label><b>Tài khoản</b></label>
+<input type="text" value="<?=$this->email_account->_username?>" name="USERNAME">
+</div>
+<div class="clr"></div>
+<div>
+<label><b>Mật khẩu:</b></label>
+<input type="password" value="<?=$this->email_account->_password?>" name="PASSWORD">
+</div>
+<div class="clr"></div>
+<div style="float:left">
+<label><b>Server nhận mail </b></label>
+<input type="text" value="<?=$this->email_account->_incoming_hostname?>" name="INCOMING_HOSTNAME">
+</div>
+<table >
+	<tr>
+		<td nowrap>
+			<label><b>Giao thức </b></label>
+			<select  name="INCOMING_PROTOCOL">
+			<option <?php if($this->email_account->_incoming_protocol == "POP3")
+			echo "selected";
+			?> value="POP3"><b>POP3</b></option>
+			<!--
+			<option  <?php if($this->email_account->_incoming_protocol == "IMAP")
+			echo "selected"; ?> value="IMAP">IMAP</option>
+			-->
+			</select>
+		</td>
+		<td nowrap>
+			<label><b>Port </b></label>
+			<input type="text" size='5' name="INCOMING_PORT" value="<?=$this->email_account->_incoming_port?>">
+		</td>
+		<td nowrap>
+			<label>Có sử dụng SSL</label>
+			<select name="SSL_IN">
+				<option value=0>Không sử dụng</option>
+				<option value=1>Sử dụng SSL</option>
+				<option value=2>Sử dụng TLS</option>
+			</select>
+			<script>document.frm.SSL_IN.value=<?=$this->email_account->_ssl_in?></script>
+		</td>
+	</tr>
+</table>
+<div style="float:left">
+<label><b>Server gửi mail </b></label>
+<input type="text" value="<?=$this->email_account->_outgoing_hostname?>" name="OUTGOING_HOSTNAME">
+</div>
+<table>	
+	<tr>
+		<td>
+			<label><b>Giao thức </b></label>
+			<select  name="OUTGOING_PROTOCOL">
+			<option value="SMTP">SMTP</option>
+			</select>
+		</td>
+		<td>
+			<label><b>Port </b></label>
+			<input type="text"  size='5' name="OUTGOING_PORT" value="<?=$this->email_account->_outgoing_port?>">
+		</td>
+		<td>
+			<label>Có sử dụng SSL </label>
+			<select name="SSL_OUT" >
+				<option value=0>Không sử dụng</option>
+				<option value=1>Sử dụng SSL</option>
+				<option value=2>Sử dụng TLS</option>
+			</select>
+			<script>document.frm.SSL_OUT.value=<?=$this->email_account->_ssl_out?></script>
+		</td>	
+	</tr>
+</table>
+<div class="clr"></div>
+<input type="hidden" name="ACTIVE" value="1"?>
+<input type="hidden" name="ID_EAC" value="<?=$this->id_eac?>"?>
+<div class="clr"></div>
+<div>
+<input type="button" value="Kiểm tra kết nối" name="test_mail" onclick="testButtonClick();">
+</div>
+<div class="clr"></div>
+<div id='test_result' style="display:none">
+<!-- check incoming mail server
+<div id="check_1">
+<img id ='check_1_pro' src='/images/loading.gif' width='16' height='16' border='0'></img>
+<label id='check_1_lbl_dis' >Kết nối đến server nhận mail</label>
+<img id='check_1_suc' src='/images/header/icon-48-checkin.png' width='16' height='16' border='0' style='display:none'></img>
+<img id='check_1_err' src='/images/icon_del.jpg' width='16' height='16' border='0' style='display:none'></img>
+</div>
+<div id="check_2">
+<img id ='check_2_pro'  src='/images/loading.gif' width='16' height='16' border='0'></img>
+<label id='check_2_lbl_dis'>Kết nối đến server gửi mail</label>
+<img id='check_2_suc' src='/images/header/icon-48-checkin.png' width='16' height='16' border='0' style='display:none'></img>
+<img id='check_2_err' src='/images/icon_del.jpg' width='16' height='16' border='0' style='display:none'></img>
+</div>
+-->
+<div id="check_3">
+<img id ='check_3_pro' src='/images/loading.gif' width='16' height='16' border='0'></img>
+<label id='check_3_lbl_dis'>Đăng nhập vào server nhận mail</label>
+<img id='check_3_suc' src='/images/header/icon-48-checkin.png' width='16' height='16' border='0' style='display:none'></img>
+<img id='check_3_err' src='/images/icon_del.jpg' width='16' height='16' border='0' style='display:none'></img>
+</div>
+<div id="check_4">
+<img id ='check_4_pro' src='/images/loading.gif' width='16' height='16' border='0'></img>
+<label id='check_4_lbl_dis'>Gửi mail thử</label>
+<img id='check_4_suc' src='/images/header/icon-48-checkin.png' width='16' height='16' border='0' style='display:none'></img>
+<img id='check_4_err' src='/images/icon_del.jpg' width='16' height='16' border='0' style='display:none'></img>
+</div>
+</div>
+<script>
+function saveButtonClick(){
+	document.frm.submit();
+}
+
+function BackButtonClick(){
+	window.location="/mailclient/emailengine/configinfo";
+}
+
+function testButtonClick(){
+	
+	var odiv_re = document.getElementById('test_result');
+	odiv_re.style.display ="";
+	var values = new Array();
+	for(i = 2 ; i<4 ;i++ ){
+		switch(i){
+			case 0:
+			values[i] = document.frm.INCOMING_HOSTNAME.value;
+			break;
+			case 1:
+			values[i] = document.frm.OUTGOING_HOSTNAME.value;
+			break;
+			case 2:
+			values[i] = 0;
+			break;
+			case 3:
+			values[i] = 0;
+			break;
+			break;
+			default:
+			break;
+		}
+		
+	}
+	var url = "/mailclient/emailengine/testconnect";
+	//document.frm.action="/mailclient/emailengine/testconnect";
+	//document.frm.submit();
+	var ajobj= new testconfigmailAjax ();
+	for(i = 3 ; i<=4 ;i++ )
+	{
+		initDisplayState(i);
+		var frmobject = document.frm;
+		if(i==1 || i==2)
+			frmobject = null;
+		ajobj.getResultFromserver(frmobject,i,url,values[i-1]);
+	}
+	
+	
+}
+
+function initDisplayState(test_id){
+	var img_su = document.getElementById("check_"+test_id+"_suc");
+	var img_fa = document.getElementById("check_"+test_id+"_err");
+	var check_pro = document.getElementById("check_"+test_id+"_pro");
+	var check_1_lbl_dis = document.getElementById("check_"+test_id+"_lbl_dis");
+	img_fa.style.display = "none";
+	
+	img_su.style.display = "none";
+	check_1_lbl_dis.style.color = "black";
+	check_pro.style.display = "";
+}
+
+function SSL_INselect(){
+	
+}
+
+function SSL_OUTselect(){
+	
+}
+</script>

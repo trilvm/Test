@@ -1,0 +1,87 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+    <h3><font color="#0B55C4">Nội dung chờ xử lý</font></h3>
+<form name="frmYkien" action="/hscv/dexuatchoxuly/dongy">
+    <table class=adminlist1 style="background: transparent;">
+        <thead>
+            <tr>
+                <th nowrap="nowrap">Ngày yêu cầu</th>
+                <th nowrap="nowrap">Người yêu cầu</th>
+                <th width=100%>Lý do</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th colspan="4"></th>
+            </tr>
+        </tfoot>
+        <tbody>
+            <?php
+                $data = $this->vet_dxcxl;
+            ?>
+            <tr>
+                <td nowrap="nowrap" rowspan="2">
+                    <?=date("d/m/Y",strtotime($data["NGAY"]))?><br />
+                    <?=date("H:i:s",strtotime($data["NGAY"]))?>
+		</td>
+                <td nowrap="nowrap" rowspan="2"><?=$data["FIRSTNAME"]." ".$data["LASTNAME"]?></td>
+                <td nowrap="nowrap" rowspan="2"><?=$data["NOIDUNG"]?></td>
+            </tr>
+            <?php ?>
+        </tbody>
+    </table>
+    <table class=adminlist1 style="background: transparent; width: 34%;">
+        <tr>
+            <td nowrap="nowrap">Ý kiến <font color="red">*</font></td>
+            <td nowrap="nowrap">
+                <textarea name="ykien" rows="3" cols="50"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <span id="err"></span>
+            </td>
+        </tr>
+        <tr>
+            <td nowrap="nowrap">
+                <input type="button" value="Đồng ý" onclick="ClickButton(1);
+                       " />
+            </td>
+            <td nowrap="nowrap">
+                <input type="button" value="Không đồng ý" onclick="ClickButton(0);
+                       " />
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" name="id_dxchoxl" value="<?=$this->id_dxchoxl?>" />
+</form>
+</body>
+</html>
+<script>
+    function ClickButton(par) {
+        if (CheckYKien()){
+            if (par == 1) {
+                document.frmYkien.submit();
+            }
+            else {
+                document.frmYkien.action = '/hscv/dexuatchoxuly/dongy/kdongy/1';
+                document.frmYkien.submit();
+            }
+        }
+    }
+
+    function CheckYKien() {
+        var ykien = document.frmYkien.ykien.value;
+        if (ykien == "") {            
+            document.getElementById('err').innerHTML = "<font color='red'>Bạn chưa nhập ý kiến.</font>";
+            return false;
+        } else return true;
+    }
+</script>

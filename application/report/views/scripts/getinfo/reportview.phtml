@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<link rel=Stylesheet href=stylesheet.css>
+</head>
+<body style="background-color:transparent">
+<table class=adminlist >
+    <thead>
+ 	<tr>
+                <th nowrap>STT</th>
+                <th nowrap>TÊN CƠ QUAN</th>
+                <th nowrap>SỐ LƯỢNG VĂN BẢN ĐẾN</th>
+				<th nowrap>SỐ LƯỢNG VĂN BẢN ĐẾN CÓ FILE ĐÍNH KÈM</th>
+				<th nowrap>SỐ LƯỢNG VĂN BẢN ĐI</th>
+				<th nowrap>SỐ LƯỢNG VĂN BẢN ĐI CÓ FILE ĐÍNH KÈM </th>
+	</tr>
+        <?php
+        $i = 0 ;
+        $stt = 0;
+        foreach ( $this->data as $row ) {
+                $stt ++;
+                $i ++;
+                ?>
+        <tr>
+                <td nowrap style=text-align:center;><?php echo $stt;?></td>
+                <td nowrap style=text-align:center;><?php 
+                require_once 'qtht/models/CoQuanModel.php';
+                echo CoQuanModel::getNameById($row[2]) ?></td>
+                <td nowrap style=text-align:center;><?=$row[0]->VANBANDEN ?></td>
+ 		<td nowrap style=text-align:center;><?=$row[0]->FILE_VBD ?></td>
+		<td nowrap style=text-align:center;><?=$row[1]->VANBANDI ?></td>
+ 		<td nowrap style=text-align:center;><?=$row[1]->FILE_VBDI ?></td>
+        </tr>
+        <?php } ?>
+    </thead>    
+</table>
+<p id=lasttext></p>    
+</body>
+</html>
+<script>
+function resize(){
+	try{
+	var iframeElement = window.parent.document.getElementById('reportview');
+	iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+	iframeElement.width = "100%";
+	setTimeout("resize()",1000);
+	}catch(ex){
+ }
+ }
+resize();
+</script>

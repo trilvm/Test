@@ -1,0 +1,108 @@
+<form name=frmListThuTucs method="post" action="/motcua/thutuc">
+	<table>
+		<tr>
+			<td align="left" width="100%">
+				Lọc:
+				<input type="text" name="search" id="search" value="<?php echo $this->search ?>" class="text_area" onchange="document.frmListThuTucs.submit();" />
+				<button onclick="document.frmListThuTucs.submit();">Tìm</button>
+				<button onclick="document.getElementById('search').value='';document.frmListThuTucs.submit();">Làm lại</button>
+			</td>
+			<td nowrap="nowrap">
+                <select style="width:300px"  name="filter_object" id="filter_object" class="inputbox" size="1" onchange="document.frmListThuTucs.submit();">
+                    <?php 
+                        echo LoaiModel::ToCombo($this->loais,$this->filter_object); 
+                    ?>
+                </select>
+            </td>
+		</tr>
+	</table>
+	<table class="adminlist">
+	<thead>
+		<tr>
+			<th nowrap>#</th>
+			<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></th>
+			<th width="70%">Tên Thủ tục</th>
+			<th nowrap width="200">Thuộc loại hồ sơ</th>			
+			<th nowrap>Kích hoạt</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="7">
+					<div class="pagination">
+						<div class="limit">Hiển thị #
+							<select name="limit" id="limit" class="inputbox" size="1" onchange="document.frmListThuTucs.submit();" style="width:60px;">
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<script>
+									document.frmListThuTucs.limit.value='<?php echo $this->limit ?>';
+								</script>
+							</select>
+						</div>
+						<div style="float:right;"><?php echo $this->showPage; ?></div>
+					</div>
+			</td>
+		</tr>
+	</tfoot>
+
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+foreach ($this->data as $row )
+	{
+	$stt++;
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td nowrap align="right"><?php echo $stt ?></td>
+			<td nowrap align="center">
+				<input type=checkbox name=DEL[] value='<?php echo $row['ID_THUTUC'] ?>'>
+			</td>
+			<td width=100%>
+				<a href="#" onclick = "ItemClick(<?php echo $row['ID_THUTUC'] ?>);">
+				<?php echo htmlspecialchars($row['TENTHUTUC']) ?></a>
+			</td>
+			<td><?php echo (strlen($row['LOAI'])<41?$row['LOAI']:substr($row['LOAI'],0,40)."...");?></td>
+			<td><?php if($row['ACTIVE']=='1') echo 'Rồi';
+			else echo 'Chưa';?></td>	
+			
+		</tr>
+<?php
+	$i = (-1+$i)*-1;
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+<input type="hidden" name="comeFrom" value="listForm">
+</form>
+<script>
+function DeleteButtonClick(){
+	var mess = true;
+	mess = validateInput("selone_check","DEL[]","Chọn ít nhất một mục để xoá.");
+	if(mess){
+		if(confirm("<?php echo 'Bạn muốn xóa mục này!'; ?>")){
+			document.frmListThuTucs.action = "/motcua/thutuc/delete";
+			document.frmListThuTucs.submit();
+		}
+	}else{
+		alert("Chọn ít nhất một mục để xoá.");
+	}
+}
+function AddNewButtonClick()
+{
+	document.frmListThuTucs.action = "/motcua/thutuc/input";
+	document.frmListThuTucs.submit();
+}
+function ItemClick(id)
+{
+	document.frmListThuTucs.action = "/motcua/thutuc/input/id/"+id;
+	document.frmListThuTucs.submit();
+}
+</script>

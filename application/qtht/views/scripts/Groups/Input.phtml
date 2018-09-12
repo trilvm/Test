@@ -1,0 +1,167 @@
+<?php
+$this->dojo()->enable();
+?>
+<form action="/qtht/Groups/Save" enctype="multipart/form-data" name="frm"  method="post">
+<fieldset>
+	<div class="required clearfix">
+		<label><?php echo MSG11009005 ?>(*)</label>
+		<input type=text class=inputbox name=NAME value="<?=$this->data->NAME?>" class="inputText" size="50" maxlength="42">
+    	<span class="box_erro_area" id="ERRNAME">
+        	
+        </span>
+	</div>
+	<div class="required clearfix">
+		<label>Thứ tự(*)</label>
+		<input type=text class=inputbox name=ORDERS value="<?=$this->data->ORDERS?>" class="inputText" size="2" maxlength="2">
+    	<span class="box_erro_area" id="ERRORDERS">
+        	
+        </span>
+	</div>
+	<div class="clr"></div>
+	<div class="optional">
+		<label for="ID_U_DAIDIEN" id="lblTextIput">Người đại diện</label>
+		<select name=ID_U_DAIDIEN>
+			<option value=0>--Chọn người đại diện--</option>
+<?php
+	foreach($this->user as $useritem){
+?>			<option value=<?=$useritem['ID_U']?>><?=$useritem['NAME']?></option>
+<?php
+	}
+?>
+		</select>
+		<script>
+			document.frm.ID_U_DAIDIEN.value='<?=$this->data->ID_U_DAIDIEN?>';
+		</script>
+        <span class="box_erro_area" id="ERRID_U_DAIDIEN">
+        </span>
+	</div>
+	<div class="clr"></div>
+	<div class="required clearfix">
+		<label>Có sử dụng</label>
+		<input size=50 name="ACTIVE" class="inputCheckbox" type="checkbox" id="ACTIVE" value="1" <?php echo $this->data->ACTIVE==1?"checked":""; ?> />
+	</div>
+	<div class="clr"></div>
+    <div class="optional clearfix">
+    	<span>(*) Bắt buộc nhập liệu.</span>
+    </div>
+    <fieldset>
+		<legend>Chức năng</legend>
+		<table class=adminlist>
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Tên Module</th>
+					<th><input type=checkbox name=DELACT onclick="SelectAllByTitle(this,'GMODNAME')">Tên Chức năng</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th colspan="3">
+					</th>
+				</tr>
+			</tfoot>
+			<tbody>
+<?php
+	$i=0;
+	$out = false;
+	$stt=1;
+	while(!$out){
+?>
+			<tr>
+				<td><?=$stt?></td>
+				<td nowrap><input type=checkbox title="GMODNAME" name="ID_GMOD<?=$this->action[$i]['ID_GMOD']?>" onclick="SelectAllByTitle(this,'MODNAME<?=$this->action[$i]['ID_GMOD']?>')"><?=$this->action[$i]['GMODNAME']?></td>
+				<td>
+					<table>
+<?php
+		while(!$out){
+?>
+						<tr>
+							<td class=key><input type=checkbox title="MODNAME<?=$this->action[$i]['ID_GMOD']?>" name="ID_MOD<?=$this->action[$i]['ID_MOD']?>" onclick="SelectAllByTitle(this,'ACTNAME<?=$this->action[$i]['ID_MOD']?>')"><?=$this->action[$i]['MODNAME']?></td>
+							<td>
+<?php
+			while(!$out){
+?>
+								<span><input type=checkbox name=ID_ACT[] title="ACTNAME<?=$this->action[$i]['ID_MOD']?>" onclick="DeSelectParentByTitle(this,'ID_MOD<?=$this->action[$i]['ID_MOD']?>','ID_GMOD<?=$this->action[$i]['ID_GMOD']?>','ACTNAME<?=$this->action[$i]['ID_MOD']?>')" value=<?=$this->action[$i]['ID_ACT']?> <?=$this->action[$i]['SEL']==1?"checked":""?>><?=$this->action[$i]['NAME']?></span>
+<?php
+				if($this->action[$i]['ID_MOD']!=$this->action[$i+1]['ID_MOD']){
+					$out=true;
+				}else{
+					$i++;
+				}
+			}
+			$out = false;
+?>
+							</td>
+						</tr>
+<?php
+			if($this->action[$i]['ID_GMOD']!=$this->action[$i+1]['ID_GMOD']){
+				$out=true;
+			}else{
+				$i++;
+			}
+		}
+		$out = false;
+?>
+					</table>
+				</td>
+			</tr>
+<?php
+		if($i>=count($this->action)-1){
+			$out=true;
+		}else{
+			$i++;
+			$stt++;
+		}
+	}
+?>
+			</tbody>
+	</table>
+	</fieldset>
+</fieldset>
+<input type=hidden name=ID_G value="<?php echo $this->data->ID_G; ?>">
+<input type=hidden name=page value="<?php echo $this->page; ?>">
+<input type=hidden name=limit value="<?php echo $this->limit; ?>">
+<input type=hidden name=search value="<?php echo $this->search; ?>">
+<input type=hidden name=filter_object value="<?php echo $this->filter_object; ?>">
+</form>
+
+<script>
+    function SaveButtonClick(){
+        var err = true;
+        err = err & validateInput("req",document.frm.NAME,"<?php echo ERR11009003 ?>");
+        err = err & err==true?validateInput("maxlen=50",document.frm.NAME,"<?php echo ERR11009004 ?>"):false;
+        err = err & validateInput("num",document.frm.ORDERS,"Vui lòng nhập đúng thứ tự.");
+        if(err==true){
+            document.frm.submit();
+        }
+    }
+    function BackButtonClick(){
+        document.frm.action = "/qtht/Groups";
+        document.frm.submit();
+    }
+    function DeSelectParentByTitle(selobj,parentobjname,parentobjname2,thischilds){
+        var parentobj = document.getElementsByName(parentobjname);
+        var parentobj2 = document.getElementsByName(parentobjname2);
+        var fire = selobj.checked; 
+        if (fire==false) {//con khong check
+//        console.log(parentobj);
+        parentobj[0].checked = false;	 		    	
+        parentobj2[0].checked = false;
+        }
+        //Select lại tập 2 ;D
+        var arr = document.getElementsByTagName("input");
+        var checkall = true;
+        for(var i=0;i<arr.length;i++){
+            if(arr[i].title==thischilds){
+                if(arr[i].checked==false) {
+                    checkall = false;
+                }
+            }
+        }
+        if (checkall==true) {
+            parentobj[0].checked = true;
+        }        
+        
+        
+    }
+</script>

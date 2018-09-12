@@ -1,0 +1,391 @@
+<?php 
+	require_once 'qtht/models/LoaiVanBanModel.php';
+	require_once 'qtht/models/CoquanModel.php'; 
+	require_once 'qtht/models/DepartmentsModel.php';
+	require_once 'qtht/models/UsersModel.php';
+?>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 11">
+<link rel=File-List href="Book1_files/filelist.xml">
+<link rel=Edit-Time-Data href="Book1_files/editdata.mso">
+<link rel=OLE-Object-Data href="Book1_files/oledata.mso">
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>nguyennd</o:Author>
+  <o:LastAuthor>nguyennd</o:LastAuthor>
+  <o:LastPrinted>2009-08-25T15:45:14Z</o:LastPrinted>
+  <o:Created>2009-08-25T14:43:47Z</o:Created>
+  <o:LastSaved>2009-08-25T15:46:24Z</o:LastSaved>
+  <o:Company>Hewlett-Packard</o:Company>
+  <o:Version>11.9999</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\,";}
+@page
+	{margin:.2in .2in .2in .2in;
+	mso-header-margin:.2in;
+	mso-footer-margin:.2in;
+	mso-page-orientation:landscape;}
+tr
+	{mso-height-source:auto;}
+col
+	{mso-width-source:auto;}
+br
+	{mso-data-placement:same-cell;}
+.style0
+	{mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	white-space:nowrap;
+	mso-rotate:0;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial;
+	mso-generic-font-family:auto;
+	mso-font-charset:0;
+	border:none;
+	mso-protection:locked visible;
+	mso-style-name:Normal;
+	mso-style-id:0;}
+td
+	{mso-style-parent:style0;
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial;
+	mso-generic-font-family:auto;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	border:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	mso-protection:locked visible;
+	white-space:nowrap;
+	mso-rotate:0;}
+.xl24
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl25
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:top;
+	border:.5pt solid windowtext;
+	white-space:normal;}
+.xl26
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;
+	vertical-align:top;
+	border-top:.5pt solid windowtext;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	white-space:normal;}
+.xl27
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	vertical-align:top;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:.5pt solid windowtext;
+	white-space:normal;}
+.xl28
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\@";
+	vertical-align:top;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	white-space:normal;}
+.xl29
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	mso-number-format:"\@";
+	text-align:right;
+	vertical-align:top;
+	border-top:none;
+	border-right:.5pt solid windowtext;
+	border-bottom:.5pt solid windowtext;
+	border-left:none;
+	white-space:normal;}
+.xl30
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;}
+.xl31
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;}
+.xl32
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;}
+.xl33
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:right;}
+.xl34
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;
+	text-align:center;}
+.xl35
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl36
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-weight:700;
+	text-decoration:underline;
+	text-underline-style:single;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+.xl37
+	{mso-style-parent:style0;
+	font-size:12.0pt;
+	font-style:italic;
+	font-family:"Times New Roman", serif;
+	mso-font-charset:0;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <x:ExcelWorkbook>
+  <x:ExcelWorksheets>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet1</x:Name>
+    <x:WorksheetOptions>
+     <x:DefaultRowHeight>315</x:DefaultRowHeight>
+     <x:Print>
+      <x:ValidPrinterInfo/>
+      <x:PaperSizeIndex>9</x:PaperSizeIndex>
+      <x:HorizontalResolution>600</x:HorizontalResolution>
+      <x:VerticalResolution>600</x:VerticalResolution>
+     </x:Print>
+     <x:Selected/>
+     <x:Panes>
+      <x:Pane>
+       <x:Number>3</x:Number>
+       <x:ActiveRow>16</x:ActiveRow>
+       <x:ActiveCol>6</x:ActiveCol>
+      </x:Pane>
+     </x:Panes>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet2</x:Name>
+    <x:WorksheetOptions>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+   <x:ExcelWorksheet>
+    <x:Name>Sheet3</x:Name>
+    <x:WorksheetOptions>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+  </x:ExcelWorksheets>
+  <x:WindowHeight>13575</x:WindowHeight>
+  <x:WindowWidth>15315</x:WindowWidth>
+  <x:WindowTopX>360</x:WindowTopX>
+  <x:WindowTopY>45</x:WindowTopY>
+  <x:ProtectStructure>False</x:ProtectStructure>
+  <x:ProtectWindows>False</x:ProtectWindows>
+ </x:ExcelWorkbook>
+</xml><![endif]-->
+</head>
+
+<body link=blue vlink=purple class=xl24>
+
+<table x:str border=0 cellpadding=0 cellspacing=0 width=1024 style='border-collapse:
+ collapse;table-layout:fixed;width:770pt'>
+ <col class=xl24 width=64 span=2 style='width:48pt'>
+ <col class=xl24 width=133 style='mso-width-source:userset;mso-width-alt:4864;
+ width:100pt'>
+ <col class=xl24 width=130 style='mso-width-source:userset;mso-width-alt:4754;
+ width:98pt'>
+ <col class=xl24 width=121 style='mso-width-source:userset;mso-width-alt:4425;
+ width:91pt'>
+ <col class=xl24 width=92 style='mso-width-source:userset;mso-width-alt:3364;
+ width:69pt'>
+ <col class=xl24 width=88 style='mso-width-source:userset;mso-width-alt:3218;
+ width:66pt'>
+ <col class=xl24 width=82 style='mso-width-source:userset;mso-width-alt:2998;
+ width:62pt'>
+ <col class=xl24 width=86 style='mso-width-source:userset;mso-width-alt:3145;
+ width:65pt'>
+ <col class=xl24 width=83 style='mso-width-source:userset;mso-width-alt:3035;
+ width:62pt'>
+ <col class=xl24 width=81 style='mso-width-source:userset;mso-width-alt:2962;
+ width:61pt'>
+ <tr height=21 style='height:15.75pt'>
+  <td colspan=4 height=21 class=xl30 width=391 style='height:15.75pt;
+  width:294pt'><?=mb_strtoupper($this->config->sys_info->company,"UTF-8")?></td>
+  <td class=xl24 width=121 style='width:91pt'></td>
+  <td colspan=5 class=xl31 width=420 style='width:316pt'>C&#7896;NG HÒA XÃ
+  H&#7896;I CH&#7910; NGH&#296;A VI&#7878;T NAM</td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td colspan=4 height=21 class=xl31 style='height:15.75pt'>B&#7896; PH&#7852;N
+  TI&#7870;P NH&#7852;N VÀ TR&#7842; K&#7870;T QU&#7842;</td>
+  <td class=xl24></td>
+  <td colspan=5 class=xl32>Ð&#7897;c l&#7853;p - T&#7921; do - H&#7841;nh phúc</td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=5 class=xl24 style='height:15.75pt;mso-ignore:colspan'></td>
+  <td colspan=5 class=xl33><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td colspan=10 height=21 class=xl31 style='height:15.75pt'>BÁO CÁO TR&#7842;
+  H&#7890; S&#416; M&#7896;T C&#7916;A</td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td colspan=10 height=21 class=xl34 style='height:15.75pt'>Ngày <?php echo $this->params['ngaybaocao'];?>/<?php echo $this->year;?></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=10 class=xl24 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=63 style='height:47.25pt'>
+  <td height=63 class=xl25 width=64 style='height:47.25pt;width:48pt'>STT</td>
+  <td class=xl26 width=64 style='width:48pt'>S&#7889; HS</td>
+  <td class=xl26 width=133 style='width:100pt'>Lo&#7841;i h&#7891; s&#417;</td>
+  <td class=xl26 width=130 style='width:98pt'>&#272;&#417;n v&#7883; cá nhân</td>
+  <td class=xl26 width=121 style='width:91pt'>&#272;&#7883;a ch&#7881;</td>
+  <td class=xl26 width=88 style='width:66pt'>S&#7889; VB</td>
+  <td class=xl26 width=82 style='width:62pt'>Ngày ký</td>
+  <td class=xl26 width=86 style='width:65pt'>Ngày TN</td>
+  <td class=xl26 width=83 style='width:62pt'>Ngày h&#7865;n tr&#7843;</td>
+  <td class=xl26 width=81 style='width:61pt'>Ngày tr&#7843; th&#7921;c t&#7871;</td>
+ </tr>
+ <?php
+$stt=1;
+foreach($this->data as $row){ 
+	if($row["TRANGTHAI"] > 0 && $row["TRANGTHAI"] <= 2){
+?>
+ <tr>
+  <td class=xl27 align=center width=64 style='width:48pt' x:num><?=$stt?></td>
+  <td class=xl28 width=64 style='width:48pt'><?=$row["SO"]?></td>
+  <td class=xl28 width=133 style='width:100pt'><?php  echo $row["TENLOAI"]; ?></td>
+  <td class=xl28 width=130 style='width:98pt'><?php  echo $row["TENTOCHUCCANHAN"]; ?></td>
+  <td class=xl28 width=121 style='width:91pt'><?php  echo $row["DIACHI"]?></td>
+  <td class=xl28 width=88 style='width:66pt'><?=$row["VB_TL"]?></td>
+  <td class=xl28 width=82 style='width:62pt'><?=QLVBDHCommon::MysqlDateToVnDate($row["NGAYKY"])?></td>
+  <td class=xl29 width=86 style='width:65pt'><?php  echo QLVBDHCommon::MysqlDateToVnDate($row["NHAN_NGAY"])?></td>
+  <td class=xl29 width=83 style='width:62pt'><?php  echo QLVBDHCommon::MysqlDateToVnDate($row["NHANLAI_NGAY"])?></td>
+  <td class=xl29 width=81 style='width:61pt'><?php  echo QLVBDHCommon::MysqlDateToVnDate($row["TRA_NGAY"])?></td>
+ </tr>
+<?php
+	  $stt++;
+	}
+}
+?>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=11 class=xl24 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td colspan=3 height=21 class=xl31 style='height:15.75pt'>Ng&#432;&#7901;i
+  nh&#7853;n h&#7891; s&#417;</td>
+  <td colspan=4 class=xl24 style='mso-ignore:colspan'></td>
+  <td colspan=3 class=xl31>Ng&#432;&#7901;i bàn giao h&#7891; s&#417;</td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=11 class=xl24 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=11 class=xl24 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td height=21 colspan=11 class=xl24 style='height:15.75pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=21 style='height:15.75pt'>
+  <td colspan=3 height=21 class=xl30 style='height:15.75pt'></td>
+  <td colspan=4 class=xl24 style='mso-ignore:colspan'></td>
+  <td colspan=3 class=xl30><?=Zend_Registry::get("auth")->getIdentity()->FULLNAME?></td>
+ </tr>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=64 style='width:48pt'></td>
+  <td width=64 style='width:48pt'></td>
+  <td width=133 style='width:100pt'></td>
+  <td width=130 style='width:98pt'></td>
+  <td width=121 style='width:91pt'></td>
+  <td width=92 style='width:69pt'></td>
+  <td width=88 style='width:66pt'></td>
+  <td width=82 style='width:62pt'></td>
+  <td width=86 style='width:65pt'></td>
+  <td width=83 style='width:62pt'></td>
+  <td width=81 style='width:61pt'></td>
+ </tr>
+ <![endif]>
+</table>
+
+</body>
+
+</html>
+<?php if($this->view->param["excel"]!="1"){ ?>
+<script>print();</script>
+<?php } ?>

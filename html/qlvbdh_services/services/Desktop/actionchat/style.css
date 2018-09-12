@@ -1,0 +1,18 @@
+.bt{ border:none;background:url('button.png') no-repeat;font-size:12px;color:#475358;width:52px;height:18px;cursor:pointer;margin-left:5px;}
+.bt:hover{color:red;}
+.send{ font-size:13px; width:100%;border-bottom:1px dashed #B3BDC1;border-top:1px dashed #B3BDC1;height:40px;}
+.tdbt{text-align:right;}
+.tdprocess{ width:200px;border:1px solid black;}
+.process{background:#1CA4FF;float:left;}
+.name{ }
+.valuepercent{width:50px;}
+.confirmdiv{}
+#groupusers{margin-top:-30px;}
+#groupusers li{list-style:none;font-size:12px;border-bottom:1px dashed #B3BDC1; width:100%;height:10px; }
+#namemembergroup{float:left;}
+.senditemmember{ font-size:13px; width:100%;}
+.typing{font-size:11px;font-style:italic;width:100%;}
+#messtyping,#giftyping{float:left;}
+#messtyping{padding-top:9px;}
+#giftyping{background:url(typing.gif) no-repeat;width:40px;height:20px;}
+#daremove{font-size:0px;}

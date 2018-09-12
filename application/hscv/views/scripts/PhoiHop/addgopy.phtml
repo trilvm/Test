@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form name="frm" method=post action="/hscv/phoihop/addgopy">
+<table class=admintable>
+	<tr>
+		<td class=key>
+			Nội dung góp ý
+		</td>
+		<td>
+			<textarea rows="4" cols="100" name="NOIDUNG"></textarea>
+		</td>
+	</tr>
+    <tr>
+		<td nowrap="nowrap" valign="top">
+			<font color="Blue">File đính kèm</font>
+		</td>
+		<!-- File dinh kem -->
+		<td nowrap="nowrap" valign="top" colspan="4" id="idFileDinhKem"></td>
+		<?php 
+		$is_new = 1;
+		$type = -1;
+		$url ="'/hscv/file?iddiv=idFileDinhKem&idObject=".$id_objf."&is_new=".$is_new."&year=".$this->year."&type=".$type."&pdf=0'" ;
+		?>
+		<script>
+			loadDivFromUrl('idFileDinhKem',<?echo $url ?>,0);
+		</script> 
+
+		<td width="100%"></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input type="button" value="Góp ý" onclick="document.frm.submit();" />
+		</td>
+	</tr>
+</table>
+<input type=hidden name=idhscv value="<?=$this->idhscv?>">
+<input type=hidden name=code value="save">
+<p id=lasttext></p>
+</form>
+</body>
+</html>
+<script>
+//	function resize(){
+//		var iframeElement = parent.document.getElementById('phoihop<?=$this->idhscv?>');
+//		iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+//		iframeElement.width = "100%";
+//	}
+//	resize();
+resize();
+	
+	function resize(){
+		var iframeElement = parent.document.getElementById('phoihop<?=$this->idhscv?>');
+		iframeElement.style.height = "" + document.getElementById("lasttext").offsetTop + "px";
+		iframeElement.width = "100%";
+		setTimeout("resize()",10);
+	}
+</script>

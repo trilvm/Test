@@ -1,0 +1,280 @@
+<?php if($this->alias=='VBD'){ ?>
+<table width="100%" class=adminlist2 style="background:#fff !important; border-collapse:collapse">
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue;width:151px;">Sổ văn bản</td>
+		<td nowrap="nowrap"><?=$this->data['SVBNAME']?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Số, ký hiệu VB</td>
+		<td nowrap="nowrap"><?=$this->data['SOKYHIEU']?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Ngày ban hành</td>
+		<td nowrap="nowrap"><?=date("d/m/Y",strtotime($this->data["NGAYBANHANH"]))?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Người ký</td>
+		<td><?=$this->data['NGUOIKY']?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Trích yếu</td>
+		<td><?=$this->data['TRICHYEU']?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Ghi chú</td>
+		<td><?=$this->data['GHICHU']?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Cơ quan ban hành</td>
+		<td><?=QLVBDHCommon::makeCQName($this->data['COQUANBANHANH_TEXT'])?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Phân loại</td>
+		<td nowrap="nowrap"><?=$this->data['LVBNAME']?></td>
+	</tr>        
+     
+</table>
+<p>
+<b><img src="/images/attach.gif">Tệp đính kèm :</b>
+<?php
+				foreach($this->file as $fileitem){
+					echo "<a href='/hscv/File/download?year=&maso=".$fileitem['MASO']."'>".$fileitem['FILENAME']."</a>, ";
+				}
+			?>
+</p>
+<table width="100%" class=adminlist2 style="border-collapse:collapse">
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Số đến</td>
+		<td nowrap="nowrap"><?=$this->data['SODEN']?></td>		
+		<td></td>
+		<td nowrap="nowrap" style="color:blue">Mã số văn bản</td>
+		<td nowrap="nowrap"><?=$this->data['MASOVANBAN']?></td>
+	</tr>	
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Ngày đến</td>
+		<td nowrap="nowrap"><?=date("d/m/Y",strtotime($this->data["NGAYDEN"]))?></td>
+		<td></td>
+		<td nowrap="nowrap" style="color:blue">Độ mật</td>
+		<td nowrap="nowrap"><?php 
+							switch($this->data['DOMAT']){
+								case 1:
+									echo "bình thường";
+									break;
+								case 2:
+									echo "mật";
+									break;
+								case 3:
+									echo "tối mật";
+									break;
+								case 4:
+									 echo "tuyệt mật";
+									break;
+								default: echo "bình thường"; break;
+							}
+							?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Lĩnh vực văn bản</td>
+		<td nowrap="nowrap"><?=$this->data['LVVBNAME']?></td>
+		<td></td>
+		<td nowrap="nowrap" style="color:blue">Độ khẩn</td>
+		<td nowrap="nowrap"><?php 
+							switch($this->data['DOKHAN']){
+								case 0:
+									echo "bình thường";
+									break;
+								case 1:
+									echo "bình thường";
+									break;
+								case 2:
+									echo "khẩn";
+									break;
+								case 3:
+									 echo "hỏa tốc";
+									 break;
+								default: echo "bình thường"; break;
+							}
+							?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Số tờ</td>
+		<td nowrap="nowrap"><?=$this->data['SOTO']?></td>
+		<td></td>		
+		<td nowrap="nowrap" style="color:blue">Thư mục HSCV</td>
+		<td nowrap="nowrap" >
+		 <a href="/hscv/hscv/listthumuchscv/id_thumuc/<?=$this->data['TM_ID']?>" ><?=$this->data['TEN_THUMUC']?></a>
+		</td>
+	</tr>
+	<tr class=row1>		
+		<td nowrap="nowrap" style="color:blue">Số bản</td>
+		<td nowrap="nowrap"><?=$this->data['SOBAN']?></td>
+		<td></td>
+		<td nowrap="nowrap" style="color:blue">
+		<?php if($this->data['IS_PHOBIEN'] == 1) {?>
+			Văn bản phổ biến
+		<?php } ?>
+		</td>
+		<td nowrap="nowrap"></td>
+	</tr>
+</table>
+
+<?php }else if($this->alias=='VBSOANTHAO'){ ?>
+<table width="100%" class=adminlist2>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Tên công việc</td>
+		<td nowrap="nowrap"><?=$this->data['NAME']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Ngày tạo</td>
+		<td nowrap="nowrap"><?=QLVBDHCommon::MysqlDateToVnDate($this->data['NGAYTAO']);?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Người yêu cầu</td>
+		<td nowrap="nowrap"><?=$this->data['EMPYCNAME']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Người tiếp nhận</td>
+		<td nowrap="nowrap"><?=$this->data['EMPXLNAME']?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Nội dung</td>
+		<td nowrap="nowrap"><?=$this->data['NOIDUNG']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Người tạo</td>
+		<td nowrap="nowrap"><?=$this->data['EMPTNAME']?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Ngày kết thúc dự kiến</td>
+		<td nowrap="nowrap" >
+			 <?=QLVBDHCommon::MysqlDateToVnDate($this->data['NGAY_KT'])?>
+		</td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Độ quan trọng</td>
+		<td nowrap="nowrap"><?php
+							switch($this->data['DOQUANTRONG']){
+								case 0:
+									echo "Bình thường";
+									break;
+								case 1:
+									echo "Quan trọng";
+									break;
+								case 2:
+									echo "Rất quan trọng";
+									break;								
+								break;
+							}
+							?></td>
+		<td width="100%"></td>
+	</tr>
+<!--        thêm mô tả-->
+<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Mô tả</td>
+		<td width="100%" colspan="5">
+			<?=$this->data['MOTA']?>
+		</td>
+	</tr>
+<!--end thêm mô tả-->
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">File đính kèm</td>
+		<td width="100%" colspan="5">
+			<?php
+				foreach($this->file as $fileitem){
+					echo "<a href='/hscv/File/download?year=&maso=".$fileitem['MASO']."'>".$fileitem['FILENAME']."</a>, ";
+				}
+			?>
+		</td>
+	</tr>
+</table>
+
+<?php }else{ ?>
+<table width="100%" class=adminlist1>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Sổ tiếp nhận</td>
+		<td><?=SoVanBanModel::getNameById($this->data['ID_STN'])?></td>
+		<td width="20" nowrap="nowrap"></td>
+		
+		<td nowrap="nowrap" style="color:blue">Số tiếp nhận</td>
+		<td nowrap="nowrap"><?=$this->data['SO']?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Tên hồ sơ</td>
+		<td><?=$this->data['TRICHYEU']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Người xử lý</td>
+		<td nowrap="nowrap"><?=$this->data['EMPXLNAME']?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Mã số</td>
+		<td nowrap="nowrap"><?=$this->data['MAHOSO']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Loại hồ sơ</td>
+		<td><?=$this->data['LHSNAME']?></td>
+	</tr>
+	<tr class=row1>
+		<td style="color:blue">Tên tổ chức / cá nhân</td>
+		<td nowrap="nowrap"><?=$this->data['TENTOCHUCCANHAN']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Địa chỉ</td>
+		<td nowrap="nowrap"><?=$this->data['DIACHI']?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Ngày nhận</td>
+		<td nowrap="nowrap"><?=QLVBDHCommon::MysqlDateToVnDate($this->data['NHAN_NGAY'])?> <?=$this->data['NHAN_LUC']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Nhận lại ngày</td>
+		<td nowrap="nowrap"><?=QLVBDHCommon::MysqlDateToVnDate($this->data['NHANLAI_NGAY']);?></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Chú thích</td>
+		<td width="100%" colspan="4">
+			<?=$this->data['CHUTHICH']?>
+		</td>
+	</tr>
+	<?php require_once 'motcua/models/motcua_hosoModel.php';
+		$arr_custom_fields = motcua_hosoModel::Customfields($this->data["ID_LOAIHOSO"]);
+		$deme = count($arr_custom_fields);
+		$stte = 0;
+		foreach ($arr_custom_fields as $cus){
+			if($stte%2==0)
+				echo "<tr class=row1>";
+	?>
+	
+	
+		<td nowrap="nowrap" style="color:blue"><?=$cus["NAME_DISPLAY"]?></td>
+		<td nowrap="nowrap"><?php 
+		if($cus["TYPE"] == "DATE"){
+			echo implode("/",array_reverse(explode("-",$this->data[$cus["NAME_COLUMN"]])));
+		}else{
+			echo $this->data[$cus["NAME_COLUMN"]];
+		}
+		?>
+		</td>
+		<td width="20" nowrap="nowrap"></td>
+	
+	<?php 
+		if($stte%2==1 || $stte == $deme-1)
+			echo "</tr>";
+	$stte++;;}?>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Thư mục HSCV</td>
+		<td nowrap="nowrap" >
+			 <a href="/hscv/hscv/listthumuchscv/id_thumuc/<?=$this->data['TM_ID']?>" ><?=$this->data['TEN_THUMUC']?></a>
+		</td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue"></td>
+		<td nowrap="nowrap"></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">File đính kèm</td>
+		<td width="100%" colspan="4">
+			<?php
+				foreach($this->file as $fileitem){
+					echo "<a href='/hscv/File/download?year=&maso=".$fileitem['MASO']."'>".$fileitem['FILENAME']."</a>, ";
+				}
+			?>
+		</td>
+	</tr>
+</table>
+<?php } ?>

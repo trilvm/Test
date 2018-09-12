@@ -1,0 +1,127 @@
+<script type="text/javascript" src="/js/calendar.js"></script>
+<form name=frm action="">
+<div class=clr></div>
+<div>
+<label><b>Thời gian</b></label>
+<?=QLVBDHCommon::calendarfull($this->fromdate,"fromdate","fromdate") ?>
+Đến
+<?=QLVBDHCommon::calendarfull($this->todate,"todate","todate") ?>
+
+</div>
+<span class="box_erro_area" id="ERRfromdate"></span>
+<span class="box_erro_area" id="ERRtodate"></span>
+<div class=clr></div>
+<div>
+<div>
+<label><b>Tháng:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/1')">1
+<?php
+$year = QLVBDHCommon::getYear();
+$d = strtotime($year."-3-1") ;
+$d = $d - 86400;
+$str_cuoi2 =date('d/m',$d);
+ ?>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/2','<?php echo $str_cuoi2 ?>')" >2
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/3','31/3')">3
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/4','30/4')" >4
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/5','31/5')">5
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/6','30/6')">6
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7','31/7')" >7
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/8','31/8')" >8
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/9','30/9')">9
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10','31/10')">10
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/11','30/11')">11
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/12','31/12')">12
+</div>
+<div class=clr></div>
+<div>
+<label><b>Quí:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/3')">I
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/4','30/6')">II
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/7','30/9')">III
+<input type="radio" name='sel_timedis'onclick="setvalueDateD('1/10','31/12')">IV
+</div>
+<div class=clr></div>
+<div>
+<label><b>Năm:</b></label>
+<input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/12')">
+</div>
+</div>
+<div class=clr></div>
+<input type=hidden id=h_isexel name=h_isexel value=0>
+<div>
+<br/>
+<div title="Hiển thị báo cáo" style="float:left;background-color:#C0C0C0;border:1px solid #888888;cursor:pointer;margin:2px;
+    padding:2px 2px;position:relative;white-space:nowrap;width:100px;height:25px"
+    onclick="
+    var err = true;
+    if(document.frm.fromdate.value !=''){
+    err=err & validateInput('date',document.frm.fromdate,'Ngày bắt đầu nhập sai định dạng ngày/');
+    }
+    if(document.frm.todate.value !=''){
+    err=err & validateInput('date',document.frm.todate,'Ngày kết thúc nhập sai định dạng ngày');
+    }
+    if(err==true){
+    document.frm.target='reportview';
+    document.frm.h_isexel.value = 0;
+    document.frm.action = '/qlcuochop/baocaocuochop/reportview';
+    document.frm.submit();
+    }
+    return false;">
+    <img src="/images/report_show.jpg" width="20" height="20"></img>
+    <b>Hiển thị</b>
+</div>
+<div title="Xuất excel" style="float:left;background-color:#C0C0C0;border:1px solid #888888;cursor:pointer;margin:2px;
+    padding:2px 2px;position:relative;white-space:nowrap;width:100px;height:25px"
+    onclick="
+    var err = true;
+    if(document.frm.fromdate.value !=''){
+    err=err & validateInput('date',document.frm.fromdate,'Ngày bắt đầu nhập sai định dạng ngày/');
+    }
+    if(document.frm.todate.value !=''){
+    err=err & validateInput('date',document.frm.todate,'Ngày kết thúc nhập sai định dạng ngày');
+    }
+    if(err==true){
+    document.frm.target='reportview';
+    document.frm.h_isexel.value = 1;
+    document.frm.action = '/qlcuochop/baocaocuochop/reportviewexcel/h_isexel/1';
+    document.frm.submit();
+    }
+    return false;">
+    <img src="/images/report_show.jpg" width="20" height="20"></img>
+    <b>Xuất ra Excel</b>
+</div>
+<div title="In báo cáo" style="float:left;background-color:#C0C0C0;border:1px solid #888888;cursor:pointer;margin:2px;
+    padding:2px 2px;position:relative;white-space:nowrap;width:100px;height:25px"
+    onclick="
+    var err = true;
+    if(document.frm.fromdate.value !=''){
+    err=err & validateInput('date',document.frm.fromdate,'Ngày bắt đầu nhập sai định dạng ngày/');
+    }
+    if(document.frm.todate.value !=''){
+    err=err & validateInput('date',document.frm.todate,'Ngày kết thúc nhập sai định dạng ngày');
+    }
+    if(err==true){
+    document.frm.target='_blank';
+    document.frm.h_isexel.value = 0;
+    document.frm.action = '/qlcuochop/baocaocuochop/reportview/is_in/1';
+    document.frm.submit();
+    }
+    return false;">
+    <img src="/images/report_show.jpg" width="20" height="20"></img>
+    <b>In báo cáo</b>
+</div>
+</div>
+</form>
+
+<iframe style="overflow-x:visible" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no
+id="reportview"
+name="reportview" >
+</iframe>
+
+<script>
+function setvalueDateD(value_from,value_to){
+	document.frm.fromdate.value = value_from+"/<?=QLVBDHCommon::getYear()?>";
+	document.frm.todate.value = value_to+"/<?=QLVBDHCommon::getYear()?>";
+}
+</script>

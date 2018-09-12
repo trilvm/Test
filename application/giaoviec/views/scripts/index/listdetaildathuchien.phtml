@@ -1,0 +1,77 @@
+<table class=adminlist1>
+<thead>
+    <tr>
+        <th nowrap rowspan=2>STT</th>
+        <th rowspan=2>Văn bản</th>
+        <th rowspan=2>Trích yếu văn bản</th>
+        <th rowspan=2>Cơ quan thực hiện</th>
+        <th rowspan=2>Nội dung nhiệm vụ</th>
+        <th rowspan=2>Hạn xử lý</th>
+        <!-- <th colspan=2>Đã hoàn thành</th>
+        <th colspan=2>Chưa hoàn thành</th>
+        <th rowspan=2>Lý do trễ hạn</th> -->
+        <th colspan=3 style="text-align: center;">Đã thực hiện</th>
+    </tr>
+    <tr>
+        <th>Trước hạn</th>
+        <th>Đúng hạn</th>
+        <th>Quá hạn</th>
+    </tr>
+</thead>
+<tbody>
+    <?php
+        $stt=0;
+        foreach($this->dataReport as $itemreport){
+            if(($itemreport->CNTXONGDUNGHAN == ' ') && ($itemreport->CNTXONGTREHAN == ' ')
+            && ($itemreport->CNTXONGTRUOCHAN == 'X')){
+    ?>
+    <tr>
+        <td nowrap align=right><?php echo ++$stt?></td>
+        <td><a href="/vbden/vbden/listall/SOKYHIEU/<?= base64_encode($itemreport->SOKYHIEU) ?>/base64/1"><?php echo $itemreport->SOKYHIEU?> - <?php echo QLVBDHCommon::MysqlDateToVnDate($itemreport->NGAYBANHANH)?> - <?php echo $itemreport->DONVIGIAO?></a></td>
+        <td><?php echo $itemreport->TRICHYEU?></td>
+        <td><?php echo $itemreport->DONVINHAN?></td>
+        <td><?php echo $itemreport->TENCONGVIEC?></td>
+        <td><?= date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH)) ?></td>
+        <td align=center>
+            <?php 
+            if($itemreport->CNTXONGTRUOCHAN == ' ' || $itemreport->CNTXONGTRUOCHAN == NULL) {
+                    echo  '';
+                }else{
+                    echo "X";
+                }
+            ?>
+        </td>
+        <td align=center>
+            <?php 
+                $ngayDuKienHoanThanh = date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH));
+                if($itemreport->CNTXONGDUNGHAN == ' ' || $itemreport->CNTXONGDUNGHAN == NULL) {
+                    if($itemreport->TRANGTHAI == 3 && $ngayDuKienHoanThanh == "01/01/1970"){
+                        echo "X";
+                    }else{
+                        echo '';
+                    }
+                }else{
+                    echo "X";
+                }
+            ?>
+            
+        </td>
+        <td align=center>
+            <?php if($itemreport->CNTXONGTREHAN == ' ' || $itemreport->CNTXONGTREHAN == NULL) {
+                    echo  '';
+                }else{
+                    echo "X";
+                }
+             
+            ?>
+            
+        </td>
+    </tr>
+    <?php
+        } }
+    ?>
+                  
+</body>
+<tfoot>
+</tfoot>
+</table>

@@ -1,0 +1,300 @@
+<table class=adminlist1>
+	<thead>
+		<tr>
+			<th>#</th>
+			<th nowrap="nowrap">Ngày chuyển</th>
+			<th nowrap="nowrap">Người chuyển</th>
+			<th nowrap="nowrap">Người/phòng/nhóm nhận</th>
+			<th width=100%>Nội dung chuyển</th>
+			<th nowrap="nowrap">Hạn XL</th>
+			<th nowrap="nowrap">Tiến độ</th>
+		</tr>
+	</thead>
+	<tfoot>
+            <?php if ($this->id_dxchoxl != 0) { ?>
+            <tr>
+                <th colspan="7" style="background:#f0f0f0 !important;">
+                    <!--thangtba thêm vào -->
+                    <iframe height="100%" width="100%" id=iframesend<?= $this->ID_HSCV ?> allowTransparency=true BORDER=0 scrolling=yes style="min-height: 290px;"
+                    FRAMEBORDER=no src="/hscv/dexuatchoxuly/isdongy/id_dxchoxl/<?= $this->id_dxchoxl ?>"></iframe>
+                    <!-- ///// -->
+                </th>
+            </tr>
+            <?php } ?>
+            <?php if ($this->id_dxcxl != 0){?>
+                <tr class="row<?=count($this->sendprocess)-1?>">
+                    <td colspan="2" rowspan="2" style="background:#f0f0f0 !important;"></td>
+                    <td colspan="5" style="background:#f0f0f0 !important;text-align:left;"><b>Nội dung đề xuất :</b> <font color="blue"><?=$this->noidung?></font></td>
+                </tr>
+                <tr class="row<?=count($this->sendprocess)-1?>">
+                    <td colspan="5" style="background:#f0f0f0 !important;text-align:left;"><b>Ý kiến của lãnh đạo :</b> <font color="red"><?=$this->ykien?></font></td>
+                </tr>
+            <?php }?>            
+	</tfoot> 
+	<tbody>
+<?php
+	$stt=0;
+	$i=0;
+	$luutd = HosoluutheodoiModel::getByHSCVId($this->ID_HSCV);
+	$luucxl = HosocongviecModel::getLuuxulyInfoByHSCVId($this->ID_HSCV);
+	
+	for($j=0;$j<count($this->sendprocess);$j++){
+		$rowsend = $this->sendprocess[$j];
+		
+		//var_dump(count($this->sendprocess));
+		$stt++;
+		$content = trim($rowsend["NOIDUNG"]);
+		if($content!="" || ($rowsend["IS_THEODOI"]==1 && $j==count($this->sendprocess)-1)){
+			$span = "rowspan=2";
+		}else{
+			$span="";
+		}
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td <?=$span?>><?php echo $stt; ?></td>
+			<td nowrap="nowrap" <?=$span?>>
+				<?=date("d/m/Y",strtotime($rowsend["DATESEND"]))?><br>
+				<?=date("H:i:s",strtotime($rowsend["DATESEND"]))?>
+			</td>
+			<td nowrap="nowrap"><?=$rowsend["EMPNCNAME"]?>
+			<?php
+				if($rowsend["ID_U_EXECUTE"]>0 && $rowsend["ID_U_EXECUTE"]!=$rowsend["ID_U_NC"]){
+			?>
+			<br>(<?=$rowsend["EMPEXNAME"]?> chuyển giúp)
+			<?php
+				}
+			?>
+			</td>
+			<td nowrap="nowrap"><?=$rowsend["DEPNAME"].$rowsend["GROUPNAME"].$rowsend["EMPNNNAME"]?>&nbsp;
+			
+			</td>
+			<td width=100%><?=nl2br(htmlspecialchars($rowsend["NAME"]))?>&nbsp;
+			
+			<?php if($rowsend["IS_THEODOI"]==1 && $j==count($this->sendprocess)-1){ ?>
+<?php
+				if($luutd["COMMENT"]!=""){
+?>
+		<br><b>Nội dung lưu:</b> <?=nl2br(htmlspecialchars($luutd["COMMENT"]))?>&nbsp;
+		 <a href="javascript:SwapIframe(<?=$this->ID_HSCV?>,'/hscv/hosoluutheodoi/inputluutheodoi/id/<?=$this->ID_HSCV?>');">Cập nhật</a><br>
+<?php
+				}
+			} ?>
+			<!-- Chờ xử lý -->
+			<?php if($rowsend["IS_CHOXULY"]==1 && $j==count($this->sendprocess)-1){ ?>
+<?php
+				if($luucxl["COMMENT"]!=""){
+?>
+		<br>Lưu lúc: &nbsp;<?=date("H:i:s",strtotime($luucxl["DATE_CREATE"]))?>&nbsp;ngày&nbsp;<?=date(" d/m/Y",strtotime($luucxl["DATE_CREATE"]))?>
+		&nbsp;&nbsp;&nbsp; ;<?=QLVBDHCommon::trehantostr(QLVBDHCommon::getTreHan($rowsend["DATESEND"],$luucxl["HANXULY"]),$rowsend["DATESEND"],$luucxl["HANXULY"])?>
+		<br><b>Lý do chờ xử lý:&nbsp;</b> <?=nl2br(htmlspecialchars($luucxl["COMMENT"]))?>&nbsp;
+		 <a href="javascript:SwapIframe(<?=$this->ID_HSCV?>,'/hscv/hscv/inputluuchoxuly/id/<?=$this->ID_HSCV?>');">Cập nhật</a><br>
+<?php
+				}
+			} ?>
+			</td>
+			<td nowrap="nowrap">
+				<span id="HANXULY_<?=$rowsend["ID_PL"]?>"><?=QLVBDHCommon::createTextHanXuLy($rowsend["HANXULY"])?></span>&nbsp;
+				<?php if($rowsend["HANXULY"]!=0 && $rowsend["TRE"]=="" && $rowsend["ID_U_NC"]==Zend_Registry::get('auth')->getIdentity()->ID_U){
+				?>
+				<a href="#" onclick="document.getElementById('GIAHAN_<?=$rowsend["ID_PL"]?>').style.display='';return false;">Gia hạn</a>
+				<div style="display:none" id="GIAHAN_<?=$rowsend["ID_PL"]?>">
+					<?=QLVBDHCommon::createInputHanxuly("HANXULY1_".$rowsend["ID_PL"],"HANXULY_".$rowsend["ID_PL"],$rowsend["HANXULY"])?>
+					<input type=button value="Đồng ý" onclick="
+						execfunction('hscv','hscv','giahan','ID_PL/<?=$rowsend["ID_PL"]?>/HANXULY/'+document.frm.HANXULY1_<?=$rowsend["ID_PL"]?>.value);
+						document.getElementById('GIAHAN_<?=$rowsend["ID_PL"]?>').style.display='none';
+						document.getElementById('HANXULY_<?=$rowsend["ID_PL"]?>').innerHTML=createTextHanXuLy(document.frm.HANXULY1_<?=$rowsend["ID_PL"]?>.value);
+					">
+				</div>
+				<?php 
+				} 
+				?>
+			</td>
+			<td nowrap="nowrap">
+				<?php if( ( $rowsend["IS_CHOXULY"]!=1 && $rowsend["IS_THEODOI"]!=1 ) || $j!=count($this->sendprocess)-1){ ?>
+					<?=$rowsend["TRE"]>0?QLVBDHCommon::trehantostr($rowsend["TRE"],$rowsend["DATESEND"],$rowsend["HANXULY"]):""?>
+					<?php 
+						if($rowsend["TRE"]=="" && $rowsend["HANXULY"]>0 && $rowsend["IS_THEODOI"]!=1){
+					?>
+						<?=QLVBDHCommon::trehantostr(QLVBDHCommon::getTreHan($rowsend["DATESEND"],$rowsend["HANXULY"]),$rowsend["DATESEND"],$rowsend["HANXULY"])?>
+					<?php 
+						}
+					?>
+				<?php 
+					}else{
+					if($rowsend["IS_CHOXULY"]==1){		
+
+				?>
+					<font color=red>Chờ xử lý</font>
+					
+				<?php
+					}else{
+				?>
+					<font color=red>Đã lưu theo dõi</font>
+				<?php }} ?>
+			</td>
+		</tr>
+<?php if($content!=""){?>
+		<tr class="row<?php echo $i; ?>">
+			<td colspan="7"><b>Ý kiến:</b> <?=nl2br(htmlspecialchars($rowsend["NOIDUNG"]))?>&nbsp;</td>
+		</tr>
+<?php 
+			}
+		$i = -1*($i-1);
+	}
+?>
+	</tbody>
+</table>
+<table class=admintable1 width="100%">
+	<tbody>
+		<?php
+			if($this->idobject>0){
+		?>
+		<tr>
+			<td class=key nowrap="nowrap">
+				Chuyển để biết
+			</td>
+			<td width="100%">
+				<?php
+					$currentnc = 0;
+					$currentnd = "";
+					foreach($this->way as $way){
+						if($way['ISPHOIHOP']==0){
+							if($way['NGUOICHUYEN']!=$currentnc || $way['GHICHU']!=$currentnd){
+								if($currentnd!=""){
+									echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+								}
+								echo $currentnc!=0?"<br>":"";
+								echo "<b>".date("d/m/Y H:i:s",strtotime($way["NGAYCHUYEN"]))."</b>: ";
+								echo $way["EMPNC"];
+								echo " <img src='/images/j_arrow.png'>";
+								$currentnc = $way['NGUOICHUYEN'];
+							}
+							$currentnd = $way['GHICHU'];
+							echo $way['EMPNN'].", ";
+						}
+					}
+					if($currentnd!=""){
+						echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+					}
+				?>
+			</td>
+		</tr>
+		<tr>
+			<td class=key nowrap="nowrap">
+				Chuyển phối hợp
+			</td>
+			<td width="100%">
+				<?php
+					$currentnc = 0;
+					$currentnd = "";
+					foreach($this->way as $way){
+						if($way['ISPHOIHOP']==1){
+							if($way['NGUOICHUYEN']!=$currentnc || $way['GHICHU']!=$currentnd){
+								if($currentnd!=""){
+									echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+								}
+								echo $currentnc!=0?"<br>":"";
+								echo "<b>".date("d/m/Y H:i:s",strtotime($way["NGAYCHUYEN"]))."</b>: ";
+								echo $way["EMPNC"];
+								echo " <img src='/images/j_arrow.png'>";
+								$currentnc = $way['NGUOICHUYEN'];
+							}
+							$currentnd = $way['GHICHU'];
+							echo $way['EMPNN'].", ";
+						}
+					}
+					if($currentnd!=""){
+						echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+					}
+				?>
+			</td>
+		</tr>
+		<?php
+			}
+			if($this->idobject>0){
+		?>
+		<?php if($this->isCapnhat == 1){ ?>
+		<tr>
+			<td>
+				
+			</td>
+			<td>
+				<a href="javascript:;" onclick="
+					document.getElementById('iframesend<?=$this->ID_HSCV?>').style.display='';
+					document.getElementById('iframesend<?=$this->ID_HSCV?>').setAttribute('src','/hscv/hscv/send/id/<?=$this->ID_HSCV?>/type/<?=$this->type?>/year/<?=$this->year?>');
+				">Chuyển để biết</a>
+			</td>
+		</tr>
+		<?php } ?>
+		<?php
+			}
+		?>
+	</tbody>
+	<?php
+		if($this->idobject>0){
+	?>
+    <tfoot>
+		<tr>
+			<th colspan="2">
+				<iframe style="overflow-x:visible;display:none" height=0 id=iframesend<?=$this->ID_HSCV?> allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src=""></iframe>
+			</th>
+		</tr>
+	</tfoot>
+	<?php
+		}
+	?>
+</table>
+
+
+<table class=adminlist1 width="100%">
+	<tbody>
+		<?php
+			if($this->idobject>0){
+		?>
+		<tr>
+			<td class=key nowrap="nowrap">
+				Chuyển nội bộ
+			</td>
+			<td width="100%">
+				<?php
+					$currentnc = 0;
+					$currentnd = "";
+					foreach($this->lcnoibo as $way){
+						
+							echo "<b>".date("d/m/Y H:i:s",strtotime($way["NGAYGUI"]))."</b>: ";
+							echo $way["NAMENC"];
+							echo " <img src='/images/j_arrow.png'>";
+							$currentnc = $way['NGUOICHUYEN'];
+					
+						$currentnd = $way['NOIDUNG'];
+						echo $way['NAMEDEPN']."<br>";
+					}
+					if($currentnd!=""){
+						echo "<br><font color=blue style='margin-left:80px;'><b>Ý kiến:</b> ".$currentnd."</font>";
+					}
+				?>
+			</td>
+		</tr>
+		<?php
+			}
+			if($this->idobject>0){
+		?>
+		
+		<?php
+			}
+		?>
+	</tbody>
+	<?php
+		if($this->idobject>0){
+	?>
+	<tfoot>
+		<tr>
+			<th colspan="2">
+				<iframe style="overflow-x:visible;display:none" height=0 id=iframesend<?=$this->ID_HSCV?> allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src=""></iframe>
+			</th>
+		</tr>
+	</tfoot>
+	<?php
+		}
+	?>
+</table>

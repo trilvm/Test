@@ -1,0 +1,252 @@
+<?php 
+
+require_once('report/models/xulycongviecModel.php');
+require_once 'qtht/models/UsersModel.php';
+$year = QLVBDHCommon::getYear();
+$type = $this->type;
+$object_name="";
+switch($type){
+	case 1:
+		$arr_tblname = array();
+		$arr_tblname[0]="Văn bản chờ xử lý";
+		$arr_tblname[1]="Văn bản đã xử lý";
+		$arr_tblname[2]="Văn bản đã kết thúc";
+
+		$arr_attr_hscv = array();
+		$arr_attr_hscv[0]="DANGXULY";
+		$arr_attr_hscv[1]="DAXULY";
+		$arr_attr_hscv[2]="KETTHUC";
+		$object_name = "Văn bản";
+		break;
+	case 2:
+		$arr_tblname = array();
+		$arr_tblname[0]="Công việc chờ xử lý";
+		$arr_tblname[1]="Công việc đã xử lý";
+		$arr_tblname[2]="Công việc đã kết thúc";
+		
+		$arr_attr_hscv = array();
+		$arr_attr_hscv[0]="DANGXULY";
+		$arr_attr_hscv[1]="DAXULY";
+		$arr_attr_hscv[2]="KETTHUC";
+		$object_name = "Nội dung công việc";
+		break;
+	case 3:
+		$arr_tblname = array();
+		$arr_tblname[0]="Hồ sơ chờ xử lý";
+		$arr_tblname[1]="Hồ sơ đã xử lý";
+		$arr_tblname[2]="Hồ sơ đã kết thúc";
+		
+		$arr_attr_hscv = array();
+		$arr_attr_hscv[0]="DANGXULY";
+		$arr_attr_hscv[1]="DAXULY";
+		$arr_attr_hscv[2]="KETTHUC";
+		$object_name = "Tên hồ sơ";
+		break;
+	default:
+		$arr_tblname = array();
+		$arr_tblname[0]="không biết";
+		$arr_tblname[1]="không biết";
+		$arr_tblname[2]="không biết";
+		
+		$arr_attr_hscv = array();
+		$arr_attr_hscv[0]="không biết";
+		$arr_attr_hscv[1]="không biết";
+		$arr_attr_hscv[2]="không biết";
+		$object_name = "không biết";
+		break;
+}
+
+?>
+
+<?php 
+//dem tong cong
+
+?>
+
+<?php
+for($i=0 ; $i<3 ;$i++){
+if(count($this->hscvlist[$arr_attr_hscv[$i]]) > 0){
+?>
+<table class="adminlist">
+<thead>
+<tr>
+	<td colspan="11"><font color="Green" size="2.5"><b><?php echo $arr_tblname[$i];?></b></font></td>
+</tr>
+<tr>
+	<th nowrap rowspan="2">#</th>
+	<th rowspan="2" width="50%"><?php echo $object_name?></th>
+	
+</tr>
+<tr>	
+	<th nowrap="nowrap">#</th>
+	<th nowrap="nowrap">Ngày chuyển</th>
+	<th nowrap="nowrap">Người chuyển</th>
+	<th nowrap="nowrap">Người nhận</th>
+	<th nowrap>Nội dung</th>
+	
+	<th >Hạn XL</th>
+	<th >Trạng thái</th>
+
+	
+</tr>
+</thead>
+<tbody>
+	<?php $stt1 = 1; 
+	
+	foreach($this->hscvlist[$arr_attr_hscv[$i]] as $item){ 
+	$details = xulycongviecModel::getDetails($item,$item,$this->id_u);	
+	//var_dump($details);
+	$count_dlc = count($details["DONGLUANCHUYEN"]);
+	//var_dump($this->hscvlist["DANGXULY"]);
+	?>
+	<tr>
+	<td nowrap rowspan="<?=$count_dlc?>"><?php echo $stt1 ?></td>
+	<td width="40%" rowspan="<?=$count_dlc?>" valign="top">
+	<?php echo xulycongviecModel::getNameHSCV($year,$item,$type);?>
+	</td>
+	
+	<?php 
+	$stt = 1; foreach ($details["DONGLUANCHUYEN"] as $item_luanchuyen){
+		$is_tre = 0;
+		if($details["TRE"][$stt-1] == 1)
+			$is_tre = 1;
+	$is_tre = 0;
+	if($stt > 1)
+		echo "<tr>";
+	?>
+	
+	
+		<td nowrap><?php 
+			if($is_tre ==1)
+				echo '<font color="red">'; 
+				echo $stt;
+			if($is_tre ==1)
+				echo '</font>'; 
+		?>
+		</td>
+		<td nowrap><?php 
+			if($is_tre ==1)
+				echo '<font color="red">'; 
+				echo QLVBDHCommon::MysqlDateToVnDate($item_luanchuyen["DATESEND"]);
+			if($is_tre ==1)
+				echo '</font>'; 
+		?>
+		</td>
+		<td width="20%">
+		<?php 
+		if($is_tre ==1)
+				echo '<font color="red">'; 
+		else if($this->id_u == $item_luanchuyen["ID_U_SEND"])
+				echo '<font color="blue">';
+				echo  UsersModel::getEmloyeeNameByIdUser($item_luanchuyen["ID_U_SEND"]);
+		
+		if($is_tre ==1)
+				echo '</font>'; 
+		else if($this->id_u == $item_luanchuyen["ID_U_SEND"])
+				echo '</font>'; 
+		?>
+		</td>
+		<td width="20%">
+		<?php 
+			if($is_tre ==1)
+				echo '<font color="red">'; 
+		else if($this->id_u == $item_luanchuyen["ID_U_RECEIVE"])
+				echo '<font color="blue">';
+			echo UsersModel::getEmloyeeNameByIdUser($item_luanchuyen["ID_U_RECEIVE"]);
+			if($is_tre ==1)
+				echo '</font>'; 
+			else if($this->id_u == $item_luanchuyen["ID_U_SEND"])
+				echo '</font>'; 
+		?>
+		</td>
+		<td>
+		<?php 
+		if($is_tre ==1)
+				echo '<font color="red">'; 
+			echo $item_luanchuyen["NAME"];
+			if($is_tre ==1)
+				echo '</font>'; 
+		?></td>
+		
+		<td nowrap><?php 
+		if($item_luanchuyen["ISLAST"] != 1){
+		if(count($details["DONGLUANCHUYEN"]) == $stt && $item_luanchuyen["IS_THEODOI"] == 1){
+			
+		}else{
+		if($is_tre ==1)
+			echo '<font color="red">'; 
+			echo $item_luanchuyen["HANXULY"]."(ngày)";
+		if($is_tre ==1)
+				echo '</font>';
+		}
+		}
+		?>
+		</td>
+		<td width="20%">
+		<?php 
+		
+		if(count($details["DONGLUANCHUYEN"]) == $stt && $item_luanchuyen["IS_THEODOI"] == 1){
+			echo "đang lưu theo dõi";
+		}
+		else{
+		?>
+		
+		<?php 
+		
+		if($item_luanchuyen["ISLAST"] != 1){
+			if($is_tre ==1)
+					echo '<font color="red">'; 
+				
+			if(is_null($item_luanchuyen["TRE"]))
+			{		
+				if(!is_null($item_luanchuyen["DATESEND"])){
+					$dis_hour = QLVBDHCommon::getTreHan($item_luanchuyen["DATESEND"],$item_luanchuyen["HANXULY"]);
+					if($dis_hour > 0){
+						
+						if($this->id_u == $item_luanchuyen["ID_U_RECEIVE"])
+							echo '<font color="Red">đang xử lý (trễ '. (int)($dis_hour/8) .' ngày '.($dis_hour%8).' giờ)</font>';
+						else 
+							echo 'đang xử lý (trễ '. (int)($dis_hour/8) .' ngày '.($dis_hour%8).' giờ)';
+					}
+					else{ 
+						$con = 0- $dis_hour;
+						echo 'đang xử lý (còn '. (int)($con/8) .' ngày '.($con%8).' giờ)';
+					}
+				}else {
+					echo 'đang xử lý';
+				}
+			}
+			else if ($item_luanchuyen["TRE"] <=0 )
+				echo 'đã xử lý';
+			else if ($item_luanchuyen["TRE"] > 0 ){
+				if($this->id_u == $item_luanchuyen["ID_U_RECEIVE"])
+					echo '<font color="red">đã xử lý (trễ '. (int)($item_luanchuyen["TRE"]/8) .' ngày '.($item_luanchuyen["TRE"]%8).' giờ)</font>';
+				else 
+					echo 'đã xử lý (trễ '. (int)($item_luanchuyen["TRE"]/8) .' ngày '.($item_luanchuyen["TRE"]%8).' giờ)';
+			}
+			if($is_tre ==1)
+					echo '</font>'; 
+			}
+		}
+		if($item_luanchuyen["ISLAST"] == 1)	
+			echo " Đã kết thúc ";
+		?>
+		</td>
+		
+		
+	<?php if($stt > 1)
+		echo "</tr>";
+		
+	$stt++; 
+	
+	}?>
+	<tr><th bgcolor="Silver"  colspan="11" ></th></tr>
+	<?php $stt1++;}?>
+	
+</tbody>
+<tfoot>
+</tfoot>
+</table>
+<?php 
+}}
+?>

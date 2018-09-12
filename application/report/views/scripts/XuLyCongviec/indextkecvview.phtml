@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<?php require_once('qtht/models/DepartmentsModel.php');
+require_once('report/models/congviecModel.php');
+$data_departs = DepartmentsModel::getAll();
+?>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<div style="padding-bottom:5px;padding-top:5px;padding-left:0px">
+                <p style="color: blue;">
+                    <b>SỐ LƯỢNG CÔNG VIỆC CÓ TRONG DANH SÁCH : <?=$this->countcv?> CÔNG VIỆC
+                    </b>
+                </p>
+</div>    
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th nowrap>STT</th>
+			<th width=20%>Họ tên</th>
+			<th nowrap>Nhận để xử lý</th>
+			<th nowrap>Đã xử lý</th>
+			<th nowrap>Chưa xử lý</th>
+			<th nowrap>Chờ xử lý</th>
+			<th nowrap>Trễ hạn</th>
+		</tr>
+	</thead>
+	<tbody>
+     <?php foreach($this->data1 as $id_dep){ ?>
+    <tr>
+	 <td colspan=7> <b><?= mb_strtoupper($id_dep["NAME"],"utf-8")?> </b></td>
+	</tr>
+	<?php
+	      $tt= new congviecModel();
+		  $arr_dxl= $tt->counttkecvdxl($this->fromdate,$this->todate);
+		   $arr_cxl= $tt->counttkecvcxl($this->fromdate,$this->todate);
+		   $arr_choxl= $tt->counttkecvchoxl($this->fromdate,$this->todate);
+		   $arr_tre1= $tt->counttkecvtre1($this->fromdate,$this->todate);
+		   $arr_tre2= $tt->counttkecvtre2($this->fromdate,$this->todate);
+
+	       $this->data = $tt->layidu($id_dep["ID_DEP"]);	
+		   $st=1;foreach($this->data as $iduitem){	
+		 
+	?>  
+	   
+		<tr>
+			<td nowrap><?=$st?></td>
+			<td nowrap><?=$iduitem['HOTEN']?></td>			
+			<td nowrap><?php echo (($arr_dxl[$iduitem['ID_U'].""] >0?$arr_dxl[$iduitem['ID_U'].""]:"0") + ($arr_cxl[$iduitem['ID_U'].""] >0?$arr_cxl[$iduitem['ID_U'].""]:"0")+($arr_choxl[$iduitem['ID_U'].""] >0?$arr_choxl[$iduitem['ID_U'].""]:"0")) ; ?></td>
+			<td nowrap><?php echo $arr_dxl[$iduitem['ID_U'].""] >0?$arr_dxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			<td nowrap><?php echo $arr_cxl[$iduitem['ID_U'].""] >0?$arr_cxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			<td nowrap><?php echo $arr_choxl[$iduitem['ID_U'].""] >0?$arr_choxl[$iduitem['ID_U'].""]:"0" ; ?></td>
+			
+			<td nowrap><?php echo (($arr_tre1[$iduitem['ID_U'].""] >0?$arr_tre1[$iduitem['ID_U'].""]:"0"); ?></td>
+		    
+		</tr>
+	<?php
+		$st++;}
+	?>
+	<?php
+		}
+	?>
+
+	</tbody>
+</table>
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+var iframeElement = window.parent.document.getElementById('reportview');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%";
+</script>
+

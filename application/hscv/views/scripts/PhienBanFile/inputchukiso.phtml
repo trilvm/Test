@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color:transparent">
+<form  name=frmUpload1 enctype="multipart/form-data" action="/hscv/phienbanfile/save" method="post">
+	<input type="hidden" name="MAX_FILE_SIZE" value="100000000" />
+	<object	codetype="application/java"
+				classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
+				codebase="http://java.sun.com/update/1.5.0/jinstall-1_5-windows-i586.cab#Version=5,0,0,5"
+				width="500" height="200" name="signature">
+				<param name="code" value="bcy.vgca.Applet.mainform">
+				<param name="archive" value="/applet/Binhthuan_applet.jar">
+				<param name="mayscript" value="true">
+				<param name="type" value="application/x-java-applet;version=1.5">
+				<param name="scriptable" value="false">
+				<param name="func_ghi_du_lieu_len_form" value="ghi_du_lieu_len_form">
+                                <param name="func_ToChuc_On_Off" value="off">
+                                <param name="func_LanhDao_On_Off" value="on">
+				<comment>				
+					<embed	       	type="application/x-java-applet;version=1.5"
+										code="bcy.vgca.Applet.mainform" archive="/applet/Binhthuan_applet.jar"
+										width="500" height="200" scriptable="true"
+								pluginspage="http://java.sun.com/products/plugin/index.html#download"
+										func_ghi_du_lieu_len_form="ghi_du_lieu_len_form"
+                                                                                func_ToChuc_On_Off="off"
+                                                                                func_LanhDao_On_Off="on"
+								>
+					</embed>
+					<noembed>
+									Can not be started because Java Plugin is not installed.
+					</noembed>
+				</comment>
+			</object>
+			<br>
+			<p>
+			<textarea hidden rows="18" cols="180" name="outputdata" id="outputdata"></textarea>
+			</p>
+			<script>
+			function ghi_du_lieu_len_form(data)
+			{
+				document.getElementById("outputdata").innerHTML=data;
+			}
+			</script>
+        
+	<input type="hidden" name="idHSCV" value=<?php echo $this->idHSCV?> >
+	<input type="hidden" name="idObject" value=<?php echo $this->idPBDuthao?> >
+	<input type="hidden" name="idPBDuthao" value=<?php echo $this->idPBDuthao?> >
+	<input type="hidden" name="isTemp" value=<?php if($this->is_new==0) echo 0 ; if($this->is_new==1) echo 1; //cho id tam?>>
+	<input type="hidden" name="year" value=<?php echo $this->year?>>
+	<input type="hidden" name="idOldFile" value=<?php echo $this->idOldFile?>>
+	<input type="hidden" name="type" value=2 >
+	<input type="hidden" name="idDuthao" value=<?php echo $this->idDuthao?>>
+        <a  onclick="document.frmUpload1.submit(); return false;" href="#"  >[ Lưu ]</a>
+        <a href="#" onclick="window.parent.document.getElementById('PBDuThao_ThemMoiDiv<?php echo $this->idDuthao ?>').style.display = 'none';">[ Hủy ]</a>
+            
+</form> 
+<p id=lasttext></p>
+</body>
+</html>
+<script>
+var iframeElement = window.parent.document.getElementById('PBDuThao_ThemMoiDiv<?php echo $this->idDuthao ?>');
+iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+iframeElement.width = "100%"; 
+</script>

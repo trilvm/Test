@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>    
+<head>
+    <link rel="stylesheet" type="text/css" href="/styles/general.css" />
+    <link rel=Stylesheet href=stylesheet.css></link>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+</head>
+<body style="background-color:transparent">
+<?php require_once 'qlcuochop/models/quanlycuochopModel.php';?>
+<?php require_once 'qlcuochop/models/baocaocuochopModel.php';?>
+<table class=adminlist width="100%">
+ <tbody>
+     <?php $stt=1;
+        $model = new quanlycuochopModel();
+        $num = count($this->data);
+        if($num==0){
+           echo "<tr><td colspan='7'>Chưa có cuộc họp nào</td></tr>";
+        }
+        else{
+            foreach($this->data as $item){
+                 $listCV = $model->getReportDataCV($item['ID_CUOCHOP']);
+                 $colcount = count($listCV)+2;
+                 ?>
+                    <tr>
+                        <td style="text-align: center" rowspan="<?=$colcount?>"><b><?=$stt?></td>
+                        <td colspan="4" valign=top style="background-color: #e2eff5"><b><?=$item["TEN"]?> - Ngày họp: <?=QLVBDHCommon::MysqlDateToVnDate($item["NGAY"])?></b></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="background-color: #e2eff5" nowrap="nowrap">Tên công việc</th>
+                        <th style="background-color: #e2eff5" nowrap="nowrap">Người thực hiện</th>
+                        <th style="background-color: #e2eff5" nowrap="nowrap">Kết quả</th>
+                    </tr>
+
+                       <?php
+                        foreach ($listCV as $row){
+                        ?>
+                        <tr>
+                            <td colspan="2">  - <?=$row['CONGVIEC']?></td>
+                            <td> <?=UsersModel::getEmloyeeNameByIdUser((int)$row['NGUOIXULY'])?></td>
+                            <td> <?php if($row['IS_FINISH']==1){
+                                            echo 'Đã hoàn thành';}
+                                       else { echo 'Chưa hoàn thành';}
+                                  }?>
+                            </td>
+                        </tr>
+                    <?  $stt++ ; }?>
+            <?php } ?>
+        
+ </tbody>
+ <tfoot>
+ </tfoot>
+</table>
+
+<p id=lasttext></p>
+</body>
+</html>
+
+<script>
+    var iframeElement = window.parent.document.getElementById('reportview');
+    iframeElement.style.height = ""+(document.getElementById("lasttext").offsetTop)+"px";
+    iframeElement.width = "100%";
+</script>

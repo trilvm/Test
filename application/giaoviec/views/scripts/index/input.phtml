@@ -1,0 +1,527 @@
+<?php require_once 'qtht/models/capcoquanModel.php'; ?>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_actb.js"></script>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_common.js"></script>
+<script language="javascript" type="text/javascript" src="/js/common.js"></script>
+<link rel="stylesheet" type="text/css" href="/chosen/chosen.custom.css" />
+<script src="/jquery/jquery-1.10.2.js"></script>
+<script src="/chosen/chosen.jquery.custom.js"></script>
+<script type="text/javascript">
+    var jq1102 = jQuery.noConflict(true);
+    var arrCbnguoi = new Array();
+<?php
+$allDep = UsersModel::getAllDep();
+$allUser = UsersModel::getAllUser();
+foreach ($allUser as $itemUser) {
+    ?>
+        arrCbnguoi.push(new Array("<?= $itemUser['ID_U'] ?>", "<?= $itemUser['USERNAME'] ?>", "<?= $itemUser['ID_DEP'] ?>"));
+    <?php
+}
+?>
+</script>
+
+<?php
+require_once 'qtht/models/sovanbanModel.php';
+require_once 'qtht/models/Vb_nguoikyModel.php';
+require_once 'qtht/models/UsersModel.php';
+require_once 'qtht/models/CoquanModel.php';
+require_once("hscv/models/chuyennoiboModel.php");
+require_once 'motcua/models/Motcuagen_tempModel.php';
+require_once 'motcua/models/MotcuafiledinhkemModel.php';
+?>
+<script>
+    var customarray = new Array(<?php count($this->listCoQuan) ?>);
+<?php
+$i = 0;
+foreach ($this->listCoQuan as $item) {
+    echo "customarray[$i]= '" . $item['NAME'] . "';";
+    $i++;
+}
+    $url = "";
+    $is_new = 0;
+    $type = 0;
+    $id_objf = $this->id;
+    if((int)$this->id==0){
+            $is_new = 1;
+            $type = -1;
+            if($this->id_pb_duthao){
+                    $gen_temp = new gen_tempModel();
+                    $new_object = $gen_temp->getIdTemp();
+                    filedinhkemModel::copyFile(QLVBDHCommon::getYear(),$this->id_pb_duthao,$new_object,2,-1);
+                    $id_objf = $new_object;
+                    $is_new = 0;
+                    $type = -1;
+            }
+    }else{
+            $is_new = 0;
+            $type = 5;
+    }
+
+    $url ="'/hscv/file/index/enableDragAndDrop/1/?iddiv=idFileDinhKem&idObject=".$id_objf."&is_new=".$is_new."&year=".$this->year."&type=".$type."&pdf=1'" ;
+?>
+</script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/validate.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src="/js/json/json_parse.js"></script>
+<form name=frm method="post" action="/giaoviec/index/save">
+    <table width="100%" id="tablecongviec">
+        <tr>
+            <td nowrap="nowrap" valign="top">
+                <font color="Blue">Ngày giao nhiệm vụ</font>
+                <font color="Red" size="3">*</font>
+            </td>
+            <td nowrap="nowrap" valign="top">
+                <?= QLVBDHCommon::calendarFull(QLVBDHCommon::MysqlDateToVnDate(date('Y-m-d')), "NGAYBANHANH", "NGAYBANHANH") ?>
+                <div class="clr"></div>
+                <span class="box_erro_area" id="ERRNGAYBANHANH"></span>	
+            </td>
+            <td width=20 nowrap="nowrap"></td>
+            <td nowrap="nowrap" valign="top">
+
+            </td>
+            <td nowrap="nowrap" valign="top">
+
+            </td>
+            <td width=20 nowrap="nowrap"></td>
+
+        </tr>
+        <tr>
+            <td nowrap="nowrap" valign="top">
+                <font color="Blue">Loại nhiệm vụ giao</font>
+                <font color="Red" size="3">*</font>
+            </td>
+            <td nowrap="nowrap" valign="top">
+                <!-- Trich yeu -->
+                <select name="LOAICV_GIAOVIEC" id="LOAICV_GIAOVIEC" style="width:200px" onchange="updateLoaiCongViecGiao(this);">
+                    <?php
+                    foreach ($this->dataloaicongviec as $itemloaicongviec) {
+                        ?>
+                        <option value="<?= $itemloaicongviec->CODE ?>" <?= $this->data["LOAICV_GIAOVIEC"] == $itemloaicongviec->CODE ? 'selected' : '' ?>><?= $itemloaicongviec->NAME ?></option>
+                        <?php
+                    }
+                    ?>
+                </select><div class="clr"></div>
+                <span class="box_erro_area" id="ERRLOAICV_GIAOVIEC"></span>
+            </td>
+            <td width=20 nowrap="nowrap"></td>
+            <td nowrap="nowrap" valign="top">
+            </td>
+            <td nowrap="nowrap" valign="top">
+            </td>
+            <td width="100%"></td>
+        </tr>
+        <tr>
+            <td nowrap="nowrap" valign="top">
+                <font color="Blue">File đính kèm</font>
+            </td>
+            <!-- File dinh kem -->
+            <td nowrap="nowrap" valign="top" colspan="4" id="idFileDinhKem"></td>
+        <script>
+            loadDivFromUrl('idFileDinhKem', <?php echo $url ?> , 0);
+        </script> 
+
+        <td width="100%"></td>
+        </tr>
+        <tr>
+		<td nowrap="nowrap" valign="top" <?=$this->SAOY==1?"style = 'visibility:hidden'":""?>>
+			<font color="Blue">Người theo dõi</font>
+			<font color="Red" size="3">*</font>
+		</td>
+		<td nowrap="nowrap" valign="top" <?=$this->SAOY==1?"style = 'visibility:hidden'":""?>>
+			
+			<?php
+				echo QLVBDHCommon::AutoComplete(
+				UsersModel::getAllNameAndId(1),
+				"ID_U",
+				"NAME",
+				"NGUOISOAN",
+				"NGUOISOAN_TEXT",
+				true,
+				"width:200px",
+				"addChuyenDeBiet(3);updateSKH(document.frm.ID_LVB.value,document.frm.NGUOISOAN.value,document.frm.ID_CQ.value);",
+				$this->data["NGUOISOAN"],
+				'');
+			?>
+			<div class="clr"></div>
+			<span class="box_erro_area" id="ERRNGUOISOAN"></span>	
+		</td>
+		<td width=20 nowrap="nowrap"></td>
+		<td nowrap="nowrap" valign="top" >			
+		</td>
+		<td nowrap="nowrap" valign="top" >			
+		</td>
+		<td width="100%"></td>
+	</tr>
+        <tr id="congviec" >
+            <td nowrap="nowrap" valign="top">
+                <font color="Blue">Nhiệm vụ</font>
+                <font color="Red" size="3">*</font>
+            </td>
+            <td nowrap="nowrap" colspan="2">
+                <textarea rows="2" cols="63" id=NOIDUNGNV_GIAOVIEC name="NOIDUNGNV_GIAOVIEC" class="NOIDUNGNV_GIAOVIEC"></textarea>
+            <td nowrap="nowrap" >
+                <font color="Blue">Hạn xử lý</font>
+                <font color="Red" size="3">*</font>
+            </td> 
+            <td nowrap="nowrap" >
+            <?= QLVBDHCommon::calendarFullWithNoEvent(QLVBDHCommon::MysqlDateToVnDate($this->data["NGAYBANHANH"]), "hanxuly_giaoviec", "hanxuly_giaoviec"); ?>
+            </td>
+            <td width="100%"></td>
+        </tr>
+<?php
+require_once("hscv/models/coquanlienthongModel.php");
+$data_cqlt = coquanlienthongModel::getDataCQLienThong();
+?>
+        <tr>
+            <td nowrap="nowrap" valign="top">
+                <font color="Blue">Cơ quan nhận nhiệm vụ</font>
+            </td>
+            <td>
+<?php
+require_once("edxml/models/danhsachModel.php");
+$data_cqlienthong = danhsachModel::getCQlienthong();
+//  var_dump($data_cqlienthong);exit;
+?>
+
+                <select name=CQLIENTHONG id=CQLIENTHONG multiple size=10 ondblclick="insertArrayCqlt();" style="width:430px">
+
+
+                </select>
+            </td>
+            <td>                
+                <div id="insercqltgv" ><input type=button class="input_button" onclick="insertArrayCqltgv();" value=">" style="width:30px;"></div>    
+                <br>
+                <input type=button class="input_button" onclick="selectAllChosenSearchResult('CQLIENTHONG')" value="^" style="width:30px;">  
+            </td>
+            <td>
+            <td valign="top" width=100%><div id="listcqlienthong"></div></td>
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    jq1102('#CQLIENTHONG').chosen({
+        placeholder_text_multiple: " ",
+        no_results_text: "Không tìm thấy kết quả"
+    });
+    function SaveButtonClick() {
+        var err = true;
+        err = err & validateInput("req", document.frm.NGAYBANHANH, "Nhập ngày ban hành");
+        err = err & validateInput("date", document.frm.NGAYBANHANH, "Nhập ngày ban hành");
+        if (err == true) {
+                document.frm.submit();
+        }
+    }
+    function fillcomboCqlt(id_combo, arr, arr_exp) {
+        var objdesc = document.getElementById(id_combo);
+
+
+        for (i = objdesc.length - 1; i >= 0; i--) {
+            objdesc.removeChild(objdesc.options[i]);
+        }
+        for (var i = 0; i < arr.length; i++) {
+            var ln = 0;
+            //không load lại đơn vị gửi
+//				for(var j= 0;j < arr_exp.length ; j++){
+//					//alert(arr_exp[j]);
+//					if(arr_exp[j] == arr[i][0] ){
+//						ln =1;
+//						
+//						break;
+//						
+//					}
+//				}
+            if (ln == 0) {
+                var elOptNew = document.createElement('option');
+                elOptNew.text = arr[i][1];
+                elOptNew.value = arr[i][0];
+                try {
+                    objdesc.add(elOptNew, null); // standards compliant; doesn't work in IE
+                } catch (ex) {
+                    objdesc.add(elOptNew); // IE only
+                }
+            }
+        }
+        if (objdesc.length) {
+            //objdesc.style.display = 'block';
+        } else {
+            objdesc.style.display = 'none';
+        }
+        //objdesc.value = sel;                        
+        jq1102('#CQLIENTHONG').trigger("chosen:updated");
+        jq1102("#CQLIENTHONG").trigger('chosen:open');
+        jq1102("#CQLIENTHONG").trigger('chosen:close');
+    }
+    var arr_header = new Array();
+    arr_header[0] = new Array(100, 'Tên CQ');
+    arr_header[1] = new Array(0, 'Xóa');
+    var arr_cqltselect = new Array();
+    var arr_cqltselect_temp = new Array();
+    var arr_cqlt = new Array();
+<?php $stt = 0;
+foreach ($data_cqlienthong as $cqlt) { ?>
+        arr_cqlt[<?= $stt ?>] = new Array("<?= $cqlt['CODE'] ?>", "<?= $cqlt['NAMEKYHIEU'] ?>");
+    <?php
+    $stt++;
+}
+if (count($this->datalt) > 0) {
+    $i = 0;
+    foreach ($this->datalt as $item) {
+        $i++;
+        ?>
+            arr_cqltselect.push(new Array("<?php echo $item->OrganId ?>", "<?php echo CoQuanModel::getNameByCode($item->OrganId) ?>"));
+            arr_cqltselect_temp.push(new Array("<?php echo $item->OrganId ?>"));
+        <?php
+    }
+}
+?>
+    ShowArrCqLienThong("listcqlienthong", arr_header, arr_cqltselect);
+    fillcomboCqlt("CQLIENTHONG", arr_cqlt, arr_cqltselect_temp);
+
+    function insertArrayCqlt() {
+        var opt = document.frm.CQLIENTHONG.options;
+        for (var i = 0; i < opt.length; i++) {
+            if (opt[i].selected) {
+                arr_cqltselect[arr_cqltselect.length] = new Array(opt[i].value, opt[i].text);
+                arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array(opt[i].value);
+
+            }
+        }
+        ShowArrCqLienThong("listcqlienthong", arr_header, arr_cqltselect);
+        fillcomboCqlt("CQLIENTHONG", arr_cqlt, arr_cqltselect_temp);
+
+    }
+
+    function insertAllArrayCqlt() {
+
+        var opt = document.frm.CQLIENTHONG.options;
+        for (var i = 0; i < opt.length; i++) {
+
+            arr_cqltselect[arr_cqltselect.length] = new Array(opt[i].value, opt[i].text);
+            arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array(opt[i].value);
+
+
+        }
+        ShowArrCqLienThong("listcqlienthong", arr_header, arr_cqltselect);
+        fillcomboCqlt("CQLIENTHONG", arr_cqlt, arr_cqltselect_temp);
+    }
+    function ShowArrCqLienThong(idDiv, Arr1, Arr2) {
+
+        var html;
+        if (Arr2.length == 0) {
+            html = "";
+        } else {
+            html = '<table class="adminlist" width=100%>';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th nowrap>#</td>';
+            for (i = 0; i < Arr1.length; i++) {
+                if (Arr1[i][0] == 0) {
+                    html += '<th nowrap>' + Arr1[i][1] + '</td>';
+                } else {
+                    html += '<th width="' + Arr1[i][0] + '%">' + Arr1[i][1] + '</td>';
+                }
+            }
+            html += '</tr>';
+            html += '<tr>';
+            html += '<th nowrap colspan=3><a href="javascript:void(0);" onclick="removeAllArrCqLienThong();return false;">Xóa tất cả</a></th>';
+            html += '</tr>';
+            html += '</thead>';
+
+            html += '<tfoot><tr><th colspan=3 align=left>';
+            html += '</th></tr></tfoot>';
+
+            html += '<tbody>';
+            for (i = 0; i < Arr2.length; i++) {
+                html += '<tr>';
+                html += '<td nowrap align="right">' + (i + 1) + '</td>';
+                html += '<td>';
+                html += Arr2[i][1];
+                html += "<input type=hidden name=ID_CQLIENTHONG[] value=" + Arr2[i][0] + ">";
+                html += '</td>';
+                html += '<td>';
+                html += '<a href="#" onclick="removeArrCqLienThong(' + i + ');return false;">Xóa</a>';
+                html += '</td>';
+                html += '</tr>';
+            }
+            html += '</tbody>';
+            html += '</table>';
+        }
+        document.getElementById(idDiv).innerHTML = html;
+    }
+
+    var stthan = 0;
+    var retvalue;
+    function chooseNguoi(index) {
+        var chooseText = jq1102('#listcqlienthong #cb_nguoi' + index + ' option:selected').text();
+        jq1102('#listcqlienthong #nguoitheodoi_text' + index).val(chooseText);
+    }
+    function reloadCbnguoi(index) {
+        var cbPhong = jq1102('#listcqlienthong #cb_phong' + index).val();
+        var cbNguoi = jq1102('#listcqlienthong #cb_nguoi' + index);
+        jq1102('#listcqlienthong #cb_nguoi' + index + ' option').each(function () {
+            $(this).remove();
+        });
+        cbNguoi.append($('<option></option>').val(0).html("--Chọn Người--"));
+        for (i = 0; i < arrCbnguoi.length; i++) {
+            if (arrCbnguoi[i][2] == cbPhong) {
+                cbNguoi.append(
+                        $('<option></option>').val(arrCbnguoi[i][0]).html(arrCbnguoi[i][1])
+                        );
+            }
+        }
+        chooseNguoi(index);
+    }
+    function UpdateHanXuLyCV(i) {
+        stthan = i;
+        getvalue("auth", "user", "adddate", "all=" + document.getElementById("type_real_HANXULYNV_GIAOVIEC" + stthan).value + "&value=" + (parseInt(document.getElementById("HANXULYNV_GIAOVIEC" + stthan).value, 10)), "UpdateRetntthucCV");
+    }
+    function UpdateRetntthucCV() {
+        document.getElementById("NGAY_KETTHUC_GIAOVIEC" + stthan).value = retvalue;
+    }
+    function ChangeDateCV(i) {
+        stthan = i;
+        getvalue("auth", "user", "adddatehanxuly", "date=" + document.getElementById("NGAY_KETTHUC_GIAOVIEC" + stthan).value + "&all=" + document.getElementById("type_real_HANXULYNV_GIAOVIEC" + stthan).value + "", "UpdateRethanxulyCV");
+    }
+    function UpdateRethanxulyCV() {
+        document.getElementById("HANXULYNV_GIAOVIEC" + stthan).value = retvalue;
+        document.getElementById("real_HANXULYNV_GIAOVIEC" + stthan).value = retvalue;
+    }
+    function DeleteNhiemvu(el) {
+        jq1102(".del" + el + "").remove();
+    }
+    function insertArrayCqltgv()
+    {
+        var opt = document.frm.CQLIENTHONG.options;
+        for (var i = 0; i < opt.length; i++) {
+            if (opt[i].selected) {
+                arr_cqltselect[arr_cqltselect.length] = new Array(opt[i].value, opt[i].text);
+                arr_cqltselect_temp[arr_cqltselect_temp.length] = new Array(opt[i].value);
+
+            }
+        }
+        var Arr2 = arr_cqltselect;
+        var html = "";
+        var sttcv = 0;
+        if (jq1102('#tablegv').length == 0)
+        {
+            sttcv = 0;
+            html = '<table class="adminlist" id=tablegv width=100%>';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th nowrap>#</td>';
+            html += '<th width="60%">Nhiệm vụ</th>';
+            html += '<th width="40%">Hạn xử lý</th>';
+            html += '<th nowrap>Xóa</th>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '</tr>';
+            html += '</thead>';
+
+            html += '<tfoot><tr><th colspan=5 align=left>';
+            html += '</th></tr></tfoot>';
+
+            html += '<tbody>';
+            html += '<tr class=del' + sttcv + '>';
+            html += '<td nowrap align="right" rowspan=' + (Arr2.length + 1) + '>' + (sttcv + 1) + '</td>';
+            html += '<td colspan=2>';
+            html += 'Nhiệm vụ : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea style="margin: 0px 2px 2px; width: 350px; height: 28px;" name="NOIDUNGNV_GIAOVIEC[' + sttcv + ']" class="NOIDUNGNV_GIAOVIEC">' + jq1102('#NOIDUNGNV_GIAOVIEC').val() + '</textarea>';
+            html += '<br/>';
+            html += "Người theo dõi :<select style='width: 170px;' id=cb_phong" + sttcv + " name=cb_phong[] onchange=reloadCbnguoi('" + sttcv + "')>";
+            html += "	<option value='0'>--Chọn phòng--</option>";
+<?php
+foreach ($allDep as $itemDep) {
+    ?>
+                html += "	<option value='<?= $itemDep["ID_DEP"] ?>'><?= $itemDep["NAME"] ?></option>";
+    <?php
+}
+?>
+            html += "</select>";
+            html += "<select style='width: 180px;' id=cb_nguoi" + sttcv + " name=cb_nguoi[" + sttcv + "] onchange=chooseNguoi('" + sttcv + "')>";
+            html += "	<option value='0'>--Chọn Người--</option>";
+<?php
+foreach ($allUser as $itemUser) {
+    ?>
+                html += "	<option value='<?= $itemUser["ID_U"] ?>'" + (document.frm.NGUOISOAN.value ==<?= $itemUser["ID_U"] ?> ? "selected" : "") + "><?= $itemUser["USERNAME"] ?></option>";
+    <?php
+}
+?>
+            html += "</select>";
+            html += "<input name=nguoitheodoi_text[" + sttcv + "] id=nguoitheodoi_text" + sttcv + " type=hidden value='" + (document.frm.NGUOISOAN_TEXT.value != "" ? document.frm.NGUOISOAN_TEXT.value : '---Chọn người---') + "' />";
+            html += '</td>';
+            html += '<td rowspan=' + (Arr2.length + 1) + '>';
+            html += '<a href="#" onclick="DeleteNhiemvu(' + sttcv + ');return false;">Xóa</a>';
+            html += '</td>';
+            html += '</tr>';
+            for (i = 0; i < Arr2.length; i++) {
+                html += '<tr class=del' + sttcv + '>';
+                html += '<td>';
+                html += Arr2[i][1];
+                html += "<input type=hidden name=ID_CQLIENTHONG[" + sttcv + "][" + i + "] id=ID_CQLIENTHONG" + sttcv + "" + i + " value=" + Arr2[i][0] + ">";
+                html += '</td>';
+                html += '<td >';
+                html += '<span id=SPANHANXULY' + sttcv + '' + i + '>' + calendarFull(jq1102('#hanxuly_giaoviec').val(), 'NGAY_KETTHUC_GIAOVIEC' + sttcv + '' + i, 'NGAY_KETTHUC_GIAOVIEC' + sttcv + '' + i) + "</span>";
+//                    html += '<span id=SPANHANXULY'+sttcv+''+i+'>'+calendarFull(jq1102('#hanxuly_date').val(),'NGAY_KETTHUC_GIAOVIEC'+sttcv+''+i,'ChangeDateCV','ChangeDateCV("'+sttcv+''+i+'")')+' '+createInputHanxuly('HANXULYNV_GIAOVIEC'+sttcv+''+i,'HANXULYNV_GIAOVIEC'+sttcv+''+i,jq1102('#hanxuly_giaoviec').val(),'UpdateHanXuLyCV('+sttcv+''+i+')',"",jq1102('#type_real_hanxuly_giaoviec').val())+"</span>";
+                html += '</td>';
+                html += '</tr>';
+            }
+            html += "<input type=hidden class=sttgv value=" + (sttcv + 1) + ">";
+            html += '</tbody>';
+            html += '</table>';
+            jq1102('#listcqlienthong').append(html);
+            arr_cqltselect = new Array();
+            arr_cqltselect_temp = new Array();
+        } else
+        {
+            sttcv = parseInt(jq1102('#tablegv tbody input:last').val());
+            html += '<tr class=del' + sttcv + '>';
+            html += '<td nowrap align="right" rowspan=' + (Arr2.length + 1) + '>' + (sttcv + 1) + '</td>';
+            html += '<td colspan=2>';
+            html += 'Nhiệm vụ : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea style="margin: 0px 2px 2px; width: 350px; height: 28px;" name="NOIDUNGNV_GIAOVIEC[' + sttcv + ']" class="NOIDUNGNV_GIAOVIEC">' + jq1102('#NOIDUNGNV_GIAOVIEC').val() + '</textarea>';
+            html += '<br/>';
+            html += "Người theo dõi :<select style='width: 170px;' id=cb_phong" + sttcv + " name=cb_phong[] onchange=reloadCbnguoi('" + sttcv + "')>";
+            html += "	<option value='0'>--Chọn phòng--</option>";
+<?php
+foreach ($allDep as $itemDep) {
+    ?>
+                html += "	<option value='<?= $itemDep["ID_DEP"] ?>'><?= $itemDep["NAME"] ?></option>";
+    <?php
+}
+?>
+            html += "</select>";
+            html += "<select style='width: 180px;' id=cb_nguoi" + sttcv + " name=cb_nguoi[" + sttcv + "] onchange=chooseNguoi('" + sttcv + "')>";
+            html += "	<option value='0'>--Chọn Người--</option>";
+<?php
+foreach ($allUser as $itemUser) {
+    ?>
+                html += "	<option value='<?= $itemUser["ID_U"] ?>'" + (document.frm.NGUOISOAN.value ==<?= $itemUser["ID_U"] ?> ? "selected" : "") + "><?= $itemUser["USERNAME"] ?></option>";
+    <?php
+}
+?>
+            html += "</select>";
+            html += "<input name=nguoitheodoi_text[" + sttcv + "] id=nguoitheodoi_text" + sttcv + " type=hidden value='" + (document.frm.NGUOISOAN_TEXT.value != "" ? document.frm.NGUOISOAN_TEXT.value : '---Chọn người---') + "' />";
+            html += '</td>';
+            html += '<td rowspan=' + (Arr2.length + 1) + '>';
+            html += '<a href="#" onclick="DeleteNhiemvu(' + sttcv + ');return false;">Xóa</a>';
+            html += '</td>';
+            html += '</tr>';
+            for (i = 0; i < Arr2.length; i++) {
+                html += '<tr class=del' + sttcv + '>';
+                html += '<td>';
+                html += Arr2[i][1];
+                html += "<input type=hidden name=ID_CQLIENTHONG[" + sttcv + "][" + i + "] id=ID_CQLIENTHONG" + sttcv + "" + i + " value=" + Arr2[i][0] + ">";
+                html += '</td>';
+                html += '<td >';
+                html += '<span id=SPANHANXULY' + sttcv + '' + i + '>' + calendarFull(jq1102('#hanxuly_giaoviec').val(), 'NGAY_KETTHUC_GIAOVIEC' + sttcv + '' + i, 'NGAY_KETTHUC_GIAOVIEC' + sttcv + '' + i) + "</span>";
+                //                    html += '<span id=SPANHANXULY'+sttcv+''+i+'>'+calendarFull(jq1102('#hanxuly_date').val(),'NGAY_KETTHUC_GIAOVIEC'+sttcv+''+i,'ChangeDateCV','ChangeDateCV("'+sttcv+''+i+'")')+' '+createInputHanxuly('HANXULYNV_GIAOVIEC'+sttcv+''+i,'HANXULYNV_GIAOVIEC'+sttcv+''+i,jq1102('#hanxuly_giaoviec').val(),'UpdateHanXuLyCV('+sttcv+''+i+')',"",jq1102('#type_real_hanxuly_giaoviec').val())+"</span>";
+                html += '</td>';
+                html += '</tr>';
+            }
+            html += "<input type=hidden class=sttgv value=" + (sttcv + 1) + ">";
+            jq1102('#tablegv tbody').append(html);
+            arr_cqltselect = new Array();
+            arr_cqltselect_temp = new Array();
+        }
+    }
+</script>

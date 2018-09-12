@@ -1,0 +1,114 @@
+
+<table class="adminlist">
+<thead>
+<tr>
+<th nowrap colspan=8>
+<a href="#" onclick="  
+	
+		
+		var oframe = document.getElementById('inputgopy<?=$this->id_work?>');
+		if(oframe.style.display=='none')
+		{
+		oframe.style.display = 'block';		
+		oframe.src ='/congviec/noidunggopy/input?ID_WORK=<?=$this->id_work?>&ID_JOURNAL=<?=$item["ID_JOURNAL"]?>';
+		}else{
+			oframe.style.display='none';
+		}
+		return false"
+	 > 
+<img src="/images/icon_add.gif" border="0"> Thêm mới</a>
+
+</th>
+</tr>
+<tr>
+<th nowrap>#</th>
+
+<th width="50%">Nội dung nhật ký</th>
+<th nowrap>Ngày ghi</th>
+<th nowrap>Người ghi</th>
+<th nowrap>File đính kèm</th>
+<th nowrap="nowrap"> &nbsp;</th>
+</tr> 
+</thead>
+<tbody>
+ <?php 
+ $stt= 1;
+ if(count($this->data)==0){
+ 
+ ?>
+<tr><td colspan=7> Không có nội dung góp ý </td> </tr>
+<?php }else{
+foreach ($this->data as $item){ ?>
+<tr>
+<td nowrap valign="top"><?php echo $stt?></td>
+
+<td valign="top">	
+		    		    
+     		  <?=$item["CONTENT"] ?>
+     		  
+     		  </td>
+     		  
+<td valign="top">   		  			
+			  <?=date("d/m/Y h:i:s",strtotime($item["TIME"]))?></td>			  			
+			    
+<td  nowrap valign="top">  <?=UsersModel::getEmloyeeNameByIdUser($item["NGUOINK"])?> </td>
+<td width="40%" valign="top">
+			<?php
+			   $file= Qlgv_gopyModel::getfile($item["ID_JOURNAL"]);
+			   // var_dump($file);
+			   
+				foreach($file as $fileitem){
+					echo "<a href='/hscv/File/download?year=&maso=".$fileitem['MASO']."'>".$fileitem['FILENAME']."</a>, ";
+				}
+			?>
+		</td>
+<td nowrap="nowrap" valign="top">
+<?php
+	 		        $auth = Zend_Registry::get('auth');
+		            $data_session = $auth->getIdentity();
+		            $id_u =$data_session->ID_U;
+	                  if($item["NGUOINK"]== $id_u ) 
+	
+	          {?>
+  	<a href="#" onclick="		
+		var oframe = document.getElementById('inputgopy<?=$this->id_work?>');
+		if(oframe.style.display == 'none')
+		{
+		oframe.style.display = 'block';
+		oframe.src ='/congviec/noidunggopy/input?ID_JOURNAL=<?=$item["ID_JOURNAL"]?>&ID_WORK=<?=$this->id_work?>';
+		}else{oframe.style.display = 'none';
+		     }
+		return false"
+		> Cập nhật</a> <br/>
+ 	<a href="#" onclick = '
+		 var oframe = document.getElementById("inputgopy<?=$this->id_work?>");
+		  if(confirm("<?php echo "Bạn có muốn xóa không"; ?>")){
+			
+			oframe.src ="/congviec/noidunggopy/Delete?ID_JOURNAL=<?=$item["ID_JOURNAL"]?>&ID_WORK=<?=$this->id_work?>";
+			
+		}else
+	        {
+		     
+	        }'
+	     >Xóa</a> 
+	    <?php }?> 
+			
+			</td>
+</tr>
+  
+<?php $stt++;}}?>
+</tbody>
+
+<tfoot>
+<tr>
+<th align="left" colspan=8>
+<iframe Width="100%" id="inputgopy<?=$this->id_work?>" name="inputgopy<?=$this->id_work?>" style="overflow-x:visible;display:none" allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no > </iframe>
+
+</tr>
+</tfoot>
+
+</table>
+
+<script>
+
+</script>

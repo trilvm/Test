@@ -1,0 +1,13 @@
+<form name=frm method="post">
+<div style="float:right;margin-bottom: 3px;">
+	<select name=week onchange="document.frm.submit();">
+<?php foreach($this->filebaocao as $week){ ?>
+		<option value='<?=$week?>'>Tuần <?=$week?></option>
+<?php } ?>
+	</select>
+	<script>document.frm.week.value='<?=$this->week?>';</script>
+</div>
+</form>
+<?php
+echo $this->content; 
+?>

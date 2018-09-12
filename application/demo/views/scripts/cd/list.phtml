@@ -1,0 +1,25 @@
+<?php
+	//var_dump($this->data);
+?>
+<table>
+<tr>
+	<td>Tên yêu cầu</td>
+</tr>
+<?php
+foreach($this->data as $row){
+?>
+<tr>
+	<td>
+		<?php echo $row["NAME"] ?>
+		<?php
+			$action = WFEngine::GetNextTransitions($row["ID_PI"],$this->user->ID_U);
+			foreach($action as $rowa){
+				echo "<a href='".$rowa["LINK"]."/wf_id_t/".$rowa["ID_T"]."/id/".$row["ID_DEMO"]."'>".$rowa["NAME"]."</a>";
+			}
+		?>
+	</td>
+</tr>
+<?php
+}
+?>
+</table>

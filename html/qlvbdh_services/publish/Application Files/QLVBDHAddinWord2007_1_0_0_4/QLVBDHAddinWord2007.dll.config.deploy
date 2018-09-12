@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+        <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+            <section name="QLVBDHAddinWord2007.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+        </sectionGroup>
+    </configSections>
+    <userSettings>
+        <QLVBDHAddinWord2007.Properties.Settings>
+            <setting name="Username" serializeAs="String">
+                <value>test</value>
+            </setting>
+            <setting name="Password" serializeAs="String">
+                <value>test</value>
+            </setting>
+            <setting name="QLVBDHAddinWord2007_QLVBDHDesktopServices_QLVBDHDesktop"
+                serializeAs="String">
+                <value>http://services.qlvbdh.vn/services/addin/server.php</value>
+            </setting>
+            <setting name="FolderBackup" serializeAs="String">
+                <value />
+            </setting>
+            <setting name="URLQLVBDH" serializeAs="String">
+                <value>http://www.qlvbdh.vn</value>
+            </setting>
+        </QLVBDHAddinWord2007.Properties.Settings>
+    </userSettings>
+</configuration>

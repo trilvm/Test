@@ -1,0 +1,64 @@
+<table class=adminlist1>
+<thead>
+    <tr>
+        <th nowrap rowspan=2>STT</th>
+        <th rowspan=2>Văn bản</th>
+        <th rowspan=2>Trích yếu văn bản</th>
+        <th rowspan=2>Cơ quan thực hiện</th>
+        <th rowspan=2>Nội dung nhiệm vụ</th>
+        <th rowspan=2>Hạn xử lý</th>
+        <th colspan=2 style="text-align: center;">Chưa hoàn thành</th>
+    </tr>
+    <tr>
+        <th>Trong hạn</th>
+        <th>Quá hạn</th>
+    </tr>
+</thead>
+<tbody>
+    <?php
+        $stt=0;
+        foreach($this->dataReport as $itemreport){
+            if($itemreport->CNTDANGTRIENKHAITREHAN == ' ') {
+    ?>
+    <tr>
+        <td nowrap align=right><?php echo ++$stt?></td>
+        <td><a href="/vbden/vbden/listall/SOKYHIEU/<?= base64_encode($itemreport->SOKYHIEU) ?>/base64/1"><?php echo $itemreport->SOKYHIEU?> - <?php echo QLVBDHCommon::MysqlDateToVnDate($itemreport->NGAYBANHANH)?> - <?php echo $itemreport->DONVIGIAO?></a></td>
+        <td><?php echo $itemreport->TRICHYEU?></td>
+        <td><?php echo $itemreport->DONVINHAN?></td>
+        <td><?php echo $itemreport->TENCONGVIEC?></td>
+        <td><?= date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH)).'<br>'.QLVBDHCommon::getTreHanNgay($itemreport->NGAYDUKIENHOANTHANH) ?></td>
+        <td align=center>
+            <?php 
+                $ngayDuKienHoanThanh = date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH));
+                if($itemreport->CNTDANGTRIENKHAI == ' ' || $itemreport->CNTDANGTRIENKHAI == NULL) {
+                    if($itemreport->TRANGTHAI != 3 && $ngayDuKienHoanThanh == "01/01/1970"){
+                        echo "X";
+                    }else{
+                        echo '';
+                    }
+                }else{
+                    // echo date('d-m-Y',strtotime($itemreport->CNTDANGTRIENKHAI));
+                    echo QLVBDHCommon::getTreHanNgay($itemreport->CNTDANGTRIENKHAI);
+                }
+            ?>
+        </td>
+        <td align=center>
+            <?php
+                $ngayDuKienHoanThanh = date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH)); 
+                if($itemreport->CNTDANGTRIENKHAITREHAN == ' ' || $itemreport->CNTDANGTRIENKHAITREHAN == NULL || $ngayDuKienHoanThanh == "01/01/1970") {
+                    echo  '';
+                }else{
+                    // echo date('d-m-Y',strtotime($itemreport->CNTDANGTRIENKHAITREHAN));
+                    echo QLVBDHCommon::getTreHanNgay($itemreport->CNTDANGTRIENKHAITREHAN);
+                }
+            ?>
+        </td>
+    </tr>
+    <?php
+        } }
+    ?>
+                  
+</body>
+<tfoot>
+</tfoot>
+</table>

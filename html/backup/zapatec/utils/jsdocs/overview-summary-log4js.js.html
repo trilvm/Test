@@ -1,0 +1,677 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+Zapatec Utils Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="log4js.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b>Zapatec Utils</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>log4js.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		Javascript Logger (in the spirit of log4j)
+ This library is designed to make the writing and debugging
+ of javascript code easier, by allowing the programmer to perform
+ debug or log output at any place in their code.  This supports
+ the concept of different levels of logging (debug < info < warn < error < fatal << none)
+ as well as different log outputs.  Three log outputs are included, but you can
+ add your own.  The included log outputs are <a href="../Log.html#!s!writeLogger">Log.writeLogger()</a>,
+ <a href="../Log.html#!s!alertLogger">Log.alertLogger()</a>, and <a href="../Log.html#!s!popupLogger">Log.popupLogger()</a>.  For debugging on Safari,
+ the log ouput <a href="../Log.html#!s!consoleLogger">Log.consoleLogger()</a> is also included.  To turn off debugging
+ but still leave the logger calls in your script, use the log level <a href="../Log.html#!s!NONE">Log.NONE</a>.
+
+ Example usage:
+ <pre>
+ &lt;html&gt;
+  &lt;head&gt;
+      &lt;script src="log4js.js" type="text/javascript"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+     Log4JS test...&lt;hr/&gt;
+     &lt;script&gt;
+        // Setup log objects
+        //
+        //  log object of priority debug and the popup logger
+        var log = new Log(Log.DEBUG, Log.popupLogger);
+        //  log object of priority warn and the alert logger
+        var log2 = new Log(Log.WARN, Log.alertLogger);
+        //  log object of priority debug and the console logger (Safari)
+        var log3 = new Log(Log.DEBUG, Log.consoleLogger);
+
+        log.debug('foo1');     // will popup a new window and log 'foo'
+        log.warn('bar1');      // will add a new 'bar' message to the popup
+        log2.debug('foo2');    // will do nothing (Log object's priority threshold is WARN)
+        log2.warn('bar2');     // will display a javascript alert with the string 'bar'
+        log3.debug('foo3');    // will log message to Safari console or existing popup
+        log3.warn('bar3');     // same
+
+ 	      log.info(Log.dumpObject(new Array('apple','pear','orange','banana')));
+     &lt;/script&gt;
+  &lt;/body&gt;
+ &lt;/html&gt;
+ </pre>
+
+ <BR/><BR/><B>Version: </B>0.3
+<pre>
+*************************************************************
+
+ Copyright 2005 Fourspaces Consulting, LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License"); 
+ you may not use this file except in compliance with the License. 
+ You may obtain a copy of the License at 
+
+ http://www.apache.org/licenses/LICENSE-2.0 
+
+ Unless required by applicable law or agreed to in writing, software 
+ distributed under the License is distributed on an "AS IS" BASIS, 
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ See the License for the specific language governing permissions and 
+ limitations under the License
+
+*************************************************************
+
+ Changelog:
+ 0.2 	- Added consoleLogger for Safari
+ 		- Changed popupLogger so that it only notifies once (or twice)
+		  that a popup blocker is active.	
+		- Added Log.NONE level for silencing all logging
+ </pre><BR/><BR/><B>Author:</B> Marcus R Breese mailto:mbreese@fourspaces.com
+ <BR/>
+	
+</p>
+
+<hr>
+
+
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+    <tr bgcolor="#CCCCFF" class="TableHeadingColor">
+    <td colspan=2><font size="+2">
+    
+        <b>Class Summary</b>
+    
+    </font></td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="Log.html">Log</a></b></td>
+    <td>The main Log class.</td>
+    </tr>
+    
+    </table>
+    <hr/> 
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview"><span class="comment">// $Id: log4js.js 7554 2007-07-15 17:54:14Z alex $</span>
+<span class="comment">/*
+ * &lt;pre&gt;
+ * Copyright (c) 2004-2006 by Zapatec, Inc.
+ * http://www.zapatec.com
+ * 1700 MLK Way, Berkeley, California,
+ * 94709, U.S.A.
+ * All rights reserved.
+ * &lt;/pre&gt;
+ */</span>
+
+<span class="comment">/**
+ * <span class="attrib">@fileoverview</span> Javascript Logger (in the spirit of log4j)
+ * This library is designed to make the writing and debugging
+ * of javascript code easier, by allowing the programmer to perform
+ * debug or log output at any place in their code.  This supports
+ * the concept of different levels of logging (debug &lt; info &lt; warn &lt; error &lt; fatal &lt;&lt; none)
+ * as well as different log outputs.  Three log outputs are included, but you can
+ * add your own.  The included log outputs are {<span class="attrib">@link</span> Log#writeLogger},
+ * {<span class="attrib">@link</span> Log#alertLogger}, and {<span class="attrib">@link</span> Log#popupLogger}.  For debugging on Safari,
+ * the log ouput {<span class="attrib">@link</span> Log#consoleLogger} is also included.  To turn off debugging
+ * but still leave the logger calls in your script, use the log level {<span class="attrib">@link</span> Log#NONE}.
+ *
+ * Example usage:
+ * &lt;pre&gt;
+ * &amp;lt;html&amp;gt;
+ *  &amp;lt;head&amp;gt;
+ *      &amp;lt;script src="log4js.js" type="text/javascript"&amp;gt;&amp;lt;/script&amp;gt;
+ *  &amp;lt;/head&amp;gt;
+ *  &amp;lt;body&amp;gt;
+ *     Log4JS test...&amp;lt;hr/&amp;gt;
+ *     &amp;lt;script&amp;gt;
+ *        // Setup log objects
+ *        //
+ *        //  log object of priority debug and the popup logger
+ *        var log = new Log(Log.DEBUG, Log.popupLogger);
+ *        //  log object of priority warn and the alert logger
+ *        var log2 = new Log(Log.WARN, Log.alertLogger);
+ *        //  log object of priority debug and the console logger (Safari)
+ *        var log3 = new Log(Log.DEBUG, Log.consoleLogger);
+ *
+ *        log.debug('foo1');     // will popup a new window and log 'foo'
+ *        log.warn('bar1');      // will add a new 'bar' message to the popup
+ *        log2.debug('foo2');    // will do nothing (Log object's priority threshold is WARN)
+ *        log2.warn('bar2');     // will display a javascript alert with the string 'bar'
+ *        log3.debug('foo3');    // will log message to Safari console or existing popup
+ *        log3.warn('bar3');     // same
+ *
+ * 	      log.info(Log.dumpObject(new Array('apple','pear','orange','banana')));
+ *     &amp;lt;/script&amp;gt;
+ *  &amp;lt;/body&amp;gt;
+ * &amp;lt;/html&amp;gt;
+ * &lt;/pre&gt;
+ *
+ * <span class="attrib">@author</span> Marcus R Breese mailto:mbreese<span class="attrib">@fourspaces</span>.com
+ * <span class="attrib">@license</span> Apache License 2.0
+ * <span class="attrib">@version</span> 0.3
+ *&lt;pre&gt;
+ **************************************************************
+ *
+ * Copyright 2005 Fourspaces Consulting, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License
+ *
+ **************************************************************
+ *
+ * Changelog:
+ * 0.2 	- Added consoleLogger for Safari
+ * 		- Changed popupLogger so that it only notifies once (or twice)
+ *		  that a popup blocker is active.	
+ *		- Added Log.NONE level for silencing all logging
+ * &lt;/pre&gt;
+ */</span>
+
+
+
+<span class="comment">/**
+ * Create a new logger
+ * <span class="attrib">@constructor</span>
+ * <span class="attrib">@class</span> The main Log class.  Create a new instance of this class to send all logging events.
+ * <span class="attrib">@param</span> level The cut-off logger level.  You can adjust this level in the constructor and leave all other logging events in place.  Defaults to {<span class="attrib">@link</span> Log#WARN}.
+ * <span class="attrib">@param</span> logger The logger to use.  The logger is a function that accepts the logging events and informs the user or developer. Defaults to {<span class="attrib">@link</span> Log#writeLogger}.
+ */</span>
+<span class="reserved">function</span> Log(level,logger,prefix) {
+			 var _currentLevel = Log.WARN;
+			 var _logger = Log.writeLogger; <span class="comment">// default to write Logger</span>
+			 var _prefix = false;
+			 <span class="comment">/**
+				* Sets the current logger prefix 
+				* <span class="attrib">@param</span> {String} prefix This prefix will be prepended to all messages.
+				*/</span>
+			 <span class="reserved">this</span>.setPrefix = <span class="reserved">function</span>(pre) {
+					 <span class="reserved">if</span> (pre!=<span class="literal">'undefined'</span>) { _prefix = pre; }
+		 <span class="reserved">else</span> { _prefix = false; }
+			 }
+			 <span class="comment">/**
+				* Sets the current logger function
+				* <span class="attrib">@param</span> logger The function that will be called when a log event needs to be displayed
+				*/</span>
+			 <span class="reserved">this</span>.setLogger = <span class="reserved">function</span>(logger) {
+					 <span class="reserved">if</span> (logger!=<span class="literal">'undefined'</span>) { _logger = logger; }
+			 }
+
+			 <span class="comment">/**
+				* Sets the current threshold log level for this Log instance.  Only events that have a priority of this level or greater are logged.
+				* <span class="attrib">@param</span> level The new threshold priority level for logging events.  This can be one of the static members {<span class="attrib">@link</span> Log#DEBUG},  {<span class="attrib">@link</span> Log#INFO}, {<span class="attrib">@link</span> Log#WARN}, {<span class="attrib">@link</span> Log#ERROR}, {<span class="attrib">@link</span> Log#FATAL}, {<span class="attrib">@link</span> Log#NONE}, or it can be one of the strings ["debug", "info", "warn", "error", "fatal", "none"].
+				*/</span>
+			 <span class="reserved">this</span>.setLevel = <span class="reserved">function</span>(level) { 
+					 <span class="reserved">if</span> (level!=<span class="literal">'undefined'</span> &amp;&amp; typeof level ==<span class="literal">'number'</span>) {
+									 _currentLevel = level;
+					 } <span class="reserved">else</span> <span class="reserved">if</span> (level!=<span class="literal">'undefined'</span>) {
+									 <span class="reserved">if</span> (level==<span class="literal">'debug'</span>) { _currentLevel = Log.DEBUG; }
+									 <span class="reserved">else</span> <span class="reserved">if</span> (level==<span class="literal">'info'</span>) { _currentLevel = Log.INFO; }
+									 <span class="reserved">else</span> <span class="reserved">if</span> (level==<span class="literal">'error'</span>) { _currentLevel = Log.ERROR; }
+									 <span class="reserved">else</span> <span class="reserved">if</span> (level==<span class="literal">'fatal'</span>) { _currentLevel = Log.FATAL; }
+									 <span class="reserved">else</span> <span class="reserved">if</span> (level==<span class="literal">'warn'</span>) { _currentLevel = Log.WARN; }
+									 <span class="reserved">else</span> { _currentLevel = Log.NONE; }
+					 }
+			 }
+
+			 <span class="comment">/**
+				* Gets the current prefix
+	* <span class="attrib">@return</span> current prefix
+	*/</span>
+			 
+			 <span class="reserved">this</span>.getPrefix = <span class="reserved">function</span>() { <span class="reserved">return</span> _prefix; }
+
+			 <span class="comment">/**
+				* Gets the current event logger function
+	* <span class="attrib">@return</span> current logger
+	*/</span>
+			 
+			 <span class="reserved">this</span>.getLogger = <span class="reserved">function</span>() { <span class="reserved">return</span> _logger; }
+
+			 <span class="comment">/**
+				* Gets the current threshold priority level
+	* <span class="attrib">@return</span> current level
+	*/</span>
+			 
+			 <span class="reserved">this</span>.getLevel = <span class="reserved">function</span>() { <span class="reserved">return</span> _currentLevel; }
+			 
+			 <span class="reserved">if</span> (level!=<span class="literal">'undefined'</span>) { <span class="reserved">this</span>.setLevel(level); }
+			 <span class="reserved">if</span> (logger!=<span class="literal">'undefined'</span>) { <span class="reserved">this</span>.setLogger(logger); }
+			 <span class="reserved">if</span> (prefix!=<span class="literal">'undefined'</span>) { <span class="reserved">this</span>.setPrefix(prefix); }
+}
+<span class="comment">/**
+ * Log an event with priority of "debug"
+ * <span class="attrib">@param</span> s the log message
+ */</span>
+Log.<span class="reserved">prototype</span>.debug     = <span class="reserved">function</span>(s) { <span class="reserved">if</span> (<span class="reserved">this</span>.getLevel()&lt;=Log.DEBUG) { <span class="reserved">this</span>._log(s,<span class="literal">"DEBUG"</span>,<span class="reserved">this</span>); } }
+
+Log.<span class="reserved">prototype</span>.json = <span class="reserved">function</span>(s) {
+	<span class="reserved">if</span> (Zapatec &amp;&amp; Zapatec.Transport) {
+		<span class="reserved">this</span>.debug(Zapatec.Transport.serializeJsonObj(s));
+	}
+}
+
+<span class="comment">/**
+ * Log an event with priority of "info"
+ * <span class="attrib">@param</span> s the log message
+ */</span>
+Log.<span class="reserved">prototype</span>.info      = <span class="reserved">function</span>(s) { <span class="reserved">if</span> (<span class="reserved">this</span>.getLevel()&lt;=Log.INFO ) { <span class="reserved">this</span>._log(s,<span class="literal">"INFO"</span>,<span class="reserved">this</span>); } }
+<span class="comment">/**
+ * Log an event with priority of "warn"
+ * <span class="attrib">@param</span> s the log message
+ */</span>
+Log.<span class="reserved">prototype</span>.warn      = <span class="reserved">function</span>(s) { <span class="reserved">if</span> (<span class="reserved">this</span>.getLevel()&lt;=Log.WARN ) { <span class="reserved">this</span>._log(s,<span class="literal">"WARN"</span>,<span class="reserved">this</span>); } }
+<span class="comment">/**
+ * Log an event with priority of "error"
+ * <span class="attrib">@param</span> s the log message
+ */</span>
+Log.<span class="reserved">prototype</span>.error     = <span class="reserved">function</span>(s) { <span class="reserved">if</span> (<span class="reserved">this</span>.getLevel()&lt;=Log.ERROR) { <span class="reserved">this</span>._log(s,<span class="literal">"ERROR"</span>,<span class="reserved">this</span>); } }
+<span class="comment">/**
+ * Log an event with priority of "fatal" 
+ * <span class="attrib">@param</span> s the log message
+ */</span>
+Log.<span class="reserved">prototype</span>.fatal     = <span class="reserved">function</span>(s) { <span class="reserved">if</span> (<span class="reserved">this</span>.getLevel()&lt;=Log.FATAL) { <span class="reserved">this</span>._log(s,<span class="literal">"FATAL"</span>,<span class="reserved">this</span>); } }
+
+<span class="comment">/**
+ * _log is the function that actually calling the configured logger function.
+ * It is possible that this function could be extended to allow for more
+ * than one logger.
+ * 
+ * This method is used by {<span class="attrib">@link</span> Log#debug}, {<span class="attrib">@link</span> Log#info}, {<span class="attrib">@link</span> Log#warn}, {<span class="attrib">@link</span> Log#error}, and {<span class="attrib">@link</span> Log#fatal}
+ * <span class="attrib">@private</span>
+ * <span class="attrib">@param</span> {String} msg The message to display
+ * <span class="attrib">@param</span> level The priority level of this log event
+ * <span class="attrib">@param</span> {Log} obj The originating {<span class="attrib">@link</span> Log} object.
+ */</span>
+Log.<span class="reserved">prototype</span>._log = <span class="reserved">function</span>(msg,level,obj) { 
+	<span class="reserved">if</span> (<span class="reserved">this</span>.getPrefix()) {
+		<span class="reserved">this</span>.getLogger()(<span class="reserved">this</span>.getPrefix()+<span class="literal">" - "</span>+msg,level,obj); 
+	} <span class="reserved">else</span> {
+		<span class="reserved">this</span>.getLogger()(msg,level,obj); 
+	}
+
+}
+
+Log.DEBUG       = 1;
+Log.INFO        = 2;
+Log.WARN        = 3;
+Log.ERROR       = 4;
+Log.FATAL       = 5;
+Log.NONE		= 6;
+
+<span class="comment">/**
+ * Static alert logger method.  This logger will display a javascript alert (messagebox) with the message.
+ * <span class="attrib">@param</span> {String} msg The message to display
+ * <span class="attrib">@param</span> level The priority level of this log event
+ */</span>
+Log.alertLogger = <span class="reserved">function</span>(msg,level) { alert(level+<span class="literal">" - "</span>+msg); }
+<span class="comment">/**
+ * Static write logger method.  This logger will print the message out to the web page using document.writeln.
+ * <span class="attrib">@param</span> {String} msg The message to display
+ * <span class="attrib">@param</span> level The priority level of this log event
+ */</span>
+Log.writeLogger = <span class="reserved">function</span>(msg,level) { document.writeln(level+<span class="literal">"&amp;nbsp;-&amp;nbsp;"</span>+msg+<span class="literal">"&lt;br/&gt;"</span>); }
+
+
+<span class="comment">/**
+ * Static Safari WebKit console logger method. This logger will write messages to the Safari javascript console, if available.
+ * If this browser doesn't have a javascript console (IE/Moz), then it degrades gracefully to {<span class="attrib">@link</span> Log#popupLogger}
+ * <span class="attrib">@param</span> {String} msg The message to display
+ * <span class="attrib">@param</span> level The priority level of this log event
+ * <span class="attrib">@param</span> {Log} obj The originating {<span class="attrib">@link</span> Log} object.
+ */</span>
+Log.consoleLogger = <span class="reserved">function</span>(msg,level,obj) {
+	<span class="reserved">if</span> (window.console) {
+		window.console.log(level+<span class="literal">" - "</span>+msg);
+	} <span class="reserved">else</span> {
+		Log.popupLogger(msg,level,obj);
+	}
+}
+ 
+
+<span class="comment">/**
+ * Static popup logger method.  This logger will popup a new window (if necessary), and add the log message to the top of a list.
+ * <span class="attrib">@param</span> {String} msg The message to display
+ * <span class="attrib">@param</span> level The priority level of this log event
+ * <span class="attrib">@param</span> {Log} obj The originating {<span class="attrib">@link</span> Log} object.
+ */</span>
+Log.popupLogger = <span class="reserved">function</span>(msg,level,obj) {
+			 <span class="reserved">if</span> (obj.popupBlocker) {
+	<span class="reserved">return</span>;
+			 }
+			 <span class="reserved">if</span> (!obj._window || !obj._window.document) {
+							 obj._window = window.open(<span class="literal">""</span>,<span class="literal">'logger_popup_window'</span>);
+							 <span class="reserved">if</span> (!obj._window) { obj.popupBlocker=true; alert(<span class="literal">"You have a popup window manager blocking the log4js log popup display.\n\nThis must be disabled to properly see logged events."</span>); <span class="reserved">return</span>; }
+				 <span class="reserved">if</span> (!obj._window.document.getElementById(<span class="literal">'loggerTable'</span>)) {
+											 obj._window.document.writeln(<span class="literal">"&lt;table width='100%' id='loggerTable'&gt;&lt;tr&gt;&lt;th align='left'&gt;Time&lt;/th&gt;&lt;th width='100%' colspan='2' align='left'&gt;Message&lt;/th&gt;&lt;/tr&gt;&lt;/table&gt;"</span>);
+											 obj._window.document.close();
+							 }
+			 }
+			 var tbl = obj._window.document.getElementById(<span class="literal">"loggerTable"</span>);
+			 var row = tbl.insertRow(1);
+
+			 var cell_1 = row.insertCell(-1);
+			 var cell_2 = row.insertCell(-1);
+			 var cell_3 = row.insertCell(-1);
+
+			 var d = new Date();
+			 var h = d.getHours();
+			 <span class="reserved">if</span> (h&lt;10) { h=<span class="literal">"0"</span>+h; }
+			 var m = d.getMinutes();
+			 <span class="reserved">if</span> (m&lt;10) { m=<span class="literal">"0"</span>+m; }
+			 var s = d.getSeconds();
+			 <span class="reserved">if</span> (s&lt;10) { s=<span class="literal">"0"</span>+s; }
+			 var date = (d.getMonth()+1)+<span class="literal">"/"</span>+d.getDate()+<span class="literal">"/"</span>+d.getFullYear()+<span class="literal">"&amp;nbsp;-&amp;nbsp;"</span>+h+<span class="literal">":"</span>+m+<span class="literal">":"</span>+s;
+
+			 cell_1.style.fontSize=<span class="literal">"8pt"</span>;
+			 cell_1.style.fontWeight=<span class="literal">"bold"</span>;
+			 cell_1.style.paddingRight=<span class="literal">"6px"</span>;
+			 
+			 cell_2.style.fontSize=<span class="literal">"8pt"</span>;
+			 
+			 cell_3.style.fontSize=<span class="literal">"8pt"</span>;
+			 cell_3.style.whiteSpace=<span class="literal">"nowrap"</span>;
+			 cell_3.style.width=<span class="literal">"100%"</span>;
+
+			 <span class="reserved">if</span> (tbl.rows.length % 2 == 0) {
+				cell_1.style.backgroundColor=<span class="literal">"#eeeeee"</span>;
+				cell_2.style.backgroundColor=<span class="literal">"#eeeeee"</span>;
+				cell_3.style.backgroundColor=<span class="literal">"#eeeeee"</span>;
+			 }
+			 
+			 cell_1.innerHTML=date
+			 cell_2.innerHTML=level;
+			 cell_3.innerHTML=msg;
+}
+
+<span class="comment">/**
+ * This method is a utility function that takes an object and creates a string representation of it's members.
+ * <span class="attrib">@param</span> {Object} the Object that you'd like to see
+ * <span class="attrib">@return</span> {String} a String representation of the object passed
+ */</span>
+Log.dumpObject=<span class="reserved">function</span> (obj,indent) {
+	<span class="reserved">if</span> (!indent) { indent=<span class="literal">""</span>;}
+	<span class="reserved">if</span> (indent.length&gt;20) { <span class="reserved">return</span> ; } <span class="comment">// don't go too far...</span>
+	var s=<span class="literal">"{\n"</span>;
+		<span class="reserved">for</span> (var p in obj) {
+			s+=indent+p+<span class="literal">":"</span>;
+			var type=typeof(obj[p]);
+			type=type.toLowerCase();
+			<span class="reserved">if</span> (type==<span class="literal">'object'</span>) {
+				s+= Log.dumpObject(obj[p],indent+<span class="literal">"----"</span>);
+			} <span class="reserved">else</span> {
+				s+= obj[p];
+			}
+			s+=<span class="literal">"\n"</span>;
+		}
+		s+=indent+<span class="literal">"}"</span>;
+		<span class="reserved">return</span> s;
+}
+
+
+<span class="comment">/**
+ * This method will set the properties for the zpdumpObject config
+ * <span class="attrib">@param</span> {Object} the Object to tune the dump of an object
+ */</span>
+Log.zpdumpObject_config=<span class="reserved">function</span>(objArgs) {
+
+config={}
+config.indent=<span class="literal">"&amp;nbsp;&amp;nbsp;&amp;nbsp;"</span>
+config.depth=1;
+config.maxdepth=10;
+config.objSkip={}
+config.objSkip[<span class="literal">'function'</span>]=true
+<span class="comment">// Show the value of the variable?</span>
+config.bShowValues=true
+<span class="comment">// Show the type of the variable</span>
+config.bShowType=true
+<span class="comment">// Skip empty values, empty string, </span>
+config.bSkipEmpty=true
+<span class="comment">// Skip undefined</span>
+config.bSkipUndefined=true
+config.bHtml=true
+<span class="reserved">if</span> (objArgs)
+	<span class="reserved">for</span> (var i in objArgs) 
+		<span class="reserved">if</span> (config[i] == <span class="literal">'undefined'</span>)
+			alert(i + <span class="literal">' is not a valid option'</span>)
+		<span class="reserved">else</span>
+			config[i]=objArgs[i]
+
+<span class="reserved">return</span> config
+}
+
+<span class="comment">/*
+ * Recursive function to dump the object
+ * <span class="attrib">@param</span> {obj}   - object to dump
+ * <span class="attrib">@param</span> {name}  - name of object
+ * <span class="attrib">@param</span> {configIn} - object to tune the dump of this object
+*/</span>
+Log.zpdumpObject=<span class="reserved">function</span>(obj, name, configIn) {
+
+var config=Log.zpdumpObject_config(configIn)
+
+var self=<span class="reserved">this</span>
+var strEOL=config.bHtml ? <span class="literal">"&lt;br&gt;"</span> : <span class="literal">'\n'</span>
+var strIndent=config.bHtml ? <span class="literal">"&amp;nbsp;&amp;nbsp;&amp;nbsp;"</span> : <span class="literal">'\t'</span>
+
+<span class="comment">//----------------------------------------------------------------------------</span>
+<span class="comment">//--- RECURSIVE FUNCTION ---</span>
+var funcRecurse=<span class="reserved">function</span>(obj, name, depth, indent) {
+
+var strName, strVal, strType, strOut
+<span class="reserved">if</span> (depth &gt; config.maxdepth)
+	<span class="reserved">return</span> indent + name + <span class="literal">": &lt;Maximum Depth Reached&gt;"</span> + strEOL;
+
+<span class="reserved">if</span> (typeof obj == <span class="literal">"object"</span>) {
+	var child = null;
+	var output = (indent + name)
+	<span class="reserved">if</span> (config.bShowType)
+		output+=<span class="literal">' ('</span> + typeof obj + <span class="literal">')'</span>
+	output+=strEOL
+
+	indent += strIndent
+	<span class="reserved">for</span> (var item in obj) {
+
+	try {
+		child = obj[item];
+	} catch (e) {
+		child = <span class="literal">"&lt;Unable to Evaluate&gt;"</span>;
+	}
+
+	strName=name+<span class="literal">'.'</span>+item
+	strType=typeof child
+	strOut = indent + strName 
+	<span class="reserved">if</span> (config.bShowType)
+		strOut += <span class="literal">' ('</span>+strType+<span class="literal">')'</span>
+
+	<span class="reserved">if</span> (strType==<span class="literal">'object'</span>) 
+		output += funcRecurse(child, strName, depth + 1, indent);
+	<span class="reserved">else</span> 
+	<span class="reserved">if</span> (config.objSkip[strType] != true) 
+	{
+		<span class="reserved">if</span> (config.bShowValues)
+		{
+			<span class="reserved">if</span> (config.bSkipEmpty &amp;&amp; !child)
+				<span class="comment">// Skip properties that has 'empty' values</span>
+				;
+			<span class="reserved">else</span>
+			<span class="reserved">if</span> (config.bSkipUndefined &amp;&amp; strType == <span class="literal">'undefined'</span>)
+				<span class="comment">// Skip properties that has undefined values</span>
+				;
+			<span class="reserved">else</span>
+				output += strOut + <span class="literal">"="</span> + child + strEOL;
+		}
+		<span class="reserved">else</span>
+				output += strOut + strEOL;
+	} <span class="comment">// end not objSkip</span>
+
+} <span class="comment">// end for</span>
+
+<span class="reserved">return</span> output;
+} 
+<span class="reserved">else</span> <span class="comment">// NOT object, just return the value</span>
+{
+	<span class="reserved">return</span> obj;
+}
+} <span class="comment">// end recurse</span>
+<span class="comment">//--- END RECURSIVE FUNCTION ---</span>
+<span class="comment">//----------------------------------------------------------------------------</span>
+
+<span class="reserved">return</span> funcRecurse(obj, name, 1, <span class="literal">''</span>)
+}
+
+<span class="comment">// Makes your life easier</span>
+var log = new Log(Log.DEBUG, Log.popupLogger);
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b>Zapatec Utils</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Thu Aug 16 12:18:39 2007</div>
+</body>
+</html>

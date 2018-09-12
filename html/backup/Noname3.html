@@ -1,0 +1,226 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="vi-vn" lang="vi-vn" dir="ltr" id="minwidth" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title><?php echo  $config->sys_info->name_system?> - <?=$this->title?></title>
+	<?php
+	    global $auth;
+	    $user = $auth->getIdentity();
+	    // Check if dojo library is needed
+	    if ($this->dojo()->isEnabled()):
+	        // Include dojo library
+	        $this->dojo()->setLocalPath('/js/dojo/dojo.js')
+	            // Use dojo theme tundra
+	            ->addStyleSheetModule('dijit.themes.tundra');
+	        // Echo out the dojo <script> tags
+	        echo $this->dojo();
+	    endif; 
+    ?>
+	<script type="text/javascript" src="/js/LoadDynamicJs.js"></script> <!-- cai nay cua trung, khong ai duoc dung vao --> 
+	<script type="text/javascript" src="/js/common.js"></script>
+    <script src="/js/validate.js" type="text/javascript"></script>
+<?php if($auth->hasIdentity()){ ?>
+	<script src="/js/menu.js" type="text/javascript"></script>
+	<script src="/js/index.js" type="text/javascript"></script>
+	<script type="text/javascript" src="/js/joomla.javascript.js"></script>
+	<script type="text/javascript" src="/js/calendar.js"></script>
+	<script type="text/javascript" src="/js/ajax/AjaxEngine.js"></script>
+	<script type="text/javascript" src="/js/dlg_confirm.js"></script>
+	<script type="text/javascript" src="/js/jquery-1.3.2.js"></script>
+	<script type="text/javascript" src="/js/jqueryslidemenu.js"></script>
+	<script type="text/javascript" src="/js/mootools.js"></script>
+	<script type="text/javascript">
+    var $slidemenu = $("#slidemenu");
+
+    jQuery(window).load(function(){
+    	$('#slidemenu span').hide();
+	    $("#slidemenu li").hover(function() {
+		    $(this).stop().animate({'width':'157px'}, 250);
+		    $('#slidemenu span').show();
+	    }, function() {
+		    $(this).stop().animate({'width':'43px'}, 250);
+		    $('#slidemenu span').hide();
+	    });
+    	
+	    //1040
+	    // Get page sizes
+    	
+	    var $smleft = $("#container").offset().left;
+	    if ($smleft > 50) {
+		    $smleft1 = $smleft - 50;
+		    $slidemenu.css({'left': $smleft1 + "px"})
+	    }
+
+    });
+
+    $(window).resize(function() {
+	    $smleft = $("#container").offset().left;
+	    if ($smleft > 50) {
+		    $smleft1 = $smleft - 50;
+		    $slidemenu.css({'left': $smleft1 + "px"})
+	    } else {
+		    $slidemenu.removeAttr("style");
+	    }
+    });;
+    </script>
+	<script type="text/javascript">
+		window.addEvent('domready', function(){ new Accordion($$('.panel h3.jpane-toggler'), $$('.panel div.jpane-slider'), {onActive: function(toggler, i) { toggler.addClass('jpane-toggler-down'); toggler.removeClass('jpane-toggler'); },onBackground: function(toggler, i) { toggler.addClass('jpane-toggler'); toggler.removeClass('jpane-toggler-down'); },duration: 300,opacity: false,alwaysHide: true}); });
+    </script>
+    <link rel="stylesheet" type="text/css" href="/styles/menu.css" />
+<?php
+}
+?>
+	<link rel="stylesheet" href="/styles/system.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/styles/rounded.css" />
+	<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+	<link rel="stylesheet" type="text/css" href="/styles/template.css" />
+<?php if(!$auth->hasIdentity()){ ?>
+	<link rel="stylesheet" type="text/css" href="/styles/login.css" />
+<?php
+	}
+?>
+<link rel="stylesheet" href="/styles/traodoi_lightbox.css" type="text/css" media="screen" />
+
+</head>
+<body id="minwidth-body" 
+<?php if((int)$this->is_mailmain == 1){ ?>
+onLoad="
+dofinishLoad();
+;
+"<?php }?>
+>
+	<div style="position:absolute;display:none;" id="atAutoComplete"></div>
+	<div id="border-top" class="h_green">
+		<div>
+			<div>
+				<div style="float:left;background:none;margin:0;padding:0;">
+				<br>
+<br><br><br><br><br><br><br>
+				<?php 
+					if(is_array($auth->getIdentity()->UQ) && count($auth->getIdentity()->UQ)>1){
+				?><select style="margin-left: 10px" name=ID_U_UQ onchange="document.location.href = '/auth/user/changeacc/ID_U/'+this.value">
+				<?php 
+					foreach($auth->getIdentity()->UQ as $item){
+				?>
+				<option value="<?=$item['ID_U']?>" <?=$item['ID_U']==$auth->getIdentity()->ID_U?"selected":""?>><?=$item['FULLNAME']?></option>
+				<?php
+					}
+				?>
+				</select>
+				<?php
+					}
+				?>
+			</div>
+			<div style="float:right;background:none;margin:0;padding:0;">
+			<?php if($auth->hasIdentity()){ ?>
+			<br>
+			
+			<br><br><br><br><br><br><br><b>Năm làm việc</b>
+			<?php
+				$year = new qtht_year();
+				echo $year->ToCombo("currentyear","onchange=\"sendDataObjectNameToServer('currentyear','/auth/user/changeyear',true,'');\"");
+			?>
+			<?php } ?>
+			</div>
+			</div>
+		</div>
+	</div>
+	<div class=clr></div>
+	<div id="header-box">
+		<div id="module-status">
+			<div style="float:left;clear:left;margin-top:0px;">
+				<?php if($auth->hasIdentity()){ ?>
+			
+			<span><img class=personal_info src='/images/email/person_mini_icon.png' /><b><a href="/auth/user/changepassword"><font color=blue>
+			<?=$auth->getIdentity()->FULLNAME?>
+			</font></a></b></span>
+			<?php } ?>
+			</div>
+			<div style="width:0px;color:#fff;display:block;float:left;height:29px;line-height:29px;text-decoration:none;font-size:13px;font-weight:700;padding:6 6 6 12px;" ></div>
+			<div  style="color:#fff;display:block;float:left;height:29px;line-height:29px;text-decoration:none;font-size:13px;font-weight:700;padding:0 0 0 12px;" title="Đăng xuất" ><a href="/auth/logout">[Thoát]</a></div>
+		</div>
+		<div class="mainNavigator">
+			<ul id="menu" >
+				<?php
+					$menu = new Zend_Session_Namespace('menu');
+					echo $menu->menu;
+				?>
+			</ul>
+		</div>
+		
+			
+		
+		<div class="clr"></div>
+		
+	</div><a name=atitle></a>
+	<div id="content-box">
+			<div class="border">
+				<div id="slidemenu">
+				<ul>
+					<li>
+						<div class="menu-item"><img src="images/leftmenu/taovbden.png" /><span><a href="#">TẠO VĂN BẢN ĐẾN</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/taocv.png" /><span><a href="#">TẠO CÔNG VIỆC</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/taohs1c.png" /><span><a href="#">TẠO HỒ SƠ 1 CỬA</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/traodoinoibo.png" /><span><a href="#">TRAO ĐỔI NỘI BỘ</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/lichcanhan.png" /><span><a href="#">LỊCH CÁ NHÂN</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/lichphong.png" /><span><a href="#">LỊCH PHÒNG</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/lichcoquan.png" /><span><a href="#">LỊCH CƠ QUAN</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/xulycv.png" /><span><a href="#">XỬ LÝ CÔNG VIỆC</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/vbden.png" /><span><a href="#">VĂN BẢN ĐẾN</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/vbdi.png" /><span><a href="#">VĂN BẢN ĐI</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/hscvdientu.png" /><span><a href="#">HSCV ĐIỆN TỬ</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/tailieuiso.png" /><span><a href="#">TÀI LIỆU ISO</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/doimatkhau.png" /><span><a href="#">ĐỔI MẬT KHẨU</a></span></div>
+						<div class="menu-item"><img src="images/leftmenu/trogiup.png" /><span><a href="#">TRỢ GIÚP</a></span></div>
+					</li>
+				  </ul>
+			</div>
+			<div class="padding">
+				<div id="toolbar-box">
+		   			<div class="t">
+						<div class="t">
+							<div class="t"></div>
+						</div>
+					</div>
+					<div class="m">
+						<table width="100%">
+							<tr>
+								<td><div class="header"><?=$this->title?>: <small><small>[ <?=$this->subtitle?> ]</small></small></div></td>
+								<td align="right"><?php echo(QLVBDHButton::DrawButton()) ?></td>
+							</tr>
+						</table>
+						<div class="clr"></div>
+					</div>
+					<div class="b">
+						<div class="b">
+							<div class="b"></div>
+						</div>
+					</div>
+	  			</div>
+	   			<div class="clr"></div>
+				<div id="element-box">
+					<div class="t">
+				 		<div class="t">
+							<div class="t"></div>
+			 			</div>
+					</div>
+					<div class="m">
+		                <?php echo $this->layout()->content ?>
+						<div class="clr"></div>
+					</div>
+					<div class="b">
+						<div class="b">
+							<div class="b"></div>
+						</div>
+					</div>
+	  			</div>
+			<div class="clr"></div>
+		</div>
+		<div class="clr"></div>
+	</div>
+</div>
+	<div id="border-bottom"><div><div></div></div></div>
+	<div id="footer">
+    	<p class="copyright">Phiên bản 2.0. Phát triển bởi <a href="http://unitech.vn" target="_blank">Unitech</a></p>
+	</div>
+</body>
+</html>

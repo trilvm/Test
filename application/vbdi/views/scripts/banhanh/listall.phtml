@@ -1,0 +1,662 @@
+<?php
+	require_once 'Common/FileDinhKem.php';
+	if(hosocongviecModel::isAlowBanhanhVbDi())
+		$disable="/isreadonly/0";
+	else 
+		$disable="/isreadonly/1";
+	
+	require_once('qtht/models/LoaiVanBanModel.php');
+	require_once('qtht/models/SoVanBanModel.php');
+	require_once('qtht/models/LinhVucVanBanModel.php');
+	require_once('qtht/models/CoQuanModel.php');
+	require_once 'qtht/models/UsersModel.php';
+	global $db;
+?>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse_state.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<script language="javascript" type="text/javascript" src="/js/autocomplete.js"></script>
+<form name=frm method=post action='/vbdi/banhanh/listall' onsubmit="document.frm.page.value = 1;document.frm.action = '/vbdi/banhanh/listall';return true;">
+<div>
+	<table>
+
+		<tr>
+			<td nowrap="nowrap">Sổ văn bản</td>
+			<td nowrap="nowrap"><select name="ID_SVB" id="ID_SVB" class="inputbox" size="1"
+				onchange="document.frm.page.value=1;document.frm.submit();"
+				>
+		            	
+						<?php 
+		            		echo vbdenModel::WriteSVBBox((int)$this->ID_SVB,"-- Chọn tất cả  --", true,1);
+		            	?> 
+		        </select>
+		        <script>document.frm.ID_SVB.value='<?=(int)$this->ID_SVB?>';</script>
+        	</td>
+			<td width="10" nowrap="nowrap"></td>
+			<td nowrap="nowrap">Loại văn bản</td>
+			<td nowrap="nowrap"><select name="ID_LVB" id="ID_LVB" class="inputbox" size="1" 
+		onchange="document.frm.page.value=1;document.frm.submit();"
+		>
+            	<?php 
+            		echo vbdenModel::WriteLVB((int)$this->ID_LVB,"-- Chọn tất cả --");
+            	?> 
+        </select></td>
+			<td width="100%"></td>
+		</tr>
+		  
+		   
+		<tr>
+		      <td nowrap="nowrap">Cơ quan ban hành</td>
+		  			<td nowrap="nowrap"><select name="ID_CQBH" id="ID_CQBH" class="inputbox" size="1" 
+		    onchange="document.frm.page.value=1;document.frm.submit();"
+		>
+            	<?php 
+            		echo vbdenModel::WriteCQBH((int)$this->ID_CQBH,"-- Chọn tất cả --");
+            	?> 
+        </select></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap" valign=top>Nội dung trích yếu</td>
+			<td nowrap="nowrap" colspan="3">
+				<input type=text class=inputbox name=TRICHYEU value="<?=$this->TRICHYEU?>" size=50>
+				<input name=TRICHYEU_ISLIKE value=1 type=checkbox <?=$this->TRICHYEU_ISLIKE==1?"checked":""?> > Tìm gần đúng
+				<br>
+				<input type="checkbox" name=INNAME value=1 checked style="display:none"><!--Trong trích yếu-->
+				<input type="checkbox" name=INFILE value=1 style="display:none"><!--Trong nội dung văn bản-->
+			</td>
+			<td width="100%"></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap">Số đi</td>
+			<td nowrap="nowrap" >
+			<input type=text class=inputbox name=SODI value="<?=$this->SODI?>" style="width:198px;">
+			</td>
+			<td width="10" nowrap="nowrap"></td>
+			<td nowrap="nowrap">Số, ký hiệu VB</td>
+			<td nowrap="nowrap" >
+			<input type=text class=inputbox name=SOKYHIEU value="<?=$this->SOKYHIEU?>" style="width:198px;">
+			</td>
+			
+		</tr>
+		</tr>
+                <tr>
+                    <td nowrap="nowrap">Người soạn</td>
+                    <td nowrap="nowrap" colspan="3">
+					<?php
+						echo QLVBDHCommon::AutoComplete(
+							UsersModel::getAllNameAndId(1),
+							"ID_U",
+							"NAME",
+							"NGUOISOAN",
+							"NGUOISOAN_TEXT",
+							true,
+							"width:200px",
+							"",
+							$this->NGUOISOAN,
+							'');
+					?>
+					</td>
+					<td></td>
+		</tr>
+
+		<tr>
+			<td nowrap="nowrap">Ngày ban hành</td>
+			<td nowrap="nowrap" colspan="3">
+				<?=QLVBDHCommon::calendar($this->NGAYBANHANH_BD,"NGAYBANHANH_BD","NGAYBANHANH_BD") ?>
+				<span style="font-weight:bold;padding-left:30px;"> >></span>
+				<?=QLVBDHCommon::calendar($this->NGAYBANHANH_KT,"NGAYBANHANH_KT","NGAYBANHANH_KT") ?>
+			</td>
+			<td width="100%"></td>
+		</tr>
+		<tr>
+			<td nowrap="nowrap"></td>
+			<td nowrap="nowrap" colspan="3">
+				<input type=hidden   name=advanced><input type=submit value="Tìm kiếm"><input type=hidden name=ADVANCEDVALUE value="<?=$this->ADVANCED?>">
+			</td>
+			<td width="100%"></td>
+		</tr>
+	</table>
+</div>
+
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th colspan="4">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/vbdi/banhanh/listall';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+		<tr>
+			<th nowrap="nowrap">
+				#
+			</th>
+			<th width="100%">
+			Sắp xếp theo 
+				<select name=SORTBY onchange="document.frm.submit();">
+					
+					<option value="NGAYBANHANH"  >Ngày ban hành</option>
+					<option value="MASOLIENTHONG"  >Văn bản liên thông</option>
+				</select>
+				<script>
+					document.frm.SORTBY.value="<?=$this->SORTBY?>";
+					
+				</script>
+				<?php
+					if( $this->SORTBY != "DA_XEM" ){
+				?>
+				
+				<select name=SORTTYPE onchange="document.frm.submit();">
+					<option value="ASC">Tăng dần</option>
+					<option value="DESC" >Giảm dần</option>
+				</select>
+				<input type=checkbox name=CHUA_DOC value=1 <?=$this->CHUA_DOC==1?"checked":""?> onclick="document.frm.submit();" > Chưa đọc
+				<script>
+					
+					document.frm.SORTTYPE.value="<?=$this->SORTTYPE?>";
+				</script>
+				<?php } ?>
+			</th>
+			<th nowrap="nowrap">
+				&nbsp;
+			</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="3">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/vbdi/banhanh/listall';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div style="float:right"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+	if(count($this->data)<=0){
+		echo "<tr><td colspan='3'>Không tìm thấy hồ sơ công việc nào<td></tr>";
+	}else{
+	$stt=($this->page-1)*$this->limit;
+	$i=0;
+	foreach($this->data as $row){
+		if((int)$this->TRICHYEU_ISLIKE ==1){
+			$row['TRICHYEU'] = $this->INNAME==1?QLVBDHCommon::highlightWords($row['TRICHYEU'],$this->TRICHYEU):$row['TRICHYEU'];
+		}else{
+			$row['TRICHYEU'] = $this->INNAME==1?QLVBDHCommon::highlightText($row['TRICHYEU'],$this->TRICHYEU):$row['TRICHYEU'];
+		}
+		$stt++;
+?>
+		<tr class="row<?=$this->ID_VBDI==$row['ID_VBDI']?"2":$i?>">
+			<td valign="top"><a name="vbdi<?=$row['ID_VBDI']?>"></a><?=$stt?></td>
+			<td>
+				<?php
+				$vbdiinfo = $this->vbdi->find($row["ID_VBDI"])->current();
+				echo "<b>".$vbdiinfo->SOKYHIEU." - ".QLVBDHCommon::MysqlDateToVnDate($vbdiinfo->NGAYBANHANH)." - ".CoQuanModel::getNameById($vbdiinfo->ID_CQ)."</b><br>";
+				?>
+				<?=$row['TRICHYEU']?>
+				<?php
+					if($this->INFILE==1){
+						$dt = PhienBanDuThaoModel::getFileContentFromVBDI($row['ID_VBDI']);
+						foreach($dt as $itemdt){
+							$rfind = QLVBDHCommon::highlightString($itemdt['CONTENT'],$this->TRICHYEU);
+							if($rfind!=""){
+				?>
+				<br><a href="/hscv/File/download?year=&maso=<?=$itemdt['MASO']?>"><B><?=$itemdt['FILENAME']?>:</B> <?=$rfind?></a>
+				<?php 
+							}
+						}
+					}
+				?>
+				<?php //if(isset()){
+					//$key = array_search($row["ID_VBDI"],$this->arr_idnews);
+					if(!$row["DA_XEM"]){
+						echo "
+						<img id='image_new_".$row['ID_VBDI']. "' src='/images/moi.gif'>
+						";
+					}
+				?>
+				<div>
+					<ul class="chitiethscv">					
+						<li id=groupicon1_<?=$row["ID_VBDI"]?>>
+							<img src="/images/icon_chitiet.jpg" border="0" hspace="5" >
+							<a href="#" onclick='
+							updateImageNew(<?php echo '"image_new_'.$row["ID_VBDI"].'"'?>,<?=$row["ID_VBDI"]?>);
+							viewDetail(<?=$row["ID_VBDI"]?>);return false;'>Chi tiết</a>
+						</li>						
+					<li id=groupicon2_<?=$row["ID_VBDI"]?>>
+						<img src="/images/icon_luanchuyen.jpg" border="0" hspace="5" >
+						<a href='
+						javascript:{
+						SwapDiv(<?=$row["ID_VBDI"]?>,"/vbdi/banhanh/way/id/<?=$row["ID_VBDI"]?>/year/<?=$this->realyear?><?=$disable?>/code/vbdi",2);
+						updateImageNew(<?php echo '"image_new_'.$row["ID_VBDI"].'"'?>,<?=$row["ID_VBDI"]?>);
+						}'>Luân chuyển</a>
+					</li>
+					<?php 
+						$sql = "
+				    		SELECT dk.* FROM ".QLVBDHCommon::Table("GEN_FILEDINHKEM")." dk 
+				    		WHERE
+				    			 ID_OBJECT = ".$row["ID_VBDI"]."
+				    			 and
+				    			 TYPE = 5
+				    	";
+				    	$r = $db->query($sql);
+				    	$file = $r->fetchAll();
+					?>
+					<li id=groupicon4_<?=$row["ID_VBDI"]?>>
+						<img src="/images/icon_files.jpg" border="0" hspace="5" >
+						<a href='javascript:
+						SwapDiv(<?=$row["ID_VBDI"]?>,"/hscv/file/index/iddiv/groupcontent<?=$row["ID_VBDI"]?>/idObject/<?=$row["ID_VBDI"]?>/is_new/0/year/<?=$this->realyear?>/type/5/pdf/1<?=$disable?>",4); '>
+						<?php if(count($file)== 0){ ?>
+								<strong style="color:#666!important;">File đính kèm</strong>
+						<?php }elseif((int)$row['ID_HSCV']>0){ ?>
+								<strong style="color:#0B55C4!important;">File đính kèm</strong>
+						<?php }else{ ?>
+								<strong style="color:orange!important;">File đính kèm</strong>
+						<?php } ?></a>
+					</li>
+					<?php
+					if(VanBanDiModel::CheckExistsVBDen($row["ID_VBDI"])>0){		
+					?>
+					<li id=groupicon3_<?=$row["ID_VBDI"]?>>
+						<img src="/images/icon_vbden.jpg" border="0" hspace="5" >
+						<a href='
+						javascript:{
+						SwapDiv(<?=$row["ID_VBDI"]?>,"/vbdi/banhanh/vbdenlienquan/id/<?=$row["ID_VBDI"]?>/year/<?=$this->realyear?><?=$disable?>/code/vbdi",3);
+						updateImageNew(<?php echo '"image_new_'.$row["ID_VBDI"].'"'?>,<?=$row["ID_VBDI"]?>);
+						}'>Văn bản đến</a>
+					</li>
+					<?php
+						}
+					?>
+                    <?php 
+                    if((int)$row['MASOLIENTHONG'] > 0){
+                    ?>
+					<li id=groupicon3_<?=$row["ID_VBDI"]?>>
+						<img src="/images/icon_luanchuyen.jpg" border="0" hspace="5" >
+						<a href="javascript:{SwapDiv(<?=$row["ID_VBDI"]?>,'/vbden/chotiepnhan/luanchuyen/masovanban/<?= $row['MASOLIENTHONG'] ?>',2);ReSize('<?= $row['MASOLIENTHONG'] ?>');}">Luân chuyển liên thông</a>
+					</li>
+					<?php } ?>
+                    <?php                     
+                    if((int)$row['ID_VBLTCP'] > 0){
+                    ?>
+					<li id=groupicon3_<?=$row["ID_VBDI"]?>>
+						<img src="/images/icon_luanchuyen.jpg" border="0" hspace="5" >
+						<a href="javascript:{SwapDiv(<?=$row["ID_VBDI"]?>,'/vbden/chotiepnhan/luanchuyen/ID_VBLTCP/<?= $row['ID_VBLTCP'] ?>',2);ReSize('<?= $row['MASOLIENTHONG'] ?>');}">Liên thông VPCP</a>
+					</li>
+					<?php } ?>                    
+					</ul>
+					<div class="clr"></div>
+					<div class="groupcontent" id="groupcontent<?=$row["ID_VBDI"]?>" style="display:none"></div>
+					<div class="groupcontent" id="detailContent_<?=$row["ID_VBDI"]?>" style="display:none">
+					<table style="background:while;">
+						<tr style="background:while">
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Sổ văn bản</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php echo SoVanBanModel::getNameById($row['ID_SVB']) ;?></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" width="20"></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Người trình</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php echo UsersModel::getEmloyeeNameByIdUser((int)$row['NGUOITAO']);?></td>
+							<td style="background:white;border-color: #fff;" width="100%"></td>
+						</tr>
+						<tr style="background:white">
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Loại văn bản</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php echo LoaiVanBanModel::getNameById($row['ID_LVB']) ;?></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" width="20"></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Người ký</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php echo UsersModel::getEmloyeeNameByIdUser((int)$row['NGUOIKY']);?></td>
+							<td style="background:white;border-color: #fff;" width="100%"></td>
+						</tr>
+						<tr style="background:white">
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Số ký hiệu</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?=$row['SOKYHIEU']?></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" width="20"></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Người soạn</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php echo UsersModel::getEmloyeeNameByIdUser((int)$row['NGUOISOAN']);?></td>
+							<td style="background:white;border-color: #fff;" width="100%"></td>
+						</tr>
+						<tr style="background:white">
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Ngày ban hành</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php echo QLVBDHCommon::MysqlDateToVnDate($row['NGAYBANHANH']);?></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" width="20"></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Số bản</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?=$row['SOBAN']?></td>
+							<td style="background:white;border-color: #fff;" width="100%"></td>
+						</tr>
+						<tr style="background:white">
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Cơ quan ban hành</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php  echo CoQuanModel::getNameById((int)$row['ID_CQ']);?></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" width="20"></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Số tờ</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?=$row['SOTO']?></td>
+							<td style="background:white;border-color: #fff;" width="100%"></td>
+						</tr>
+						<tr style="background:white">
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Số đi</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?=$row['SODI']==0?(int)$row['SOKYHIEU']:$row['SODI']?></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" width="20"></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Độ mật</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php 
+							switch($row['DOMAT']){
+								case 0:
+									echo "Chưa nhập";
+									break;
+								case 1:
+									echo "bình thường";
+									break;
+								case 2:
+									echo "mật";
+									break;
+                                                                case 3:
+                                                                        echo "tối mật";
+									break;
+								case 4:
+									 echo "tuyệt mật";
+									break;
+								default:
+									echo "Chưa nhập";
+									break;
+							}
+							?></td>
+							<td style="background:white;border-color: #fff;" width="100%"></td>
+						</tr>
+						<tr style="background:white">
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Lĩnh vực văn bản</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php echo LinhVucVanBanModel::getNameById($row['ID_LVVB']);?></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" width="20"></td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Độ khẩn</td>
+							<td style="background:white;border-color: #fff;" nowrap="nowrap"><?php 
+							switch($row['DOKHAN']){
+								case 0:
+									echo "Chưa nhập";
+									break;
+								case 1:
+									echo "bình thường";
+									break;
+								case 2:
+									echo "khẩn";
+									break;
+								case 3:
+									 echo "hỏa tốc";
+									 break;
+								default:
+									echo "Chưa nhập";
+									break;
+							}
+							?></td>
+							<td style="background:white;border-color: #fff;" width="100%"></td>
+						</tr>
+                        <tr style="background:white">
+							<td style="background:white;border-color: #fff;" nowrap="nowrap" style="color:blue">Nơi nhận</td>
+							<td style="background:white;border-color: #fff;" colspan=5><?=$row['NOIDEN']?> </td>							
+						</tr>
+						
+					</table>
+				</div>
+				</div>
+			</td>
+			<?php 
+			
+			$actionid = ResourceUserModel::getActionByUrl('vbden','vbden','inputvbden');
+			$auth = Zend_Registry::get('auth');
+			if($ln = ResourceUserModel::isAcionAlowed($auth->getIdentity()->USERNAME,$actionid[0])){
+			
+			?>
+			<td nowrap="nowrap" valign="top">
+			<?php
+				if($row["NGUOI_THEMMOI"]==$this->user->ID_U){
+			?>
+			<a href="/vbdi/banhanh/input/id/<?php echo  $row["ID_VBDI"]?>"
+			onclick='
+			updateImageNew(<?php echo '"image_new_'.$row["ID_VBDI"].'"'?>);
+			return true;'
+			>Cập nhật</a>
+		
+            <?php
+            if($row["MASOLIENTHONG"] > 0){
+            ?>
+            <br/>
+            <span id="thuhoi<?=$row["ID_VBDI"]?>">
+                <?php if((int)$row["IS_THUHOI"] == 0 ) {?>                
+                    <a href="javascript:thuHoiVanBan('<?=$row["MASOLIENTHONG"] ?>','thuhoi<?=$row["ID_VBDI"]?>')" >Thu hồi văn bản liên thông</a>
+                <?php } else{?>
+                    Đã thu hồi
+                <?php } ?>
+            </span>
+            <?php } ?>
+			</td>
+			<?php }else if(VanBanDiModel::CanTiepNhan($row["ID_VBDI"])){ ?>
+			<a href="/vbden/vbden/input/idvbdi/<?=$row["ID_VBDI"]?>">Tiếp nhận</a>
+			</td>
+			<?php } ?>
+			<?php }else{
+			?><td nowrap="nowrap" valign="top"></td>
+			<?php 
+			}
+			?>
+		</tr>
+<?php
+		$i = (-1+$i)*-1;	
+	}
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+<input type="hidden" name="comeFrom" value="listForm">
+</form>
+<script>
+	function VbdChuyenButtonClick(){
+            document.location = '/vbdi/banhanh/list';
+        }
+	function viewDetail(id){
+		 
+		objtemp=document.getElementById("detailContent_"+id);
+		visibletemp=(objtemp.style.display!="none")
+		if(visibletemp)
+		{
+		objtemp.style.display="none";
+		
+		}
+		else
+		{
+			document.getElementById("groupcontent"+id).style.display="none";		
+			objtemp.style.display="";
+		}
+		return false;
+	}
+	function AddNewButtonClick()
+	{
+		document.frm.action = "/vbdi/banhanh/input";
+		document.frm.submit();
+	}
+	function CreateButtonClick(url){
+		document.frm.action = url;
+		document.frm.submit();
+	}
+	function SwapDiv(id,url,tab){
+		for(var i=1;i<5;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		//alert(tab);
+		if(document.getElementById("groupcontent"+id).style.display==""){
+			document.getElementById("groupcontent"+id).style.display="none";
+			
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+
+		}
+		document.getElementById("detailContent_"+id).style.display="none";
+	}
+	function SwapIframe(id,url){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+					document.getElementById("groupcontent"+id).style.display="none";
+					document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+					break;
+				}
+			}
+		}
+		if(document.getElementById('groupcontent'+id).style.display == ''){
+			document.getElementById('groupcontent'+id).style.display = 'none';
+		}else{
+			document.getElementById('groupcontent'+id).innerHTML = '<iframe style="overflow-x:visible" height=0 id=iframebutphe'+id+' allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src="'+url+'"></iframe>';
+			document.getElementById('groupcontent'+id).style.display = '';
+		}
+		
+	}
+	function Swap(id,url){
+		if(document.getElementById(id).style.display==""){
+			document.getElementById(id).style.display="none";
+			document.getElementById("groupicon"+id).className = "groupicon";
+		}else{
+			document.getElementById(id).style.display="";
+			document.getElementById("groupicon"+id).className = "groupiconopen";
+			loadDivFromUrl(id,url,1);
+		}
+		document.getElementById("detailContent_"+id).style.display="none";
+	}
+	// Sự kiện khi thay đổi text box cơ quan
+    function CQClick(){
+       if(document.frm.ID_CQ.value==0){
+    	   document.getElementById('COQUANBANHANH_TEXT').style.display="block";
+    	   document.frm.COQUANBANHANH_TEXT.value="<?php echo (!isset($this->data->COQUANBANHANH_TEXT) || $this->data->COQUANBANHANH_TEXT=='')?MSG11001017:$this->data->COQUANBANHANH_TEXT ?>"; 
+       }
+       else{
+    	   document.getElementById('COQUANBANHANH_TEXT').style.display="none";    	   
+       }
+    }
+    //
+    //CQClick();
+    function updateImageNew(iddiv,id){
+    	var oimg = document.getElementById(iddiv);
+    	if(oimg != null){
+    		if(oimg.style.display != 'none'){
+	    	oimg.style.display = 'none';
+	    	
+	    	var AE = new AjaxEngine();
+			var oXmlHttp = AE.createXMLHttp(); 	
+		    <?php 
+		    $authen = Zend_Registry::get('auth');
+		    $user = $authen->getIdentity();
+		    ?>
+			var url = '/vbdi/banhanh/updatedadoc?year=<?=QLVBDHCommon::getYear()?>&id_vbdi='+id+'&id_u=<?=$user->ID_U?>';
+			oXmlHttp.open('post', url , true);
+		    oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		    oXmlHttp.onreadystatechange = function () { 
+		        if (oXmlHttp.readyState == 4) { 
+		        	if (oXmlHttp.status == 200) {             	
+		            } else { 
+		            	
+		            }            
+		        } 
+		    };  
+		    oXmlHttp.send(null);   
+    		}
+    	}
+	    
+    }
+    
+    function enterkey_pressTrichYeu(oEvent){
+    	
+    	alert(oEvent.keyCode);
+    	switch(oEvent.keyCode) {
+        
+    	}
+    }
+	function doAdvance(){
+		for(var i=1;i<10;i++){
+			if(document.getElementById("FindAdvanced"+i)){
+				if(document.getElementById("FindAdvanced"+i).style.display==""){
+					document.getElementById("FindAdvanced"+i).style.display="none";
+					document.frm.advanced.value="Nâng cao";
+					document.frm.ADVANCEDVALUE.value=0;
+
+				}else{
+					document.getElementById("FindAdvanced"+i).style.display="";
+					document.frm.advanced.value="Cơ bản";
+					document.frm.ADVANCEDVALUE.value=1;
+				}
+			}
+		}
+	}
+    function thuHoiVanBan(masolienthong,maVbDi){
+		if(confirm("Bạn có muốn thu hồi văn bản liên thông này không")){
+        jx.setParameter('MASOLIENTHONG',masolienthong);
+        jx.setParameter('MAVBDI',maVbDi);
+        jx.success('reloadLink');
+        jx.request('/vbdi/banhanh/thuhoivanbanlienthong','POST');
+		}
+    }
+    function reloadLink(){
+        if(error == ''){
+            if(rsThuHoiVanBan == '1'){
+                document.getElementById(maVbDi).innerHTML = "Đã thu hồi";
+                alert(MGS_VBDI_BANHANH_LISTALL_01);
+            }else{
+                alert(ERR_VBDI_BANHANH_LISTALL_02);
+            }
+        }else{
+            if(error == "ERR_VBDI_BANHANH_THUHOIVANBANLIENTHONG_01")
+            {
+                alert(ERR_VBDI_BANHANH_THUHOIVANBANLIENTHONG_01);
+            }
+        }
+    }
+	<?php
+		if($this->ADVANCED==0){
+			echo "doAdvance();";
+		}
+	?>
+</script>

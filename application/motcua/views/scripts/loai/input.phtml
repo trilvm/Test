@@ -1,0 +1,102 @@
+<form enctype="multipart/form-data" name="frmAddLoai"  method="<?php echo $this->form->getAttrib('method');?>" action="/motcua/loai/input">
+<fieldset>
+	<div style="text-align:right;width:100%">
+		Trường có dấu <font color="red">*</font> là bắt buộc nhập
+	</div>
+	<div align="center"><span class="box_erro_area"><?php echo $this->error; ?></span></div>
+	<div class="required">
+		<label id="lblTextIput">Mã loại<font color="red">*</font></label>
+		<?php echo $this->form->getElement('CODE');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('CODE'));			
+            ?>
+        </span>
+	</div>
+	<div class="clr"></div>
+	<div class="required">
+		<label id="lblTextIput">Tên loại<font color="red">*</font></label>
+		<?php echo $this->form->getElement('TENLOAI');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('TENLOAI'));			
+            ?>
+        </span>
+	</div>
+	<div class="clr"></div>
+    <div class="required">
+		<label id="lblTextIput">Số ngày xử lý <font color="red">*</font></label>
+		<?php echo $this->form->getElement('SONGAYXULY');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('SONGAYXULY'));			
+            ?>
+        </span>
+	</div>
+	<div class="clr"></div>
+	
+	<div class="required">
+		<label id="lblTextIput">Lĩnh vực <font color="red">*</font></label>
+		<select NAME=ID_LV_MC>
+			<?=linhvucmotcuaModel::ToCombo($this->data,$this->formdata->ID_LV_MC)?>
+		</select>
+	</div>
+	<div class="clr"></div>
+    <div class="required">
+		<label id="lblTextIput">Lệ phí <font color="red">*</font></label>
+		<?php echo $this->form->getElement('LEPHI');?>
+    	<span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('LEPHI'));			
+            ?>
+        </span>
+	</div>
+	<div class="clr"></div>
+	<div class="optional">
+		<label for="ID_DEP_PARENT" id="lblTextIput">Gán vào quy trình</label>
+		<?php echo $this->form->getElement('ID_LOAIHSCV');?>
+        <span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_LOAIHSCV'));			
+            ?>
+        </span>
+	</div>
+	<div class="clr"></div>
+	
+	<div>
+		<label id="lblTextIput">Sao chép thủ tục từ</label>
+		<select name=ID_LOAI_MC style="width:300px">
+		<?=LoaiModel::ToCombo($this->dataloai,0)?>
+		</select>
+	</div>
+	<div class="clr"></div>
+	<div class="optional">
+		<label for="ID_DEP_PARENT" id="lblTextIput">Chú thích</label>
+		<?php echo $this->form->getElement('CHUTHICH');?>
+        <span class="box_erro_area">
+        	<?php 
+                echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('CHUTHICH'));			
+            ?>
+        </span>
+	</div>
+	<div class="clr"></div>
+
+	
+</fieldset>
+<input type=hidden name="id" value=<?php echo $this->id?> >
+<input type=hidden name="ID_ONWEBSITE" value=<?php echo $this->ID_ONWEBSITE?> >
+<input type=hidden name="LINHVUC" value=<?=$this->LINHVUC?> >
+</form>
+
+<script>
+	function SaveButtonClick()
+	{
+		//document.frmAddLoai.action = "/motcua/loai/input/LINHVUC/"+document.frmAddLoai.ID_LV_MC.value;
+		document.frmAddLoai.submit();
+	}
+	function BackButtonClick()
+	{
+		document.frmAddLoai.action = "/motcua/loai/index/LINHVUC/<?=$this->LINHVUC?>";
+		document.frmAddLoai.submit();
+	}
+</script>

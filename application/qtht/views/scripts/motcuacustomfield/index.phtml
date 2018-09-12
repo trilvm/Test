@@ -1,0 +1,153 @@
+<?php 
+require_once 'qtht/models/SoVanBanModel.php';
+require_once 'qtht/models/LoaiVanBanModel.php'; 
+require_once 'qtht/models/CoQuanModel.php'; 
+?>
+
+<form name="frm" action="<?echo $this->baseUrl()?>/qtht/motcuacustomfield" method="post"> 
+<table>
+		<tr>
+			<td align="left" width="100%">
+				Lọc:
+				<input type="text" name="search" id="search" value="<?php echo htmlspecialchars($this->search); ?>" class="text_area" onchange="document.frm.page.value=1;document.frm.submit();" />
+                                <input type="button" onclick="document.frm.submit();" value="Tìm" />
+                                <input type="button" onclick="document.getElementById('search').value='';document.frm.submit();" value="Làm lại" />
+			</td>
+			<td nowrap="nowrap">
+				<select name="ID_LV_MC" id="filter_object" class="inputbox" size="1" onchange="document.frm.submit();">
+					<option value="0"  >--Chọn lĩnh vực hồ sơ--</option>
+					<?php 
+						$linhvucmotcuaModel = new linhvucmotcuaModel(); 
+						echo $linhvucmotcuaModel->ToCombo($linhvucmotcuaModel->SelectAll(),$this->ID_LV_MC);
+					?>
+				</select>
+			</td>
+		</tr>
+</table>
+
+
+<table class="adminlist">
+	<thead>
+		<tr>
+			<th nowrap>STT</th>
+			<th nowrap><input type=checkbox name=DELALL onclick="SelectAll(this,'DEL')"></th>
+			<th nowrap>Tên hiển thị</th>
+			<th nowrap>Tên cột </th>
+			<th nowrap>Loại hồ sơ </th>
+			<th nowrap>Loại tiếp nhận</th>
+			<th nowrap>Loại kết quả</th>
+			<th nowrap>Loại báo cáo</th>
+			<th nowrap>Kiểu</th>
+			<th nowrap>Bắt buộc nhập liệu</th>
+			<th nowrap>Đã được sử dụng</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+<?php
+$stt=0;
+$i=0;
+
+foreach ($this->data as $row ){
+	$stt++;
+?>
+		<tr class="row<?php echo $i; ?>">
+			<td nowrap align="right"><?php echo $stt ?></td>
+			<td nowrap align="center">
+				<input type=checkbox name=DEL[] value='<?=$row["ID_MC_CF"]?>'>
+			</td>
+			<td><a href="/qtht/motcuacustomfield/input?id=<?=$row["ID_MC_CF"]?>"><?=$row["NAME_DISPLAY"]?></a></td>	
+			<td><?=$row["NAME_COLUMN"]?></td>
+			<td><?=$row["TENLOAI"]?></td>
+			<td><?=$row["IS_TIEPNHAN"]==1?"Phải":"Không" ?></td>
+			<td><?=$row["IS_KETQUA"]==1?"Phải":"Không" ?></td>
+			<td><?=$row["IS_BAOCAO"]==1?"Phải":"Không" ?></td>
+			<td><?=$row["TYPE"]?></td>
+			<td><?=$row["IS_REQUIRED"]==1?"Phải":"Không" ?></td>
+			<td nowrap>
+				<?php
+				$active = $row["ACTIVE"];
+				if($active == 1)
+					echo "Có";
+				else 
+					echo "Không";
+				
+				?>
+			</td>
+		</tr>
+<?php
+	$i = (-1+$i)*-1;
+}
+?>	
+	</tbody>
+		
+	<tfoot>
+		
+	</tfoot>
+</table>					
+<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+
+<script>
+function DeleteButtonClick()
+{
+var ln = 0;
+	var arr = document.getElementsByName('DEL[]');
+	for(var i = 0 ; i < arr.length ;i++ )
+	{
+		
+		if(arr[i].checked == true)
+		{
+			ln = 1;
+		}
+	}
+	if(ln == 1)
+	{
+		if(confirm("<?php echo DELETEQUESTION; ?>"))
+		{
+			document.frmListData.submit();
+		}
+	}
+	else
+	{
+		alert("Bạn phải một dòng chọn để xóa");
+	}
+}
+</script>
+<script>
+
+function DeleteButtonClick(){
+	var ln = 0;
+	var arr = document.getElementsByName('DEL[]');
+	for(var i = 0 ; i < arr.length ;i++ ){
+		if(arr[i].checked == true){
+			ln = 1;
+		}
+	}
+	if(ln == 1){
+		if(confirm("<?php echo "Bạn có muốn xóa không"; ?>")){
+			//document.URL=
+			document.frm.action="/qtht/motcuacustomfield/delete";
+			document.frm.method="post";
+			document.frm.submit();
+		}
+	}else{
+		alert("Bạn phải một dòng chọn để xóa");
+	}
+}
+function AddNewButtonClick(){
+	//document.URL = "/qtht/DanhMucCoQuan/input";
+	document.frm.action="/qtht/motcuacustomfield/input";
+	document.frm.method="post";
+	document.frm.submit();
+	
+}
+function ItemClick(id){
+	//document.URL = "/qtht/DanhMucCoQuan/input/idCoQuan/"+id;
+	document.frm.action="/qtht/motcuacustomfield/input/id/"+id;;
+	document.frm.method="post";
+	document.frm.submit();
+}
+</script>
+
+

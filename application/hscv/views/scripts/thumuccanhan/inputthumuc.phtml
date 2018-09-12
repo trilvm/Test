@@ -1,0 +1,50 @@
+<form name=frm method="post" action="/hscv/thumuccanhan/savethumuc">
+
+<div>
+<label><b>Tên thư mục</b></label>
+<input type="text" name="NAME" size="50" value="<?=$this->data["NAME"]?>">
+
+</div>
+<div class="clr"></div>
+<div>
+<label><b>Thuộc thư mục</b></label>
+<?php 
+
+?>
+
+
+<select name="ID_PARENT">
+<option value="1">Không có </option>
+	<?php 
+		//in ra cac gia tri cua combobox
+		
+		$count = count($this->datathumuc);
+		//echo $count;
+		for($i = 0 ; $i< $count  ;$i++){
+			if($this->datathumuc[$i]["ID_TMCN"] != $this->id && $this->datathumuc[$i]["ID_PARENT"] != $this->id)
+			echo '<option value='.$this->datathumuc[$i]["ID_TMCN"].'>'.htmlspecialchars(str_repeat("--",$this->datathumuc[$i]["LEVEL"]-1).$this->datathumuc[$i]["NAME"]). '</option>';
+		}
+
+	?>   		
+</select>
+<?php if($this->data["ID_PARENT"] > 1){?>
+	<script> document.frm.ID_PARENT.value="<?=$this->data["ID_PARENT"]?>"</script>
+<?php }?>
+</div>
+<div class="clr"></div>
+<!--<input style="width:60px;" type="button" value="Lưu" onclick="document.frm.submit();"> -->
+
+
+
+	
+<input type="hidden" name="id" value="<?=$this->id?>">
+</form>
+
+<script>
+	function SaveButtonClick(){
+		document.frm.submit();
+	}
+	function BackButtonClick(){
+		window.location.href = "/hscv/thumuccanhan/listthumuc";
+	}
+</script>

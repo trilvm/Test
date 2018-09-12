@@ -1,0 +1,482 @@
+<?php
+	require_once 'Common/FileDinhKem.php';
+	require_once('auth/models/ResourceUserModel.php');
+	$disable="/isreadonly/1";
+	require_once('vbden/models/vbdenModel.php');
+        require_once 'taphscv/models/Taphscv_TaphosocongviecModel.php';
+        $model= new Taphscv_TaphosocongviecModel();
+?>
+<script type="text/javascript" src="/js/dlg_confirm.js"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/Base64.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json2.js"?>></script>
+
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse.js"?>></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Json/json_parse_state.js"?>></script>
+<script type="text/javascript" src="/js/autocomplete.js"></script>
+<script type="text/javascript" src=<?php echo $this->baseUrl()."/js/Ajax/AjaxEngine.js"?>></script>
+<link rel="stylesheet" href="/styles/jquery.treeview.css" type="text/css" />
+<script type="text/javascript" src="/js/jquery.treeview.js"></script>
+<script type="text/javascript" src="/js/jquery.cookie.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#browser").treeview({
+			persist: "cookie",
+		    cookieId: "navigationtree",
+			collapsed: true,
+			toggle: function() {
+				//console.log("%s was toggled.", $(this).find(">span").text());
+			}
+		});
+	});
+</script>
+<div class="hscv_left">
+    <div class="tree-menu">
+        <ul id="browser" class="filetree treeview-famfamfam">
+            <li><a class="folder" href="javascript:{
+            document.frm.action = '/taphscv/taphscv/list';document.frm.ID_THUMUC.value='';document.frm.submit();}">Thư mục HSCV Điện tử</a>
+                <?php 
+                    $html = "";
+                    //echo vbdenModel::ToTree($this->datalvvb,1,"treemenu2",$html,$this->id_lvvb);
+                    echo Taphscv_TaphosocongviecModel::ToTree($this->datathumuc,1,"treemenu2",$html,$this->id_thumuc);
+                ?>    
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="hscv_right">
+    <form name=frm method=post action='/taphscv/taphscv/list/ID_THUMUC/<?=$this->id_thumuc?>' onclick="
+if(at_container){ at_Hide(false);}" onsubmit="document.frm.page.value = 1;document.frm.action = '/taphscv/taphscv/list/ID_THUMUC/<?=$this->id_thumuc?>';return true;" style="padding-left:10px;">
+    <div>
+	<table>
+		<tr>
+			<td nowrap="nowrap" valign=top>Nội dung</td>
+			<td nowrap="nowrap" colspan="3">
+				<input type=text class=inputbox name=search value="<?=$this->search?>" size=50>
+			</td>
+			<td width="100%"><input type=submit value="Tìm kiếm" /></td>
+		</tr>
+	</table>
+</div>
+
+<table class=adminlist>
+	<thead>
+		<tr>
+			<th colspan="4">
+				<div>
+					<div class="limit" style="float:left;">Hiển thị #
+						<select name="limit1"  style="width:60px;" id="limit1" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit2.value = document.frm.limit1.value;
+							document.frm.action = '/taphscv/taphscv/list/ID_THUMUC/<?=$this->id_thumuc?>';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+                                    <div><select name="selStatus" style="float:left;" 
+                                                 onchange="document.frm.action = '/taphscv/taphscv/list/ID_THUMUC/<?=$this->id_thumuc?>';
+                                                            document.frm.submit();">
+                                            <option value="0" <?php if($this->status==0){echo "selected";}?>>Chưa chỉnh lý</option>
+                                            <option value="1" <?php if($this->status==1){echo "selected";}?>>Đã chỉnh lý</option>
+                                        </select></div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+                <tr>
+                    <th nowrap="nowrap">STT</th>
+                    <th nowrap="nowrap">Chọn</th>
+                    <th width="100%" colspan="2">Nội dung</th>
+                </tr>
+
+	</thead>
+	<tfoot>
+		<tr>
+			<th colspan="4">
+				<div class="pagination">
+					<div class="limit">Hiển thị #
+						<select name="limit2" style="width:60px;" id="limit2" class="inputbox" size="1" onchange="
+							document.frm.page.value = 1;
+							document.frm.limit1.value = document.frm.limit2.value;
+							document.frm.action = '/taphscv/taphscv/list/ID_THUMUC/<?=$this->id_thumuc?>';
+							document.frm.submit();
+						">
+							<option value="5" <?php if($this->limit==5){echo "selected";} ?>>5</option>
+							<option value="10" <?php if($this->limit==10){echo "selected";} ?>>10</option>
+							<option value="15" <?php if($this->limit==15){echo "selected";} ?>>15</option>
+							<option value="20" <?php if($this->limit==20){echo "selected";} ?>>20</option>
+							<option value="25" <?php if($this->limit==25){echo "selected";} ?>>25</option>
+							<option value="30" <?php if($this->limit==30){echo "selected";} ?>>30</option>
+							<option value="35" <?php if($this->limit==35){echo "selected";} ?>>35</option>
+							<option value="40" <?php if($this->limit==40){echo "selected";} ?>>40</option>
+							<option value="50" <?php if($this->limit==50){echo "selected";} ?>>50</option>
+							<option value="100" <?php if($this->limit==100){echo "selected";} ?>>100</option>
+						</select>
+					</div>
+					<div class="limit" style="float:right;"><?php echo $this->showPage; ?></div>
+				</div>
+			</th>
+		</tr>
+	</tfoot>
+	<tbody>
+<?php
+	if(count($this->data)<=0){
+		echo "<tr><td colspan='4'>Không tìm thấy tập hồ sơ công việc nào</td></tr>";
+	}else{
+	$stt=($this->page-1)*$this->limit;
+	$i=0;
+       
+	foreach($this->data as $row){
+	$stt++;
+	?>
+		<tr class="row<?=$i?>" id="row_hscv<?=$stt?>">
+			<td valign="top" nowrap="nowrap"><a name="vbden<?=$row['ID_TAPHOSO']?>"></a><?=$stt?></td>
+			<td nowrap="nowrap"><input type="checkbox" name="idTapHoSo[]" value="<?=$row['ID_TAPHOSO']?>" title="click chọn văn bản này để xuất danh mục tập hồ sơ công việc"></td>        
+			<td width="100%">
+				<?=$row['TEN']?>
+				<div>
+					<?php 
+						$isPhanQuyen = $this->ThumucModel->CheckPhanQuyenPermissionByUser($this->object, $row['ID_TAPHOSO']);
+						$isCapNhat = $this->ThumucModel->CheckUpdatePermissionByUser($this->object, $row['ID_TAPHOSO']);
+					?>
+					<ul class="chitiethscv">                    
+						<li id=groupicon1_<?=$row["ID_TAPHOSO"]?>>
+							<img src="/images/icon_chitiet.jpg" border="0" hspace="5" >
+							<a href='javascript:{SwapDiv(<?=$row["ID_TAPHOSO"]?>,"/taphscv/taphscv/detail/ID_TAPHOSO/<?=$row["ID_TAPHOSO"]?>",1);
+								updateImageNew(<?php echo '"image_new_'.$row["ID_TAPHOSO"].'"'?>,<?=$row["ID_TAPHOSO"]?>);ReSize(<?=$row["ID_TAPHOSO"]?>);}
+								'>Chi tiết</a>                               
+						</li>
+						<li id=groupicon2_<?=$row["ID_TAPHOSO"]?>>
+							<img src="/images/icon_giaoviec_di.gif" border="0" hspace="5" >
+							<a href='javascript:{SwapDiv(<?=$row["ID_TAPHOSO"]?>,"/taphscv/taphscv/vblist/idtaphoso/<?=$row["ID_TAPHOSO"]?>",2); updateImageNew(<?php echo '"image_new_'.$row["ID_TAPHOSO"].'"'?>,<?=$row["ID_TAPHOSO"]?>);}'>Văn bản</a>
+						</li>
+						<?php if ($isPhanQuyen > 0 && $isCapNhat > 0 && $row['YEUCAU'] == 0) {?>
+                            <li id=groupicon6_<?=$row["ID_TAPHOSO"]?>>
+							<img src="/images/icon_vanbanlienquan.jpg" border="0" hspace="5" >
+							<a href='javascript:{SwapDiv(<?=$row["ID_TAPHOSO"]?>,"/taphscv/phanquyen/list/id_ths/<?=$row["ID_TAPHOSO"]?>",6);updateImageNew(<?php echo '"image_new_'.$row["ID_TAPHOSO"].'"'?>,<?=$row["ID_TAPHOSO"]?>);}'>Phân quyền</a>
+							</li>             
+						<?php } ?>                 
+					</ul>
+					<div class="clr"></div>
+					<div class="groupcontent" id="groupcontent<?=$row["ID_TAPHOSO"]?>" style="display:none;height: auto;border:1px solid #ccc;"></div>
+				</div>
+			</td>
+			<td nowrap="nowrap">
+				<?php 
+					if($row['YEUCAU'] == 2){ 
+						if(hosocongviecModel::isVanthuLuutru($this->user->ID_U)==TRUE) {
+				?>
+				<?php } } ?>
+				<?php if($row['YEUCAU'] == 1 && $row['NGUOITAO'] == $this->user->ID_U){ ?>
+				<?php } ?>
+				<?php if($row['YEUCAU'] == 0 && $row['NGUOITAO'] == $this->user->ID_U) {?>
+				<?php } if($row['YEUCAU'] == 0 && $isPhanQuyen > 0 && $isCapNhat > 0) {?>
+					<a href="/taphscv/taphscv/input/ID_TAPHOSO/<?php echo $row['ID_TAPHOSO']?>">Cập nhật</a>
+					<br>
+					<a href="#" onclick="ConfirmDelete(<?=$row['ID_TAPHOSO']?>);">Xóa</a>
+				<?php }?>    
+			</td>
+		</tr>
+<?php
+		$i = (-1+$i)*-1;
+	}
+}
+?>
+	</tbody>
+</table>
+<input type="hidden" name="page" value="<?php echo $this->page; ?>" />
+<input type="hidden" name="ID_THUMUC" value="<?php echo $this->id_lvvb; ?>" />
+<input type="hidden" name="id" id="id" value="<?=$this->id_taphscv;?>" />
+<input type="hidden" name="yeucau" id="yeucau" value="<?=$this->yeucau;?>" />
+</div>
+<!--show confirm-->
+<div id="confirm_dlg" style="position:fixed;">
+	<div>
+		<p id=content_confirm>Content you want the user to see goes here.</p>
+		<input type="button" class=input_button style="width:50px;background-color:white" name=YES id=DLG_YES_BUTTON value="Có" onclick='overlay("YES")' >
+		<input type="button" class=input_button style="width:50px;background-color:white" name=CANCEL id=DLG_CANCEL_BUTTON value="Không" onclick='overlay("CAMCEL")' >
+	</div>
+</div>
+<!--end show confirm-->
+</form>
+<script>
+        function ConfirmDelete(id) {
+            var answer = confirm("Bạn chắc chắn muốn xóa hồ sơ này ?")
+            if (answer){
+                document.frm.action = '/taphscv/taphscv/delete/ID_THUMUC/<?=$this->id_thumuc?>/ID_TAPHOSO/'+id;
+                document.frm.submit();
+            }
+            else{
+
+            }
+        }
+        function ReSize(id){
+            document.getElementById("groupcontent"+id).style.height='auto';
+            document.getElementById("groupcontent"+id).style.overflow='hidden';
+        }
+        function setSizeForPhanQuyen(id){
+            document.getElementById("groupcontent"+id).style.height='450px';
+            document.getElementById("groupcontent"+id).style.overflow='auto';
+        }
+	function getUrl()
+	{
+		var pos = window.location.href.indexOf(window.location.host);
+		var str = window.location.href.substring(pos+ window.location.host.length);
+		var arrtemp = str.split("#");
+		return arrtemp[0];
+	}
+    function AddNewButtonClick(){
+	document.frm.action="/taphscv/taphscv/input";
+	document.frm.submit();
+
+    }
+	
+	function CreateButtonClick(url){
+		document.frm.action = url;
+		document.frm.submit();
+	}
+	function SwapDiv(id,url,tab){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontent"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		if(document.getElementById("groupcontent"+id).style.display==""){
+			document.getElementById("groupcontent"+id).style.display="none";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontent"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontent"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontent"+id,url,1);
+
+		}
+	}
+
+        function SwapDivVB(id,url,tab){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(tab!=i){
+					if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+						document.getElementById("groupcontentvb"+id).style.display="none";
+						document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+						break;
+					}
+				}
+			}
+		}
+		if(document.getElementById("groupcontentvb"+id).style.display==""){
+			document.getElementById("groupcontentvb"+id).style.display="none";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupicon";
+		}else{
+			document.getElementById("groupcontentvb"+id).style.display="";
+			document.getElementById("groupicon"+tab+"_"+id).className = "groupiconopen";
+			document.getElementById("groupcontentvb"+id).innerHTML="<img src='/images/loading.gif' width='16' height='16' border='0'></img<img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img><img src='/images/loading.gif' width='16' height='16' border='0'></img>";
+			loadDivFromUrl("groupcontentvb"+id,url,1);
+
+		}
+	}
+
+	function SwapIframe(id,url){
+		for(var i=1;i<11;i++){
+			if(document.getElementById("groupicon"+i+"_"+id)){
+				if(document.getElementById("groupicon"+i+"_"+id).className=="groupiconopen"){
+					document.getElementById("groupcontent"+id).style.display="none";
+					document.getElementById("groupicon"+i+"_"+id).className = "groupicon";
+					break;
+				}
+			}
+		}
+		if(document.getElementById('groupcontent'+id).style.display == ''){
+			document.getElementById('groupcontent'+id).style.display = 'none';
+		}else{
+			document.getElementById('groupcontent'+id).innerHTML = '<iframe style="overflow-x:visible" height=auto id=iframebutphe'+id+' allowTransparency=true BORDER=0 scrolling=no FRAMEBORDER=no src="'+url+'"></iframe>';
+			document.getElementById('groupcontent'+id).style.display = '';
+		}
+	}
+	function Swap(id,url){
+		if(document.getElementById(id).style.display==""){
+			document.getElementById(id).style.display="none";
+			document.getElementById("groupicon"+id).className = "groupicon";
+		}else{
+			document.getElementById(id).style.display="";
+			document.getElementById("groupicon"+id).className = "groupiconopen";
+			loadDivFromUrl(id,url,1);
+		}
+	}
+	// Sự kiện khi thay đổi text box cơ quan
+    function CQClick(){
+       if(document.frm.ID_CQ.value==0){
+    	   document.getElementById('COQUANBANHANH_TEXT').style.display="block";
+    	   document.frm.COQUANBANHANH_TEXT.value="<?php echo (!isset($this->data->COQUANBANHANH_TEXT) || $this->data->COQUANBANHANH_TEXT=='')?MSG11001017:$this->data->COQUANBANHANH_TEXT ?>";
+       }
+       else{
+    	   document.getElementById('COQUANBANHANH_TEXT').style.display="none";
+       }
+    }
+    //
+    //CQClick();
+    function updateImageNew(iddiv,id){
+    	var oimg = document.getElementById(iddiv);
+    	if(oimg != null){
+    		if(oimg.style.display != 'none'){
+	    	oimg.style.display = 'none';
+
+	    	var AE = new AjaxEngine();
+			var oXmlHttp = AE.createXMLHttp();
+		    <?php
+		    $authen = Zend_Registry::get('auth');
+		    $user = $authen->getIdentity();
+		    ?>
+			var url = '/vbden/vbden/updatedadoc?year=<?=QLVBDHCommon::getYear()?>&id_vbd='+id+'&id_u=<?=$user->ID_U?>';
+			oXmlHttp.open('post', url , true);
+		    oXmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		    oXmlHttp.onreadystatechange = function () {
+		        if (oXmlHttp.readyState == 4) {
+		        	if (oXmlHttp.status == 200) {
+		            	//alert(oXmlHttp.responseText);
+		        	} else {
+
+		            }
+		        }
+		    };
+		    oXmlHttp.send(null);
+    		}
+    	}
+
+    }
+
+	function chonsapxep(){
+		if(document.frm.SORTBY.value == "DAXEM")
+			document.frm.SORTTYPE.style.display = 'none';
+		else
+			document.frm.SORTTYPE.style.display = '';
+	}
+	function doAdvance(){
+		for(var i=1;i<10;i++){
+			if(document.getElementById("FindAdvanced"+i)){
+				if(document.getElementById("FindAdvanced"+i).style.display==""){
+					document.getElementById("FindAdvanced"+i).style.display="none";
+					document.frm.advanced.value="Nâng cao";
+					document.frm.ADVANCEDVALUE.value=0;
+
+				}else{
+					document.getElementById("FindAdvanced"+i).style.display="";
+					document.frm.advanced.value="Cơ bản";
+					document.frm.ADVANCEDVALUE.value=1;
+				}
+			}
+		}
+	}
+	<?php
+		if($this->ADVANCED==0){
+			echo "doAdvance();";
+		}
+	?>
+            function viewDetail(id){
+
+		objtemp=document.getElementById("detailContent_"+id);
+		visibletemp=(objtemp.style.display!="none")
+		if(visibletemp)
+		{
+		objtemp.style.display="none";
+
+		}
+		else
+		{
+			document.getElementById("groupcontent"+id).style.display="none";
+			objtemp.style.display="";
+		}
+		return false;
+	}
+        function deleteVB(id,idtaphoso) {
+            var answer = confirm("Bạn có chắc muốn xóa văn bản này ra khỏi HSCV điện tử?")
+            if (answer){
+                sendDataToServer("",'/taphscv/taphscv/deletevb/id_vb/'+id+'/id_taphoso/'+idtaphoso);
+	           }
+            else{
+
+            }
+        }
+		
+		function AddthumucHSCVdt()
+		{
+			//document.frm.action="/taphscv/taphscv/input";
+			//document.frm.submit();
+			window.location = "/taphscv/thumuc/";
+		}
+        function exportExcel(){
+            var ln = 0;
+            var arr = document.getElementsByName('idTapHoSo[]');
+            for(var i = 0 ; i < arr.length ;i++ ){
+                if(arr[i].checked == true){
+                    ln = 1;
+                }
+            }
+            if(ln == 1){
+                document.frm.action="/taphscv/taphscv/excel";
+                document.frm.submit();
+            }else{
+                alert("Bạn phải chọn tập hồ sơ để xuất");
+            }
+			
+        }
+		
+	function DongHS(id, name)
+	{
+		if(name != "")
+		{
+			var id_taphscv = document.getElementById('id');
+			var yeucau = document.getElementById('yeucau');
+			id_taphscv.value = id;
+			yeucau.value = 3;
+			var func_ok = "document.frm.action='/taphscv/taphscv/savehsyeucau/code/old';document.frm.submit();";
+			var func_cancel = "";
+			displayConfirm("Bạn có muốn đóng hồ sơ này không?","","",func_ok,func_cancel);
+		}
+	}
+	function HuyHS(id, name)
+	{
+		if(name != "")
+		{
+			var id_hs = document.getElementById('id');
+			var yeucau = document.getElementById('yeucau');
+			id_hs.value = id;
+			yeucau.value = 2;
+			var func_ok = "document.frm.action='/taphscv/taphscv/savehsyeucau/code/old';document.frm.submit();";
+			var func_cancel = "";
+			displayConfirm("Bạn có muốn hủy hồ sơ này không?","","",func_ok,func_cancel);
+		}
+	}
+	function MoHS(id, name)
+	{
+		if(name != "")
+		{
+			var id_hs = document.getElementById('id');
+			var yeucau = document.getElementById('yeucau');
+			id_hs.value = id;
+			yeucau.value = 3;
+			var func_ok = "document.frm.action='/taphscv/taphscv/savehsyeucau/code/old';document.frm.submit();";
+			var func_cancel = "";
+			displayConfirm("Bạn có muốn mở hồ sơ này không?","","",func_ok,func_cancel);
+		}
+	}
+</script>
+<?php
+$end = (float) array_sum(explode(' ',microtime()));
+?>

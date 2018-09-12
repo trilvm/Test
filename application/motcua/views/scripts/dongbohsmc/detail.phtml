@@ -1,0 +1,44 @@
+<table width="100%" class=adminlist1>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Tên tổ chức cá nhân</td>
+		<td nowrap="nowrap"><?=$this->data['TENTOCHUCCANHAN']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Địa chỉ</td>
+		<td nowrap="nowrap"><?=$this->data['DIACHI']?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Số điện thoại</td>
+		<td nowrap="nowrap"><?=$this->data['DIENTHOAI']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Email</td>
+		<td nowrap="nowrap"><?=$this->data['EMAIL']?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Mã biên nhận</td>
+		<td nowrap="nowrap"><?=$this->data['MAHOSO']?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue">Loại hồ sơ</td>
+		<td nowrap="nowrap"><?=$this->data['TENLOAI']?></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">Gửi lúc</td>
+		<td nowrap="nowrap"><?=date("d/m/Y",strtotime($this->data["GUI_LUC"]))?></td>
+		<td width="20" nowrap="nowrap"></td>
+		<td nowrap="nowrap" style="color:blue"></td>
+		<td nowrap="nowrap"></td>
+		<td width="100%"></td>
+	</tr>
+	<tr class=row1>
+		<td nowrap="nowrap" style="color:blue">File:</td>
+		<td colspan=5 width="100%">
+		<?php 
+			foreach($this->file_data as $file){
+		?>
+		<a href="/motcua/dongbohsmc/download/maso/<?=$file["MASO"]?>"><?=$file["TENTAILIEU"]!=''?$file["TENTAILIEU"]:$file["FILENAME"]?></a>,
+		<?php }?>
+		</td>
+	</tr>
+</table>

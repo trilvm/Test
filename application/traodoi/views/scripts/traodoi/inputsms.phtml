@@ -1,0 +1,294 @@
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_actb.js"></script>
+<script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_common.js"></script>
+<script>
+var customarray = new Array();
+<?php 
+	foreach($this->usernamedata as $addr_item){
+		echo "customarray.push('".$addr_item["USERNAME"] ."');" ;
+	}
+?>
+
+
+
+var custom2 = new Array('something','randomly','different');
+</script>
+<form name="frmTraodoi" action="/traodoi/traodoi/inputsms" method="POST">
+<table cellpadding="0" cellspacing="0" class="adminlist" style="" >
+	<tr>
+		<td width="15%" valign="top">			
+			<div class="urbangreymenu">
+				<div class="headerbar">Thư mục log</div>
+					<ul>
+						<li><a href="#"  onclick="viewDraft(); return false;"><span <?php echo ("draft"==$this->class?"style='border-bottom-width:1px; font-weight: bold; text-decoration: underline;'":"") ?>>Xem log</span><font color="#0B55C4">(<?php echo $this->drafts ?>)</font></a></li>
+					</ul>
+			</div>
+		</td>
+		<td width="85%">
+				<div class="traodoi_search_tb">
+					<div style="float:left;margin-left:10px;">
+						<input  accesskey="9" type="button" name="send" value="Gửi" title="Gửi tin" onclick="Send();this.disabled = true;">						
+						<input type="button" accesskey="0" name="cancel" value="Hủy bỏ" title="Hủy bỏ" onclick="Cancel()">
+					
+					</div>		
+										
+				</div>		   
+		 		<table width="100%" cellpadding="0" cellspacing="0" border="0">						
+						<tr>
+							<td colspan="2">
+								 
+								<div class="required">
+									<label class="input" id="lblTextIput">Gửi đến<font color="red">*</font></label>
+									<?php echo $this->form->getElement('nguoinhan');?>		
+									<script> var obj = actb(document.getElementById('nguoinhan'),customarray);</script>
+									<br />									
+							    	<span style="padding-left:92px;" class="box_erro_area" id="ERRnguoinhan">
+								    	<a href="#" onclick="ToggleUsers()">Chọn người nhận</a>
+							        	<?php 
+											echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('nguoinhan'));
+							            ?>
+							        </span>
+								</div>	
+								<div class="clr"></div>
+								<div id="BuildUsers" style="display:none; margin-left:140px; vertical-align:top; " >
+								<?php 
+										echo QLVBDHCommon::writeSelectDepartmentMultiUserHWithSelDep('DEP_NGUOIGUI','NGUOIGUI',$this->ID_DEP)
+								?>
+										<input type="button" value="Chọn" onclick="BuildUsers()"/>
+										<input type="button" value="Chọn hết" onclick="BuildUsersAll()"/>
+                                   								
+								</div>
+								<div class="clr"></div>								
+														
+								<div class="required">
+									<label class="input" id="lblTextIput" >Nội dung</label>
+									<textarea name=NOIDUNG style="width:450px"></textarea>
+							    	<span class="box_erro_area"  id="ERRtieude">
+							        	
+							        </span>
+								</div>	
+								<div class="clr"></div>								
+																				
+							</td>
+						</tr>					
+				</table>
+				<table width="100%" cellpadding="0" cellspacing="0" border="0">
+						<tr height="50">
+							<td style="background: #f0f0f0;" colspan="2">
+								<div style="float:left;margin-left:10px;">
+									<input  accesskey="9" type="button" name="send" value="Gửi" title="Gửi tin" onclick="Send();this.disabled = true;">						            
+						            <input type="button" accesskey="0" name="cancel" value="Hủy bỏ" title="Hủy bỏ" onclick="Cancel()">
+								</div>								
+							</td>
+						</tr>							
+				</table>
+		</td>
+	</tr>
+</table>
+<input type="hidden" name="act" id="id_act" value="">
+<input type="hidden" name="id" id="id" value="<?php echo $this->id ?>">
+<input type="hidden" name="view" value="">
+<input type="hidden" name="thongtinlienquan" value="<?php echo $this->thongtinlienquan; ?>">
+<input type="hidden" name="fw_or_re" value="<?php echo $this->fw_or_re; ?>">
+<input type="hidden" name="page" value="">
+</form>
+<script>
+
+function Send()
+{
+	document.getElementById("id_act").value="send";
+	document.frmTraodoi.action = "/traodoi/traodoi/savesms/";
+	document.frmTraodoi.submit();	
+}
+function Cancel()
+{
+	if(trim(document.frmTraodoi.tieude.value)!='' || trim(document.frmTraodoi.nguoinhan.value)!='')
+	{
+		if(confirm("Bạn chắc chắn muốn hủy tin này? Toàn bộ nội dung thư sẽ bị mất"))
+		{
+			document.frmTraodoi.action = "/traodoi/traodoi/";
+			document.frmTraodoi.submit();		
+		}
+	}
+	else
+	{
+		document.frmTraodoi.action = "/traodoi/traodoi/";
+		document.frmTraodoi.submit();
+	}
+	
+}
+
+function CreateNewMessage()
+{
+	document.location.href = "/traodoi/traodoi/input";
+	
+}
+function BackButtonClick()
+{
+	document.frmTraodoi.action = "/traodoi/traodoi/";
+	document.frmTraodoi.submit();
+}
+function SaveButtonClick(){
+	
+	var err = true;
+	err = err & validateInput("req",document.frmTraodoi.ten_chude,"Trường này phải nhập liệu");
+    err = err & err==true?validateInput("maxlen=50",document.frmTraodoi.ten_chude,"Dữ liệu quá dài"):false;                   
+    if(err==true)
+    {
+        document.frmTraodoi.submit();
+    }	
+}
+function viewDraft()
+{
+	document.frmTraodoi.view.value="draft";
+	document.frmTraodoi.submit();	
+}
+function viewInbox()
+{
+	document.frmTraodoi.view.value="inbox";
+	document.frmTraodoi.submit();	
+}
+function viewSentItems()
+{
+	document.frmTraodoi.view.value="sentitems";
+	document.frmTraodoi.submit();	
+}
+
+var arr_user = new Array();
+var arr_user_cc = new Array();
+function BuildUsers()
+{
+	var opt = document.frmTraodoi.NGUOIGUI.options;
+	for(var i=0;i<opt.length;i++)
+	{
+		if(opt[i].selected)
+		{
+			arr_user[arr_user.length] = new Array(document.frmTraodoi.DEP_NGUOIGUI.value,opt[i].value,opt[i].text);	
+		}
+	}
+	exportToNguoiNhan();
+}
+
+
+
+function BuildUsersAll()
+{
+	var opt = document.frmTraodoi.NGUOIGUI.options;
+	for(var i=0;i<opt.length;i++)
+	{
+		//if(opt[i].selected)
+		//{
+			arr_user[arr_user.length] = new Array(document.frmTraodoi.DEP_NGUOIGUI.value,opt[i].value,opt[i].text);	
+		//}
+	}
+	exportToNguoiNhan();
+}
+
+
+
+function InsertIntoArr(){
+	BuildUsers();
+}
+
+
+function exportToNguoiNhan()
+{
+	var nguoinhan="";
+	for(i=0;i<arr_user.length;i++)
+	{
+		nguoinhan +=arr_user[i][1]+";";	
+	}
+	if(nguoinhan!="")
+	{
+		addNguoiNhan(nguoinhan);		
+		arr_user = new Array();
+	}	 
+}
+
+
+function addNguoiNhan(value)
+{
+	var Nguoinhan=document.getElementById('nguoinhan').value;
+	if(Nguoinhan.length>0)
+	{
+		if(Nguoinhan.charAt(Nguoinhan.length-1) != ';') 
+		{
+			document.getElementById('nguoinhan').value+=";";
+		}
+	}
+	var arrNguoiNhan=Split(Nguoinhan,";");
+	var arrAddNguoiNhan=Split(value,";");	
+	if(arrAddNguoiNhan.length>0)
+	{
+		for(j=0;j<arrAddNguoiNhan.length;j++)
+		{
+			m=0;			
+			if(arrAddNguoiNhan[j]!="")
+			{
+				while(m<arrNguoiNhan.length)
+				{
+					if(Trim(arrAddNguoiNhan[j])==Trim(arrNguoiNhan[m]))
+					{
+						break;		
+					}
+					else
+					{
+						m++;
+					}
+				}		
+				if(m==arrNguoiNhan.length)
+				{
+					document.getElementById('nguoinhan').value+=trim(arrAddNguoiNhan[j])+";";			
+				}				
+			}
+		}	
+	}
+}
+
+
+
+function moveOne(fromList, toList)
+	{
+		if ( fromList.selectedIndex > -1 )
+		{
+			var oOption = document.createElement("OPTION");
+			
+			toList.options.add(oOption);
+			oOption.innerText = fromList.options(fromList.selectedIndex).text
+			oOption.value = fromList.options.value;
+			fromList.options.remove(fromList.selectedIndex)
+		}
+		else
+			alert( "Please Select an Item to Move" );
+}
+
+function ToggleUsers()
+{
+	obj=document.getElementById("BuildUsers");
+   	visible=(obj.style.display!="none")
+  	if (visible) 
+  	{
+  		obj.style.display="none";   
+	} 
+  	else 
+  	{
+  		obj.style.display="block";
+	}
+}
+
+function ToggleUsers_cc()
+{
+	obj=document.getElementById("BuildUsers_cc");
+   	visible=(obj.style.display!="none")
+  	if (visible) 
+  	{
+  		obj.style.display="none";   
+	} 
+  	else 
+  	{
+  		obj.style.display="block";
+	}
+}
+function PressCtrlS(){
+	Send();
+}
+</script>

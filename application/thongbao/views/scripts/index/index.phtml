@@ -1,0 +1,87 @@
+<form name=frm action="/thongbao/index/index">
+	<table class=adminlist>
+		<thead>
+			<tr>
+				<th nowrap>#</th>
+				<th nowrap="nowrap"><input type=checkbox name=CHECKALL onclick="SelectAll(this,'DEL')"></th>
+				<th width=100%>Tiêu đề</th>
+				<th nowrap>Người tạo</th>
+				<th nowrap>Ngày hết hạn</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th colspan="5">
+					<div class="pagination">
+						<div class="limit">Hiển thị #
+							<select name="limit" id="limit" class="inputbox" size="1" onchange="document.frm.submit();" style="width:60px;">
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<script>
+									document.frm.limit.value='<?php echo $this->limit ?>';
+								</script>
+							</select>
+						</div>
+						<div style="float:right;"><?php echo $this->showPage; ?></div>
+					</div>
+				</th>
+			</tr>
+		</tfoot>
+		<tbody>
+			<?php
+			if(count($this->data)>0){
+				$stt=0;
+				foreach($this->data as $item){
+					$stt++;
+			?>
+			<tr>
+				<td nowrap><?=$stt?></td>
+				<td nowrap><input type=checkbox name=DEL[] value=<?=$item["ID_TB"]?>></td>
+				<td width=100%><a href="#" onclick="ItemClick(<?=$item["ID_TB"]?>)"><?=htmlspecialchars($item["TIEUDE"])?></a></td>
+				<td nowrap><?=htmlspecialchars($item["NGUOITAONAME"])?></td>
+				<td nowrap><?=QLVBDHCommon::MysqlDateToVnDate($item["NGAYKETTHUC"])?></td>
+			</tr>
+			<?php
+				}
+			}else{
+			?>
+				<tr>
+				<td colspan=5>Không có thông báo nào</td>
+				</tr>
+			<?php
+			}
+			?>
+		</tbody>
+	</table>
+	<input type="hidden" name="page" value="<?php echo $this->page; ?>">
+</form>
+<script>
+	function DeleteButtonClick(){
+		var mess = true;
+		mess = validateInput("selone_check","DEL[]","Chọn ít nhất một mục để xoá.");
+		if(mess){
+			if(confirm("<?php echo 'Bạn muốn xóa mục này!'; ?>")){
+				document.frm.action = "/thongbao/index/delete";
+				document.frm.submit();
+			}
+		}else{
+			alert("Chọn ít nhất một mục để xoá.");
+		}
+	}
+	function AddNewButtonClick()
+	{
+		document.frm.action = "/thongbao/index/input";
+		document.frm.submit();
+	}
+	function ItemClick(id)
+	{
+		document.frm.action = "/thongbao/index/input/id/"+id;
+		document.frm.submit();
+	}
+</script>

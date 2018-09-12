@@ -1,0 +1,43 @@
+<?php
+require_once 'vanbansaoy/models/vanbansaoyModel.php';
+require_once 'Common/ValidateInputData.php';
+?>
+<table>
+        <tr>
+		<td nowrap="nowrap" style="color: blue" >Ngày tạo</td>
+                <td><?=QLVBDHCommon::MysqlDateToVnDateNoneZero($this->data["NGAYTAO"])?></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color: blue" >Trích yếu</td>
+		<td><?=$this->data["TRICHYEU"]?></td>						            
+	</tr>
+        <tr>
+		<td nowrap="nowrap" style="color: blue" >Lý do</td>
+		<td><?=$this->data["LYDO"]?></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" style="color: blue">Người tạo</td>
+		<td nowrap="nowrap"><?php 
+		echo UsersModel::getEmloyeeNameByIdUser($this->data["NGUOITAO"]);
+		?></td>			
+	</tr>
+        <tr>
+		<td nowrap="nowrap" style="color: blue">Người đề nghị</td>
+		<td nowrap="nowrap"><?php
+		echo UsersModel::getEmloyeeNameByIdUser($this->data["NGUOIDENGHI"]);
+		?></td>
+	</tr>
+	<tr>				
+		<td nowrap="nowrap" style="color: blue">Người nhận</td>
+		<td nowrap="nowrap"><?php
+		//$user = Zend_Registry::get('auth')->getIdentity();
+		//if(vanbansaoyModel::isUserReceive($row["ID_WORK"],$user->ID_U) == 0)
+		foreach($this->data1 as $data1){?> <?=vanbansaoyModel::isUserReceive($this->data["ID_VBSY"],$data1["ID_U"])==1?"<font color='red'>":""?>
+		<?=UsersModel::getEmloyeeNameByIdUser($data1["ID_U"]).","?> <?=vanbansaoyModel::isUserReceive($this->data["ID_VBSY"],$data1["ID_U"])==1?"</font>":""?>
+
+		<?php
+		}
+		?></td>		
+
+	</tr>	
+</table>

@@ -1,0 +1,32 @@
+<form name="frmEditPhoiHop"  action="" method="/hscv/phoihop/save">
+<table border=0  width=90% align="center" title="" cellpadding="5" cellspacing="2" class="tableform">
+<tr>
+	<td colspan="3" align="right"> Trường có dấu <font color="red">*</font> là bắt buộc nhập</td>
+</tr>
+<tr>
+	<td width=20%> <label id="lblTextIput"> Chọn tên người sử dụng </td>
+	<td width=40%><?php echo $this->form->getElement('ID_U');?></td>
+	<td width="40%" align="left"><div id="inputerror">
+	<?php 
+		echo QLVBDHCommon::getTopErrorMessage($this->form->getElement('ID_U'));			
+	?>
+	</div></td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+</tr>
+</table>
+<input type=hidden name="id" value=<?php echo $this->id?> >
+</form>
+<script>
+	function SaveButtonClick()
+	{
+		document.frmEditPhoiHop.submit();
+	}
+	function BackButtonClick()
+	{
+		document.frmEditPhoiHop.action = "/hscv/phoihop/";
+		document.frmEditPhoiHop.submit();
+	}
+</script>
+

@@ -1,0 +1,188 @@
+<?php
+$weekday = array("Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy");
+?>
+<html>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<body>
+<table>
+	<tr>
+		<td nowrap align=center><?=$this->config->sys_info->unit?></td>
+		<td width=100% align=center></td>
+		<td nowrap align=center><B>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</B></td>
+	</tr>
+	<tr>
+		<td nowrap align=center><B><?=$this->config->sys_info->company?></B></td>
+		<td width=100% align=center></td>
+		<td nowrap align=center><B>Độc lập - Tự do - Hạnh phúc</B></td>
+	</tr>
+	<tr>
+		<td nowrap align=center>--------------------------</td>
+		<td width=100% align=center></td>
+		<td nowrap align=center>--------------------------</td>
+	</tr>
+	<tr>
+		<td nowrap align=center></td>
+		<td width=100% align=center></td>
+		<td nowrap align=center><I><?=$this->config->sys_info->city?>, ngày <?=date("d")?> tháng <?=date("m")?> năm <?=date("Y")?></I></td>
+	</tr>
+	<tr>	
+		<td colspan=3 width=100% align=center>
+			<font size=5><b>LỊCH CÔNG TÁC TUẦN <?=substr($this->week,4,2)?></b></font><br>
+			<font size=4>(Từ ngày <?=$this->begindate?> đến ngày <?=$this->enddate?>)</font>
+		</td>
+	</tr>
+</table>
+<div id=car_container></div>
+<?php if($this->config->lct->dukien==1){ ?>
+<b>Lịch công tác dự kiến tuần tới <?=substr($this->week,4,2)+1?></b>:<br>
+<div style="padding-left:30px"><?=nl2br(htmlspecialchars($this->DUKIEN))?></div>
+<?php } ?>
+<table cellspacing=0 cellpadding=0 width=100%>
+<tr>
+<td width="100%">
+	<U>Nơi gởi:</U>
+	<div style="padding-left:30px"><?=nl2br(htmlspecialchars(str_replace("\\n","\r\n",$this->config->lct->noinhan)))?></div>
+</td>
+<td nowrap valign=top align=right width=100%>
+	<B><?=$this->config->sys_info->company?></B>
+</td>
+</tr>
+
+</table>
+</body>
+</html>
+<script>
+	var data = new Array();
+	<?php 
+		for($i=0;$i<7;$i++){
+	?>
+	data[<?=$i?>] = new Array();
+	data[<?=$i?>][0] = new Array("<?=$weekday[$this->data[$i][0][0]]?>","<?=$this->data[$i][0][1]?>","<?=$this->data[$i][0][2]?>");
+	<?php
+			for($k=1;$k<=3;$k++){
+	?>
+	data[<?=$i?>][<?=$k?>]  = new Array();
+	<?php
+				if(count($this->data[$i][$k])==0){
+	?>
+	data[<?=$i?>][<?=$k?>][0] = new Array(
+		"","","","","","","",""
+	);
+	<?php
+				}else{
+					for($j=0;$j<count($this->data[$i][$k]);$j++){
+	?>
+	data[<?=$i?>][<?=$k?>][<?=$j?>] = new Array(
+		<?=$this->data[$i][$k][$j]["ID_LCT_C"]?>,						//id
+		"<?=str_replace(chr(13).chr(10),'\n',htmlspecialchars($this->data[$i][$k][$j]['THOIGIAN']))?>", //thoigian
+		"<?=str_replace(chr(13).chr(10),'\n',nl2br(htmlspecialchars($this->data[$i][$k][$j]['NOIDUNG'])))?>",												//noi dung
+		"<?=str_replace(chr(13).chr(10),'\n',htmlspecialchars($this->data[$i][$k][$j]['CHUTRI']))?>", // chu tri
+		"<?=str_replace(chr(13).chr(10),'\n',nl2br(htmlspecialchars($this->data[$i][$k][$j]['THANHPHAN'])))?>",												//thanh phan
+		"<?=str_replace(chr(13).chr(10),'\n',nl2br(htmlspecialchars($this->data[$i][$k][$j]['DIADIEM'])))?>",												//dia diem
+		"<?=$this->data[$i][$k][$j]['IS_TONGHOP']?>",														//alarm
+		"<?=str_replace(chr(13).chr(10),'\n',nl2br(htmlspecialchars($this->data[$i][$k][$j]['GHICHU'])))?>" 
+	);
+	<?php
+					}
+				}
+			}
+		}
+	?>
+	function DrawGrid(){
+		//var oldheight = document.
+		var html="";
+		html += '<table width="100%" border=1 style="border-collapse: collapse;border: 1px solid black;">';
+			html += '<tr>';
+				html += '<td colspan="2" style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF"></td>';
+				html += '<td style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF" width=5%><CENTER><B>Thời gian</B></CENTER></td>';
+				html += '<td style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF" width=30%><CENTER><B>Nội dung công việc</B></CENTER></td>';
+				html += '<td style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF" width=15%><CENTER><B>Chủ trì</B></CENTER></td>';
+				html += '<td style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF" width=15%><CENTER><B>Thành phần</B></CENTER></td>';
+				html += '<td style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF" width=15%><CENTER><B>Địa điểm</B></CENTER></td>';
+				html += '<td style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF" width=15%><CENTER><B>Đơn vị chuẩn bị</B></CENTER></td>';
+			html += '</tr>';
+		for(var i=0;i<data.length;i++){
+			var rowspan_sang = data[i][1].length==0?1:data[i][1].length;
+			var rowspan_chieu = data[i][2].length==0?1:data[i][2].length;
+			var rowspan_toi = 0;
+			<?php if($this->config->lct->bandem==1){?>
+			var rowspan_toi =  data[i][3].length==0?1:data[i][3].length;
+			<?php } ?>
+			var rowspan_thu = rowspan_sang+rowspan_chieu+rowspan_toi;
+			var j=0;
+
+			//in buoi sang
+			html += '<tr>';
+				html += '<td rowspan="'+rowspan_thu+'" nowrap style="border-collapse: collapse;border: 1px solid black;"><B>'+data[i][0][0]+'<br>'+data[i][0][1]+'</B></td>';
+				html += '<td rowspan="'+rowspan_sang+'" style="border-collapse: collapse;border: 1px solid black;"><B>S</B></td>';
+			if(data[i][1].length==0){
+				html += DrawOneCarlendar(i,1,j,true);
+			}else{
+				html += DrawOneCarlendar(i,1,j,false);
+			}
+			html += '</tr>';
+			for(j=1;j<data[i][1].length;j++){
+				html += '<tr>';
+				html += DrawOneCarlendar(i,1,j,false);
+				html += '</tr>';
+			}
+
+			//buoi chieu
+			j = 0;
+			html += '<tr>';
+				html += '<td rowspan="'+rowspan_chieu+'" style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF"><B>C</B></td>';
+			if(data[i][2].length==0){
+				html += DrawOneCarlendar(i,2,j,true);
+			}else{
+				html += DrawOneCarlendar(i,2,j,false);
+			}
+			html += '</tr>';
+			for(j=1;j<data[i][2].length;j++){
+				html += '<tr>';
+				html += DrawOneCarlendar(i,2,j,false);
+				html += '</tr>';
+			}
+			<?php if($this->config->lct->bandem==1){?>
+			//buoi toi
+			j = 0;
+			html += '<tr>';
+				html += '<td rowspan="'+rowspan_toi+'" style="border-collapse: collapse;border: 1px solid black;background:#CFCFCF"><B>T</B></td>';
+			if(data[i][3].length==0){
+				html += DrawOneCarlendar(i,3,j,true);
+			}else{
+				html += DrawOneCarlendar(i,3,j,false);
+			}
+			html += '</tr>';
+			for(j=1;j<data[i][3].length;j++){
+				html += '<tr>';
+				html += DrawOneCarlendar(i,3,j,false);				
+				html += '</tr>';
+			}
+			<?php } ?>
+		}
+		html += '</table>';
+		
+		document.getElementById("car_container").innerHTML = html;
+	}
+	DrawGrid();
+
+	function DrawOneCarlendar(i,buoi,j,isnew){
+		var html="";
+		if(isnew){
+			html += '<td valign=top width=5% style="border-collapse: collapse;border: 1px solid black;"></textarea></td>';
+			html += '<td valign=top width=30% style="border-collapse: collapse;border: 1px solid black;"></textarea></td>';
+			html += '<td valign=top width=10% style="border-collapse: collapse;border: 1px solid black;"></td>';
+			html += '<td valign=top width=15% style="border-collapse: collapse;border: 1px solid black;"></td>';
+			html += '<td valign=top width=15% style="border-collapse: collapse;border: 1px solid black;"></td>';
+			html += '<td valign=top width=20% style="border-collapse: collapse;border: 1px solid black;"></td>';
+		}else{
+			html += '<td valign=top width=5% style="border-collapse: collapse;border: 1px solid black;">'+data[i][buoi][j][1]+'</td>';
+			html += '<td valign=top width=30% style="border-collapse: collapse;border: 1px solid black;">'+data[i][buoi][j][2]+'</td>';
+			html += '<td valign=top width=15% style="border-collapse: collapse;border: 1px solid black;">'+data[i][buoi][j][3]+'</td>';
+			html += '<td valign=top width=15% style="border-collapse: collapse;border: 1px solid black;">'+data[i][buoi][j][4]+'</td>';
+			html += '<td valign=top width=15% style="border-collapse: collapse;border: 1px solid black;">'+data[i][buoi][j][5]+'</td>';
+			html += '<td valign=top width=20% style="border-collapse: collapse;border: 1px solid black;">'+data[i][buoi][j][7]+'</td>';
+		}
+		return html;
+	}
+</script>

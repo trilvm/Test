@@ -1,0 +1,110 @@
+<form name=frm method="post" action="/lichct/lichct/save">
+<table class=admintable>
+	<tr>
+		<td>
+			Nội dung làm việc<font color="red">*</font>
+		</td>
+		<td>
+			<textarea rows="3" cols="50" name=CONTENT><?=$this->data->CONTENT?></textarea>
+		</td>
+		<td class="box_erro_area" id="ERRCONTENT">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Từ ngày<font color="red">*</font>
+		</td>
+		<td>
+			<?=QLVBDHCommon::calendarFull($this->BEGINDAY,"BEGINDAY","BEGINDAY")?> Giờ<input type=text name=BEGINTIME size=5 value="<?=$this->BEGINTIME?>" onblur="getFullTime(this)">
+		</td>
+		<td class="box_erro_area" id="ERRBEGINDAY">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Đến ngày<font color="red">*</font>
+		</td>
+		<td>
+			<?=QLVBDHCommon::calendarFull($this->ENDDAY,"ENDDAY","ENDDAY")?> Giờ<input type=text name=ENDTIME size=5 value="<?=$this->ENDTIME?>" onblur="getFullTime(this)">
+		</td>
+		<td class="box_erro_area" id="ERRENDDAY">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Địa điểm
+		</td>
+		<td>
+			<textarea rows="2" cols="50" name=DIADIEM><?=$this->data->DIADIEM?></textarea>
+		</td>
+		<td class="box_erro_area" id="ERRDIADIEM">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Thành phần tham dự
+		</td>
+		<td>
+			<textarea rows="2" cols="50" name=THANHPHAN><?=$this->data->THANHPHAN?></textarea>
+		</td>
+		<td class="box_erro_area" id="ERRTHANHPHAN">
+		</td>
+	</tr>
+	<?php if($this->id==""){?>
+	<tr>
+		<td>
+		<?php if($this->type=="personal"){?>
+			Đăng ký lịch phòng
+		<?php 
+		}else if($this->type=="department"){
+		?>
+		Đăng ký lịch cơ quan
+		<?php 
+		}
+		?>
+		</td>
+		<td><?php if($this->type!="corporation"){?>
+			<input type=checkbox name=UPTODEP value=1>
+			<?php }?>
+		</td>
+		<td class="box_erro_area" id="ERRUPTODEP">
+		</td>
+	</tr><?php }?>
+</table>
+
+<input type=hidden name=day value="<?=$this->day?>">
+<input type=hidden name=code value="<?=$this->code?>">
+<input type=hidden name=id value="<?=$this->id?>">
+<input type=hidden name=type value="<?=$this->type?>">
+</form>
+<script>
+	function SaveButtonClick(){
+	var err = true;
+		err = err & validateInput("req",document.frm.CONTENT,"Bạn phải nhập nội dung làm việc");
+		err = err & err==true?validateInput("maxlen=512",document.frm.CONTENT,"Nội dung làm việc phải ít hơn 512 ký tự"):false;
+		err = err & validateInput("req",document.frm.BEGINDAY,"Bạn phải nhập ngày bắt đầu");
+		err = err & err==true?validateInput("date",document.frm.BEGINDAY,"Ngày bắt đầu không hợp lệ"):false;
+		err = err & validateInput("req",document.frm.ENDDAY,"Bạn phải nhập ngày kết thúc");
+		err = err & err==true?validateInput("date",document.frm.ENDDAY,"Ngày kết thúc không hợp lệ"):false;
+		if(document.frm.BEGINTIME.value==""){
+			document.getElementById('ERRBEGINDAY').innerHTML = "Chưa nhập giờ bắt đầu.";
+			err=false;
+		}
+		if(document.frm.ENDTIME.value==""){
+			document.getElementById('ERRENDDAY').innerHTML = "Chưa nhập giờ kết thúc.";
+			err=false;
+		}
+		if(err==true){
+			if(CompareDate(
+					document.frm.BEGINDAY.value + " " + document.frm.BEGINTIME.value,
+					document.frm.ENDDAY.value + " " + document.frm.ENDTIME.value)==-1){
+				document.getElementById('ERRBEGINDAY').innerHTML = "Ngày bắt đầu phải nhỏ hơn ngày kết thúc";
+			}else{
+				document.frm.submit();
+			}
+		}
+	}
+	function BackButtonClick(){
+		document.location.href = "/lichct/lichct/day/fromdate/<?=$this->day?>/code/<?=$this->code?>/type/<?=$this->type?>";
+	}
+</script>

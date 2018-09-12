@@ -1,0 +1,188 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?php
+require_once 'Common/FileDinhKem.php';
+require_once 'qlcuochop/models/DMdiadiemModel.php';
+$url = "";
+$is_new = 0;$type = -1;
+if((int)$this->data->ID_DINHKEM == 0)
+{
+   $idObject = $this->idObject;
+}
+else
+{
+    $idObject = $this->data->ID_DINHKEM;
+}
+$url ="'/hscv/file?iddiv=idFileDinhKem&idObject=".$idObject."&is_new=".$is_new."&type=".$type."'" ;
+?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body style="background-color: transparent">
+<form name="frm2" action="/qlcuochop/qlthongtin/save2" method="post">
+<table>
+        <tr> <td colspan="3" style="color: blue;text-align: right;">Các trường có dấu <font color="red"> *</font> là bắt buộc </td></tr>
+        <tr>
+		<td nowrap="nowrap" style="color: blue" >Tên cuộc họp <font
+			color="Red" size="3">*</font></td>
+		<td nowrap="nowrap" wdith="8%"><?php if( (int)$this->data->ID_CUOCHOP==0){?>
+		<input type="text" name="ten"
+			value="<?php echo ($this->data->TEN);?>" size="60" >
+		<div class="clr"></div>
+		<span class="box_erro_area" id="ERRten"></span> <?php }else {?>
+		<input 	type="text" name="ten"
+			value="<?php echo ($this->data->TEN);?>" size="60">
+		<div class="clr"></div>
+		<span class="box_erro_area" id="ERRten"></span> <?php }?></td>
+	</tr>
+
+        <tr>
+            <td nowrap="nowrap" style="color: blue" >Phạm vi <font
+			color="Red" size="3">*</font></td>
+                    <td nowrap>
+                        Ngoài cơ quan  <input type="radio" name="phamvi" value="0"
+                        <?php if($this->data->PHAMVI == 1) echo 'checked'?> checked/>
+                    </td>
+        </tr>
+
+        <tr>
+		<td style="padding-left:9px" with="100%">
+			<font nowrap="nowrap" style="color:blue"> Thời gian </font>
+                </td>
+		<td><?=QLVBDHCommon::calendarFull($this->BEGINDATE==""?date("d/m/Y"):QLVBDHCommon::MysqlDateToVnDate($this->BEGINDATE),"BEGINDATE","BEGINDATE") ?>
+		<font nowrap="nowrap" style="color: blue">Vào lúc </font>
+		  <input type=text  size="4" name=gio value="<?php echo $this->data->GIO ?>">
+		  <input type="hidden" name="ngay"
+			value="<?= date("d/m/Y") ?>"> </td>
+	</tr>
+
+	<tr>
+		<td style="padding-left:9px" nowrap="nowrap" width="10%" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Địa điểm</font>
+                </td>
+                <td nowrap="nowrap" wdith="10%">
+                    <?=  qlcuochop_DMdiadiemModel::toCombo('frm','');?>
+		</td>
+	</tr>
+        <tr>
+		<td style="padding-left:9px" nowrap="nowrap" valign="top">
+			<font color="Blue">Người tham dự </font>
+                </td>
+                <td style="padding-left:9px">
+                        <?php echo QLVBDHCommon::writeSingleSelectUser1('DEP_NGUOITHAMGIA','NGUOITHAMGIA')?>
+                </td>
+                <td>
+                    <input type ="button" value="Chọn">
+                </td>
+         </tr>
+         <tr>
+                <td style="padding-left:9px"></td>
+                <td style="padding-left:9px">
+                    <select name="list_dstg" id="SelectDSTD" size="3" multiple="multiple" style="margin-bottom: 5px; width: 300px;">
+                    <?php
+
+                    ?>
+                    </select>
+                </td>
+        </tr>
+        <tr>
+		<td style="padding-left:9px" nowrap="nowrap" width="10%" colspan="1"><font nowrap="nowrap"
+			style="color: blue">Báo cáo nội dung cuộc họp</font>
+                </td>
+                <td style="padding-left:9px" nowrap="nowrap" wdith="10%">
+                    <input type="text" name="diadiem"
+                            value="<?php echo $this->data->NOIDUNG;?>" size="60" >
+                    <div class="clr"></div>
+                    <span class="box_erro_area" id="ERRnoidung"></span>
+                </td>
+	</tr>
+        <tr>
+            <td style="padding-left:9px">
+            </td>
+            <td width=50% style="padding-left:9px">
+                    <div id="idFileDinhKem" style="width:80%;"></div>
+            </td>
+        </tr>
+</table>
+        <input type=hidden name="id" value="<?php echo $this->data->ID_CUOCHOP; ?>">
+        <input type=hidden name="IS_FINISH" value="0">
+        <span id="listIdXoa">
+        </span>
+        
+</form>
+</body>
+</html>
+<script>
+    loadDivFromUrl('idFileDinhKem',<?=$url?>,0);
+
+        var arr_user_temp = new Array();
+
+        function  SaveButtonClick(){
+           var err1 =  getCountCV();
+
+            if(document.frm.phamvi.checked==true)
+                {
+                    document.frm.phamvi.value = 1;
+                }
+                else
+                    {
+                        document.frm.value = 0;
+                    }
+            if(document.frm.is_public1.checked == true)
+            {
+                document.frm.is_public.value = 1;
+            }
+            else
+            {
+                document.frm.is_public.value = 0;
+            }
+            var err = true;
+            err = err & validateInput("req",document.frm.ten,"Tên cuộc họp không được rỗng.");
+           // validcv=document.frm.NGUOI.value != "";
+           // err = err & err==true?validcv:false;
+            if(err==true && err1 == 1)
+                {
+                    document.frm.submit();
+                }
+        }
+
+        function  SaveButtonClick(){
+
+            if(document.frm2.phamvi.checked==true)
+                {
+                    document.frm2.phamvi.value = 1;
+                }
+
+            if(document.frm2.is_public1.checked == true)
+            {
+                document.frm2.is_public.value = 1;
+            }
+            else
+            {
+                document.frm2.is_public.value = 0;
+            }
+            var err = true;
+            err = err & validateInput("req",document.frm2.ten,"Tên cuộc họp không được rỗng.");
+           // validcv=document.frm.NGUOI.value != "";
+           // err = err & err==true?validcv:false;
+            if(err==true)
+                {
+                    document.frm2.submit();
+                }
+        }
+
+	function BackButtonClick(){
+		document.location.href='/qlcuochop/qlthongtin/index';
+	}	
+
+</script>

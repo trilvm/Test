@@ -1,0 +1,190 @@
+<?php
+    require_once('qtht/models/DepartmentsModel.php');
+    require_once 'qtht/models/sovanbanModel.php';
+    require_once 'qtht/models/LoaiVanBanModel.php';
+    require_once 'report/models/ThongkevanbandiModel.php';
+    $data_departs = DepartmentsModel::getAll();
+?>
+<style>
+    #report-view {
+        margin-top: 10px;
+        width: 100%;
+        display: none;
+    }
+
+    #report-view.open {
+        display: block;
+    }
+</style>
+<script type="text/javascript" src="/jquery/jquery-1.10.2.js"></script>
+<form name=frm id="frm" method="POST">
+    <div>
+        <label><b>Chọn năm thống kê:</b></label>
+        <?php
+            $year = new qtht_year();
+            echo $year->ToCombo("year", "");
+        ?>
+    </div>
+    <div class=clr></div>
+    <div>
+        <label><b>Hình thức lưu:</b></label> <select name="TYPE_LUUKT">
+            <option value="0">-- Tất cả hình thức --</option>
+            <option value="1">Lưu chờ xử lý</option>
+            <option value="2">Lưu tham khảo</option>
+        </select>
+    </div>
+    <div class=clr></div>
+    <div>
+        <label><b>Ngày lưu văn bản:</b></label>
+        <?= QLVBDHCommon::calendar($this->fromdate, "fromdate", "fromdate") ?>
+        >>
+        <?= QLVBDHCommon::calendar($this->todate, "todate", "todate") ?>
+    </div>
+    <div class=clr></div>
+    <div>
+        <label><b>Tháng:</b></label> <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/1')">1
+        <?php
+            $year = QLVBDHCommon::getYear();
+            $d = strtotime($year . "-3-1");
+            $d = $d - 86400;
+            $str_cuoi2 = date('d/m', $d);
+        ?>
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/2','<?php echo $str_cuoi2 ?>')">2
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/3','31/3')">3
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/4','30/4')">4
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/5','31/5')">5
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/6','30/6')">6
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/7','31/7')">7
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/8','31/8')">8
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/9','30/9')">9
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/10','31/10')">10
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/11','30/11')">11
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/12','31/12')">12
+    </div>
+    <div class=clr></div>
+    <div>
+        <label><b>Quí:</b></label> <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/3')">I
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/4','30/6')">II
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/7','30/9')">III
+        <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/10','31/12')">IV
+    </div>
+    <div class=clr></div>
+    <div>
+        <label><b>Năm:</b></label> <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1','31/12')">
+    </div>
+    <div class=clr></div>
+    <div>
+        <label><b>Thống kê theo:</b></label>
+        <input type="radio" name='thongke' value="0" checked="true" onclick="checkCaNhan()">Phòng ban
+        <input type="radio" name='thongke' value="1" onclick="checkCaNhan()">Từng cá nhân
+    </div>
+    <div class=clr></div>
+    <br/>
+
+    <div id="phongban">
+        <label><b>Chọn phòng ban:</b></label> <select name="sel_pb[]" id="sel_lvb" multiple="multiple" size=5>
+            <option value=0>[Tất cả phòng ban]</option>
+            <?php
+                $user = Zend_Registry::get('auth')->getIdentity();
+                DepartmentsModel::toComboNameWithSel($this->sel_pb);
+            ?>
+        </select>
+    </div>
+    <div id="canhan">
+        <label><b>Chọn Người:</b></label>
+        <?php
+            echo ThongkevanbandiModel::writeSelectDepartmentMultiUserH('sel_dep_canhan', 'sel_canhan');
+        ?>
+    </div>
+    <br/>
+
+    <div class=clr></div>
+    <div style="float:left">
+        <label><b>Sổ văn bản:</b></label> <select name="sel_svb" id="sel_svb">
+            <option value=0>[Chọn tất cả]</option>
+            <?php sovanbanModel::toComboNameWithDep(1); ?>
+        </select>
+    </div>
+    <div class=clr></div>
+    <div style="float:left">
+        <label><b>Loại văn bản:</b></label> <select name="sel_lvb" id="sel_lvb">
+            <option value="0">--- Tất cả loại văn bản ---</option>
+            <?php LoaiVanBanModel::toComboName(); ?>
+        </select>
+    </div>
+    <input type=hidden id=is_print name=is_print value=0>
+
+    <div class=clr></div>
+
+    <input type="button" data-target="report-view" title="Hiển thị báo cáo" style="background: url('/images/hscv-input-bg.png') repeat-x;" value="Hiển thị">
+    <input type="button" data-target="print-data" title="In báo cáo" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="In báo cáo">
+    <input type="button" data-target="export-excel-data" title="Xuất excel" style="background: url(/images/hscv-input-bg.png) repeat-x;" value="Xuất ra Exel">
+
+</form>
+
+<div id="report-view">
+    <div class="img-loading">
+        <img src="/images/loading.gif" width="16" height="16" border="0">
+        <img src="/images/loading.gif" width="16" height="16" border="0">
+        <img src="/images/loading.gif" width="16" height="16" border="0">
+    </div>
+
+    <div class="data-content"></div>
+</div>
+
+<script>
+    var arr_user = new Array();
+    function setvalueDateD( value_from, value_to ) {
+        document.frm.fromdate.value = value_from;
+        document.frm.todate.value = value_to;
+    }
+    function checkCaNhan() {
+        $("#phongban option:selected").prop("selected", false)
+        $("#canhan option:selected").prop("selected", false)
+        if ( document.frm.thongke.value == 1 ) {
+            document.getElementById( 'canhan' ).style.display = "";
+            document.getElementById( 'phongban' ).style.display = "none";
+        } else {
+            document.getElementById( 'canhan' ).style.display = "none";
+            document.getElementById( 'phongban' ).style.display = "";
+        }
+    }
+    checkCaNhan();
+
+    (function ( $, window, undefined ) {
+        $('input[type=button]' ).on('click', function (  ) {
+            var target = $(this ).attr('data-target');
+            $('#is_print' ).val(0);
+            switch (target){
+                case 'report-view':
+                    reportViewData();
+                    break;
+                case 'print-data':
+                    printViewData();
+                    break;
+                case 'export-excel-data':
+                    exportExcelData();
+                    break;
+            }
+        });
+
+        var reportViewData = function (  ) {
+            var data = $('#frm' ).serialize();
+            $('#report-view').addClass('open');
+            $('.img-loading' ).show();
+            $.post('/report/baocaovanbanluuketthuc/report', data, function ( response ) {
+                $('.img-loading' ).hide();
+                $('.data-content' ).html('').append(response);
+            });
+        };
+
+        var printViewData = function (  ) {
+            $('#is_print' ).val(1);
+            $('#frm' ).attr({target : 'printview', action : '/report/baocaovanbanluuketthuc/report' } ).submit();
+        }
+        
+        var exportExcelData = function (  ) {
+            $('#frm' ).attr({target : '', action : '/report/baocaovanbanluuketthuc/exportexcel' } ).submit();
+        }
+    }( jQuery, window, document ))
+</script>

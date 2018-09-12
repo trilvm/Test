@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+
+</head>
+<body>
+<div  style="overflow-y:auto; height:300px;">
+	<?php 
+				$dem_dk = 0;
+				foreach ($this->arrparts as $part){
+					if($part->_is_attactment == 1)
+						$dem_dk ++;
+				}
+				
+	?>
+	<?php
+	foreach ($this->arrparts as $part){
+		$content_t = strtok($part->_content_type,'/');
+		if($content_t == "text" && $part->_is_attactment == 0)
+			echo $part->getContent();
+	}
+	?>	
+	
+	</div>
+	<?php 
+	$dem = 0;
+	foreach ($this->arrparts as $part){
+		$content_t = strtok($part->_content_type,'/');
+		if($content_t == "image" && $part->_is_inline == 1)
+			$dem++;
+			
+	}
+	if($dem >0){ ?>
+	<div id="mail_view_main" >
+	<?php
+	foreach ($this->arrparts as $part){
+		$content_t = strtok($part->_content_type,'/');
+		if($content_t == "image" && $part->_is_inline == 1)
+			echo "<img src='/mailclient/emailengine/getinline?id_part=$part->_id'> </img>";
+			
+	}
+	?>	
+	</div>
+	<?php }?>
+</body>
+</html>

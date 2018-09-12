@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php 
+require_once 'Common/FileDinhKem.php';
+$url = "";
+$is_new = 0;$type = 0;
+
+if((int)$this->id==0){
+	$is_new = 1;
+		$type = -1;
+	
+}else{
+		$is_new = 0;
+		
+		$type = 12;
+	}
+$url ="'/hscv/file?iddiv=idFileDinhKem&idObject=".$this->id."&is_new=".$is_new."&type=".$type."'" ;
+
+?>
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/js/common.js"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script src="/js/validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/calendar.js"></script>
+<script type="text/javascript" src="/js/Ajax/AjaxEngine.js"></script>
+<link rel="stylesheet" type="text/css" href="/styles/general.css" />
+</head>
+<body>
+<form name="frm" action="/congviec/noidunggopy/save" method="post">
+<table>
+<tr>
+
+<td nowrap="nowrap" wdith="100%" colspan="1"><font nowrap="nowrap"
+style="color: blue">Tên công việc</font> 
+<font color="Red" size="3">*</font></td>
+<td><textarea name="CONTENT" cols="72" rows="2"> <?php echo htmlspecialchars($this->content);?></textarea><br/>
+<span class="box_erro_area" id="ERRCONTENT"></span></td>
+	
+
+</tr>
+
+<tr>
+<td nowrap="nowrap" valign="top">
+			<font color="Blue">File đính kèm</font>
+		</td>
+		<td width="82%" valign="top" colspan="4" id="idFileDinhKem"></td>
+		
+
+</tr> 
+</table>
+
+<input type="button" value="Lưu" onclick="SaveButtonClick()">
+<input type="button" value="Hủy" onclick="HuyButtonClick()">
+<input type=hidden name="ID_WORK" value="<?php echo $this->id_work?>">
+<input type=hidden name="ID_JOURNAL" value="<?php echo $this->id ?>">
+ 
+</form>
+<p id=lasttext></p>
+</body>
+</html>
+
+<script>
+loadDivFromUrl('idFileDinhKem',<?=$url?>,0);
+function resize(){
+	var iframeElement = parent.document.getElementById('inputgopy<?=$this->id_work?>');
+	iframeElement.style.height = "300px";
+	iframeElement.width = "100%";
+}
+resize();
+
+
+function SaveButtonClick(){
+	var err = true;
+	   err= err & validateInput("req",document.frm.CONTENT,"Chưa nhập nội dung nhật ký");
+	    if(err==true)
+		document.frm.submit();
+}
+function HuyButtonClick(){
+	var oframe = parent.document.getElementById('inputgopy<?=$this->id_work?>');
+	oframe.style.display='none';
+}
+</script>
