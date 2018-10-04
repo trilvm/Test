@@ -33,7 +33,7 @@ class BaocaovanbandireportModel{
 				$idSvb_arr[] = $svb['ID_SVB'];
 			}
 			$where_svb = "`ID_SVB` IN( ".implode(', ', $idSvb_arr).")" ; 
-			//array_push($where_arr,$where_svb);
+			array_push($where_arr,$where_svb);
 		}
 		if($id_lvbs > 0)
 		{
@@ -49,7 +49,7 @@ class BaocaovanbandireportModel{
          $sql = "Select vbdi.*,gen_dk.FILENAME as TEP_DINHKEM from ".QLVBDHCommon::Table("vbdi_vanbandi")." vbdi 
                 left join QTHT_USERS unyc on vbdi.NGUOISOAN=unyc.ID_U 
                 left join QTHT_EMPLOYEES empnyc on unyc.ID_EMP = empnyc.ID_EMP
-                left join `".QLVBDHCommon::Table("gen_filedinhkem")."` gen_dk on gen_dk.ID_OBJECT=vbdi.ID_VBDI 
+                left join `".QLVBDHCommon::Table("gen_filedinhkem")."` gen_dk on gen_dk.ID_OBJECT=vbdi.ID_VBDI and gen_dk.`TYPE` =5
                 ".$where." GROUP BY vbdi.ID_VBDI ORDER BY SODI_IN, NGUOIKY ". $sorttype;
 		$dbAdapter = Zend_Db_Table::getDefaultAdapter();
 		$query = $dbAdapter->query($sql);

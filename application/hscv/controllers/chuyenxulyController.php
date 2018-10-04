@@ -573,16 +573,18 @@ class Hscv_chuyenxulyController extends Zend_Controller_Action {
                             $model = new UsersModel();
                             $nguoinhan = $model->getName($idusend[0]);
                             $token = $giaoviecservice->login($madonvi,md5($password),"");
-//                            $user_dep = UsersModel::getUserDepId($idusend[0]);
-//                            $giaoviecservice->createNhatKy(
-//                                    $token
-//                                    ,$parameter['macongviec']
-//                                    ,$idusend[0]
-//                                    ,$nguoinhan['TENNGUOITAO']
-//                                    ,$parameter['TIENDO_GIAOVIEC']
-//                                    ,$parameter['motatiendo'] != '' ? $parameter['motatiendo'] : 'Chuyển xử lý'
-//                                    ,$user_dep['NAME']
-//                            );
+
+							$user_dep = UsersModel::getUserDepId($idusend[0]);
+                            $giaoviecservice->createNhatKy(
+                                    $token
+                                    ,$parameter['macongviec']
+                                    ,$idusend[0]
+                                    ,$nguoinhan['TENNGUOITAO']
+                                    ,$parameter['TIENDO_GIAOVIEC']
+                                    ,$parameter['motatiendo'] != '' ? $parameter['motatiendo'] : 'Chuyển xử lý'
+									,$user_dep['NAME']
+									,''
+                            );
                             $giaoviecservice->UpdateNguoiXLCongViec(
                                     $token
                                     ,$parameter['macongviec']

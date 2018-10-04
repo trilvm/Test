@@ -132,22 +132,28 @@ class Qtht_DanhMucSoVanBanController extends Zend_Controller_Action {
 			
 			//Lay id cua so van ban can xoa
 			$idarray = $this->_request->getParam('DEL');
-			//thuc hien xoa so van ban duoc chon
-			$where = 'ID_SVB in ('.implode(',',$idarray).')'; 
-			try{
-				if(!$this->model->delete($where))
+			// 13/9/2018 vuld check SVB da su dung
+			$year = QLVBDHCommon::getYear();
+			$check = $this->model->checkSVB($idarray,$year);
+			if($check == "true"){
+				// thuc hien xoa so van ban duoc chon
+				$where = 'ID_SVB in ('.implode(',',$idarray).')'; 
+				try{
+					if(!$this->model->delete($where))
+					{
+						//Loi khong the xoa
+						$this->_redirect('/default/error/error?control=DanhMucsovanban&mod=qtht&id=ERR11006008');
+					}
+				}catch (Exception $ex)
 				{
-					//Loi khong the xoa
+					//loi khong the xoa cac record trong csdl
 					$this->_redirect('/default/error/error?control=DanhMucsovanban&mod=qtht&id=ERR11006008');
 				}
-			}catch (Exception $ex)
-			{
-				//loi khong the xoa cac record trong csdl
-				$this->_redirect('/default/error/error?control=DanhMucsovanban&mod=qtht&id=ERR11006008');
+				//Hien thi trang xem danh sach so van ban
+				$this->_redirect('/qtht/DanhMucSoVanBan');
+			}else {
+				$this->_redirect('/qtht/DanhMucSoVanBan');
 			}
-			//Hien thi trang xem danh sach so van ban
-			$this->_redirect('/qtht/DanhMucSoVanBan');
-			
 		}
 		else 
 		{

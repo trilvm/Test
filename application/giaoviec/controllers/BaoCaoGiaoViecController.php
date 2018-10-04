@@ -11,7 +11,7 @@ class Giaoviec_BaoCaoGiaoViecController extends Zend_Controller_Action {
 	}
 	
 	function indexAction(){		
-		
+		$this->renderScript("report/baocaogiaoviec.phtml");
 	}	
 	function reportviewAction(){
 		$this->_helper->layout->disableLayout();

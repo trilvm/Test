@@ -1,0 +1,135 @@
+<table class=adminlist1 id=inexcel>
+<thead>
+    <tr>
+        <th nowrap rowspan=2>STT</th>
+        <th rowspan=2>Văn bản</th>
+        <th rowspan=2>Trích yếu văn bản</th>
+        <th rowspan=2>Cơ quan thực hiện</th>
+        <th rowspan=2>Nội dung nhiệm vụ</th>
+        <th rowspan=2>Người theo dõi</th>
+        <th rowspan=2>Người thực hiện</th>
+        <th rowspan=2>Ngày giao</th>
+        <th rowspan=2>Hạn xử lý</th>
+        <th rowspan=2>Ngày hoàn thành</th>
+        <th rowspan=2>Văn bản kết quả</th>
+        <th colspan=2 style="text-align: center;">Đã thực hiện</th>
+    </tr>
+    <tr>
+        <th>Trong hạn</th>
+        <th>Quá hạn</th>
+    </tr>
+</thead>
+<tbody>
+    <?php
+        $stt=0;
+        foreach($this->dataReport as $itemreport){
+            if(($itemreport->CNTXONGTREHAN == ' ')&& ($itemreport->CNTXONGDUNGHAN == 'X')){
+    ?>
+    <tr>
+        <td nowrap align=right><?php echo ++$stt?></td>
+        <td><a href="/vbdi/banhanh/listall/SOKYHIEU/<?= base64_encode($itemreport->SOKYHIEU) ?>/base64/1"><?php echo $itemreport->SOKYHIEU?> - <?php echo QLVBDHCommon::MysqlDateToVnDate($itemreport->NGAYBANHANH)?> - <?php echo $itemreport->DONVIGIAO?></a></td>
+        <td><?php echo $itemreport->TRICHYEU?></td>
+        <td><?php echo $itemreport->DONVINHAN?></td>
+        <td><?php echo $itemreport->TENCONGVIEC?></td>
+        <td><?php echo $itemreport->CHUYENVIENTHEODOI?></td>
+        <td><?php echo $itemreport->HOTENNGUOINHAN?></td>
+        <td><?= date("d/m/Y", strtotime($itemreport->NGAYBANHANH)) ?></td>
+        <td><?= date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH)) ?></td>
+        <td>
+            <?php 
+            if($itemreport->NGAYHOANTHANH)
+                echo date("d/m/Y", strtotime($itemreport->NGAYHOANTHANH));
+            else
+                echo '';
+            ?>
+        </td>
+        <td width=10%>
+            <?php 
+                require_once 'giaoviec/models/GiaoViecModel.php';
+                $giaoviec = new GiaoViecModel();
+                $giaoviec->ShowFileAll($this->session,$itemreport->ID_CONGVIECDETAIL,$itemreport->ID_VBLIENTHONG_VAO);
+            ?>
+        </td>
+        <td align=center>
+            <?php 
+                $ngayDuKienHoanThanh = date("d/m/Y", strtotime($itemreport->NGAYDUKIENHOANTHANH));
+                if($itemreport->CNTXONGDUNGHAN == ' ' || $itemreport->CNTXONGDUNGHAN == NULL) {
+                    if($itemreport->TRANGTHAI == 3 && $ngayDuKienHoanThanh == "01/01/1970"){
+                        echo "X";
+                    }else{
+                        echo '';
+                    }
+                }else{
+                    echo "X";
+                }
+            ?>
+            
+        </td>
+        <td align=center>
+            <?php if($itemreport->CNTXONGTREHAN == ' ' || $itemreport->CNTXONGTREHAN == NULL) {
+                    echo  '';
+                }else{
+                    echo "X";
+                }
+             
+            ?>
+            
+        </td>
+    </tr>
+    <?php
+        } }
+    ?>
+                  
+</body>
+<tfoot>
+</tfoot>
+</table>
+<script>
+    function fnExcelReport()
+    {   
+        var tab_text="<table border='2px' style='font-family: \"Times New Roman\"'><tr bgcolor=''>";
+        tab_text=tab_text+"<tr><td colspan=13 style='text-align:center'><strong>BÁO CÁO KẾT QUẢ THỰC HIỆN NHIỆM VỤ UBND TỈNH, CHỦ TỊCH, PHÓ CHỦ TỊCH<br> GIAO CHO CÁC CƠ QUAN, ĐƠN VỊ TRỰC THUỘC<br> Từ ngày <?php echo $this->fromdate?> đến ngày <?php echo $this->todate?> <br> Kính gửi : ..............................................</strong></td></tr>";
+        var textRange; var j=0;
+        tab = document.getElementById('inexcel'); // id of table
+
+        for(j = 0 ; j < tab.rows.length ; j++) 
+        {     
+            tab_text=tab_text+tab.rows[j].innerHTML+"</tr>";
+            //tab_text=tab_text+"</tr>";
+        }
+
+        tab_text=tab_text+"</table>";
+        tab_text= tab_text.replace(/<a[^>]*>|<\/a>/g, "");//remove if u want links in your table
+        tab_text= tab_text.replace(/<img[^>]*>/gi,""); // remove if u want images in your table
+        tab_text= tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
+        tab_text= tab_text.replace(/Xác nhận kết quả |/g, "");
+        tab_text= tab_text.replace(/Xem tiến độ/g, "");
+        tab_text= tab_text.replace(/[|]/g, "");
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE "); 
+
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
+        {
+            txtArea1.document.open("txt/html","replace");
+            txtArea1.document.write(tab_text);
+            txtArea1.document.close();
+            txtArea1.focus();   
+            sa=txtArea1.document.ExecCommand ("SaveAs",true,"baocaotkcongviec.xls");
+            return (sa);
+        }  
+        else                 //other browser not tested on IE 11
+            //sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));
+            //vuld 23/5/2018 set filename excel
+            var uri = 'data:text/xls;charset=utf-8,' + tab_text;
+
+            var downloadLink = document.createElement("a");
+            downloadLink.href = uri;
+            downloadLink.download = "baocaotkcongviec.xls";
+
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink); 
+            //vuld end 
+        
+    }
+</script>

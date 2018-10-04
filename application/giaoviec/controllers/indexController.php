@@ -669,7 +669,7 @@ class Giaoviec_IndexController extends Zend_Controller_Action {
 		$this->_helper->layout->disableLayout();
                 $params = $this->_request->getParams();
                 $this->view->id = $params['id'];
-                $this->view->tencongviec = base64_decode($params['tencongviec']);
+                $this->view->tencongviec = $params['tencongviec'];
                 $this->view->macongviec = $params['macongviec'];
                 $this->view->sokyhieu = base64_decode($params['sokyhieu']);
             }
@@ -685,7 +685,7 @@ class Giaoviec_IndexController extends Zend_Controller_Action {
                             for($i=0;$i < COUNT($id_u);$i++){
                                     $db->insert(QLVBDHCommon::Table("nhiemvu"),array(
                                             "ID_CONGVIEC"   => $params["id"],
-                                            "TENCONGVIEC"   => $params["tencongviec"],
+                                            "TENCONGVIEC"   => json_decode(base64_decode($params['tencongviec'])),
                                             "ID_NGUOINHAN"  => $params['ID_U'][$i],
                                             "ID_NGUOIGIAO"  => $user->ID_U,
                                             "NOIDUNG"       => $params['NOIDUNG'],
@@ -754,4 +754,161 @@ class Giaoviec_IndexController extends Zend_Controller_Action {
                 $this->view->limit = $limit;
                 $this->view->showPage = QLVBDHCommon::PaginatorWithAction(count($data), 10, $limit, "frm", $page, "/giaoviec/index/danhsachgiao");
             }
+
+    // bao cao giao viec
+    public function baocaogiaoviecAction(){
+        $this->renderScript("report/baocaogiaoviec.phtml");
+    }
+        
+    public function baocaogiaoviecviewAction(){
+        $this->_helper->layout->disableLayout();
+        $param = $this->getRequest()->getParams();
+        if(!isset($param["fromdate"]) ||$param["fromdate"] =="") {
+            $param["fromdate"] = date('01/m/Y');
+        }
+        if(!isset($param["todate"]) || $param["todate"] ==""){
+            $param["todate"] = date('t/m/Y');
+        }
+        $this->view->title = "Quản lý theo dõi, đôn độc thực hiện nhiệm vụ đã giao";
+        $this->view->subtitle = "";
+        $giaoviecservice = new GiaoViecService();
+        $configlienthong = new Zend_Config_Ini('../application/config.ini', 'general');
+        $madonvi = $configlienthong->service->lienthong->username;
+        $password = $configlienthong->service->lienthong->password;
+        $token = $giaoviecservice->login($madonvi,md5($password),"");
+        $this->view->dataDonVi = json_decode($giaoviecservice->getListDonVi($token))->data;
+        $this->view->fromdate = $param["fromdate"];
+        $this->view->todate = $param["todate"];
+        
+        if(isset($param["fromdate"]) && isset($param["todate"]) && $param["fromdate"]!="" && $param["todate"] !=""){
+            $param["fromdate"] = implode("-",array_reverse(explode("/",$param["fromdate"])));
+            $param["tungay"] = strtotime($param["fromdate"]);
+            $param["fromdate"] = date('Y-m-d',$param["tungay"]);
+            $param["month"] = date('m',$param["tungay"]);
+            $param["todate"] = implode("-",array_reverse(explode("/",$param["todate"])));
+            $param["todate"] = strtotime($param["todate"]);
+            $param["todate"] = strtotime("+1 day",$param["todate"]);
+            $param["todate"] = date('Y-m-d',$param["todate"]);
+            if($param['selectBaoCao'] == '0'){
+				$this->view->dataReport = json_decode($giaoviecservice->theoDoiGiaoViecSTT($token,$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],(int)$param["sel_trangthai"]))->data;
+			}elseif($param['selectBaoCao'] == '1'){
+				$this->view->dataReport = json_decode($giaoviecservice->theoDoiGiaoViecHoanThanhSTT($token,$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],(int)$param["sel_trangthai"]))->data;
+			}elseif($param['selectBaoCao'] == '2'){
+				$this->view->dataReport = json_decode($giaoviecservice->theoDoiGiaoViecXacNhanSTT($token,$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],(int)$param["xacnhantrangthai"]))->data;
+            }    
+            $this->view->month = $param["month"];   
+            $this->renderScript("report/baocaogiaoviecview.phtml"); 
+        }
+        $is_in = $param['is_in'];		
+        if($is_in){ 
+            if($param["h_isexel"]==1){
+                $this->view->is_in = 0;
+                header("Content-Type: application/vnd.ms-excel; name='excel'");
+                header("Content-Disposition: attachment; filename=baocaotkcongviec.xls;");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+            }else{$this->view->is_in = 1;}                     
+            $this->renderScript("report/baocaogiaoviecin.phtml");
+        }
+    }
+    public function baocaogiaoviecdetailAction(){
+        // $this->_helper->layout->disableLayout();
+        $param = $this->getRequest()->getParams();
+        $this->view->title = "Quản lý theo dõi, đôn đốc thực hiện nhiệm vụ đã giao";
+        QLVBDHButton::AddButton("Xuất Excel","Excel","Excel","fnExcelReport();");
+
+        $giaoviecservice = new GiaoViecService();
+        $configlienthong = new Zend_Config_Ini('../application/config.ini', 'general');
+        $madonvi = $configlienthong->service->lienthong->username;
+        $password = $configlienthong->service->lienthong->password;
+        $token = $giaoviecservice->login($madonvi,md5($password),"");
+        $this->view->fromdate=$param["fromdate"];
+        $this->view->todate=$param["todate"];
+
+        $param["fromdate"] = implode("-",array_reverse(explode("/",$param["fromdate"])));
+        $param["todate"] = implode("-",array_reverse(explode("/",$param["todate"])));
+        $param["todate"] = strtotime($param["todate"]);
+        $param["todate"] = strtotime("+1 day",$param["todate"]);
+        $param["todate"] = date('Y-m-d',$param["todate"]);
+                
+        switch($param["REPORTTYPE"]){
+            case 1:
+            if($param['selectBaoCao'] == '0'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],2))->data;
+            }elseif($param['selectBaoCao'] == '1'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecHTSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],2))->data;
+            }elseif($param['selectBaoCao'] == '2'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecXNSTT($token,$param["xacnhantrangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],2))->data;
+            }
+            $this->view->subTitle = "Tổng số nhiệm vụ được giao";
+            $this->renderScript("report/baocaogiaoviecdetail.phtml");
+            break;
+            case 2:
+            if($param['selectBaoCao'] == '0'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }elseif($param['selectBaoCao'] == '1'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecHTSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }elseif($param['selectBaoCao'] == '2'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecXNSTT($token,$param["xacnhantrangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }
+            $this->view->subTitle = "Số nhiệm vụ đã thực hiện đúng hạn";
+            $this->renderScript("report/listdetaildathuchiendung.phtml");
+            break;
+            case 3:
+            if($param['selectBaoCao'] == '0'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }elseif($param['selectBaoCao'] == '1'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecHTSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }elseif($param['selectBaoCao'] == '2'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecXNSTT($token,$param["xacnhantrangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }
+            $this->view->subTitle = "Số nhiệm vụ đã thực hiện quá hạn";
+            $this->renderScript("report/listdetaildathuchientre.phtml");
+            break;
+            case 4:
+            if($param['selectBaoCao'] == '0'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }elseif($param['selectBaoCao'] == '1'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecHTSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }elseif($param['selectBaoCao'] == '2'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecXNSTT($token,$param["xacnhantrangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],4))->data;
+            }
+            $this->view->subTitle = "Số nhiệm vụ đang thực hiện trong hạn";
+            $this->renderScript("report/listdetailtongdunghan.phtml");
+            break;              
+            case 5:
+            if($param['selectBaoCao'] == '0'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }elseif($param['selectBaoCao'] == '1'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecHTSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }elseif($param['selectBaoCao'] == '2'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecXNSTT($token,$param["xacnhantrangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }
+            $this->view->subTitle = "Số nhiệm vụ đang thực hiện trễ hạn";
+            $this->renderScript("report/listdetaildangthuchien.phtml");
+            break;
+            case 6:
+            if($param['selectBaoCao'] == '0'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }elseif($param['selectBaoCao'] == '1'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecHTSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }elseif($param['selectBaoCao'] == '2'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecXNSTT($token,$param["xacnhantrangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }
+            $this->view->subTitle = "Tổng số nhiệm vụ đã hoàn thành";
+            $this->renderScript("report/listdetaildangthuchientre.phtml");
+            break;
+            case 7:
+            if($param['selectBaoCao'] == '0'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }elseif($param['selectBaoCao'] == '1'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecHTSTT($token,$param["sel_trangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }elseif($param['selectBaoCao'] == '2'){
+                $this->view->dataReport = json_decode($giaoviecservice->theoDoiChiTietGiaoViecXNSTT($token,$param["xacnhantrangthai"],$param["fromdate"],$param["todate"],(int)$param["sel_nguoisoan"],8))->data;
+            }
+            $this->view->subTitle = "Tổng số nhiệm vụ chưa hoàn thành";
+            $this->renderScript("report/listdetailtongtrehan.phtml");
+            break;
+        }
+    }
 }

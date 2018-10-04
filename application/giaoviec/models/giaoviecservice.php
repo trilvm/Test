@@ -504,4 +504,80 @@ class GiaoViecService{
 		);
 	}
 	//vuld end 
+	// bao cao giao viec STT start-----------
+	function theoDoiGiaoViecSTT($token,$fromdate,$todate,$nguoixuly,$trangthai){
+		return $this->post("api",
+			array(
+				"token"=>$token
+				,"data"=>base64_encode(json_encode(array(
+					"method"=>"theoDoiGiaoViecSTT"
+					,"data"=>array("FROMDATE"=>$fromdate,"TODATE"=>$todate,"NGUOIXULY"=>$nguoixuly,"TRANGTHAI"=>$trangthai)
+				)))
+			)
+		);
+	}
+
+	function theoDoiGiaoViecHoanThanhSTT($token,$fromdate,$todate,$nguoixuly,$trangthai){
+        return $this->post("api",
+            array(
+                "token"=>$token
+                ,"data"=>base64_encode(json_encode(array(
+                    "method"=>"theoDoiGiaoViecHoanThanhSTT"
+                    ,"data"=>array("FROMDATE"=>$fromdate,"TODATE"=>$todate,"NGUOIXULY"=>$nguoixuly,"TRANGTHAI"=>$trangthai)
+                )))
+            )
+        );
+	}
+	
+	function theoDoiGiaoViecXacNhanSTT($token,$fromdate,$todate,$nguoixuly,$trangthai){
+        return $this->post("api",
+            array(
+                "token"=>$token
+                ,"data"=>base64_encode(json_encode(array(
+                    "method"=>"theoDoiGiaoViecXacNhanSTT"
+                    ,"data"=>array("FROMDATE"=>$fromdate,"TODATE"=>$todate,"NGUOIXULY"=>$nguoixuly,"XACNHANTT"=>$trangthai)
+                )))
+            )
+        );
+	}
+	
+	function theoDoiChiTietGiaoViecSTT($token,$trangthai,$fromdate,$todate,$nguoixuly,$reporttype){
+        return $this->post("api",
+            array(
+                "token"=>$token
+                ,"data"=>base64_encode(json_encode(array(
+                    "method"=>"theoDoiChiTietGiaoViecSTT"
+                    ,"data"=>array("FROMDATE"=>$fromdate,"TODATE"=>$todate
+                    ,"NGUOIXULY"=>$nguoixuly,"REPORTTYPE"=>$reporttype,"TRANGTHAI"=>$trangthai)
+                )))
+            )
+        );
+	}
+	
+	function theoDoiChiTietGiaoViecHTSTT($token,$trangthai,$fromdate,$todate,$nguoixuly,$reporttype){
+        return $this->post("api",
+            array(
+                "token"=>$token
+                ,"data"=>base64_encode(json_encode(array(
+                    "method"=>"theoDoiChiTietGiaoViecHTSTT"
+                    ,"data"=>array("FROMDATE"=>$fromdate,"TODATE"=>$todate,"NGUOIXULY"=>$nguoixuly
+                    ,"REPORTTYPE"=>$reporttype,"TRANGTHAI"=>$trangthai)
+                )))
+            )
+        );
+	}
+	
+	function theoDoiChiTietGiaoViecXNSTT($token,$trangthai,$fromdate,$todate,$nguoixuly,$reporttype){
+        return $this->post("api",
+            array(
+                "token"=>$token
+                ,"data"=>base64_encode(json_encode(array(
+                    "method"=>"theoDoiChiTietGiaoViecXNSTT"
+                    ,"data"=>array("FROMDATE"=>$fromdate,"TODATE"=>$todate,"NGUOIXULY"=>$nguoixuly
+                    ,"REPORTTYPE"=>$reporttype,"XACNHANTT"=>$trangthai)
+                )))
+            )
+        );
+	}
+	// bao cao giao viec STT end-----------
 }

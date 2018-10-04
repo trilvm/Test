@@ -15,14 +15,17 @@ $data_departs = DepartmentsModel::getAll();
 <script language="javascript" type="text/javascript" src="/js/mail/mailautocomplete_common.js"></script>
 <link rel="stylesheet" type="text/css" href="/chosen/chosen.custom.css" />
 <script src="/chosen/chosen.jquery.custom.js"></script>
-<form name=frm action="/giaoviec/report/baocaogiaoviec" method="POST">
+<form name=frm action="/giaoviec/index/baocaogiaoviecview" method="POST">
     <div class=clr></div>
     <div>
-        <label><b>Ngày giao nhiệm vụ:</b></label>
+        <select name="selectBaoCao" id="selectBaoCao" onchange="checkBaoCao()" style="width:135px">
+            <option value="0">Ngày giao nhiệm vụ</option>
+            <option value="1">Ngày hoàn thành</option>
+            <option value="2">Ngày xác nhận hoàn thành</option>
+        </select>
         <?= QLVBDHCommon::calendarFull($this->fromdate, "fromdate", "fromdate") ?>
         >>
         <?= QLVBDHCommon::calendarFull($this->todate, "todate", "todate") ?>
-
     </div>
 
     <div class=clr></div>
@@ -63,38 +66,28 @@ $data_departs = DepartmentsModel::getAll();
             <input type="radio" name='sel_timedis' onclick="setvalueDateD('1/1/<?php echo $year ?>', '31/12/<?php echo $year ?>')">
         </div>
     </div>
-    <div class="clr"></div>
-    <div>
-        <label><b>Đơn vị:</b></label>
-		<select name='sel_donvi[]' id='sel_donvi' multiple style="width:400px" size=10>
-		<option value="0">--Tất cả--</option>
-		<?php
-			foreach($this->dataDonVi as $itemDonVi){
-		?>
-			<option value="<?php echo $itemDonVi->OrganId?>"><?php echo htmlspecialchars($itemDonVi->OrganName)?></option>
-		<?php
-			}
-		?>
-		</select>
-   </div> 
+    <div class=clr></div>
+    <div id="trangthai" >
+        <label><b>Trạng thái:</b></label>
+        <select name="sel_trangthai" id="sel_trangthai">
+            <option value="-1">--Chọn trạng thái--</option>
+            <option value="3">Đã hoàn thành</option>
+            <option value="4">Chưa hoàn thành</option>
+        </select>              
+    </div>
+    <div class=clr></div>
+    <div id="xacnhantrangthai" style="display:none">
+        <label><b>Xác nhận trạng thái:</b></label>
+        <select name="xacnhantrangthai" id="xacnhantrangthai">
+            <option value="-1">--Chọn trạng thái--</option>
+            <option value="1">Hoàn thành</option>
+            <option value="2">Hoàn thành trễ hạn</option>
+            <option value="3">Chưa hoàn thành</option>
+        </select>              
+    </div>
     <div class=clr></div>
     <div id="" >
-        <label><b>Người ký:</b></label>
-        <select name="sel_nguoiky" id="sel_nguoiky" onchange="">
-            <option value="0">--Chọn người ký--</option>
-            <?php
-            $data_nguoiky= Vb_nguoikyModel::getData(0);
-            foreach($data_nguoiky as $itemnguoiky){
-            ?>
-                <option value="<?=$itemnguoiky['ID_U']?>"><?=$itemnguoiky['NAME']?></option>
-            <?php
-            }
-            ?>
-        </select>              
-    </div>    
-    <div class="clr"></div>
-    <div id="" >
-        <label><b>Người theo dõi:</b></label>
+        <label><b>Người xử lý:</b></label>
         <select name="sel_nguoisoan" id="sel_nguoisoan" onchange="">
             <option value="0">--Chọn người theo dõi--</option>
             <?php
@@ -114,17 +107,17 @@ $data_departs = DepartmentsModel::getAll();
         <br/>
         <input type="button" title="Hiển thị báo cáo" value="Hiển thị" onclick="document.frm.target = 'reportview';
                 document.frm.h_isexel.value = 0;
-                document.frm.action = '/giaoviec/report/baocaogiaoviecview';
+                document.frm.action = '/giaoviec/index/baocaogiaoviecview';
                 document.frm.submit();
                 return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
         <input type="button" title="Xuất excel" value="Xuất Excel" onclick="document.frm.target = 'reportview';
                 document.frm.h_isexel.value = 1;
-                document.frm.action = '/giaoviec/report/baocaogiaoviecview/is_in/1';
+                document.frm.action = '/giaoviec/index/baocaogiaoviecview/is_in/1';
                 document.frm.submit();
                 return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
         <input type="button" title="In báo cáo" value="In báo cáo" onclick="document.frm.target = '_blank';
                 document.frm.h_isexel.value = 0;
-                document.frm.action = '/giaoviec/report/baocaogiaoviecview/is_in/1';
+                document.frm.action = '/giaoviec/index/baocaogiaoviecview/is_in/1';
                 document.frm.submit();
                 return false;" style="background: url(/images/hscv-input-bg.png) repeat-x;" >
     </div>
@@ -140,4 +133,15 @@ function setvalueDateD(value_from, value_to) {
 	document.frm.todate.value = value_to;
 }
 setvalueDateD('1/1/<?php echo $year ?>', '31/12/<?php echo $year ?>');
+function checkBaoCao(){
+    var e = document.getElementById("selectBaoCao");
+    var val = $("#selectBaoCao").val();
+    if(val== '2'){
+        $("#trangthai").hide();
+        $("#xacnhantrangthai").show();
+    }else{
+        $("#trangthai").show();
+        $("#xacnhantrangthai").hide();
+    }
+}
 </script>

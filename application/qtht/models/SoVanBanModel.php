@@ -441,4 +441,20 @@ class SoVanBanModel extends Zend_Db_Table_Abstract {
         }
     }
 
+    function checkSVB($arr,$year){
+        $dbAdapter = Zend_Db_Table::getDefaultAdapter();
+        $idArrr = implode(',',$arr);
+        $sql = "select `ID_VBDI` from `vbdi_vanbandi_".$year."` where ID_SVB in (?)";
+        $query = $dbAdapter->query($sql, $idArrr);
+
+        $sql2 = "select `ID_VBD` from `vbd_vanbanden_".$year."` where ID_SVB in (?)";
+        $query2 = $dbAdapter->query($sql2, $idArrr);
+        if(count($query) > 0 || count($query2) > 0){
+            return "false";
+        }else {
+            return "true";
+        }
+
+    }
+
 }
